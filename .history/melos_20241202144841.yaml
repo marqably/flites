@@ -1,0 +1,12 @@
+name: flites
+
+packages:
+  - apps/**
+  - packages/**
+
+scripts:
+  analyze:
+    exec: dart analyze .
+
+  # format:
+  #   exec: dart analyze .

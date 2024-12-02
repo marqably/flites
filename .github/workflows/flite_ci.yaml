@@ -1,0 +1,74 @@
+name: Flite CI
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+      - tests
+      - stable-*
+  pull_request:
+    branches:
+      - main
+      - dev
+      - stable-*
+
+jobs:
+  semantic_pull_request:
+    name: ✅ Semantic Pull Request
+    uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/semantic_pull_request.yml@v1
+
+  flutter_version:
+    name: Flutter version
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        id: flutter-action
+        with:
+          architecture: x64
+      - run: |
+          git config --global --add safe.directory /opt/hostedtoolcache/flutter/${{ steps.flutter-action.outputs.CHANNEL }}-${{ steps.flutter-action.outputs.VERSION }}-${{ steps.flutter-action.outputs.ARCHITECTURE }}
+          flutter --version
+
+  dart_format:
+    name: ✅ Format
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        dart-version: ["3.5.0"]
+    steps:
+      - name: 📚 Git Checkout
+        uses: actions/checkout@v4
+
+      - name: 🎯 Set up Dart
+        uses: dart-lang/setup-dart@v1.3
+        with:
+          sdk: ${{ matrix.dart-version }}
+
+      - name: 🔎 Verify formatting
+        run: dart format --output=none --set-exit-if-changed .
+
+      # - name: 🎯 Build ${{ matrix.package }}
+      #   uses: ./.github/actions/flutter_package
+      # with:
+      # codecov_token: ${{ secrets.CODECOV_TOKEN }}
+      # working_directory: packages/${{ matrix.package }}
+
+  # dart_analyze:
+  #   name: dart analyze
+  #   runs-on: ubuntu-latest
+  #   # strategy:
+  #   #   matrix:
+  #   #     flutter-version: 3.24.0
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: subosito/flutter-action@v2
+  #       with:
+  #         channel: stable
+  #         flutter-version-file: pubspec.yaml
+  #     - run: flutter --version
+  #     - name: Install dependencies
+  #       run: bash util/pub_get_all
+  #     - name: Analyze
+  #       run: bash util/run_tests_analyze
