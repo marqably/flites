@@ -1,0 +1,32 @@
+{
+  "name": "Flites",
+  "description": "Documentation",
+  "favicon": "/assets/flites_logo.png",
+  "sidebar": [
+    {
+      "group": "General",
+      "pages": [
+        {
+          "title": "Getting Started",
+          "href": "/",
+          "icon": "rocket"
+        },
+        {
+          "title": "Using Flites",
+          "href": "/using_flites",
+          "icon": "bird"
+        }
+      ]
+    },
+    {
+      "group": "Development",
+      "pages": [
+        {
+          "title": "Contributing",
+          "href": "/contributing",
+          "icon": "heart"
+        }
+      ]
+    }
+  ]
+}

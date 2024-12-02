@@ -1,0 +1,24 @@
+---
+title: Contributing
+description: How to make contributions to the Flites codebase
+---
+
+## Setup
+We are using [melos](https://melos.invertase.dev) to manage all packages inside this mono repo. Install it via:
+
+`dart pub global activate melos`
+
+## Checking your changes
+When submitting a PR, the code base will run through pipelines that have to pass, before any changes can be merged. To check locally if your code passes, use the following commands:
+
+### Analyze
+`melos analyze`
+
+### Format
+`melos format`
+
+### Tests
+`melos run test --no-select`
+
+## Conventions
+In order to keep a clean git history, we are relying on [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/). Please keep these rules in mind when developing, and PR titles will be checked in the pipeline for this structure as well.
