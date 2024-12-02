@@ -8,19 +8,20 @@ on:
 
 jobs:
   analyze:
-    name: ✅ Analyze
+    name: ✨ Analyze
     runs-on: ubuntu-latest
     steps:
       - name: 📚 Git Checkout
         uses: actions/checkout@v4
 
-      - uses: subosito/flutter-action@v2
-        name: Setup Flutter
+      - name: 📦 Setup Flutter
+        uses: subosito/flutter-action@v2
         id: flutter-action
         with:
           architecture: x64
 
-      - uses: bluefireteam/melos-action@v2
+      - name: 📦 Setup Melos
+        uses: bluefireteam/melos-action@v2
 
       - name: 🔎 Analyze
         uses: invertase/github-action-dart-analyzer@v1
@@ -29,7 +30,7 @@ jobs:
           fatal-warnings: true
 
   format:
-    name: ✅ Format
+    name: ✨ Format
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -39,27 +40,27 @@ jobs:
       - name: 🎯 Set up Dart
         uses: dart-lang/setup-dart@v1.3
 
-      - name: Setup Melos
+      - name: 📦 Setup Melos
         uses: bluefireteam/melos-action@v2
 
       - name: 🔎 Verify formatting
         run: melos run format
 
   test:
-    name: ✅ Test
+    name: ✨ Test
     runs-on: ubuntu-latest
     timeout-minutes: 25
     steps:
       - name: 📚 Git Checkout
         uses: actions/checkout@v4
 
-      - uses: subosito/flutter-action@v2
-        name: Setup Flutter
+      - name: 📦 Setup Flutter
+        uses: subosito/flutter-action@v2
         id: flutter-action
         with:
           architecture: x64
 
-      - name: Setup Melos
+      - name: 📦 Setup Melos
         uses: bluefireteam/melos-action@v2
 
       - name: 🧪 Run Tests
