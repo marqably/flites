@@ -1,0 +1,40 @@
+#!/bin/bash
+
+if [ ! -f util/.utils_root ]; then
+    echo "Run this script from the root of the Flite repository"
+    echo "I.e. util/run_tests_analyze"
+    exit 1
+fi
+
+
+LOG_LEVEL="--fatal-infos"
+for arg in "$@"
+do
+    # Check if the argument is the --allow-infos flag
+    # If it is, set the log level to --fatal-warnings instead of --fatal-infos
+    if [ "$arg" == "--allow-infos" ] ; then
+        LOG_LEVEL="--fatal-warnings"
+        break
+    elif [ "$arg" == "--allow-warnings" ] ; then
+        LOG_LEVEL="--no-fatal-warnings"
+        break
+    fi
+done
+
+declare -a projectPaths=(
+    "/"
+)
+
+exit_code=0
+
+echo "### Running dart analyze with log level '$LOG_LEVEL'"
+for i in "${projectPaths[@]}"
+do
+   dart analyze $LOG_LEVEL $i
+
+   if [ $? != 0 ]; then
+     exit_code=1
+   fi
+done
+
+exit $exit_code
