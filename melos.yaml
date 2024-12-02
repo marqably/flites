@@ -5,9 +5,10 @@ packages:
   - packages/**
 
 scripts:
-  install:
-    run: melos bs && melos build_runner
-    description: Run all static analysis checks.
+  ### Needed in case of adding a build_runner
+  # install:
+  #   run: melos bs && melos build_runner
+  #   description: Run all static analysis checks.
 
   ###
   ### code quality
@@ -61,13 +62,13 @@ scripts:
     description: Run `flutter test` for a specific package.
 
   ###
-  ### Code Generation
+  ### Code Generation (not needed for now)
   ###
-  build_runner:
-    run: |
-      melos exec -c 1 --fail-fast -- \ 
-        "dart run build_runner build --delete-conflicting-outputs"
-    packageFilters:
-      dependsOn:
-        - build_runner
-    description: Runs build runner
+  # build_runner:
+  #   run: |
+  #     melos exec -c 1 --fail-fast -- \
+  #       "dart run build_runner build --delete-conflicting-outputs"
+  #   packageFilters:
+  #     dependsOn:
+  #       - build_runner
+  #   description: Runs build runner
