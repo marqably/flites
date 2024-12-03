@@ -9,8 +9,8 @@ class SaveSpriteButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return OutlinedButton(
       onPressed: () {
-        final generator = GenerateSprite(projectSourceFiles.value);
-        generator.save();
+        // final generator = GenerateSprite(projectSourceFiles.value);
+        // generator.save();
       },
       child: const Text('Save Sprite'),
     );

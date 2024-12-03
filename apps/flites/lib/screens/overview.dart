@@ -1,6 +1,10 @@
+import 'package:flites/widgets/canvas_controls/canvas_controls.dart';
 import 'package:flites/widgets/image_editor/image_editor.dart';
+import 'package:flites/widgets/project_file_list/project_file_list_vertical.dart';
 import 'package:flites/widgets/toolbar/image_size_settings.dart';
 import 'package:flutter/material.dart';
+import '../states/key_events.dart';
+import '../widgets/player/player.dart';
 import '../widgets/project_file_list/project_file_list.dart';
 import '../widgets/toolbar/toolbar.dart';
 import '../widgets/upload_area/file_drop_area.dart';
@@ -14,42 +18,76 @@ class Overview extends StatefulWidget {
 
 class _OverviewState extends State<Overview> {
   @override
+  void initState() {
+    super.initState();
+
+    ModifierController.listenToGlobalKeyboardEvents();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return const Column(
-      mainAxisSize: MainAxisSize.max,
+    return const FileDropArea(
+        child: Stack(
+      alignment: Alignment.center,
       children: [
-        // main interface
-        Expanded(
-          child: Row(
-            children: [
-              // image editor
-              Expanded(
-                flex: 3,
-                child: ImageEditor(),
-              ),
-
-              // toolbar
-              SizedBox(
-                width: 400,
-                child: Column(
-                  children: [
-                    ImageSizeSettings(),
-                    Toolbar(),
-                  ],
-                ),
-              ),
-            ],
-          ),
+        ImageEditor(),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: ProjectFileListVertical(),
         ),
-
-        // file overview
-        SizedBox(
-          width: double.infinity,
-          child: FileDropArea(
-            child: SizedBox(height: 150, child: ProjectFileList()),
-          ),
+        Positioned(
+          bottom: 64,
+          child: Player(),
         ),
+        Align(
+          alignment: AlignmentDirectional.centerEnd,
+          child: CanvasControls(),
+        )
       ],
-    );
+    )
+
+        // Padding(
+        //   padding: EdgeInsets.all(16),
+        //   child: Column(
+        //     mainAxisSize: MainAxisSize.max,
+        //     children: [
+        //       // main interface
+        //       Expanded(
+        //         child: Row(
+        //           children: [
+        //             // image editor
+        //             Expanded(
+        //               flex: 3,
+        //               child: ImageEditor(),
+        //             ),
+
+        //             // toolbar
+        //             SizedBox(
+        //               width: 400,
+        //               child: Column(
+        //                 children: [
+        //                   ImageSizeSettings(),
+        //                   Toolbar(),
+        //                 ],
+        //               ),
+        //             ),
+        //           ],
+        //         ),
+        //       ),
+
+        //       SizedBox(height: 32),
+
+        //       // file overview
+        //       SizedBox(
+        //         width: double.infinity,
+        //         child: SizedBox(
+        //           height: 150,
+        //           child: ProjectFileList(),
+        //         ),
+        //       ),
+        //     ],
+        //   ),
+        // ),
+        );
   }
 }

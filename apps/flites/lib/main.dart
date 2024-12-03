@@ -12,16 +12,16 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flites',
+      // title: 'Flites',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color.fromARGB(255, 172, 233, 255),
+          primary: const Color.fromARGB(255, 97, 213, 255),
+        ),
         useMaterial3: true,
       ),
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Flites'),
-        ),
-        body: const Overview(),
+      home: const Scaffold(
+        body: Overview(),
       ),
     );
   }

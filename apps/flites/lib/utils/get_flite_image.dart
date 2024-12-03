@@ -2,6 +2,14 @@ import 'package:flites/types/flites_image.dart';
 
 import '../states/open_project.dart';
 
+List<FlitesImage> getSelectedImages() {
+  final images = projectSourceFiles.value;
+
+  return images
+      .where((element) => selectedImage.value.contains(element.id))
+      .toList();
+}
+
 /// Returns the raw [FlitesImage] object for the given [id]
 FlitesImage? getFliteImage(String? id) {
   final images = projectSourceFiles.value;
@@ -11,4 +19,41 @@ FlitesImage? getFliteImage(String? id) {
   }
 
   return images.firstWhere((element) => element.id == id);
+}
+
+FlitesImage? getCurrentSingularSelection() {
+  if (selectedImage.value.length != 1) {
+    return null;
+  }
+  final image = selectedImage.value.first;
+
+  return getFliteImage(image);
+}
+
+String? getPreviousImageId(String imageId) {
+  final index =
+      projectSourceFiles.value.map((e) => e.id).toList().indexOf(imageId);
+
+  if (index <= 0) {
+    return null;
+  }
+
+  return projectSourceFiles.value[index - 1].id;
+}
+
+String? getNexImageId() {
+  if (projectSourceFiles.value.isEmpty) return null;
+
+  final imageId = selectedImage.value?.isNotEmpty == true
+      ? selectedImage.value!.first
+      : projectSourceFiles.value.first.id;
+
+  final index =
+      projectSourceFiles.value.map((e) => e.id).toList().indexOf(imageId);
+
+  if (index >= projectSourceFiles.value.length - 1) {
+    return projectSourceFiles.value.first.id;
+  }
+
+  return projectSourceFiles.value[index + 1].id;
 }
