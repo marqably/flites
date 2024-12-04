@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:signals/signals_flutter.dart';
 
 import '../controls/checkbox_button.dart';
+import '../image_editor/image_editor.dart';
 
 class CanvasControls extends StatelessWidget {
   const CanvasControls({super.key});
@@ -28,8 +29,12 @@ class CanvasControls extends StatelessWidget {
               text: 'Use Previos Frame as Reference',
               value: usePreviousImageAsReference,
             ),
+            CheckboxButton(
+              text: 'Show bounding border',
+              value: showBoundingBorderSignal,
+            ),
             if (currentImage != null)
-              ElevatedButton(
+              TextButton(
                 onPressed: currentImage.originalScalingFactor != null &&
                         !currentImage.isAtOriginalSize
                     ? () {
@@ -39,7 +44,7 @@ class CanvasControls extends StatelessWidget {
                 child: const Text('Reset to original scaling'),
               ),
             if (projectSourceFiles.value.length > 1)
-              ElevatedButton(
+              TextButton(
                 onPressed: () {
                   final images = [...projectSourceFiles.value];
 

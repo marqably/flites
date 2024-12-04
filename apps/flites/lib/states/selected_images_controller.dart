@@ -33,4 +33,8 @@ class SelectedImagesController {
 
     selectedImage.value = currentSelection;
   }
+
+  void clearSelection() {
+    selectedImage.value = [];
+  }
 }

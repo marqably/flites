@@ -32,58 +32,64 @@ class _ProjectFileListVerticalState extends State<ProjectFileListVertical> {
         //           'No files added yet. Drag and drop files anywhere on this page.'));
         // }
 
-        return Container(
-          width: 300,
-          color: Colors.white,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: const Row(
-                  children: [
-                    Image(
-                      height: 64,
-                      image: AssetImage('assets/images/flites_logo.png'),
-                    ),
-                    SizedBox(width: 32),
-                    Text(
-                      'Flites',
-                      style: TextStyle(fontSize: 24),
-                    ),
-                  ],
+        return GestureDetector(
+          onTap: () {
+            SelectedImagesController().clearSelection();
+          },
+          child: Container(
+            width: 300,
+            color: Colors.white,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.all(16),
+                  child: Row(
+                    children: [
+                      Image(
+                        height: 64,
+                        image: AssetImage('assets/images/flites_logo.png'),
+                      ),
+                      SizedBox(width: 32),
+                      Text(
+                        'Flites',
+                        style: TextStyle(fontSize: 24),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              Expanded(
-                child: ReorderableListView(
-                  buildDefaultDragHandles: false,
-                  scrollDirection: Axis.vertical,
-                  scrollController: _scrollController,
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  children: projectSourceFiles.value.map((file) {
-                    i++;
-                    return FileItem(
-                      file: file,
-                      key: Key('file-$i'),
-                    );
-                  }).toList(),
-                  onReorder: (oldIndex, newIndex) {
-                    if (oldIndex < newIndex) {
-                      newIndex -= 1;
-                    }
+                Expanded(
+                  child: ReorderableListView(
+                    buildDefaultDragHandles: false,
+                    scrollDirection: Axis.vertical,
+                    scrollController: _scrollController,
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    children: projectSourceFiles.value.map((file) {
+                      i++;
+                      return FileItem(
+                        file: file,
+                        key: Key('file-$i'),
+                      );
+                    }).toList(),
+                    onReorder: (oldIndex, newIndex) {
+                      if (oldIndex < newIndex) {
+                        newIndex -= 1;
+                      }
 
-                    final currentImages = List<FlitesImage>.from(projectSourceFiles
-                        .value); // TODO(Simon): I think we need to clone this list, no? The following code, especially the setting of the value again, looks like it's already working under the assumption that we have to clone.
+                      final currentImages = List<FlitesImage>.from(
+                          projectSourceFiles
+                              .value); // TODO(Simon): I think we need to clone this list, no? The following code, especially the setting of the value again, looks like it's already working under the assumption that we have to clone.
 
-                    // reorder
-                    final image = currentImages.removeAt(oldIndex);
-                    currentImages.insert(newIndex, image);
+                      // reorder
+                      final image = currentImages.removeAt(oldIndex);
+                      currentImages.insert(newIndex, image);
 
-                    projectSourceFiles.value = currentImages;
-                  },
+                      projectSourceFiles.value = currentImages;
+                    },
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         );
       },
@@ -166,9 +172,14 @@ class _FileItemState extends State<FileItem> {
                   height: 48,
                 ),
                 if (widget.file.name != null)
-                  Padding(
-                    padding: const EdgeInsets.only(left: 24),
-                    child: Text(widget.file.name!),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 24),
+                      child: Text(
+                        widget.file.name!,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
                   ),
                 const Spacer(),
                 if (isHovered)

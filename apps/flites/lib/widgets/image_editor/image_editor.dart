@@ -4,8 +4,8 @@ import 'package:signals/signals_flutter.dart';
 
 import '../../states/open_project.dart';
 import '../../utils/get_flite_image.dart';
-import '../canvas_controls/canvas_controls.dart';
-import '../player/player.dart';
+
+final showBoundingBorderSignal = signal(false);
 
 class ImageEditor extends StatefulWidget {
   const ImageEditor({
@@ -34,6 +34,7 @@ class _ImageEditorState extends State<ImageEditor> {
           final canvasScalingFactor = constraints.maxWidth;
 
           return Watch((context) {
+            final showBoundingBorder = showBoundingBorderSignal.value;
             final currentImages = getSelectedImages();
 
             final referenceImage = getFliteImage(selectedReferenceImage.value);
@@ -101,7 +102,9 @@ class _ImageEditorState extends State<ImageEditor> {
                 },
                 child: Stack(
                   children: [
-                    if (boundingBox != null && currentImages.isNotEmpty)
+                    if (boundingBox != null &&
+                        currentImages.isNotEmpty &&
+                        showBoundingBorder)
                       Positioned(
                         left: boundingBox.position.dx * canvasScalingFactor,
                         top: boundingBox.position.dy * canvasScalingFactor,
