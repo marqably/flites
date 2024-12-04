@@ -122,7 +122,7 @@ class _FileItemState extends State<FileItem> {
         onEnter: (event) => isHoveredState.value = true,
         onExit: (event) => isHoveredState.value = false,
         child: Container(
-          margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+          margin: const EdgeInsets.symmetric(vertical: 2, horizontal: 8),
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8),

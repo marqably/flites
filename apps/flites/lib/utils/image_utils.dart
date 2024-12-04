@@ -1,7 +1,10 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui';
 
+import 'package:file_picker/file_picker.dart';
+import 'package:flites/widgets/image_editor/image_editor.dart';
 import 'package:super_drag_and_drop/super_drag_and_drop.dart';
 
 class ImageUtils {
@@ -58,9 +61,12 @@ class ImageUtils {
   }
 
   static Offset getCenteredCoordinatesForPicture(Size size) {
+    final currentCanvasSize = canvasSizePixelSignal.value;
+    final canvasScalingFactor = canvasScalingFactorSignal.value;
+
     return Offset(
-      (1 - size.width) / 2,
-      (1 - size.height) / 2,
+      (((currentCanvasSize.width / canvasScalingFactor) - size.width) / 2),
+      (((currentCanvasSize.height / canvasScalingFactor) - size.height) / 2),
     );
   }
 
@@ -101,6 +107,14 @@ class ImageUtils {
     }
 
     return RawImageAndName(image: rawImage, name: name);
+  }
+
+  static Future<RawImageAndName?> rawImageFroMPlatformFile(
+    PlatformFile item,
+  ) async {
+    final bytes = await File(item.path!).readAsBytes();
+
+    return RawImageAndName(image: bytes, name: item.name);
   }
 }
 

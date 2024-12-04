@@ -41,6 +41,8 @@ dependencies:
   flutter_reorderable_grid_view: ^5.3.2
   image: ^4.3.0
   file_saver: ^0.2.14
+  flutter_box_transform: ^0.4.6
+  file_picker: ^8.1.4
 
 dev_dependencies:
   flutter_test:

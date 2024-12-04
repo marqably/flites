@@ -1,13 +1,14 @@
 import 'dart:math';
 import 'dart:typed_data';
 import 'package:flites/utils/image_utils.dart';
+import 'package:flites/widgets/image_editor/image_editor.dart';
 import 'package:flutter/material.dart';
 
 import '../states/open_project.dart';
 
 /// The size a picture should have along its longer side when displayed on the
 /// canvas
-const defaultSizeOnCanvas = 0.3;
+const defaultSizeOnCanvas = 0.5;
 
 /// A working file type we use to work with this image
 class FlitesImage {
@@ -52,26 +53,27 @@ class FlitesImage {
 
   // EdgeInsets margin = const EdgeInsets.all(0);
 
-  FlitesImage(
-    Uint8List rawImage, {
-    this.name,
-  }) {
-    image = rawImage;
-    widthOnCanvas = ImageUtils.getCanvasWidthOfRawImage(
-      rawImage,
-      sizeLongerSideOnCanvas: defaultSizeOnCanvas,
-    );
+  // FlitesImage(
+  //   Uint8List rawImage, {
+  //   this.name,
+  // }) {
+  //   image = rawImage;
 
-    final initialCoordinates = ImageUtils.getCenteredCoordinatesForPicture(
-      Size(widthOnCanvas, heightOnCanvas),
-    );
+  //   widthOnCanvas = ImageUtils.getCanvasWidthOfRawImage(
+  //     rawImage,
+  //     sizeLongerSideOnCanvas: defaultSizeOnCanvas,
+  //   );
 
-    positionOnCanvas = Offset(initialCoordinates.dx, initialCoordinates.dy);
+  //   final initialCoordinates = ImageUtils.getCenteredCoordinatesForPicture(
+  //     Size(widthOnCanvas, heightOnCanvas),
+  //   );
 
-    // generate a random id to identify this image
-    id =
-        '${DateTime.now().millisecondsSinceEpoch}-${0 + Random().nextInt(14000)}-${0 + Random().nextInt(15000)}';
-  }
+  //   positionOnCanvas = Offset(initialCoordinates.dx, initialCoordinates.dy);
+
+  //   // generate a random id to identify this image
+  //   id =
+  //       '${DateTime.now().millisecondsSinceEpoch}-${0 + Random().nextInt(14000)}-${0 + Random().nextInt(15000)}';
+  // }
 
   FlitesImage.scaled(
     Uint8List rawImage, {
@@ -82,12 +84,18 @@ class FlitesImage {
 
     originalScalingFactor = scalingFactor;
 
-    widthOnCanvas = ImageUtils.sizeOfRawImage(rawImage).width * scalingFactor;
-    final zzz = widthOnCanvas;
+    final currentCanvasSize = canvasSizePixelSignal.value;
+    final canvasScalingFactor = canvasScalingFactorSignal.value;
+
+    widthOnCanvas = ImageUtils.sizeOfRawImage(rawImage).width *
+        scalingFactor *
+        (currentCanvasSize.width / canvasScalingFactor);
 
     final initialCoordinates = ImageUtils.getCenteredCoordinatesForPicture(
       Size(widthOnCanvas, heightOnCanvas),
     );
+
+    print('initialCoordinates: $initialCoordinates');
 
     positionOnCanvas = Offset(initialCoordinates.dx, initialCoordinates.dy);
 
@@ -96,14 +104,14 @@ class FlitesImage {
         '${DateTime.now().millisecondsSinceEpoch}-${0 + Random().nextInt(14000)}-${0 + Random().nextInt(15000)}';
   }
 
-  void resetScaling() {
-    if (originalScalingFactor == null) return;
+  // void resetScaling() {
+  //   if (originalScalingFactor == null) return;
 
-    widthOnCanvas =
-        ImageUtils.sizeOfRawImage(image).width * originalScalingFactor!;
+  //   widthOnCanvas =
+  //       ImageUtils.sizeOfRawImage(image).width * originalScalingFactor!;
 
-    saveChanges();
-  }
+  //   saveChanges();
+  // }
 
   // /// tries to initialize the image object. If not possible, throws an exception
   // void initImage(Uint8List rawImage) {

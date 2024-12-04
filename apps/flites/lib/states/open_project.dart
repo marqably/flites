@@ -13,8 +13,8 @@ final selectedImage = signal<List<String>>([]);
 /// The reference image is used as a background in the image editor to make sure we can align the images correctly
 final selectedReferenceImage = signal<String?>(null);
 
-/// Wether scaling images in the editor is enabled or not
-final enableScaling = signal<bool>(true);
+// / Wether scaling images in the editor is enabled or not
+// final enableScaling = signal<bool>(true);
 
 /// If the previous image should be used as reference when opening a new image
 final usePreviousImageAsReference = signal<bool>(true);

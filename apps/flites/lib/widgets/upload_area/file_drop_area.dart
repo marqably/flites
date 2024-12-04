@@ -38,7 +38,7 @@ class _FileDropAreaState extends State<FileDropArea> {
     return DropRegion(
       // Formats this region can accept.
       formats: supportedFormats,
-      hitTestBehavior: HitTestBehavior.opaque,
+      hitTestBehavior: HitTestBehavior.deferToChild,
       onDropOver: (event) {
         // You can inspect local data here, as well as formats of each item.
         // However on certain platforms (mobile / web) the actual data is
@@ -100,7 +100,7 @@ class _FileDropAreaState extends State<FileDropArea> {
         //   }
         // }
 
-        if (imagesAndNames.length >= 2) {
+        if (imagesAndNames.isNotEmpty) {
           final scalingFactor = ImageUtils.getScalingFactorForMultipleImages(
             images: imagesAndNames.map((e) => e.image!).toList(),
             sizeLongestSideOnCanvas: defaultSizeOnCanvas,
@@ -124,20 +124,20 @@ class _FileDropAreaState extends State<FileDropArea> {
             ];
           }
 
-          return;
+          // return;
         }
 
-        if (imagesAndNames.length == 1) {
-          final flitesImage = FlitesImage(imagesAndNames.first.image!,
-              name: imagesAndNames.first.name);
+        // if (imagesAndNames.length == 1) {
+        //   final flitesImage = FlitesImage(imagesAndNames.first.image!,
+        //       name: imagesAndNames.first.name);
 
-          projectSourceFiles.value = [
-            ...projectSourceFiles.value,
-            flitesImage,
-          ];
+        //   projectSourceFiles.value = [
+        //     ...projectSourceFiles.value,
+        //     flitesImage,
+        //   ];
 
-          return;
-        }
+        //   return;
+        // }
       },
 
       child: widget.child,

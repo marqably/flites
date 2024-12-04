@@ -1,12 +1,10 @@
+import 'package:flites/widgets/blocking_widget/blocking_container.dart';
 import 'package:flites/widgets/canvas_controls/canvas_controls.dart';
 import 'package:flites/widgets/image_editor/image_editor.dart';
 import 'package:flites/widgets/project_file_list/project_file_list_vertical.dart';
-import 'package:flites/widgets/toolbar/image_size_settings.dart';
 import 'package:flutter/material.dart';
 import '../states/key_events.dart';
 import '../widgets/player/player.dart';
-import '../widgets/project_file_list/project_file_list.dart';
-import '../widgets/toolbar/toolbar.dart';
 import '../widgets/upload_area/file_drop_area.dart';
 
 class Overview extends StatefulWidget {
@@ -28,21 +26,22 @@ class _OverviewState extends State<Overview> {
   Widget build(BuildContext context) {
     return const FileDropArea(
         child: Stack(
-      alignment: Alignment.center,
+      alignment: Alignment.bottomCenter,
       children: [
-        ImageEditor(),
-        Align(
-          alignment: Alignment.centerLeft,
-          child: ProjectFileListVertical(),
+        Row(
+          children: [
+            ProjectFileListVertical(),
+            Expanded(
+              child: ImageEditor(),
+            ),
+            CanvasControls()
+          ],
         ),
+        BlockingContainer(),
         Positioned(
           bottom: 64,
-          child: Player(),
+          child: PlayerControls(),
         ),
-        Align(
-          alignment: AlignmentDirectional.centerEnd,
-          child: CanvasControls(),
-        )
       ],
     )
 

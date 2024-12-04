@@ -6,21 +6,21 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:signals/signals_flutter.dart';
 
-final isPlaying = signal(false);
+final isPlayingSignal = signal(false);
 
 const _defaultPlaybackSpeed = 300.0;
 
 // In ms
 final playbackSpeed = signal<double>(_defaultPlaybackSpeed);
 
-class Player extends StatefulWidget {
-  const Player({super.key});
+class PlayerControls extends StatefulWidget {
+  const PlayerControls({super.key});
 
   @override
-  State<Player> createState() => _PlayerState();
+  State<PlayerControls> createState() => _PlayerControlsState();
 }
 
-class _PlayerState extends State<Player> {
+class _PlayerControlsState extends State<PlayerControls> {
   Timer? activePlayback;
 
   @override
@@ -75,7 +75,7 @@ class _PlayerState extends State<Player> {
       child: Watch(
         (context) {
           final hasMultipleImages = projectSourceFiles.value.length > 1;
-          final currentlyPlaying = isPlaying.value;
+          final currentlyPlaying = isPlayingSignal.value;
 
           return Row(
             children: [
@@ -99,7 +99,7 @@ class _PlayerState extends State<Player> {
               IconButton(
                 onPressed: hasMultipleImages
                     ? () {
-                        isPlaying.value = !currentlyPlaying;
+                        isPlayingSignal.value = !currentlyPlaying;
 
                         if (currentlyPlaying) {
                           stopPlayback();
