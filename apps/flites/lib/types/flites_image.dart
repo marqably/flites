@@ -14,7 +14,8 @@ const defaultSizeOnCanvas = 0.5;
 class FlitesImage {
   late Uint8List image;
   late String id;
-  String? name;
+  String? displayName;
+  String? originalName;
 
   // The original size of the image
   @Deprecated('Should not be needed in future')
@@ -78,8 +79,8 @@ class FlitesImage {
   FlitesImage.scaled(
     Uint8List rawImage, {
     required double scalingFactor,
-    this.name,
-  }) {
+    this.originalName,
+  }) : this.displayName = originalName {
     image = rawImage;
 
     originalScalingFactor = scalingFactor;

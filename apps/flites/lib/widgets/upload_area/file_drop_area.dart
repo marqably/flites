@@ -116,7 +116,7 @@ class _FileDropAreaState extends State<FileDropArea> {
 
           for (final img in imagesAndNames) {
             final flitesImage = FlitesImage.scaled(img.image!,
-                scalingFactor: scalingFactor, name: img.name);
+                scalingFactor: scalingFactor, originalName: img.name);
 
             projectSourceFiles.value = [
               ...projectSourceFiles.value,
