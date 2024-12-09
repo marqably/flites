@@ -123,6 +123,8 @@ class GenerateSprite {
     final compositeImage = img.Image(
       width: width * images.length,
       height: height,
+      numChannels: 4,
+      format: img.Format.uint8,
     );
 
     for (int i = 0; i < images.length; i++) {
@@ -137,13 +139,17 @@ class GenerateSprite {
 
     final file = img.encodePng(compositeImage);
 
-    // save the file
+    // // save the file
     await FileSaver.instance.saveFile(
       name: 'sprite',
       bytes: file,
       ext: 'png',
       mimeType: MimeType.png,
     );
+
+    // File myFile = File('~/Downloads/test-sprite.png');
+
+    // await myFile.writeAsBytes(file);
   }
 
   static List<img.Image> separateSpriteImages(
@@ -171,11 +177,6 @@ class GenerateSprite {
     final List<img.Image> images = [];
 
     final frameSize = sizeOfFrame(boundingBox.size, settings);
-    print('Frame size: $frameSize');
-
-    print('Bounding Box size: ${boundingBox.size}');
-
-    print('Constraints Size: $constraints');
 
     for (final fliteImage in fliteImages) {
       final decodedImage = img.decodeImage(fliteImage.image);
@@ -184,12 +185,6 @@ class GenerateSprite {
         continue;
       }
 
-      print('Decoded an image');
-
-      print(' decodedImage.width: ${decodedImage.width}');
-
-      print('Total Width: ${fliteImage.widthOnCanvas * scalingFactor}');
-
       // Sprite scaled to correct size
       final scaledImage = img.copyResize(
         decodedImage,
@@ -197,19 +192,17 @@ class GenerateSprite {
         height: (fliteImage.heightOnCanvas * scalingFactor).toInt(),
       );
 
-      print('Scaled an image');
-
       // Blank canvas
       final canvas = img.Image(
         width: frameSize.width.toInt(),
         height: frameSize.height.toInt(),
+        numChannels: 4,
+        format: img.Format.uint8,
       );
 
-      print('Canvas size: ${canvas.width} x ${canvas.height}');
       final offset =
           (fliteImage.positionOnCanvas - boundingBox.position) * scalingFactor;
 
-      print('Offset: ${offset.dx} x ${offset.dy}');
       final frame = img.compositeImage(
         canvas,
         scaledImage,
@@ -217,12 +210,8 @@ class GenerateSprite {
         dstY: offset.dy.toInt(),
       );
 
-      print('Composited an image');
-
       images.add(frame);
     }
-
-    print('Returning images');
 
     return images;
   }
@@ -339,15 +328,7 @@ class GenerateSprite {
 
     final range = lastPoint - firstPoint;
 
-    print('First point: $firstPoint');
-    print('Last point: $lastPoint');
-    print('Range: $range');
-
     final scalingFactor = length / range;
-
-    print('Length: $length');
-
-    print('Scaling factor: $scalingFactor');
 
     return scalingFactor;
   }
