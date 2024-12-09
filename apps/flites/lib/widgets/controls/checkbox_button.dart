@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:signals/signals_flutter.dart';
 
@@ -19,21 +18,31 @@ class CheckboxButton extends StatelessWidget {
     return Watch((context) {
       final isChecked = value.value;
 
-      return CupertinoButton(
-        onPressed: () {
+      return InkWell(
+        onTap: () {
           onPressed?.call();
 
           value.value = !isChecked;
         },
-        child: Row(
-          children: [
-            Icon(isChecked ? Icons.check_circle : Icons.circle_outlined),
-            const SizedBox(width: 8),
-            Text(
-              text,
-              style: Theme.of(context).textTheme.labelLarge,
-            ),
-          ],
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 6),
+          child: Row(
+            children: [
+              Icon(
+                isChecked ? Icons.check_circle : Icons.circle_outlined,
+                color: const Color.fromARGB(255, 27, 27, 27),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  text,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.labelLarge,
+                ),
+              ),
+            ],
+          ),
         ),
       );
     });

@@ -1,8 +1,12 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flites/states/key_events.dart';
 import 'package:flites/states/open_project.dart';
 import 'package:flites/states/selected_images_controller.dart';
 import 'package:flites/types/flites_image.dart';
 import 'package:flites/utils/get_flite_image.dart';
+import 'package:flites/utils/image_utils.dart';
+import 'package:flites/widgets/buttons/icon_text_button.dart';
+import 'package:flites/widgets/upload_area/file_drop_area.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:signals/signals_flutter.dart';
@@ -40,51 +44,112 @@ class _ProjectFileListVerticalState extends State<ProjectFileListVertical> {
             width: 300,
             color: Colors.white,
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const Padding(
                   padding: EdgeInsets.all(16),
                   child: Row(
                     children: [
-                      Image(
-                        height: 64,
-                        image: AssetImage('assets/images/flites_logo.png'),
-                      ),
-                      SizedBox(width: 32),
+                      // Image(
+                      //   height: 64,
+                      //   image: AssetImage('assets/images/flites_logo.png'),
+                      // ),
+                      // SizedBox(width: 32),
                       Text(
                         'Flites',
-                        style: TextStyle(fontSize: 24),
+                        style: TextStyle(
+                          fontSize: 36,
+                          fontWeight: FontWeight.w800,
+                        ),
                       ),
                     ],
                   ),
                 ),
-                Expanded(
-                  child: ReorderableListView(
-                    buildDefaultDragHandles: false,
-                    scrollDirection: Axis.vertical,
-                    scrollController: _scrollController,
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    children: projectSourceFiles.value.map((file) {
-                      i++;
-                      return FileItem(
-                        file: file,
-                        key: Key('file-$i'),
+                SizedBox(height: 16),
+                ReorderableListView(
+                  buildDefaultDragHandles: false,
+                  scrollDirection: Axis.vertical,
+                  shrinkWrap: true,
+                  scrollController: _scrollController,
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  children: projectSourceFiles.value.map((file) {
+                    i++;
+                    return FileItem(
+                      file: file,
+                      key: Key('file-$i'),
+                    );
+                  }).toList(),
+                  onReorder: (oldIndex, newIndex) {
+                    if (oldIndex < newIndex) {
+                      newIndex -= 1;
+                    }
+
+                    final currentImages = List<FlitesImage>.from(projectSourceFiles
+                        .value); // TODO(Simon): I think we need to clone this list, no? The following code, especially the setting of the value again, looks like it's already working under the assumption that we have to clone.
+
+                    // reorder
+                    final image = currentImages.removeAt(oldIndex);
+                    currentImages.insert(newIndex, image);
+
+                    projectSourceFiles.value = currentImages;
+                  },
+                ),
+                const SizedBox(height: 32),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 16),
+                  child: IconTextButton(
+                    icon: Icons.add,
+                    text: 'Add Images',
+                    onPressed: () async {
+                      print('### on tap');
+                      FilePickerResult? result =
+                          await FilePicker.platform.pickFiles(
+                        allowMultiple: true,
+                        withData: true,
+                        type: FileType.custom,
+                        allowedExtensions: ['png'],
                       );
-                    }).toList(),
-                    onReorder: (oldIndex, newIndex) {
-                      if (oldIndex < newIndex) {
-                        newIndex -= 1;
+
+                      if (result == null) {
+                        return;
                       }
 
-                      final currentImages = List<FlitesImage>.from(
-                          projectSourceFiles
-                              .value); // TODO(Simon): I think we need to clone this list, no? The following code, especially the setting of the value again, looks like it's already working under the assumption that we have to clone.
+                      final imagesAndNames = (await Future.wait(result.files
+                              .map(ImageUtils.rawImageFroMPlatformFile)))
+                          .whereType<RawImageAndName>()
+                          .where((e) => e.image != null && isPng(e.image!))
+                          .toList();
 
-                      // reorder
-                      final image = currentImages.removeAt(oldIndex);
-                      currentImages.insert(newIndex, image);
+                      if (imagesAndNames.isNotEmpty) {
+                        final scalingFactor =
+                            ImageUtils.getScalingFactorForMultipleImages(
+                          images: imagesAndNames.map((e) => e.image!).toList(),
+                          sizeLongestSideOnCanvas: defaultSizeOnCanvas,
+                        );
 
-                      projectSourceFiles.value = currentImages;
+                        imagesAndNames.sort((a, b) {
+                          if (a.name != null && b.name != null) {
+                            return a.name!.compareTo(b.name!);
+                          }
+
+                          print('### 1');
+
+                          return 0;
+                        });
+
+                        print('### 2');
+
+                        for (final img in imagesAndNames) {
+                          final flitesImage = FlitesImage.scaled(img.image!,
+                              scalingFactor: scalingFactor,
+                              originalName: img.name);
+
+                          projectSourceFiles.value = [
+                            ...projectSourceFiles.value,
+                            flitesImage,
+                          ];
+                        }
+                      }
                     },
                   ),
                 ),
@@ -168,38 +233,45 @@ class _FileItemState extends State<FileItem> {
                 Image.memory(
                   widget.file.image,
                   fit: BoxFit.contain,
-                  width: 48,
-                  height: 48,
+                  width: 24,
+                  height: 24,
                 ),
-                if (widget.file.name != null)
+                if (widget.file.displayName != null)
                   Expanded(
                     child: Padding(
-                      padding: const EdgeInsets.only(left: 24),
+                      padding: const EdgeInsets.only(left: 24, right: 16),
                       child: Text(
-                        widget.file.name!,
+                        widget.file.displayName!,
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
                   ),
-                const Spacer(),
                 if (isHovered)
-                  IconButton(
-                    onPressed: () {
-                      projectSourceFiles.value = [...projectSourceFiles.value]
-                        ..removeWhere((e) => e.id == widget.file.id);
-                    },
-                    icon: const Icon(Icons.delete),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 16),
+                    child: InkWell(
+                      onTap: () {
+                        projectSourceFiles.value = [...projectSourceFiles.value]
+                          ..removeWhere((e) => e.id == widget.file.id);
+                      },
+                      child: const Icon(Icons.delete, size: 16),
+                    ),
                   ),
                 if (isCurrentReferenceImage || isHovered)
-                  IconButton(
-                      onPressed: () {
+                  Padding(
+                    padding: const EdgeInsets.only(left: 16),
+                    child: InkWell(
+                      onTap: () {
                         selectedReferenceImage.value =
                             isCurrentReferenceImage ? null : widget.file.id;
                       },
-                      icon: const Icon(
+                      child: const Icon(
                         CupertinoIcons.eye_solid,
+                        size: 16,
                         // color: Colors.grey,
-                      ))
+                      ),
+                    ),
+                  ),
               ],
             ),
           ),

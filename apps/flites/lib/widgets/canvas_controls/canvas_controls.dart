@@ -1,14 +1,13 @@
-import 'package:file_picker/file_picker.dart';
 import 'package:flites/states/open_project.dart';
-import 'package:flites/types/flites_image.dart';
 import 'package:flites/utils/generate_sprite.dart';
 import 'package:flites/utils/get_flite_image.dart';
-import 'package:flites/utils/image_utils.dart';
-import 'package:flites/widgets/upload_area/file_drop_area.dart';
+import 'package:flites/widgets/buttons/stadium_button.dart';
 import 'package:flutter/material.dart';
 import 'package:signals/signals_flutter.dart';
 
+import '../buttons/icon_text_button.dart';
 import '../controls/checkbox_button.dart';
+import '../controls/control_header.dart';
 import '../image_editor/image_editor.dart';
 
 class CanvasControls extends StatelessWidget {
@@ -19,13 +18,16 @@ class CanvasControls extends StatelessWidget {
     return Container(
       color: Colors.white,
       width: 300,
+      padding: const EdgeInsets.all(16),
       child: Watch((context) {
         final currentImage = getCurrentSingularSelection();
 
         print('currentImage: $currentImage');
 
         return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            ControlHeader(text: 'Canvas Controls'),
             CheckboxButton(
               text: 'Use Previos Frame as Reference',
               value: usePreviousImageAsReference,
@@ -34,97 +36,67 @@ class CanvasControls extends StatelessWidget {
               text: 'Show bounding border',
               value: showBoundingBorderSignal,
             ),
-            TextButton(
-              onPressed: () async {
-                FilePickerResult? result = await FilePicker.platform.pickFiles(
-                  allowMultiple: true,
-                  withData: true,
-                  type: FileType.custom,
-                  allowedExtensions: ['png'],
-                );
 
-                if (result == null) {
-                  return;
-                }
-
-                final imagesAndNames = (await Future.wait(
-                        result.files.map(ImageUtils.rawImageFroMPlatformFile)))
-                    .whereType<RawImageAndName>()
-                    .where((e) => e.image != null && isPng(e.image!))
-                    .toList();
-
-                if (imagesAndNames.isNotEmpty) {
-                  final scalingFactor =
-                      ImageUtils.getScalingFactorForMultipleImages(
-                    images: imagesAndNames.map((e) => e.image!).toList(),
-                    sizeLongestSideOnCanvas: defaultSizeOnCanvas,
-                  );
-
-                  imagesAndNames.sort((a, b) {
-                    if (a.name != null && b.name != null) {
-                      return a.name!.compareTo(b.name!);
-                    }
-
-                    print('### 1');
-
-                    return 0;
-                  });
-
-                  print('### 2');
-
-                  for (final img in imagesAndNames) {
-                    final flitesImage = FlitesImage.scaled(img.image!,
-                        scalingFactor: scalingFactor, name: img.name);
-
-                    projectSourceFiles.value = [
-                      ...projectSourceFiles.value,
-                      flitesImage,
-                    ];
-                  }
-                }
-              },
-              child: const Text('Import Files'),
-            ),
-
-            // if (currentImage != null)
-            //   TextButton(
-            //     onPressed: currentImage.originalScalingFactor != null &&
-            //             !currentImage.isAtOriginalSize
-            //         ? () {
-            //             currentImage.resetScaling();
-            //           }
-            //         : null,
-            //     child: const Text('Reset to original scaling'),
-            //   ),
-            if (projectSourceFiles.value.length > 1)
-              TextButton(
-                onPressed: () {
-                  final images = [...projectSourceFiles.value];
-
-                  images.sort((a, b) {
-                    if (a.name != null && b.name != null) {
-                      return a.name!.compareTo(b.name!);
-                    }
-
-                    return 0;
-                  });
-
-                  projectSourceFiles.value = images;
-                },
-                child: const Text('Order by name'),
-              ),
-            const Spacer(),
-            const Divider(),
-            const SizedBox(
-              height: 200,
-              child: Text('Export Settings'),
-            ),
-            TextButton(
+            const SizedBox(height: 32),
+            // if (projectSourceFiles.value.length > 1) ...[
+            ControlHeader(text: 'Image Controls'),
+            IconTextButton(
               onPressed: () {
-                GenerateSprite.exportSprite(
-                    ExportSettings.widthConstrained(widthPx: 620));
+                final images = [...projectSourceFiles.value];
+
+                images.sort((a, b) {
+                  if (a.displayName != null && b.displayName != null) {
+                    return a.displayName!.compareTo(b.displayName!);
+                  }
+
+                  return 0;
+                });
+
+                projectSourceFiles.value = images;
               },
-              child: const Text('Export Image'),
+              text: 'Sort by name',
+            ),
+            IconTextButton(
+              onPressed: () {
+                final images = [...projectSourceFiles.value];
+
+                for (int i = 1; i <= images.length; i++) {
+                  final img = images[i - 1];
+                  img.displayName = 'frame_$i.png';
+                }
+
+                projectSourceFiles.value = images;
+              },
+              text: 'Rename Files according to order',
+            ),
+            IconTextButton(
+              onPressed: () {
+                final images = [...projectSourceFiles.value];
+
+                for (int i = 1; i <= images.length; i++) {
+                  final img = images[i - 1];
+                  img.displayName = img.originalName;
+                }
+
+                projectSourceFiles.value = images;
+              },
+              text: 'Reset Names',
+            ),
+            // ],
+            const Spacer(),
+            // const Divider(),
+            // const SizedBox(
+            //   height: 200,
+            //   child: Text('Export Settings'),
+            // ),
+            Center(
+              child: StadiumButton(
+                text: 'Export Sprite',
+                onPressed: () {
+                  GenerateSprite.exportSprite(
+                      ExportSettings.widthConstrained(widthPx: 620));
+                },
+              ),
             ),
           ],
         );
