@@ -179,7 +179,7 @@ class _FileItemState extends State<FileItem> {
     return Watch((context) {
       final isHovered = isHoveredState.value;
 
-      final isCurrentlySelected = selectedImage.value.contains(widget.file.id);
+      final isCurrentlySelected = selectedImage.value == widget.file.id;
       final isCurrentReferenceImage =
           selectedReferenceImage.value == widget.file.id;
 
@@ -215,11 +215,11 @@ class _FileItemState extends State<FileItem> {
                 }
               }
 
-              if (modifierSignal.value.isMainPressed) {
-                SelectedImagesController().toggleImageSelection(widget.file.id);
-              } else {
-                SelectedImagesController().toggleSingle(widget.file.id);
-              }
+              // if (modifierSignal.value.isMainPressed) {
+              //   SelectedImagesController().toggleImageSelection(widget.file.id);
+              // } else {
+              SelectedImagesController().toggleSingle(widget.file.id);
+              // }
             },
             onDoubleTap: () {
               if (selectedReferenceImage.value != widget.file.id) {

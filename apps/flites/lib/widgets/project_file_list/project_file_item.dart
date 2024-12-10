@@ -1,9 +1,7 @@
-import 'package:flites/states/key_events.dart';
 import 'package:flites/states/selected_images_controller.dart';
 import 'package:flites/types/flites_image.dart';
 import 'package:flites/utils/get_flite_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:signals/signals_flutter.dart';
 
 import '../../states/open_project.dart';
@@ -22,7 +20,7 @@ class ProjectFileItem extends StatelessWidget {
     return Watch((context) {
       final isHovered = isHoveredState.value;
 
-      final isCurrentlySelected = selectedImage.value.contains(file.id);
+      final isCurrentlySelected = selectedImage.value == file.id;
       final isCurrentReferenceImage = selectedReferenceImage.value == file.id;
 
       return Container(
@@ -64,11 +62,11 @@ class ProjectFileItem extends StatelessWidget {
                 }
               }
 
-              if (modifierSignal.value.isMainPressed) {
-                SelectedImagesController().toggleImageSelection(file.id);
-              } else {
-                SelectedImagesController().toggleSingle(file.id);
-              }
+              // if (modifierSignal.value.isMainPressed) {
+              //   SelectedImagesController().toggleImageSelection(file.id);
+              // } else {
+              SelectedImagesController().toggleSingle(file.id);
+              // }
             },
             onDoubleTap: () {
               if (selectedReferenceImage.value != file.id) {

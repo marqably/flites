@@ -1,8 +1,11 @@
+import 'dart:convert';
+
 import 'package:flites/states/key_events.dart';
 import 'package:flites/states/selected_images_controller.dart';
+import 'package:flites/widgets/canvas_controls/canvas_controls.dart';
+import 'package:flites/widgets/rotation/rotation_wrapper.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_box_transform/flutter_box_transform.dart';
 import 'package:signals/signals_flutter.dart';
 
 import '../../states/open_project.dart';
@@ -36,9 +39,11 @@ class _ImageEditorState extends State<ImageEditor> {
         return Watch((context) {
           canvasSizePixelSignal.value = constraints.biggest;
           final showBoundingBorder = showBoundingBorderSignal.value;
+
           final canvasScalingFactor =
               canvasScalingFactorSignal.value; // constraints.maxWidth;
-          final currentImages = getSelectedImages();
+
+          final currentSelection = getFliteImage(selectedImage.value);
 
           final canvasPosition = canvasPositionSignal.value;
 
@@ -48,11 +53,24 @@ class _ImageEditorState extends State<ImageEditor> {
 
           final isMainModifierPressed = modifierSignal.value.isMainPressed;
 
+          final rotationAngle = rotationSignal.value ?? 0;
+
+          final selectedImageRect = currentSelection != null
+              ? Rect.fromLTWH(
+                  (currentSelection.positionOnCanvas.dx * canvasScalingFactor) +
+                      canvasPosition.dx,
+                  (currentSelection.positionOnCanvas.dy * canvasScalingFactor) +
+                      canvasPosition.dy,
+                  (currentSelection.widthOnCanvas * canvasScalingFactor).abs(),
+                  (currentSelection.heightOnCanvas * canvasScalingFactor).abs(),
+                )
+              : Rect.zero;
+
           return Listener(
             behavior: HitTestBehavior.opaque,
             onPointerSignal: (pointerSignal) {
               if (pointerSignal is PointerMoveEvent) {
-                if (currentImages.isEmpty) {
+                if (currentSelection == null) {
                   return;
                 }
 
@@ -145,9 +163,7 @@ class _ImageEditorState extends State<ImageEditor> {
                   ),
 
                   // Bounding Box
-                  if (boundingBox != null &&
-                      currentImages.isNotEmpty &&
-                      showBoundingBorder)
+                  if (boundingBox != null && showBoundingBorder)
                     Positioned(
                       left: (boundingBox.position.dx * canvasScalingFactor) +
                           canvasPosition.dx,
@@ -168,9 +184,7 @@ class _ImageEditorState extends State<ImageEditor> {
 
                   // reference image
                   if (referenceImage != null &&
-                      !currentImages
-                          .map((e) => e.id)
-                          .contains(referenceImage.id))
+                      referenceImage.id == currentSelection?.id)
                     Positioned(
                       top: (referenceImage.positionOnCanvas.dy *
                               canvasScalingFactor) +
@@ -189,60 +203,88 @@ class _ImageEditorState extends State<ImageEditor> {
                       ),
                     ),
 
-                  ...currentImages.map(
-                    (currentImage) =>
-
-                        // current image
-                        TransformableBox(
-                      visibleHandles: HandlePosition.corners.toSet(),
-
-                      cornerHandleBuilder: (context, handle) {
-                        return AngularHandle(
-                          handle: handle,
-                          length: 16,
-                          color: Colors.grey[300],
-                          // hasShadow: false,
-                          thickness: 3,
-                        );
-                      },
-                      resizeModeResolver: () => ResizeMode.symmetricScale,
-                      // clampingRect: Rect.fromLTWH(
-                      //   0,
-                      //   0,
-                      //   constraints.maxWidth,
-                      //   constraints.maxHeight,
-                      // ),
-                      rect: Rect.fromLTWH(
-                        (currentImage.positionOnCanvas.dx *
-                                canvasScalingFactor) +
-                            canvasPosition.dx,
-                        (currentImage.positionOnCanvas.dy *
-                                canvasScalingFactor) +
-                            canvasPosition.dy,
-                        currentImage.widthOnCanvas * canvasScalingFactor,
-                        currentImage.heightOnCanvas * canvasScalingFactor,
+                  /// Rotating selected image
+                  if (currentSelection != null)
+                    Positioned(
+                      top: selectedImageRect.top,
+                      left: selectedImageRect.left,
+                      child: RotationWrapper(
+                        key: ValueKey(selectedImageRect.topLeft),
+                        rect: selectedImageRect,
+                        child: Image.memory(
+                          currentSelection.image,
+                        ),
+                        // ),
                       ),
-                      onChanged: (result, event) {
-                        currentImage.positionOnCanvas =
-                            (result.position / canvasScalingFactor) -
-                                (canvasPosition / canvasScalingFactor);
-
-                        currentImage.widthOnCanvas =
-                            result.rect.width / canvasScalingFactor;
-
-                        setState(() {});
-                      },
-                      contentBuilder: (context, rect, flip) {
-                        // This GestureDetector ensures that the whole image
-                        // is draggable inside the TransformableBox, else the
-                        // invisible parts of the png become transclucent to
-                        // dragging.
-                        return Image.memory(
-                          currentImage.image,
-                        );
-                      },
                     ),
-                  ),
+
+                  // ...currentImages.map(
+                  //   (currentImage) =>
+
+                  //       // current image
+                  //       TransformableBox(
+                  //     visibleHandles: rotationAngle == 0
+                  //         ? HandlePosition.corners.toSet()
+                  //         : {},
+                  //     enabledHandles: rotationAngle == 0
+                  //         ? HandlePosition.corners.toSet()
+                  //         : {},
+                  //     cornerHandleBuilder: (context, handle) {
+                  //       return AngularHandle(
+                  //         handle: handle,
+                  //         length: 16,
+                  //         color: Colors.grey[300],
+                  //         // hasShadow: false,
+                  //         thickness: 3,
+                  //       );
+                  //     },
+                  //     resizeModeResolver: () => ResizeMode.symmetricScale,
+                  //     // clampingRect: Rect.fromLTWH(
+                  //     //   0,
+                  //     //   0,
+                  //     //   constraints.maxWidth,
+                  //     //   constraints.maxHeight,
+                  //     // ),
+                  //     rect: Rect.fromLTWH(
+                  //       (currentImage.positionOnCanvas.dx *
+                  //               canvasScalingFactor) +
+                  //           canvasPosition.dx,
+                  //       (currentImage.positionOnCanvas.dy *
+                  //               canvasScalingFactor) +
+                  //           canvasPosition.dy,
+                  //       currentImage.widthOnCanvas * canvasScalingFactor,
+                  //       currentImage.heightOnCanvas * canvasScalingFactor,
+                  //     ),
+                  //     onChanged: (result, event) {
+                  //       currentImage.positionOnCanvas =
+                  //           (result.position / canvasScalingFactor) -
+                  //               (canvasPosition / canvasScalingFactor);
+
+                  //       currentImage.widthOnCanvas =
+                  //           result.rect.width / canvasScalingFactor;
+
+                  //       setState(() {});
+                  //     },
+                  //     contentBuilder: (context, rect, flip) {
+                  //       // This GestureDetector ensures that the whole image
+                  //       // is draggable inside the TransformableBox, else the
+                  //       // invisible parts of the png become transclucent to
+                  //       // dragging.
+                  //       return
+                  //           // Transform.rotate(
+                  //           // angle: rotationAngle, //* pi / 180,
+                  //           // origin: currentImage.center + canvasPosition,
+                  //           // child:
+                  //           RotationWrapper(
+                  //         rect: rect,
+                  //         child: Image.memory(
+                  //           currentImage.image,
+                  //         ),
+                  //         // ),
+                  //       );
+                  //     },
+                  //   ),
+                  // ),
 
                   // TODO(jaco): using a rotation handle like this is extremely
                   // hard. It can't be a part of the above TransformableBox,

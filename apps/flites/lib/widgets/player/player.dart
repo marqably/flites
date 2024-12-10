@@ -57,7 +57,7 @@ class _PlayerControlsState extends State<PlayerControls> {
           return;
         }
 
-        selectedImage.value = [nextImage];
+        selectedImage.value = nextImage;
       },
     );
   }

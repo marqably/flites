@@ -7,7 +7,7 @@ import '../types/flites_image.dart';
 final projectSourceFiles = signal<List<FlitesImage>>([], autoDispose: true);
 
 /// Defines what image is currently being edited
-final selectedImage = signal<List<String>>([]);
+final selectedImage = signal<String?>(null);
 
 /// Defines what image is currently being referenced
 /// The reference image is used as a background in the image editor to make sure we can align the images correctly

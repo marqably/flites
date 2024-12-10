@@ -166,4 +166,9 @@ class FlitesImage {
     }
     projectSourceFiles.value = [...images];
   }
+
+  void trimImage() {
+    // final trimmedImage = ImageUtils.trimImage(image);
+    // image = trimmedImage;
+  }
 }
