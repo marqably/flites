@@ -11,6 +11,7 @@ import 'package:signals/signals_flutter.dart';
 import '../../states/open_project.dart';
 import '../../utils/get_flite_image.dart';
 
+// TODO(beau): refactor
 final showBoundingBorderSignal = signal(false);
 
 final canvasScalingFactorSignal = signal(300.0);
@@ -34,351 +35,244 @@ class _ImageEditorState extends State<ImageEditor> {
 
   @override
   Widget build(BuildContext context) {
+    // TODO(beau): refactor
     return LayoutBuilder(
       builder: (context, constraints) {
-        return Watch((context) {
-          canvasSizePixelSignal.value = constraints.biggest;
-          final showBoundingBorder = showBoundingBorderSignal.value;
+        return Watch(
+          (context) {
+            canvasSizePixelSignal.value = constraints.biggest;
+            final showBoundingBorder = showBoundingBorderSignal.value;
 
-          final canvasScalingFactor =
-              canvasScalingFactorSignal.value; // constraints.maxWidth;
+            final canvasScalingFactor =
+                canvasScalingFactorSignal.value; // constraints.maxWidth;
 
-          final currentSelection = getFliteImage(selectedImage.value);
+            final currentSelection = getFliteImage(selectedImage.value);
 
-          final canvasPosition = canvasPositionSignal.value;
+            final canvasPosition = canvasPositionSignal.value;
 
-          final referenceImages = getFliteImages(selectedReferenceImages.value);
+            final referenceImages =
+                getFliteImages(selectedReferenceImages.value);
 
-          final boundingBox = allImagesBoundingBox;
+            final boundingBox = allImagesBoundingBox;
 
-          final isMainModifierPressed = modifierSignal.value.isMainPressed;
+            final isMainModifierPressed = modifierSignal.value.isMainPressed;
 
-          final rotationAngle = rotationSignal.value ?? 0;
+            final rotationAngle = rotationSignal.value ?? 0;
 
-          final selectedTool = selectedToolSignal.value;
+            final selectedTool = selectedToolSignal.value;
 
-          final inCanvasMode = selectedTool == Tool.canvas;
-          final inMoveMode = selectedTool == Tool.move;
-          final inRotateMode = selectedTool == Tool.rotate;
+            final inCanvasMode = selectedTool == Tool.canvas;
+            final inMoveMode = selectedTool == Tool.move;
+            final inRotateMode = selectedTool == Tool.rotate;
 
-          final selectedImageRect = currentSelection != null
-              ? Rect.fromLTWH(
-                  (currentSelection.positionOnCanvas.dx * canvasScalingFactor) +
-                      canvasPosition.dx,
-                  (currentSelection.positionOnCanvas.dy * canvasScalingFactor) +
-                      canvasPosition.dy,
-                  (currentSelection.widthOnCanvas * canvasScalingFactor).abs(),
-                  (currentSelection.heightOnCanvas * canvasScalingFactor).abs(),
-                )
-              : Rect.zero;
+            final selectedImageRect = currentSelection != null
+                ? Rect.fromLTWH(
+                    (currentSelection.positionOnCanvas.dx *
+                            canvasScalingFactor) +
+                        canvasPosition.dx,
+                    (currentSelection.positionOnCanvas.dy *
+                            canvasScalingFactor) +
+                        canvasPosition.dy,
+                    (currentSelection.widthOnCanvas * canvasScalingFactor)
+                        .abs(),
+                    (currentSelection.heightOnCanvas * canvasScalingFactor)
+                        .abs(),
+                  )
+                : Rect.zero;
 
-          final rotatedImageSize =
-              (longestSideSize(selectedImageRect.size) / 2) * 3;
+            final rotatedImageSize =
+                (longestSideSize(selectedImageRect.size) / 2) * 3;
 
-          final rotatedImageOffset = Offset(
-            selectedImageRect.left -
-                (rotatedImageSize - selectedImageRect.width) / 2,
-            selectedImageRect.top -
-                (rotatedImageSize - selectedImageRect.height) / 2,
-          );
+            final rotatedImageOffset = Offset(
+              selectedImageRect.left -
+                  (rotatedImageSize - selectedImageRect.width) / 2,
+              selectedImageRect.top -
+                  (rotatedImageSize - selectedImageRect.height) / 2,
+            );
 
-          return Listener(
-            behavior: HitTestBehavior.opaque,
-            onPointerSignal: (pointerSignal) {
-              if (pointerSignal is PointerMoveEvent) {
-                if (currentSelection == null) {
-                  return;
+            return Listener(
+              behavior: HitTestBehavior.opaque,
+              onPointerSignal: (pointerSignal) {
+                if (pointerSignal is PointerMoveEvent) {
+                  if (currentSelection == null) {
+                    return;
+                  }
+
+                  final offset = pointerSignal.localDelta / canvasScalingFactor;
+
+                  canvasPositionSignal.value += offset;
+
+                  setState(() {});
                 }
 
-                final offset = pointerSignal.localDelta / canvasScalingFactor;
+                if (pointerSignal is PointerScrollEvent &&
+                    isMainModifierPressed) {
+                  // TODO(jaco): decrease the amount of scaling
 
-                canvasPositionSignal.value += offset;
+                  scale = scale + pointerSignal.scrollDelta.dy / 1000;
 
-                // for (var i in currentImages) {
-                //   i.positionOnCanvas += offset;
-                // }
+                  final isInreasingSize = pointerSignal.scrollDelta.dy < 0;
 
-                setState(() {});
-              }
+                  final canvasCenter = Offset(
+                    constraints.maxWidth / 2,
+                    constraints.maxHeight / 2,
+                  );
 
-              if (pointerSignal is PointerScrollEvent &&
-                  isMainModifierPressed) {
-                // TODO(jaco): decrease the amount of scaling
+                  // TODO(jaco): put a square in here or so to make further
+                  // distance to the center more pronounced in the position
+                  // offset
+                  final offsetFromCenter =
+                      canvasCenter - pointerSignal.localPosition;
 
-                scale = scale + pointerSignal.scrollDelta.dy / 1000;
+                  canvasPositionSignal.value -=
+                      offsetFromCenter * (isInreasingSize ? -0.05 : 0.05);
 
-                final isInreasingSize = pointerSignal.scrollDelta.dy < 0;
+                  canvasScalingFactorSignal.value =
+                      canvasScalingFactor * (isInreasingSize ? 1.05 : 0.95);
 
-                // for (final currentImage in currentImages) {
-                //   currentImage.widthOnCanvas = currentImage.widthOnCanvas *
-                //       (isInreasingSize ? 1.05 : 0.95);
-
-                // final pointerPositionOnCanvas =
-                //     pointerSignal.localPosition / canvasScalingFactor;
-
-                final canvasCenter = Offset(
-                  constraints.maxWidth / 2,
-                  constraints.maxHeight / 2,
-                );
-
-                // TODO(jaco): put a square in here or so to make further
-                // distance to the center more pronounced in the position
-                // offset
-                final offsetFromCenter =
-                    canvasCenter - pointerSignal.localPosition;
-
-                canvasPositionSignal.value -=
-                    offsetFromCenter * (isInreasingSize ? -0.05 : 0.05);
-
-                canvasScalingFactorSignal.value =
-                    canvasScalingFactor * (isInreasingSize ? 1.05 : 0.95);
-
-                setState(() {});
-              }
-            },
-            child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: () {
-                SelectedImagesController().clearSelection();
+                  setState(() {});
+                }
               },
-              onPanStart: (details) {
-                setState(() {
-                  isGrabbing = true;
-                });
-              },
-              onPanEnd: (details) {
-                setState(() {
-                  isGrabbing = false;
-                });
-              },
-              onPanUpdate: (details) {
-                // if (currentImages.isEmpty) {
-                //   return;
-                // }
-
-                canvasPositionSignal.value += details.delta;
-
-                // for (final currentImage in currentImages) {
-                //   currentImage.positionOnCanvas +=
-                //       details.delta / canvasScalingFactor;
-                // }
-
-                setState(() {});
-              },
-              child: Stack(
-                children: [
-                  MouseRegion(
-                    cursor: isGrabbing
-                        ? SystemMouseCursors.grabbing
-                        : SystemMouseCursors.grab,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.grey[200],
-                      ),
-                    ),
-                  ),
-
-                  // Bounding Box
-                  if (boundingBox != null && showBoundingBorder)
-                    Positioned(
-                      key: ValueKey(boundingBox.hashCode.toString() +
-                          '${currentSelection?.rotation}'),
-                      left: (boundingBox.position.dx * canvasScalingFactor) +
-                          canvasPosition.dx,
-                      top: (boundingBox.position.dy * canvasScalingFactor) +
-                          canvasPosition.dy,
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () {
+                  SelectedImagesController().clearSelection();
+                },
+                onPanStart: (details) {
+                  setState(() {
+                    isGrabbing = true;
+                  });
+                },
+                onPanEnd: (details) {
+                  setState(() {
+                    isGrabbing = false;
+                  });
+                },
+                onPanUpdate: (details) {
+                  canvasPositionSignal.value += details.delta;
+                  setState(() {});
+                },
+                child: Stack(
+                  children: [
+                    MouseRegion(
+                      cursor: isGrabbing
+                          ? SystemMouseCursors.grabbing
+                          : SystemMouseCursors.grab,
                       child: Container(
                         decoration: BoxDecoration(
-                          border: Border.all(
-                            width: 4,
-                            color: Colors
-                                .white, // Theme.of(context).colorScheme.primary,
+                          color: Colors.grey[200],
+                        ),
+                      ),
+                    ),
+
+                    // Bounding Box
+                    if (boundingBox != null && showBoundingBorder)
+                      Positioned(
+                        key: ValueKey(boundingBox.hashCode.toString() +
+                            '${currentSelection?.rotation}'),
+                        left: (boundingBox.position.dx * canvasScalingFactor) +
+                            canvasPosition.dx,
+                        top: (boundingBox.position.dy * canvasScalingFactor) +
+                            canvasPosition.dy,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              width: 4,
+                              color: Colors.white,
+                            ),
+                          ),
+                          height: boundingBox.size.height * canvasScalingFactor,
+                          width: boundingBox.size.width * canvasScalingFactor,
+                        ),
+                      ),
+
+                    // reference images
+                    ...referenceImages.map(
+                      (image) => Positioned(
+                        top: (image.positionOnCanvas.dy * canvasScalingFactor) +
+                            canvasPosition.dy,
+                        left:
+                            (image.positionOnCanvas.dx * canvasScalingFactor) +
+                                canvasPosition.dx,
+                        height: image.heightOnCanvas * canvasScalingFactor,
+                        width: image.widthOnCanvas * canvasScalingFactor,
+                        child: Opacity(
+                          opacity: 0.5,
+                          child: Image.memory(
+                            image.image,
                           ),
                         ),
-                        height: boundingBox.size.height * canvasScalingFactor,
-                        width: boundingBox.size.width * canvasScalingFactor,
                       ),
                     ),
 
-                  // reference images
-                  ...referenceImages.map(
-                    (image) => Positioned(
-                      top: (image.positionOnCanvas.dy * canvasScalingFactor) +
-                          canvasPosition.dy,
-                      left: (image.positionOnCanvas.dx * canvasScalingFactor) +
-                          canvasPosition.dx,
-                      height: image.heightOnCanvas * canvasScalingFactor,
-                      width: image.widthOnCanvas * canvasScalingFactor,
-                      child: Opacity(
-                        opacity: 0.5,
-                        child: Image.memory(
-                          image.image,
-                        ),
-                      ),
-                    ),
-                  ),
-
-                  /// Showing selected image
-                  if (currentSelection != null && inCanvasMode)
-                    Positioned.fromRect(
-                      rect: selectedImageRect,
-                      child: Image.memory(
-                        currentSelection.image,
-                      ),
-                    ),
-
-                  /// Rotating selected image
-                  if (currentSelection != null && inRotateMode)
-                    Positioned(
-                      top: rotatedImageOffset.dy,
-                      left: rotatedImageOffset.dx,
-                      child: RotationWrapper(
-                        key: ValueKey(currentSelection.id +
-                            canvasScalingFactor.toString()),
+                    /// Showing selected image
+                    if (currentSelection != null && inCanvasMode)
+                      Positioned.fromRect(
                         rect: selectedImageRect,
                         child: Image.memory(
                           currentSelection.image,
                         ),
-                        onRotate: (newAngle) {
-                          currentSelection.rotation = newAngle;
-                        },
-                        initialRotation: currentSelection.rotation,
-                        // ),
                       ),
-                    ),
 
-                  // ...currentImages.map(
-                  //   (currentImage) =>
+                    /// Rotating selected image
+                    if (currentSelection != null && inRotateMode)
+                      Positioned(
+                        top: rotatedImageOffset.dy,
+                        left: rotatedImageOffset.dx,
+                        child: RotationWrapper(
+                          key: ValueKey(currentSelection.id +
+                              canvasScalingFactor.toString()),
+                          rect: selectedImageRect,
+                          child: Image.memory(
+                            currentSelection.image,
+                          ),
+                          onRotate: (newAngle) {
+                            currentSelection.rotation = newAngle;
+                          },
+                          initialRotation: currentSelection.rotation,
+                        ),
+                      ),
 
-                  //       // current image
-                  if (currentSelection != null && inMoveMode)
-                    TransformableBox(
-                      visibleHandles: rotationAngle == 0
-                          ? HandlePosition.corners.toSet()
-                          : {},
-                      enabledHandles: rotationAngle == 0
-                          ? HandlePosition.corners.toSet()
-                          : {},
-                      cornerHandleBuilder: (context, handle) {
-                        return AngularHandle(
-                          handle: handle,
-                          length: 16,
-                          color: Colors.grey[300],
-                          // hasShadow: false,
-                          thickness: 3,
-                        );
-                      },
-                      resizeModeResolver: () => ResizeMode.symmetricScale,
-                      // clampingRect: Rect.fromLTWH(
-                      //   0,
-                      //   0,
-                      //   constraints.maxWidth,
-                      //   constraints.maxHeight,
-                      // ),
-                      rect: selectedImageRect,
-                      // Rect.fromLTWH(
-                      //   (currentImage.positionOnCanvas.dx *
-                      //           canvasScalingFactor) +
-                      //       canvasPosition.dx,
-                      //   (currentImage.positionOnCanvas.dy *
-                      //           canvasScalingFactor) +
-                      //       canvasPosition.dy,
-                      //   currentImage.widthOnCanvas * canvasScalingFactor,
-                      //   currentImage.heightOnCanvas * canvasScalingFactor,
-                      // ),
-                      onChanged: (result, event) {
-                        currentSelection.positionOnCanvas =
-                            (result.position / canvasScalingFactor) -
-                                (canvasPosition / canvasScalingFactor);
+                    if (currentSelection != null && inMoveMode)
+                      TransformableBox(
+                        visibleHandles: rotationAngle == 0
+                            ? HandlePosition.corners.toSet()
+                            : {},
+                        enabledHandles: rotationAngle == 0
+                            ? HandlePosition.corners.toSet()
+                            : {},
+                        cornerHandleBuilder: (context, handle) {
+                          return AngularHandle(
+                            handle: handle,
+                            length: 16,
+                            color: Colors.grey[300],
+                            thickness: 3,
+                          );
+                        },
+                        resizeModeResolver: () => ResizeMode.symmetricScale,
+                        rect: selectedImageRect,
+                        onChanged: (result, event) {
+                          currentSelection.positionOnCanvas =
+                              (result.position / canvasScalingFactor) -
+                                  (canvasPosition / canvasScalingFactor);
 
-                        currentSelection.widthOnCanvas =
-                            result.rect.width / canvasScalingFactor;
+                          currentSelection.widthOnCanvas =
+                              result.rect.width / canvasScalingFactor;
 
-                        setState(() {});
-                      },
-                      contentBuilder: (context, rect, flip) {
-                        // This GestureDetector ensures that the whole image
-                        // is draggable inside the TransformableBox, else the
-                        // invisible parts of the png become transclucent to
-                        // dragging.
-                        return
-                            // Transform.rotate(
-                            // angle: rotationAngle, //* pi / 180,
-                            // origin: currentImage.center + canvasPosition,
-                            // child:
-                            Image.memory(
-                          currentSelection.image,
-                        );
-                      },
-                    ),
-
-                  // TODO(jaco): using a rotation handle like this is extremely
-                  // hard. It can't be a part of the above TransformableBox,
-                  // because the box may not have a parent other than a Stack,
-                  // if I leave the box the size of the image, then the handle
-                  // would have to be placed outside of the box, making it
-                  // loose it's clickablily, and if I make the child large enough
-                  // then the corner handles include the rotation handle, which
-                  // looks wrong
-                  // ...currentImages.map(
-                  //   (selectedImage) => Positioned(
-                  //     left: (selectedImage.center.dx * canvasScalingFactor) +
-                  //         canvasPosition.dx -
-                  //         (16 / 2), // subtract dot size
-                  //     top: (selectedImage.positionOnCanvas.dy *
-                  //             canvasScalingFactor) +
-                  //         canvasPosition.dy -
-                  //         64,
-                  //     child: GestureDetector(
-                  //       onPanUpdate: (details) {
-                  //         final localPosition = details.localPosition;
-
-                  //         final center =
-                  //             (selectedImage.center * canvasScalingFactor) +
-                  //                 canvasPosition;
-
-                  //         print(
-                  //             'Selected Image Center: ${selectedImage.center}');
-                  //         print(
-                  //             'Canvas Scaling Factor: $canvasScalingFactor');
-                  //         print('Canvas Position: $canvasPosition');
-
-                  //         print('Local Position: $localPosition');
-                  //         print('Center: $center');
-
-                  //         //                           final Offset center = _center;
-                  //         const Offset startVector = Offset(
-                  //             0, -1); // The "up" vector for initial angle
-                  //         final Offset currentVector = localPosition - center;
-
-                  //         // Calculate the angle between the start vector and the current vector
-                  //         final double angle =
-                  //             atan2(currentVector.dy, currentVector.dx) -
-                  //                 atan2(startVector.dy, startVector.dx);
-
-                  //         _rotationAngle = angle;
-                  //         setState(() {});
-
-                  //         // setState(() {
-                  //         //   _rotationAngle = angle;
-                  //         // });
-                  //       },
-                  //       child: Container(
-                  //         decoration: BoxDecoration(
-                  //           shape: BoxShape.circle,
-                  //           color: Colors.grey[400],
-                  //         ),
-                  //         height: 16,
-                  //         width: 16,
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
-                ],
+                          setState(() {});
+                        },
+                        contentBuilder: (context, rect, flip) {
+                          return Image.memory(
+                            currentSelection.image,
+                          );
+                        },
+                      ),
+                  ],
+                ),
               ),
-            ),
-          );
-        });
+            );
+          },
+        );
       },
     );
   }
@@ -422,7 +316,6 @@ class BoundingBox {
 
   Size get normalizedSize {
     // Normalize side such that the longer side is 1.0
-
     final widthIsLonger = size.width > size.height;
 
     if (widthIsLonger) {

@@ -134,6 +134,8 @@ class _RotationWrapperState extends State<RotationWrapper> {
   }
 }
 
+// TODO(beau): refactor
+// Move these functions to a fitting Utils class (as static methods)
 double longestSide(Offset offset) {
   return offset.dx.abs() > offset.dy.abs() ? offset.dx.abs() : offset.dy.abs();
 }

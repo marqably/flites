@@ -40,6 +40,9 @@ class _FileDropAreaState extends State<FileDropArea> {
       formats: supportedFormats,
       hitTestBehavior: HitTestBehavior.deferToChild,
       onDropOver: (event) {
+        // TODO(beau): refactor
+        // Move to service class
+
         // You can inspect local data here, as well as formats of each item.
         // However on certain platforms (mobile / web) the actual data is
         // only available when the drop is accepted (onPerformDrop).
@@ -58,6 +61,9 @@ class _FileDropAreaState extends State<FileDropArea> {
         }
       },
       onPerformDrop: (event) async {
+        // TODO(beau): refactor
+        // Move to service class
+
         // reset the error messages
         setState(() => errors = []);
 
@@ -69,36 +75,6 @@ class _FileDropAreaState extends State<FileDropArea> {
                 .whereType<RawImageAndName>()
                 .where((e) => e.image != null && isPng(e.image!))
                 .toList();
-
-        // // add all files
-        // for (int i = 0; i < event.session.items.length; i++) {
-        //   final item = event.session.items[i];
-        //   final reader = item.dataReader!;
-
-        //   if (reader.canProvide(Formats.png)) {
-        //     reader.getFile(Formats.png, (file) async {
-        //       final stream = file.getStream();
-        //       final data = await stream.last;
-
-        //       rawImages.add(data);
-
-        //       // // create a new FlitesImage
-        //       // try {
-        //       //   final flitesImage = FlitesImage(data);
-
-        //       //   // add data
-        //       //   projectSourceFiles.value = [
-        //       //     ...projectSourceFiles.value,
-        //       //     flitesImage,
-        //       //   ];
-        //       // } catch (e) {
-        //       //   setState(() => errors.add('Error reading file!\n$e'));
-        //       // }
-        //     }, onError: (error) {
-        //       setState(() => errors.add('Error reading file!\n$error'));
-        //     });
-        //   }
-        // }
 
         if (imagesAndNames.isNotEmpty) {
           final scalingFactor = ImageUtils.getScalingFactorForMultipleImages(
@@ -123,59 +99,16 @@ class _FileDropAreaState extends State<FileDropArea> {
               flitesImage,
             ];
           }
-
-          // return;
         }
-
-        // if (imagesAndNames.length == 1) {
-        //   final flitesImage = FlitesImage(imagesAndNames.first.image!,
-        //       name: imagesAndNames.first.name);
-
-        //   projectSourceFiles.value = [
-        //     ...projectSourceFiles.value,
-        //     flitesImage,
-        //   ];
-
-        //   return;
-        // }
       },
 
       child: widget.child,
-
-      // Column(
-      //   mainAxisSize: MainAxisSize.min,
-      //   children: [
-      //     // errors
-      //     ...(errors.map((error) => ErrorBox(errorMessage: error))),
-
-      //     // drop area
-      //     Container(
-      //       padding: const EdgeInsets.all(40),
-      //       margin: const EdgeInsets.symmetric(vertical: 16),
-      //       decoration: BoxDecoration(
-      //         borderRadius: BorderRadius.circular(8),
-      //         border: Border.all(
-      //           color: Theme.of(context).colorScheme.primary,
-      //           width: 2,
-      //         ),
-      //       ),
-      //       child: Center(
-      //         child: Text('Drop files here!',
-      //             style: TextStyle(
-      //               fontSize: 24,
-      //               color: Theme.of(context).colorScheme.primary,
-      //             )),
-      //       ),
-      //     ),
-
-      //     // child
-      //     widget.child,
-      //   ],
-      // ),
     );
   }
 }
 
+// TODO(beau): refactor
+// Move to fitting utils file
 bool isPng(Uint8List data) {
   // PNG signature
   const List<int> pngSignature = [

@@ -94,8 +94,7 @@ class _PlayerControlsState extends State<PlayerControls> {
                 width: 100,
                 child: TextField(
                   inputFormatters: [
-                    FilteringTextInputFormatter
-                        .digitsOnly, // Allows only digits
+                    FilteringTextInputFormatter.digitsOnly,
                   ],
                   textAlign: TextAlign.end,
                   style: TextStyle(

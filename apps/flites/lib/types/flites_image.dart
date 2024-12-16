@@ -7,6 +7,8 @@ import 'package:flutter/services.dart';
 import 'package:image/image.dart' as img;
 import '../states/open_project.dart';
 
+// TODO(beau): refactor
+// Move to constants file
 /// The size a picture should have along its longer side when displayed on the
 /// canvas
 const defaultSizeOnCanvas = 0.5;
@@ -17,21 +19,6 @@ class FlitesImage {
   late String id;
   String? displayName;
   String? originalName;
-
-  // The original size of the image
-  @Deprecated('Should not be needed in future')
-  Size? originalSize;
-
-  // The size of the image that is displayed in the canvas
-  // Size? size;
-
-  // // A scaling factor that is determined upon importing to make the image fit
-  // // inside the canvas
-  // double originalScalingFactor = 1;
-
-  // The scaling factor that is used to change the size of the image inside the
-  // canvas
-  // double scalingFactor = 1;
 
   /// The width of the image on the canvas.
   late double widthOnCanvas;
@@ -55,30 +42,6 @@ class FlitesImage {
 
   double rotation = 0;
 
-  // EdgeInsets margin = const EdgeInsets.all(0);
-
-  // FlitesImage(
-  //   Uint8List rawImage, {
-  //   this.name,
-  // }) {
-  //   image = rawImage;
-
-  //   widthOnCanvas = ImageUtils.getCanvasWidthOfRawImage(
-  //     rawImage,
-  //     sizeLongerSideOnCanvas: defaultSizeOnCanvas,
-  //   );
-
-  //   final initialCoordinates = ImageUtils.getCenteredCoordinatesForPicture(
-  //     Size(widthOnCanvas, heightOnCanvas),
-  //   );
-
-  //   positionOnCanvas = Offset(initialCoordinates.dx, initialCoordinates.dy);
-
-  //   // generate a random id to identify this image
-  //   id =
-  //       '${DateTime.now().millisecondsSinceEpoch}-${0 + Random().nextInt(14000)}-${0 + Random().nextInt(15000)}';
-  // }
-
   FlitesImage.scaled(
     Uint8List rawImage, {
     required double scalingFactor,
@@ -99,8 +62,6 @@ class FlitesImage {
       Size(widthOnCanvas, heightOnCanvas),
     );
 
-    print('initialCoordinates: $initialCoordinates');
-
     positionOnCanvas = Offset(initialCoordinates.dx, initialCoordinates.dy);
 
     // generate a random id to identify this image
@@ -108,54 +69,12 @@ class FlitesImage {
         '${DateTime.now().millisecondsSinceEpoch}-${0 + Random().nextInt(14000)}-${0 + Random().nextInt(15000)}';
   }
 
-  // void resetScaling() {
-  //   if (originalScalingFactor == null) return;
-
-  //   widthOnCanvas =
-  //       ImageUtils.sizeOfRawImage(image).width * originalScalingFactor!;
-
-  //   saveChanges();
-  // }
-
-  // /// tries to initialize the image object. If not possible, throws an exception
-  // void initImage(Uint8List rawImage) {
-  //   // convert image to image object
-  //   // final imageWork = img.decodeImage(rawImage);
-
-  //   // if (imageWork == null) {
-  //   //   throw Exception('Could not decode image');
-  //   // }
-
-  //   // final size = getSizeOfPng(image.buffer.asByteData());
-
-  //   // originalSize = size;
-  //   // originalScalingFactor = size.width / (outputSettings.value.itemWidth ?? 1);
-
-  //   // print('originalScalingFactor: $originalScalingFactor');
-  //   // print('originalSize: $originalSize');
-
-  //   // originalSize = Size(imageWork.width.toDouble(), imageWork.height.toDouble());
-  //   // size = originalSize;
-  // }
-
   /// Allows us to make changes, that will automatically be saved in the global project source file signal
   void saveChanges({
     Size? size,
     double? scalingFactor,
     EdgeInsets? margin,
   }) {
-    // if (size != null) {
-    //   this.size = size;
-    // }
-
-    // if (margin != null) {
-    //   this.margin = margin;
-    // }
-
-    // if (scalingFactor != null) {
-    //   this.scalingFactor = scalingFactor;
-    // }
-
     final newImage = this;
 
     // now save the changes in the project source files
@@ -171,15 +90,14 @@ class FlitesImage {
   }
 
   void trimImage() async {
-    // final trimmedImage = ImageUtils.trimImage(image);
-    // image = trimmedImage;
-
     image = await rotateImage(image, rotation);
 
     rotation = 0;
   }
 }
 
+// TODO(beau): refactor
+// Move to utils class
 Future<Uint8List> rotateImage(Uint8List pngBytes, double angleRadians) async {
   // Decode the PNG to an image object.
   final originalImage = img.decodePng(pngBytes);
@@ -205,28 +123,7 @@ Future<Uint8List> rotateImage(Uint8List pngBytes, double angleRadians) async {
 
   final trimmedImage = img.trim(composite);
 
-  // return trimmedImage.getBytes();
-
   // Encode the result back to PNG and return.
   final resultBytes = Uint8List.fromList(img.encodePng(trimmedImage));
   return resultBytes;
-}
-
-class RotatedBounds {
-  final int width;
-  final int height;
-
-  RotatedBounds(this.width, this.height);
-}
-
-RotatedBounds _calculateRotatedBounds(
-    int width, int height, double angleRadians) {
-  final sinTheta = sin(angleRadians.abs());
-  final cosTheta = cos(angleRadians.abs());
-
-  // Calculate the new width and height after rotation.
-  final newWidth = (width * cosTheta + height * sinTheta).ceil();
-  final newHeight = (width * sinTheta + height * cosTheta).ceil();
-
-  return RotatedBounds(newWidth, newHeight);
 }

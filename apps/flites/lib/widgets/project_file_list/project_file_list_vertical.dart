@@ -2,7 +2,6 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flites/states/open_project.dart';
 import 'package:flites/states/selected_images_controller.dart';
 import 'package:flites/types/flites_image.dart';
-import 'package:flites/utils/get_flite_image.dart';
 import 'package:flites/utils/image_utils.dart';
 import 'package:flites/widgets/buttons/icon_text_button.dart';
 import 'package:flites/widgets/controls/checkbox_button.dart';
@@ -13,12 +12,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:signals/signals_flutter.dart';
 
+// TODO(beau): refactor
 enum Tool {
   canvas,
   move,
   rotate,
 }
 
+// TODO(beau): refactor
 final selectedToolSignal = signal(Tool.canvas);
 final hoveredToolSignal = signal<Tool?>(null);
 
@@ -35,6 +36,7 @@ class _ProjectFileListVerticalState extends State<ProjectFileListVertical> {
 
   @override
   Widget build(BuildContext context) {
+    // TODO(beau): refactor
     int i = 0;
 
     return Watch(
@@ -53,11 +55,6 @@ class _ProjectFileListVerticalState extends State<ProjectFileListVertical> {
                   padding: EdgeInsets.all(16),
                   child: Row(
                     children: [
-                      // Image(
-                      //   height: 64,
-                      //   image: AssetImage('assets/images/flites_logo.png'),
-                      // ),
-                      // SizedBox(width: 32),
                       Text(
                         'Flites',
                         style: TextStyle(
@@ -114,7 +111,6 @@ class _ProjectFileListVerticalState extends State<ProjectFileListVertical> {
                         child: const Icon(
                           CupertinoIcons.eye_solid,
                           size: 16,
-                          // color: Colors.grey,
                         ),
                       ),
                     ],
@@ -138,8 +134,8 @@ class _ProjectFileListVerticalState extends State<ProjectFileListVertical> {
                       newIndex -= 1;
                     }
 
-                    final currentImages = List<FlitesImage>.from(projectSourceFiles
-                        .value); // TODO(Simon): I think we need to clone this list, no? The following code, especially the setting of the value again, looks like it's already working under the assumption that we have to clone.
+                    final currentImages =
+                        List<FlitesImage>.from(projectSourceFiles.value);
 
                     // reorder
                     final image = currentImages.removeAt(oldIndex);
@@ -152,7 +148,7 @@ class _ProjectFileListVerticalState extends State<ProjectFileListVertical> {
                   builder: (isHovered) {
                     return GestureDetector(
                       onTap: () async {
-                        print('### on tap');
+                        // TODO(beau): refactor, this logic should not live in a widget file
                         FilePickerResult? result =
                             await FilePicker.platform.pickFiles(
                           allowMultiple: true,
@@ -184,12 +180,8 @@ class _ProjectFileListVerticalState extends State<ProjectFileListVertical> {
                               return a.name!.compareTo(b.name!);
                             }
 
-                            print('### 1');
-
                             return 0;
                           });
-
-                          print('### 2');
 
                           for (final img in imagesAndNames) {
                             final flitesImage = FlitesImage.scaled(img.image!,
@@ -206,9 +198,13 @@ class _ProjectFileListVerticalState extends State<ProjectFileListVertical> {
                       child: Container(
                         width: double.infinity,
                         margin: const EdgeInsets.symmetric(
-                            vertical: 2, horizontal: 8),
+                          vertical: 2,
+                          horizontal: 8,
+                        ),
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 24, vertical: 8),
+                          horizontal: 24,
+                          vertical: 8,
+                        ),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(8),
                           color:
@@ -322,6 +318,7 @@ class _ProjectFileListVerticalState extends State<ProjectFileListVertical> {
   }
 }
 
+// TODO(beau): refactor
 class FileItem extends StatefulWidget {
   const FileItem({super.key, required this.file});
 
@@ -336,6 +333,7 @@ class _FileItemState extends State<FileItem> {
 
   @override
   Widget build(BuildContext context) {
+    // TODO(beau): refactor
     return Watch((context) {
       final isHovered = isHoveredState.value;
 
@@ -360,33 +358,7 @@ class _FileItemState extends State<FileItem> {
           child: GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTap: () {
-              // Check if previous image should be set as new reference
-              if (usePreviousImageAsReference.value) {
-                final previousImageId = getPreviousImageId(widget.file.id);
-
-                // if (isCurrentlySelected) {
-                //   selectedReferenceImage.value = null;
-                // } else {
-                //   if (previousImageId != null) {
-                //     selectedReferenceImage.value = previousImageId;
-                //   } else {
-                //     selectedReferenceImage.value = null;
-                //   }
-                // }
-              }
-
-              // if (modifierSignal.value.isMainPressed) {
-              //   SelectedImagesController().toggleImageSelection(widget.file.id);
-              // } else {
               SelectedImagesController().toggleSingle(widget.file.id);
-              // }
-            },
-            onDoubleTap: () {
-              // if (selectedReferenceImage.value != widget.file.id) {
-              //   selectedReferenceImage.value = widget.file.id;
-              // } else {
-              //   selectedReferenceImage.value = null;
-              // }
             },
             child: Row(
               children: [
@@ -450,6 +422,7 @@ class _FileItemState extends State<FileItem> {
   }
 }
 
+// TODO(beau): refactor
 class HoverableWidget extends StatefulWidget {
   HoverableWidget({super.key, required this.builder});
 
@@ -473,6 +446,7 @@ class _HoverableWidgetState extends State<HoverableWidget> {
   }
 }
 
+// TODO(beau): refactor
 class ToolButton extends StatelessWidget {
   const ToolButton({super.key, required this.tool, required this.icon});
   final Tool tool;
@@ -480,41 +454,44 @@ class ToolButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Watch((context) {
-      final selectedTool = selectedToolSignal.value;
-      final hoveredTool = hoveredToolSignal.value;
+    return Watch(
+      (context) {
+        final selectedTool = selectedToolSignal.value;
+        final hoveredTool = hoveredToolSignal.value;
 
-      final isSelected = selectedTool == tool;
-      final isHovered = hoveredTool == tool;
+        final isSelected = selectedTool == tool;
+        final isHovered = hoveredTool == tool;
 
-      return InkWell(
-        onHover: (value) {
-          hoveredToolSignal.value = value ? tool : null;
-        },
-        onTap: () {
-          selectedToolSignal.value = tool;
-        },
-        child: Container(
-          padding: const EdgeInsets.all(6),
-          decoration: BoxDecoration(
-            color: isSelected
-                ? const Color.fromARGB(255, 96, 96, 96)
-                : isHovered
-                    ? const Color.fromARGB(255, 185, 185, 185)
-                    : const Color.fromARGB(0, 19, 255, 188),
-            borderRadius: BorderRadius.circular(4),
+        return InkWell(
+          onHover: (value) {
+            hoveredToolSignal.value = value ? tool : null;
+          },
+          onTap: () {
+            selectedToolSignal.value = tool;
+          },
+          child: Container(
+            padding: const EdgeInsets.all(6),
+            decoration: BoxDecoration(
+              color: isSelected
+                  ? const Color.fromARGB(255, 96, 96, 96)
+                  : isHovered
+                      ? const Color.fromARGB(255, 185, 185, 185)
+                      : const Color.fromARGB(0, 19, 255, 188),
+              borderRadius: BorderRadius.circular(4),
+            ),
+            child: Icon(
+              icon,
+              size: 16,
+              color: isSelected ? Colors.white : Colors.black,
+            ),
           ),
-          child: Icon(
-            icon,
-            size: 16,
-            color: isSelected ? Colors.white : Colors.black,
-          ),
-        ),
-      );
-    });
+        );
+      },
+    );
   }
 }
 
+// TODO(beau): refactor
 class OverlayButton extends StatefulWidget {
   final Widget buttonChild;
   final Widget overlayContent;
