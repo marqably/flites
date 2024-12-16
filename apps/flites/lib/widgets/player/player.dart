@@ -37,7 +37,7 @@ class _PlayerControlsState extends State<PlayerControls> {
   void startPlayback() {
     activePlayback?.cancel();
 
-    selectedReferenceImage.value = null;
+    selectedReferenceImages.value = [];
 
     activePlayback = newTimer;
   }
@@ -73,7 +73,7 @@ class _PlayerControlsState extends State<PlayerControls> {
         borderRadius: BorderRadius.circular(32),
       ),
       height: 64,
-      width: 432,
+      width: 344,
       child: Watch(
         (context) {
           final hasMultipleImages = projectSourceFiles.value.length > 1;
@@ -135,26 +135,6 @@ class _PlayerControlsState extends State<PlayerControls> {
                     : CupertinoIcons.play),
               ),
               const SizedBox(width: 32),
-              IconButton(
-                onPressed: () {
-                  canvasScalingFactorSignal.value -= 20;
-                },
-                icon: Icon(
-                  Icons.zoom_out,
-                  size: 28,
-                  color: const Color.fromARGB(255, 22, 22, 22),
-                ),
-              ),
-              IconButton(
-                onPressed: () {
-                  canvasScalingFactorSignal.value += 20;
-                },
-                icon: Icon(
-                  Icons.zoom_in,
-                  size: 28,
-                  color: const Color.fromARGB(255, 22, 22, 22),
-                ),
-              ),
             ],
           );
         },

@@ -19,6 +19,10 @@ FlitesImage? getFliteImage(String? id) {
   return images.firstWhere((element) => element.id == id);
 }
 
+List<FlitesImage> getFliteImages(List<String> ids) {
+  return ids.map(getFliteImage).whereType<FlitesImage>().toList();
+}
+
 // FlitesImage? getCurrentSingularSelection() {
 //   if (selectedImage.value.length != 1) {
 //     return null;

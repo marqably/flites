@@ -21,7 +21,7 @@ class ProjectFileItem extends StatelessWidget {
       final isHovered = isHoveredState.value;
 
       final isCurrentlySelected = selectedImage.value == file.id;
-      final isCurrentReferenceImage = selectedReferenceImage.value == file.id;
+      // final isCurrentReferenceImage = selectedReferenceImage.value == file.id;
 
       return Container(
         margin: const EdgeInsets.only(right: 8),
@@ -51,15 +51,15 @@ class ProjectFileItem extends StatelessWidget {
               if (usePreviousImageAsReference.value) {
                 final previousImageId = getPreviousImageId(file.id);
 
-                if (isCurrentlySelected) {
-                  selectedReferenceImage.value = null;
-                } else {
-                  if (previousImageId != null) {
-                    selectedReferenceImage.value = previousImageId;
-                  } else {
-                    selectedReferenceImage.value = null;
-                  }
-                }
+                // if (isCurrentlySelected) {
+                //   selectedReferenceImage.value = null;
+                // } else {
+                //   if (previousImageId != null) {
+                //     selectedReferenceImage.value = previousImageId;
+                //   } else {
+                //     selectedReferenceImage.value = null;
+                //   }
+                // }
               }
 
               // if (modifierSignal.value.isMainPressed) {
@@ -69,11 +69,11 @@ class ProjectFileItem extends StatelessWidget {
               // }
             },
             onDoubleTap: () {
-              if (selectedReferenceImage.value != file.id) {
-                selectedReferenceImage.value = file.id;
-              } else {
-                selectedReferenceImage.value = null;
-              }
+              // if (selectedReferenceImage.value != file.id) {
+              //   selectedReferenceImage.value = file.id;
+              // } else {
+              //   selectedReferenceImage.value = null;
+              // }
             },
             child: Stack(
               children: [
@@ -103,22 +103,22 @@ class ProjectFileItem extends StatelessWidget {
                   ),
 
                 // Reference image indicator
-                if (isCurrentReferenceImage)
-                  Positioned(
-                    top: 0,
-                    right: 0,
-                    child: Container(
-                      padding: const EdgeInsets.all(4),
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.primary,
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                      child: const Icon(
-                        Icons.remove_red_eye_outlined,
-                        color: Colors.white,
-                      ),
+                // if (isCurrentReferenceImage)
+                Positioned(
+                  top: 0,
+                  right: 0,
+                  child: Container(
+                    padding: const EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.primary,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: const Icon(
+                      Icons.remove_red_eye_outlined,
+                      color: Colors.white,
                     ),
                   ),
+                ),
               ],
             ),
           ),

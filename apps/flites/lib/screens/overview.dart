@@ -1,5 +1,6 @@
 import 'package:flites/widgets/blocking_widget/blocking_container.dart';
 import 'package:flites/widgets/canvas_controls/canvas_controls.dart';
+import 'package:flites/widgets/canvas_controls/zoom_controls.dart';
 import 'package:flites/widgets/image_editor/image_editor.dart';
 import 'package:flites/widgets/project_file_list/project_file_list_vertical.dart';
 import 'package:flutter/material.dart';
@@ -32,7 +33,16 @@ class _OverviewState extends State<Overview> {
           children: [
             ProjectFileListVertical(),
             Expanded(
-              child: ImageEditor(),
+              child: Stack(
+                children: [
+                  ImageEditor(),
+                  Positioned(
+                    right: 32,
+                    bottom: 32,
+                    child: ZoomControls(),
+                  ),
+                ],
+              ),
             ),
             CanvasControls()
           ],

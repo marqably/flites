@@ -6,10 +6,14 @@ class RotationWrapper extends StatefulWidget {
     super.key,
     required this.child,
     required this.rect,
+    this.onRotate,
+    this.initialRotation,
   });
 
   final Widget child;
   final Rect rect;
+  final void Function(double newAngle)? onRotate;
+  final double? initialRotation;
 
   @override
   State<RotationWrapper> createState() => _RotationWrapperState();
@@ -26,6 +30,8 @@ class _RotationWrapperState extends State<RotationWrapper> {
     super.initState();
     circleRadius = (longestSideSize(widget.rect.size) / 2) * 1.5;
     dragStartPoint = Offset(0, circleRadius);
+
+    rotation = widget.initialRotation ?? 0;
   }
 
   double calculateAngle(Offset start, Offset end) {
@@ -44,6 +50,8 @@ class _RotationWrapperState extends State<RotationWrapper> {
     setState(() {
       rotation = -newAngle;
     });
+
+    widget.onRotate?.call(rotation);
   }
 
   void updateStartPoint(Offset endPosition) {

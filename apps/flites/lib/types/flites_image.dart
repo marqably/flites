@@ -1,9 +1,10 @@
 import 'dart:math';
-import 'dart:typed_data';
 import 'package:flites/utils/image_utils.dart';
 import 'package:flites/widgets/image_editor/image_editor.dart';
 import 'package:flutter/material.dart';
-
+// import 'dart:ui' as ui;
+import 'package:flutter/services.dart';
+import 'package:image/image.dart' as img;
 import '../states/open_project.dart';
 
 /// The size a picture should have along its longer side when displayed on the
@@ -51,6 +52,8 @@ class FlitesImage {
 
   /// The position of the sprite on the canvas
   late Offset positionOnCanvas;
+
+  double rotation = 0;
 
   // EdgeInsets margin = const EdgeInsets.all(0);
 
@@ -167,8 +170,63 @@ class FlitesImage {
     projectSourceFiles.value = [...images];
   }
 
-  void trimImage() {
+  void trimImage() async {
     // final trimmedImage = ImageUtils.trimImage(image);
     // image = trimmedImage;
+
+    image = await rotateImage(image, rotation);
+
+    rotation = 0;
   }
+}
+
+Future<Uint8List> rotateImage(Uint8List pngBytes, double angleRadians) async {
+  // Decode the PNG to an image object.
+  final originalImage = img.decodePng(pngBytes);
+
+  if (originalImage == null) {
+    throw Exception('Unable to decode PNG');
+  }
+
+  final longestSide = max(originalImage.width, originalImage.height) * 2;
+
+  final canvas = img.Image(
+    width: longestSide,
+    height: longestSide,
+    numChannels: 4,
+    format: img.Format.uint8,
+  );
+
+  // Rotate the image using the provided angle.
+  final rotatedImage =
+      img.copyRotate(originalImage, angle: angleRadians * 180 / pi);
+
+  final composite = img.compositeImage(canvas, rotatedImage);
+
+  final trimmedImage = img.trim(composite);
+
+  // return trimmedImage.getBytes();
+
+  // Encode the result back to PNG and return.
+  final resultBytes = Uint8List.fromList(img.encodePng(trimmedImage));
+  return resultBytes;
+}
+
+class RotatedBounds {
+  final int width;
+  final int height;
+
+  RotatedBounds(this.width, this.height);
+}
+
+RotatedBounds _calculateRotatedBounds(
+    int width, int height, double angleRadians) {
+  final sinTheta = sin(angleRadians.abs());
+  final cosTheta = cos(angleRadians.abs());
+
+  // Calculate the new width and height after rotation.
+  final newWidth = (width * cosTheta + height * sinTheta).ceil();
+  final newHeight = (width * sinTheta + height * cosTheta).ceil();
+
+  return RotatedBounds(newWidth, newHeight);
 }
