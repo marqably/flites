@@ -168,8 +168,7 @@ class _ImageEditorState extends State<ImageEditor> {
                     // Bounding Box
                     if (boundingBox != null && showBoundingBorder)
                       Positioned(
-                        key: ValueKey(boundingBox.hashCode.toString() +
-                            '${currentSelection?.rotation}'),
+                        key: ValueKey('${boundingBox.hashCode}${currentSelection?.rotation}'),
                         left: (boundingBox.position.dx * canvasScalingFactor) +
                             canvasPosition.dx,
                         top: (boundingBox.position.dy * canvasScalingFactor) +
@@ -223,13 +222,13 @@ class _ImageEditorState extends State<ImageEditor> {
                           key: ValueKey(currentSelection.id +
                               canvasScalingFactor.toString()),
                           rect: selectedImageRect,
-                          child: Image.memory(
-                            currentSelection.image,
-                          ),
                           onRotate: (newAngle) {
                             currentSelection.rotation = newAngle;
                           },
                           initialRotation: currentSelection.rotation,
+                          child: Image.memory(
+                            currentSelection.image,
+                          ),
                         ),
                       ),
 

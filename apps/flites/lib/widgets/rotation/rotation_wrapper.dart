@@ -45,7 +45,7 @@ class _RotationWrapperState extends State<RotationWrapper> {
 
   void _updateRotation(Offset currentPosition) {
     final newAngle =
-        calculateAngle(Offset(0, 1), dragStartPoint + flipY(currentPosition));
+        calculateAngle(const Offset(0, 1), dragStartPoint + flipY(currentPosition));
 
     setState(() {
       rotation = -newAngle;
@@ -68,9 +68,9 @@ class _RotationWrapperState extends State<RotationWrapper> {
     final dotSize = widget.rect.height * 0.1;
 
     return Transform.rotate(
-      origin: Offset(0, 0),
+      origin: const Offset(0, 0),
       angle: rotation,
-      child: Container(
+      child: SizedBox(
         height: circleRadius * 2,
         width: circleRadius * 2,
         child: Stack(
@@ -109,9 +109,9 @@ class _RotationWrapperState extends State<RotationWrapper> {
                         standardizeOffsetToRotation(details.localPosition));
                   },
                   child: Container(
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       shape: BoxShape.circle,
-                      color: const Color.fromARGB(255, 31, 31, 31),
+                      color: Color.fromARGB(255, 31, 31, 31),
                     ),
                     height: dotSize,
                     width: dotSize,

@@ -18,20 +18,20 @@ class ZoomControls extends StatelessWidget {
             onPressed: () {
               canvasScalingFactorSignal.value -= 20;
             },
-            icon: Icon(
+            icon: const Icon(
               Icons.zoom_out,
               size: 28,
-              color: const Color.fromARGB(255, 22, 22, 22),
+              color: Color.fromARGB(255, 22, 22, 22),
             ),
           ),
           IconButton(
             onPressed: () {
               canvasScalingFactorSignal.value += 20;
             },
-            icon: Icon(
+            icon: const Icon(
               Icons.zoom_in,
               size: 28,
-              color: const Color.fromARGB(255, 22, 22, 22),
+              color: Color.fromARGB(255, 22, 22, 22),
             ),
           ),
         ],

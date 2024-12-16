@@ -65,23 +65,23 @@ class _ProjectFileListVerticalState extends State<ProjectFileListVertical> {
                     ],
                   ),
                 ),
-                SizedBox(height: 16),
-                Padding(
-                  padding: const EdgeInsets.only(left: 16.0, right: 32.0),
+                const SizedBox(height: 16),
+                const Padding(
+                  padding: EdgeInsets.only(left: 16.0, right: 32.0),
                   child: Row(
                     children: [
                       ControlHeader(text: 'Tools'),
-                      const Spacer(),
+                      Spacer(),
                       ToolButton(
                         tool: Tool.canvas,
                         icon: CupertinoIcons.square_split_2x2,
                       ),
-                      const SizedBox(width: 16),
+                      SizedBox(width: 16),
                       ToolButton(
                         tool: Tool.move,
                         icon: CupertinoIcons.move,
                       ),
-                      const SizedBox(width: 16),
+                      SizedBox(width: 16),
                       ToolButton(
                         tool: Tool.rotate,
                         icon: CupertinoIcons.rotate_right,
@@ -94,7 +94,7 @@ class _ProjectFileListVerticalState extends State<ProjectFileListVertical> {
                   padding: const EdgeInsets.only(left: 16.0, right: 32.0),
                   child: Row(
                     children: [
-                      ControlHeader(text: 'Frames'),
+                      const ControlHeader(text: 'Frames'),
                       const Spacer(),
                       InkWell(
                         onTap: () {
@@ -210,14 +210,14 @@ class _ProjectFileListVerticalState extends State<ProjectFileListVertical> {
                           color:
                               isHovered ? Colors.grey[200] : Colors.transparent,
                         ),
-                        child: Row(
+                        child: const Row(
                           children: [
                             Icon(
                               CupertinoIcons.add,
                               size: 16,
-                              color: const Color.fromARGB(255, 26, 26, 26),
+                              color: Color.fromARGB(255, 26, 26, 26),
                             ),
-                            const SizedBox(width: 16),
+                            SizedBox(width: 16),
                             Text('Add Image'),
                           ],
                         ),
@@ -235,20 +235,20 @@ class _ProjectFileListVerticalState extends State<ProjectFileListVertical> {
                         color: const Color.fromARGB(255, 244, 244, 244),
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      child: Icon(
+                      child: const Icon(
                         CupertinoIcons.layers,
-                        color: const Color.fromARGB(255, 29, 29, 29),
+                        color: Color.fromARGB(255, 29, 29, 29),
                       ),
                     ),
                     overlayContent: Padding(
-                      padding: EdgeInsets.all(16.0),
+                      padding: const EdgeInsets.all(16.0),
                       child: SizedBox(
                         width: 280,
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            ControlHeader(text: 'Canvas Controls'),
+                            const ControlHeader(text: 'Canvas Controls'),
                             CheckboxButton(
                               text: 'Use Previos Frame as Reference',
                               value: usePreviousImageAsReference,
@@ -258,7 +258,7 @@ class _ProjectFileListVerticalState extends State<ProjectFileListVertical> {
                               value: showBoundingBorderSignal,
                             ),
                             const SizedBox(height: 32),
-                            ControlHeader(text: 'Image Controls'),
+                            const ControlHeader(text: 'Image Controls'),
                             IconTextButton(
                               onPressed: () {
                                 final images = [...projectSourceFiles.value];
@@ -424,7 +424,7 @@ class _FileItemState extends State<FileItem> {
 
 // TODO(beau): refactor
 class HoverableWidget extends StatefulWidget {
-  HoverableWidget({super.key, required this.builder});
+  const HoverableWidget({super.key, required this.builder});
 
   final Widget Function(bool isHovered) builder;
 
@@ -497,10 +497,10 @@ class OverlayButton extends StatefulWidget {
   final Widget overlayContent;
 
   const OverlayButton({
-    Key? key,
+    super.key,
     required this.buttonChild,
     required this.overlayContent,
-  }) : super(key: key);
+  });
 
   @override
   _OverlayButtonState createState() => _OverlayButtonState();

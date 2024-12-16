@@ -10,10 +10,10 @@ class ControlHeader extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 16.0),
       child: Text(
         text,
-        style: TextStyle(
+        style: const TextStyle(
           fontWeight: FontWeight.w700,
           fontSize: 18,
-          color: const Color.fromARGB(255, 64, 64, 64),
+          color: Color.fromARGB(255, 64, 64, 64),
         ),
       ),
     );

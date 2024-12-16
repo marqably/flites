@@ -46,7 +46,7 @@ class FlitesImage {
     Uint8List rawImage, {
     required double scalingFactor,
     this.originalName,
-  }) : this.displayName = originalName {
+  }) : displayName = originalName {
     image = rawImage;
 
     originalScalingFactor = scalingFactor;

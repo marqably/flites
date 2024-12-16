@@ -1,6 +1,5 @@
 import 'package:flites/states/selected_images_controller.dart';
 import 'package:flites/types/flites_image.dart';
-import 'package:flites/utils/get_flite_image.dart';
 import 'package:flutter/material.dart';
 import 'package:signals/signals_flutter.dart';
 

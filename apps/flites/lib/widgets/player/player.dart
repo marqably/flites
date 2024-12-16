@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flites/states/open_project.dart';
 import 'package:flites/utils/get_flite_image.dart';
-import 'package:flites/widgets/image_editor/image_editor.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -82,11 +81,11 @@ class _PlayerControlsState extends State<PlayerControls> {
           return Row(
             children: [
               const SizedBox(width: 32),
-              Text(
+              const Text(
                 'Playback Speed',
                 style: TextStyle(
                   fontSize: 16,
-                  color: const Color.fromARGB(255, 49, 49, 49),
+                  color: Color.fromARGB(255, 49, 49, 49),
                 ),
               ),
               const SizedBox(width: 16),
@@ -97,10 +96,10 @@ class _PlayerControlsState extends State<PlayerControls> {
                     FilteringTextInputFormatter.digitsOnly,
                   ],
                   textAlign: TextAlign.end,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
-                    color: const Color.fromARGB(255, 32, 32, 32),
+                    color: Color.fromARGB(255, 32, 32, 32),
                   ),
                   decoration: const InputDecoration(
                     suffix: Text(
