@@ -44,8 +44,8 @@ class _RotationWrapperState extends State<RotationWrapper> {
   }
 
   void _updateRotation(Offset currentPosition) {
-    final newAngle =
-        calculateAngle(const Offset(0, 1), dragStartPoint + flipY(currentPosition));
+    final newAngle = calculateAngle(
+        const Offset(0, 1), dragStartPoint + flipY(currentPosition));
 
     setState(() {
       rotation = -newAngle;
@@ -136,6 +136,7 @@ class _RotationWrapperState extends State<RotationWrapper> {
 
 // TODO(beau): refactor
 // Move these functions to a fitting Utils class (as static methods)
+// from Ben: maybe an abstract class
 double longestSide(Offset offset) {
   return offset.dx.abs() > offset.dy.abs() ? offset.dx.abs() : offset.dy.abs();
 }

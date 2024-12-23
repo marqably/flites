@@ -104,7 +104,7 @@ class GenerateSprite {
       return;
     }
 
-    // If we get the end size here, we can reverse engeneer the rest. If both
+    // If we get the end size here, we can reverse engineer the rest. If both
     // width and height are given, we can just use that. If only one is given,
     // we can calculate the other, by using the max value from the first to the
     // last point of all images along this axis.
@@ -230,31 +230,32 @@ class GenerateSprite {
 
     if (constraints is SpriteSizeConstrained) {
       /// Then we know that in the settings both height and width were set
-      final settingContraints = settings.constraints as SpriteSizeConstrained;
+      final settingConstraints = settings.constraints as SpriteSizeConstrained;
 
       size = Size(
-        settingContraints.widthPx,
-        settingContraints.heightPx,
+        settingConstraints.widthPx,
+        settingConstraints.heightPx,
       );
     }
 
     if (constraints is SpriteWidthConstrained) {
-      final settingContraints = settings.constraints as SpriteWidthConstrained;
+      final settingConstraints = settings.constraints as SpriteWidthConstrained;
 
       size = Size(
-        settingContraints.widthPx,
-        (settingContraints.widthPx / aspectRatioOfAllSprites) +
+        settingConstraints.widthPx,
+        (settingConstraints.widthPx / aspectRatioOfAllSprites) +
             settings.verticalMargin,
       );
     }
 
     if (constraints is SpriteHeightConstrained) {
-      final settingContraints = settings.constraints as SpriteHeightConstrained;
+      final settingConstraints =
+          settings.constraints as SpriteHeightConstrained;
 
       size = Size(
-        (settingContraints.heightPx * aspectRatioOfAllSprites) +
+        (settingConstraints.heightPx * aspectRatioOfAllSprites) +
             settings.horizontalMargin,
-        settingContraints.heightPx,
+        settingConstraints.heightPx,
       );
     }
 
