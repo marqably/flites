@@ -1,4 +1,6 @@
-import 'package:flites/widgets/error_box/error_box.dart';
+import 'dart:typed_data';
+
+import 'package:flites/utils/image_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:super_drag_and_drop/super_drag_and_drop.dart';
 
@@ -36,8 +38,11 @@ class _FileDropAreaState extends State<FileDropArea> {
     return DropRegion(
       // Formats this region can accept.
       formats: supportedFormats,
-      hitTestBehavior: HitTestBehavior.opaque,
+      hitTestBehavior: HitTestBehavior.deferToChild,
       onDropOver: (event) {
+        // TODO(beau): refactor
+        // Move to service class
+
         // You can inspect local data here, as well as formats of each item.
         // However on certain platforms (mobile / web) the actual data is
         // only available when the drop is accepted (onPerformDrop).
@@ -56,67 +61,70 @@ class _FileDropAreaState extends State<FileDropArea> {
         }
       },
       onPerformDrop: (event) async {
+        // TODO(beau): refactor
+        // Move to service class
+
         // reset the error messages
         setState(() => errors = []);
 
-        // add all files
-        for (int i = 0; i < event.session.items.length; i++) {
-          final item = event.session.items[i];
-          final reader = item.dataReader!;
+        // final rawImages = <Uint8List>[];
+        final items = event.session.items;
 
-          if (reader.canProvide(Formats.png)) {
-            reader.getFile(Formats.png, (file) async {
-              final stream = file.getStream();
-              final data = await stream.last;
+        final imagesAndNames =
+            (await Future.wait(items.map(ImageUtils.rawImageFromDropData)))
+                .whereType<RawImageAndName>()
+                .where((e) => e.image != null && isPng(e.image!))
+                .toList();
 
-              // create a new FlitesImage
-              try {
-                final flitesImage = FlitesImage(data);
+        if (imagesAndNames.isNotEmpty) {
+          final scalingFactor = ImageUtils.getScalingFactorForMultipleImages(
+            images: imagesAndNames.map((e) => e.image!).toList(),
+            sizeLongestSideOnCanvas: defaultSizeOnCanvas,
+          );
 
-                // add data
-                projectSourceFiles.value = [
-                  ...projectSourceFiles.value,
-                  flitesImage,
-                ];
-              } catch (e) {
-                setState(() => errors.add('Error reading file!\n$e'));
-              }
-            }, onError: (error) {
-              setState(() => errors.add('Error reading file!\n$error'));
-            });
+          imagesAndNames.sort((a, b) {
+            if (a.name != null && b.name != null) {
+              return a.name!.compareTo(b.name!);
+            }
+
+            return 0;
+          });
+
+          for (final img in imagesAndNames) {
+            final flitesImage = FlitesImage.scaled(img.image!,
+                scalingFactor: scalingFactor, originalName: img.name);
+
+            projectSourceFiles.value = [
+              ...projectSourceFiles.value,
+              flitesImage,
+            ];
           }
         }
       },
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // errors
-          ...(errors.map((error) => ErrorBox(errorMessage: error))),
 
-          // drop area
-          Container(
-            padding: const EdgeInsets.all(40),
-            margin: const EdgeInsets.symmetric(vertical: 16),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(
-                color: Theme.of(context).colorScheme.primary,
-                width: 2,
-              ),
-            ),
-            child: Center(
-              child: Text('Drop files here!',
-                  style: TextStyle(
-                    fontSize: 24,
-                    color: Theme.of(context).colorScheme.primary,
-                  )),
-            ),
-          ),
-
-          // child
-          widget.child,
-        ],
-      ),
+      child: widget.child,
     );
   }
+}
+
+// TODO(beau): refactor
+// Move to fitting utils file
+bool isPng(Uint8List data) {
+  // PNG signature
+  const List<int> pngSignature = [
+    0x89,
+    0x50,
+    0x4E,
+    0x47,
+    0x0D,
+    0x0A,
+    0x1A,
+    0x0A
+  ];
+
+  // Check if data has enough length and starts with the PNG signature
+  return data.length >= 8 &&
+      data
+          .sublist(0, 8)
+          .every((byte) => byte == pngSignature[data.indexOf(byte)]);
 }

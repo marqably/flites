@@ -11,9 +11,6 @@ class ContainerBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      // constraints: const BoxConstraints(
-      // maxWidth: 1000,
-      // ),
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: child,
     );

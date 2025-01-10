@@ -1,40 +1,72 @@
 import 'dart:math';
-import 'dart:typed_data';
+import 'package:flites/utils/image_utils.dart';
+import 'package:flites/widgets/image_editor/image_editor.dart';
 import 'package:flutter/material.dart';
-
+// import 'dart:ui' as ui;
+import 'package:flutter/services.dart';
+import 'package:image/image.dart' as img;
 import '../states/open_project.dart';
+
+// TODO(beau): refactor
+// Move to constants file
+/// The size a picture should have along its longer side when displayed on the
+/// canvas
+const defaultSizeOnCanvas = 0.5;
 
 /// A working file type we use to work with this image
 class FlitesImage {
   late Uint8List image;
   late String id;
-  String? name;
-  Size? originalSize;
-  Size? size;
-  double scalingFactor = 1;
-  EdgeInsets margin = const EdgeInsets.all(0);
+  String? displayName;
+  String? originalName;
 
-  FlitesImage(Uint8List rawImage) {
-    initImage(rawImage);
+  /// The width of the image on the canvas.
+  late double widthOnCanvas;
+
+  /// The scaling factor that was used when importing this image. Stored such
+  /// that the user can reset to initial state.
+  double? originalScalingFactor;
+
+  double get heightOnCanvas => widthOnCanvas / aspectRatio;
+  double get aspectRatio => ImageUtils.aspectRatioOfRawImage(image);
+  Offset get center => Offset(positionOnCanvas.dx + widthOnCanvas / 2,
+      positionOnCanvas.dy + heightOnCanvas / 2);
+
+  bool get isAtOriginalSize => originalScalingFactor == null
+      ? true
+      : widthOnCanvas ==
+          ImageUtils.sizeOfRawImage(image).width * originalScalingFactor!;
+
+  /// The position of the sprite on the canvas
+  late Offset positionOnCanvas;
+
+  double rotation = 0;
+
+  FlitesImage.scaled(
+    Uint8List rawImage, {
+    required double scalingFactor,
+    this.originalName,
+  }) : displayName = originalName {
+    image = rawImage;
+
+    originalScalingFactor = scalingFactor;
+
+    final currentCanvasSize = canvasSizePixelSignal.value;
+    final canvasScalingFactor = canvasScalingFactorSignal.value;
+
+    widthOnCanvas = ImageUtils.sizeOfRawImage(rawImage).width *
+        scalingFactor *
+        (currentCanvasSize.width / canvasScalingFactor);
+
+    final initialCoordinates = ImageUtils.getCenteredCoordinatesForPicture(
+      Size(widthOnCanvas, heightOnCanvas),
+    );
+
+    positionOnCanvas = Offset(initialCoordinates.dx, initialCoordinates.dy);
 
     // generate a random id to identify this image
     id =
         '${DateTime.now().millisecondsSinceEpoch}-${0 + Random().nextInt(14000)}-${0 + Random().nextInt(15000)}';
-  }
-
-  /// tries to initialize the image object. If not possible, throws an exception
-  void initImage(Uint8List rawImage) {
-    // convert image to image object
-    // final imageWork = img.decodeImage(rawImage);
-
-    // if (imageWork == null) {
-    //   throw Exception('Could not decode image');
-    // }
-
-    image = rawImage;
-
-    // originalSize = Size(imageWork.width.toDouble(), imageWork.height.toDouble());
-    // size = originalSize;
   }
 
   /// Allows us to make changes, that will automatically be saved in the global project source file signal
@@ -43,18 +75,6 @@ class FlitesImage {
     double? scalingFactor,
     EdgeInsets? margin,
   }) {
-    if (size != null) {
-      this.size = size;
-    }
-
-    if (margin != null) {
-      this.margin = margin;
-    }
-
-    if (scalingFactor != null) {
-      this.scalingFactor = scalingFactor;
-    }
-
     final newImage = this;
 
     // now save the changes in the project source files
@@ -68,4 +88,42 @@ class FlitesImage {
     }
     projectSourceFiles.value = [...images];
   }
+
+  void trimImage() async {
+    image = await rotateImage(image, rotation);
+
+    rotation = 0;
+  }
+}
+
+// TODO(beau): refactor
+// Move to utils class
+Future<Uint8List> rotateImage(Uint8List pngBytes, double angleRadians) async {
+  // Decode the PNG to an image object.
+  final originalImage = img.decodePng(pngBytes);
+
+  if (originalImage == null) {
+    throw Exception('Unable to decode PNG');
+  }
+
+  final longestSide = max(originalImage.width, originalImage.height) * 2;
+
+  final canvas = img.Image(
+    width: longestSide,
+    height: longestSide,
+    numChannels: 4,
+    format: img.Format.uint8,
+  );
+
+  // Rotate the image using the provided angle.
+  final rotatedImage =
+      img.copyRotate(originalImage, angle: angleRadians * 180 / pi);
+
+  final composite = img.compositeImage(canvas, rotatedImage);
+
+  final trimmedImage = img.trim(composite);
+
+  // Encode the result back to PNG and return.
+  final resultBytes = Uint8List.fromList(img.encodePng(trimmedImage));
+  return resultBytes;
 }

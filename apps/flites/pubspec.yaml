@@ -41,6 +41,8 @@ dependencies:
   flutter_reorderable_grid_view: ^5.3.2
   image: ^4.3.0
   file_saver: ^0.2.14
+  flutter_box_transform: ^0.4.6
+  file_picker: ^8.1.4
 
 dev_dependencies:
   flutter_test:
@@ -64,9 +66,9 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
-  #   - images/a_dot_ham.jpeg
+  assets:
+    - assets/images/
+      #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

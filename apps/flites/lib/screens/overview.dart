@@ -1,8 +1,11 @@
+import 'package:flites/widgets/blocking_widget/blocking_container.dart';
+import 'package:flites/widgets/canvas_controls/canvas_controls.dart';
+import 'package:flites/widgets/canvas_controls/zoom_controls.dart';
 import 'package:flites/widgets/image_editor/image_editor.dart';
-import 'package:flites/widgets/toolbar/image_size_settings.dart';
+import 'package:flites/widgets/project_file_list/project_file_list_vertical.dart';
 import 'package:flutter/material.dart';
-import '../widgets/project_file_list/project_file_list.dart';
-import '../widgets/toolbar/toolbar.dart';
+import '../states/key_events.dart';
+import '../widgets/player/player.dart';
 import '../widgets/upload_area/file_drop_area.dart';
 
 class Overview extends StatefulWidget {
@@ -14,42 +17,43 @@ class Overview extends StatefulWidget {
 
 class _OverviewState extends State<Overview> {
   @override
-  Widget build(BuildContext context) {
-    return const Column(
-      mainAxisSize: MainAxisSize.max,
-      children: [
-        // main interface
-        Expanded(
-          child: Row(
-            children: [
-              // image editor
-              Expanded(
-                flex: 3,
-                child: ImageEditor(),
-              ),
+  void initState() {
+    super.initState();
 
-              // toolbar
-              SizedBox(
-                width: 400,
-                child: Column(
+    ModifierController.listenToGlobalKeyboardEvents();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return const FileDropArea(
+      child: Stack(
+        alignment: Alignment.bottomCenter,
+        children: [
+          Row(
+            children: [
+              ProjectFileListVertical(),
+              Expanded(
+                child: Stack(
                   children: [
-                    ImageSizeSettings(),
-                    Toolbar(),
+                    ImageEditor(),
+                    Positioned(
+                      right: 32,
+                      bottom: 32,
+                      child: ZoomControls(),
+                    ),
                   ],
                 ),
               ),
+              CanvasControls()
             ],
           ),
-        ),
-
-        // file overview
-        SizedBox(
-          width: double.infinity,
-          child: FileDropArea(
-            child: SizedBox(height: 150, child: ProjectFileList()),
+          BlockingContainer(),
+          Positioned(
+            bottom: 64,
+            child: PlayerControls(),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
