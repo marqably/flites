@@ -7,6 +7,8 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flites/widgets/image_editor/image_editor.dart';
 import 'package:super_drag_and_drop/super_drag_and_drop.dart';
 
+/// A utility class for working with images.
+/// Holds methods for scaling images, getting image sizes, and more.
 class ImageUtils {
   static double getScalingFactorForMultipleImages({
     required List<Uint8List> images,

@@ -1,10 +1,10 @@
 import 'dart:math';
+import 'package:flites/utils/image_processing_utils.dart';
 import 'package:flites/utils/image_utils.dart';
 import 'package:flites/widgets/image_editor/image_editor.dart';
 import 'package:flutter/material.dart';
 // import 'dart:ui' as ui;
 import 'package:flutter/services.dart';
-import 'package:image/image.dart' as img;
 import '../states/open_project.dart';
 
 /// A working file type we use to work with this image
@@ -84,40 +84,8 @@ class FlitesImage {
   }
 
   void trimImage() async {
-    image = await rotateImage(image, rotation);
+    image = await ImageProcessingUtils.rotateImage(image, rotation);
 
     rotation = 0;
   }
-}
-
-// TODO(beau): refactor
-// Move to utils class
-Future<Uint8List> rotateImage(Uint8List pngBytes, double angleRadians) async {
-  // Decode the PNG to an image object.
-  final originalImage = img.decodePng(pngBytes);
-
-  if (originalImage == null) {
-    throw Exception('Unable to decode PNG');
-  }
-
-  final longestSide = max(originalImage.width, originalImage.height) * 2;
-
-  final canvas = img.Image(
-    width: longestSide,
-    height: longestSide,
-    numChannels: 4,
-    format: img.Format.uint8,
-  );
-
-  // Rotate the image using the provided angle.
-  final rotatedImage =
-      img.copyRotate(originalImage, angle: angleRadians * 180 / pi);
-
-  final composite = img.compositeImage(canvas, rotatedImage);
-
-  final trimmedImage = img.trim(composite);
-
-  // Encode the result back to PNG and return.
-  final resultBytes = Uint8List.fromList(img.encodePng(trimmedImage));
-  return resultBytes;
 }
