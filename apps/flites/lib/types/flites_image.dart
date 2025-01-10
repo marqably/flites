@@ -3,7 +3,6 @@ import 'package:flites/utils/image_processing_utils.dart';
 import 'package:flites/utils/image_utils.dart';
 import 'package:flites/widgets/image_editor/image_editor.dart';
 import 'package:flutter/material.dart';
-// import 'dart:ui' as ui;
 import 'package:flutter/services.dart';
 import '../states/open_project.dart';
 
