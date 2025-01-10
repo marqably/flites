@@ -1,4 +1,5 @@
 import 'package:file_picker/file_picker.dart';
+import 'package:flites/constants/image_constants.dart';
 import 'package:flites/states/open_project.dart';
 import 'package:flites/states/selected_images_controller.dart';
 import 'package:flites/types/flites_image.dart';

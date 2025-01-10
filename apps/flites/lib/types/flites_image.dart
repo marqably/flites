@@ -7,12 +7,6 @@ import 'package:flutter/services.dart';
 import 'package:image/image.dart' as img;
 import '../states/open_project.dart';
 
-// TODO(beau): refactor
-// Move to constants file
-/// The size a picture should have along its longer side when displayed on the
-/// canvas
-const defaultSizeOnCanvas = 0.5;
-
 /// A working file type we use to work with this image
 class FlitesImage {
   late Uint8List image;

@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:flites/constants/image_constants.dart';
 import 'package:flites/utils/image_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:super_drag_and_drop/super_drag_and_drop.dart';
