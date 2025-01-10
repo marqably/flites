@@ -111,7 +111,7 @@ class _ImageEditorState extends State<ImageEditor> {
 
                   scale = scale + pointerSignal.scrollDelta.dy / 1000;
 
-                  final isInreasingSize = pointerSignal.scrollDelta.dy < 0;
+                  final isIncreasingSize = pointerSignal.scrollDelta.dy < 0;
 
                   final canvasCenter = Offset(
                     constraints.maxWidth / 2,
@@ -125,10 +125,10 @@ class _ImageEditorState extends State<ImageEditor> {
                       canvasCenter - pointerSignal.localPosition;
 
                   canvasPositionSignal.value -=
-                      offsetFromCenter * (isInreasingSize ? -0.05 : 0.05);
+                      offsetFromCenter * (isIncreasingSize ? -0.05 : 0.05);
 
                   canvasScalingFactorSignal.value =
-                      canvasScalingFactor * (isInreasingSize ? 1.05 : 0.95);
+                      canvasScalingFactor * (isIncreasingSize ? 1.05 : 0.95);
 
                   setState(() {});
                 }
@@ -168,7 +168,8 @@ class _ImageEditorState extends State<ImageEditor> {
                     // Bounding Box
                     if (boundingBox != null && showBoundingBorder)
                       Positioned(
-                        key: ValueKey('${boundingBox.hashCode}${currentSelection?.rotation}'),
+                        key: ValueKey(
+                            '${boundingBox.hashCode}${currentSelection?.rotation}'),
                         left: (boundingBox.position.dx * canvasScalingFactor) +
                             canvasPosition.dx,
                         top: (boundingBox.position.dy * canvasScalingFactor) +
