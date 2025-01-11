@@ -2,6 +2,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flites/constants/image_constants.dart';
 import 'package:flites/states/open_project.dart';
 import 'package:flites/states/selected_images_controller.dart';
+import 'package:flites/states/tool_controller.dart';
 import 'package:flites/types/flites_image.dart';
 import 'package:flites/utils/image_utils.dart';
 import 'package:flites/widgets/buttons/icon_text_button.dart';
@@ -12,17 +13,6 @@ import 'package:flites/widgets/upload_area/file_drop_area.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:signals/signals_flutter.dart';
-
-// TODO(beau): refactor
-enum Tool {
-  canvas,
-  move,
-  rotate,
-}
-
-// TODO(beau): refactor
-final selectedToolSignal = signal(Tool.canvas);
-final hoveredToolSignal = signal<Tool?>(null);
 
 class ProjectFileListVertical extends StatefulWidget {
   const ProjectFileListVertical({super.key});
@@ -457,18 +447,22 @@ class ToolButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Watch(
       (context) {
-        final selectedTool = selectedToolSignal.value;
-        final hoveredTool = hoveredToolSignal.value;
+        final selectedTool = toolController.selectedTool;
+        final hoveredTool = toolController.hoveredTool;
 
         final isSelected = selectedTool == tool;
         final isHovered = hoveredTool == tool;
 
         return InkWell(
           onHover: (value) {
-            hoveredToolSignal.value = value ? tool : null;
+            if (value) {
+              toolController.setHoveredTool(tool);
+            } else {
+              toolController.setHoveredTool(null);
+            }
           },
           onTap: () {
-            selectedToolSignal.value = tool;
+            toolController.selectTool(tool);
           },
           child: Container(
             padding: const EdgeInsets.all(6),

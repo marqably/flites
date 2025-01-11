@@ -1,8 +1,8 @@
+import 'package:flites/states/canvas_controller.dart';
 import 'package:flites/states/key_events.dart';
 import 'package:flites/states/selected_images_controller.dart';
+import 'package:flites/states/tool_controller.dart';
 import 'package:flites/widgets/canvas_controls/canvas_controls.dart';
-import 'package:flites/states/canvas_controller.dart';
-import 'package:flites/widgets/project_file_list/project_file_list_vertical.dart';
 import 'package:flites/widgets/rotation/rotation_wrapper.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -53,7 +53,7 @@ class _ImageEditorState extends State<ImageEditor> {
 
             final rotationAngle = rotationSignal.value ?? 0;
 
-            final selectedTool = selectedToolSignal.value;
+            final selectedTool = toolController.selectedTool;
 
             final inCanvasMode = selectedTool == Tool.canvas;
             final inMoveMode = selectedTool == Tool.move;
