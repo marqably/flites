@@ -4,7 +4,7 @@ import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:file_picker/file_picker.dart';
-import 'package:flites/widgets/image_editor/image_editor.dart';
+import 'package:flites/states/canvas_controller.dart';
 import 'package:super_drag_and_drop/super_drag_and_drop.dart';
 
 /// A utility class for working with images.
@@ -63,8 +63,8 @@ class ImageUtils {
   }
 
   static Offset getCenteredCoordinatesForPicture(Size size) {
-    final currentCanvasSize = canvasSizePixelSignal.value;
-    final canvasScalingFactor = canvasScalingFactorSignal.value;
+    final currentCanvasSize = canvasController.canvasSizePixel;
+    final canvasScalingFactor = canvasController.canvasScalingFactor;
 
     return Offset(
       (((currentCanvasSize.width / canvasScalingFactor) - size.width) / 2),

@@ -7,7 +7,7 @@ import 'package:flites/utils/image_utils.dart';
 import 'package:flites/widgets/buttons/icon_text_button.dart';
 import 'package:flites/widgets/controls/checkbox_button.dart';
 import 'package:flites/widgets/controls/control_header.dart';
-import 'package:flites/widgets/image_editor/image_editor.dart';
+import 'package:flites/states/canvas_controller.dart';
 import 'package:flites/widgets/upload_area/file_drop_area.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -256,7 +256,7 @@ class _ProjectFileListVerticalState extends State<ProjectFileListVertical> {
                             ),
                             CheckboxButton(
                               text: 'Show bounding border',
-                              value: showBoundingBorderSignal,
+                              value: canvasController.showBoundingBorderSignal,
                             ),
                             const SizedBox(height: 32),
                             const ControlHeader(text: 'Image Controls'),

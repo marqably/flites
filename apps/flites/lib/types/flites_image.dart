@@ -1,7 +1,7 @@
 import 'dart:math';
 import 'package:flites/utils/image_processing_utils.dart';
 import 'package:flites/utils/image_utils.dart';
-import 'package:flites/widgets/image_editor/image_editor.dart';
+import 'package:flites/states/canvas_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../states/open_project.dart';
@@ -44,8 +44,8 @@ class FlitesImage {
 
     originalScalingFactor = scalingFactor;
 
-    final currentCanvasSize = canvasSizePixelSignal.value;
-    final canvasScalingFactor = canvasScalingFactorSignal.value;
+    final currentCanvasSize = canvasController.canvasSizePixel;
+    final canvasScalingFactor = canvasController.canvasScalingFactor;
 
     widthOnCanvas = ImageUtils.sizeOfRawImage(rawImage).width *
         scalingFactor *
