@@ -1,0 +1,80 @@
+import 'package:flutter/material.dart';
+
+class OverlayButton extends StatefulWidget {
+  final Widget buttonChild;
+  final Widget overlayContent;
+
+  const OverlayButton({
+    super.key,
+    required this.buttonChild,
+    required this.overlayContent,
+  });
+
+  @override
+  _OverlayButtonState createState() => _OverlayButtonState();
+}
+
+class _OverlayButtonState extends State<OverlayButton> {
+  final LayerLink _layerLink = LayerLink();
+  OverlayEntry? _overlayEntry;
+
+  void _showOverlay() {
+    // If overlay is already showing, do nothing
+    if (_overlayEntry != null) return;
+
+    _overlayEntry = OverlayEntry(
+      builder: (context) => Stack(
+        children: [
+          // Dismissible area
+          GestureDetector(
+            onTap: _hideOverlay, // Hide overlay when tapped outside
+            behavior:
+                HitTestBehavior.opaque, // Ensures tap is registered anywhere
+            child: Container(
+              color: Colors.transparent, // Transparent overlay background
+            ),
+          ),
+          // Positioned overlay
+          Positioned(
+            child: CompositedTransformFollower(
+              link: _layerLink,
+              showWhenUnlinked: false,
+              followerAnchor: Alignment.bottomLeft,
+              offset: const Offset(32, 0),
+              child: Material(
+                elevation: 4.0,
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(8.0),
+                child: widget.overlayContent,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    Overlay.of(context).insert(_overlayEntry!);
+  }
+
+  void _hideOverlay() {
+    _overlayEntry?.remove();
+    _overlayEntry = null;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return CompositedTransformTarget(
+      link: _layerLink,
+      child: InkWell(
+        onTap: () {
+          if (_overlayEntry == null) {
+            _showOverlay();
+          } else {
+            _hideOverlay();
+          }
+        },
+        child: widget.buttonChild,
+      ),
+    );
+  }
+}
