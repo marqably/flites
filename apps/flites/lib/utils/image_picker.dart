@@ -2,7 +2,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flites/constants/image_constants.dart';
 import 'package:flites/types/flites_image.dart';
 import 'package:flites/utils/image_utils.dart';
-import 'package:flites/widgets/upload_area/file_drop_area.dart';
+import 'package:flites/utils/png_utils.dart';
 
 class ImagePickerService {
   Future<List<FlitesImage>> pickAndProcessImages() async {
@@ -21,7 +21,7 @@ class ImagePickerService {
     final imagesAndNames = (await Future.wait(
             result.files.map(ImageUtils.rawImageFroMPlatformFile)))
         .whereType<RawImageAndName>()
-        .where((e) => e.image != null && isPng(e.image!))
+        .where((e) => e.image != null && PngUtils.isPng(e.image!))
         .toList();
 
     // If no valid images were found, return empty list
