@@ -204,7 +204,7 @@ class _ProjectFileListVerticalState extends State<ProjectFileListVertical> {
                           children: [
                             const ControlHeader(text: 'Canvas Controls'),
                             CheckboxButton(
-                              text: 'Use Previos Frame as Reference',
+                              text: 'Use Previous Frame as Reference',
                               value: usePreviousImageAsReference,
                             ),
                             CheckboxButton(
