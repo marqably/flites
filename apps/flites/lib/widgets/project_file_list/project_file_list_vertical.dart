@@ -1,11 +1,9 @@
-import 'package:file_picker/file_picker.dart';
-import 'package:flites/constants/image_constants.dart';
 import 'package:flites/states/canvas_controller.dart';
 import 'package:flites/states/open_project.dart';
 import 'package:flites/states/selected_images_controller.dart';
 import 'package:flites/states/tool_controller.dart';
 import 'package:flites/types/flites_image.dart';
-import 'package:flites/utils/image_utils.dart';
+import 'package:flites/utils/image_picker.dart';
 import 'package:flites/widgets/buttons/icon_text_button.dart';
 import 'package:flites/widgets/controls/checkbox_button.dart';
 import 'package:flites/widgets/controls/control_header.dart';
@@ -13,7 +11,6 @@ import 'package:flites/widgets/project_file_list/file_item.dart';
 import 'package:flites/widgets/project_file_list/hoverable_widget.dart';
 import 'package:flites/widgets/project_file_list/overlay_button.dart';
 import 'package:flites/widgets/project_file_list/tool_button.dart';
-import 'package:flites/widgets/upload_area/file_drop_area.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:signals/signals_flutter.dart';
@@ -143,51 +140,13 @@ class _ProjectFileListVerticalState extends State<ProjectFileListVertical> {
                   builder: (isHovered) {
                     return GestureDetector(
                       onTap: () async {
-                        // TODO(beau): refactor, this logic should not live in a widget file
-                        FilePickerResult? result =
-                            await FilePicker.platform.pickFiles(
-                          allowMultiple: true,
-                          withData: true,
-                          type: FileType.custom,
-                          allowedExtensions: ['png'],
-                        );
-
-                        if (result == null) {
-                          return;
-                        }
-
-                        final imagesAndNames = (await Future.wait(result.files
-                                .map(ImageUtils.rawImageFroMPlatformFile)))
-                            .whereType<RawImageAndName>()
-                            .where((e) => e.image != null && isPng(e.image!))
-                            .toList();
-
-                        if (imagesAndNames.isNotEmpty) {
-                          final scalingFactor =
-                              ImageUtils.getScalingFactorForMultipleImages(
-                            images:
-                                imagesAndNames.map((e) => e.image!).toList(),
-                            sizeLongestSideOnCanvas: defaultSizeOnCanvas,
-                          );
-
-                          imagesAndNames.sort((a, b) {
-                            if (a.name != null && b.name != null) {
-                              return a.name!.compareTo(b.name!);
-                            }
-
-                            return 0;
-                          });
-
-                          for (final img in imagesAndNames) {
-                            final flitesImage = FlitesImage.scaled(img.image!,
-                                scalingFactor: scalingFactor,
-                                originalName: img.name);
-
-                            projectSourceFiles.value = [
-                              ...projectSourceFiles.value,
-                              flitesImage,
-                            ];
-                          }
+                        final newImages =
+                            await imagePickerService.pickAndProcessImages();
+                        if (newImages.isNotEmpty) {
+                          projectSourceFiles.value = [
+                            ...projectSourceFiles.value,
+                            ...newImages,
+                          ];
                         }
                       },
                       child: Container(
