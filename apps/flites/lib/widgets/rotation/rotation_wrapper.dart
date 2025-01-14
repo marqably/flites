@@ -1,4 +1,6 @@
 import 'dart:math';
+import 'package:flites/states/open_project.dart';
+import 'package:flites/utils/get_flite_image.dart';
 import 'package:flutter/material.dart';
 
 class RotationWrapper extends StatefulWidget {
@@ -67,61 +69,105 @@ class _RotationWrapperState extends State<RotationWrapper> {
   Widget build(BuildContext context) {
     final dotSize = widget.rect.height * 0.1;
 
-    return Transform.rotate(
-      origin: const Offset(0, 0),
-      angle: rotation,
-      child: SizedBox(
-        height: circleRadius * 2,
-        width: circleRadius * 2,
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            ConstrainedBox(
-              constraints: BoxConstraints(
-                maxWidth: widget.rect.width,
-                maxHeight: widget.rect.height,
-              ),
-              child: widget.child,
-            ),
-            Container(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: const Color.fromARGB(255, 102, 102, 102),
-                  width: 2,
-                ),
-              ),
-              width: circleRadius * 2 - (dotSize * 2 / 3),
-            ),
-            Positioned(
-              top: 0,
-              child: MouseRegion(
-                cursor: SystemMouseCursors.precise,
-                child: GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onPanStart: (details) {},
-                  onPanUpdate: (details) {
-                    _updateRotation(
-                        standardizeOffsetToRotation(details.localPosition));
-                  },
-                  onPanEnd: (details) {
-                    updateStartPoint(
-                        standardizeOffsetToRotation(details.localPosition));
-                  },
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Color.fromARGB(255, 31, 31, 31),
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(bottom: 50),
+          child: Transform.rotate(
+            origin: const Offset(0, 0),
+            angle: rotation,
+            child: SizedBox(
+              height: circleRadius * 2,
+              width: circleRadius * 2,
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  ConstrainedBox(
+                    constraints: BoxConstraints(
+                      maxWidth: widget.rect.width,
+                      maxHeight: widget.rect.height,
                     ),
-                    height: dotSize,
-                    width: dotSize,
+                    child: widget.child,
                   ),
-                ),
+                  Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: const Color.fromARGB(255, 102, 102, 102),
+                        width: 2,
+                      ),
+                    ),
+                    width: circleRadius * 2 - (dotSize * 2 / 3),
+                  ),
+                  Positioned(
+                    top: 0,
+                    child: MouseRegion(
+                      cursor: SystemMouseCursors.precise,
+                      child: GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onPanStart: (details) {},
+                        onPanUpdate: (details) {
+                          _updateRotation(standardizeOffsetToRotation(
+                              details.localPosition));
+                        },
+                        onPanEnd: (details) {
+                          updateStartPoint(standardizeOffsetToRotation(
+                              details.localPosition));
+                        },
+                        child: Container(
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Color.fromARGB(255, 31, 31, 31),
+                          ),
+                          height: dotSize,
+                          width: dotSize,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
-          ],
+          ),
         ),
-      ),
+        if (rotation != 0)
+          Positioned(
+            bottom: 0,
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(32),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              child: Row(
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.undo),
+                    onPressed: () {
+                      setState(() {
+                        rotation = 0;
+                      });
+                      widget.onRotate?.call(0);
+                      dragStartPoint = Offset(0, circleRadius);
+                    },
+                  ),
+                  const SizedBox(width: 8),
+                  IconButton(
+                    icon: const Icon(Icons.check),
+                    onPressed: () {
+                      final currentImage = getFliteImage(selectedImage.value);
+
+                      if (currentImage != null) {
+                        currentImage.trimImage();
+                      }
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ),
+      ],
     );
   }
 
