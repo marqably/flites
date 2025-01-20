@@ -1,3 +1,4 @@
+import 'package:flites/main.dart';
 import 'package:flites/states/tool_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:signals/signals_flutter.dart';
@@ -32,16 +33,18 @@ class ToolButton extends StatelessWidget {
             padding: const EdgeInsets.all(6),
             decoration: BoxDecoration(
               color: isSelected
-                  ? const Color.fromARGB(255, 96, 96, 96)
+                  ? context.colors.surfaceContainerHigh
                   : isHovered
-                      ? const Color.fromARGB(255, 185, 185, 185)
-                      : const Color.fromARGB(0, 19, 255, 188),
+                      ? context.colors.surfaceTint
+                      : Colors.transparent,
               borderRadius: BorderRadius.circular(4),
             ),
             child: Icon(
               icon,
               size: 16,
-              color: isSelected ? Colors.white : Colors.black,
+              color: isSelected
+                  ? context.colors.surfaceContainerLowest
+                  : context.colors.onSurface,
             ),
           ),
         );

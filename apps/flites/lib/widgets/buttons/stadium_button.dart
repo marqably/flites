@@ -1,3 +1,4 @@
+import 'package:flites/main.dart';
 import 'package:flutter/material.dart';
 
 class StadiumButton extends StatelessWidget {
@@ -25,13 +26,13 @@ class StadiumButton extends StatelessWidget {
         width: width,
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: color ?? const Color.fromARGB(255, 15, 15, 15),
+          color: color ?? context.colors.onSurface,
           borderRadius: BorderRadius.circular(32),
         ),
         child: Text(
           text,
-          style: const TextStyle(
-            color: Colors.white,
+          style: TextStyle(
+            color: context.colors.surfaceContainerLowest,
           ),
         ),
       ),

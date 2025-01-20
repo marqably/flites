@@ -1,3 +1,4 @@
+import 'package:flites/main.dart';
 import 'package:flites/states/canvas_controller.dart';
 import 'package:flutter/material.dart';
 
@@ -9,7 +10,7 @@ class ZoomControls extends StatelessWidget {
     return Container(
       // width: 64,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.colors.surfaceContainerLowest,
         borderRadius: BorderRadius.circular(32),
       ),
       child: Column(
@@ -18,20 +19,20 @@ class ZoomControls extends StatelessWidget {
             onPressed: () {
               canvasController.updateCanvasScalingFactor(-20);
             },
-            icon: const Icon(
+            icon: Icon(
               Icons.zoom_out,
               size: 28,
-              color: Color.fromARGB(255, 22, 22, 22),
+              color: context.colors.surfaceContainer,
             ),
           ),
           IconButton(
             onPressed: () {
               canvasController.updateCanvasScalingFactor(20);
             },
-            icon: const Icon(
+            icon: Icon(
               Icons.zoom_in,
               size: 28,
-              color: Color.fromARGB(255, 22, 22, 22),
+              color: context.colors.surfaceContainer,
             ),
           ),
         ],

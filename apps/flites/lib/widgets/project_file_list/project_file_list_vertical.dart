@@ -1,3 +1,4 @@
+import 'package:flites/main.dart';
 import 'package:flites/states/canvas_controller.dart';
 import 'package:flites/states/open_project.dart';
 import 'package:flites/states/selected_images_controller.dart';
@@ -39,7 +40,7 @@ class _ProjectFileListVerticalState extends State<ProjectFileListVertical> {
           },
           child: Container(
             width: 300,
-            color: Colors.white,
+            color: context.colors.surfaceContainerLowest,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -161,18 +162,19 @@ class _ProjectFileListVerticalState extends State<ProjectFileListVertical> {
                         ),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(8),
-                          color:
-                              isHovered ? Colors.grey[200] : Colors.transparent,
+                          color: isHovered
+                              ? context.colors.surface
+                              : Colors.transparent,
                         ),
-                        child: const Row(
+                        child: Row(
                           children: [
                             Icon(
                               CupertinoIcons.add,
                               size: 16,
-                              color: Color.fromARGB(255, 26, 26, 26),
+                              color: context.colors.surfaceDim,
                             ),
-                            SizedBox(width: 16),
-                            Text('Add Image'),
+                            const SizedBox(width: 16),
+                            const Text('Add Image'),
                           ],
                         ),
                       ),
@@ -186,12 +188,12 @@ class _ProjectFileListVerticalState extends State<ProjectFileListVertical> {
                     buttonChild: Container(
                       padding: const EdgeInsets.all(6),
                       decoration: BoxDecoration(
-                        color: const Color.fromARGB(255, 244, 244, 244),
+                        color: context.colors.surfaceContainerLow,
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      child: const Icon(
+                      child: Icon(
                         CupertinoIcons.layers,
-                        color: Color.fromARGB(255, 29, 29, 29),
+                        color: context.colors.surfaceDim,
                       ),
                     ),
                     overlayContent: Padding(

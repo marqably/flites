@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flites/main.dart';
 import 'package:flites/states/open_project.dart';
 import 'package:flites/utils/get_flite_image.dart';
 import 'package:flutter/cupertino.dart';
@@ -68,7 +69,7 @@ class _PlayerControlsState extends State<PlayerControls> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.colors.surfaceContainerLowest,
         borderRadius: BorderRadius.circular(32),
       ),
       height: 64,
@@ -81,12 +82,12 @@ class _PlayerControlsState extends State<PlayerControls> {
           return Row(
             children: [
               const SizedBox(width: 32),
-              const Flexible(
+              Flexible(
                 child: Text(
-                  'Player Speed',
+                  'Playback Speed',
                   style: TextStyle(
                     fontSize: 16,
-                    color: Color.fromARGB(255, 49, 49, 49),
+                    color: context.colors.surfaceContainerHighest,
                   ),
                 ),
               ),
@@ -98,21 +99,22 @@ class _PlayerControlsState extends State<PlayerControls> {
                     FilteringTextInputFormatter.digitsOnly,
                   ],
                   textAlign: TextAlign.end,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
-                    color: Color.fromARGB(255, 32, 32, 32),
+                    color: context.colors.onSurfaceVariant,
                   ),
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     suffix: Text(
                       ' ms',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w400,
-                        color: Color.fromARGB(255, 49, 49, 49),
+                        color: context.colors.surfaceContainerHighest,
                       ),
                     ),
-                    border: OutlineInputBorder(borderSide: BorderSide.none),
+                    border:
+                        const OutlineInputBorder(borderSide: BorderSide.none),
                   ),
                   controller: playbackSpeedController,
                 ),
@@ -130,9 +132,13 @@ class _PlayerControlsState extends State<PlayerControls> {
                         }
                       }
                     : null,
-                icon: Icon(currentlyPlaying
-                    ? CupertinoIcons.pause
-                    : CupertinoIcons.play),
+                icon: Icon(
+                  currentlyPlaying ? CupertinoIcons.pause : CupertinoIcons.play,
+                  color: hasMultipleImages
+                      ? context.colors.surfaceContainerHighest
+                      : context.colors.surfaceContainerHighest
+                          .withValues(alpha: 0.38),
+                ),
               ),
               const SizedBox(width: 32),
             ],

@@ -1,3 +1,4 @@
+import 'package:flites/main.dart';
 import 'package:flutter/material.dart';
 
 class OverlayButton extends StatefulWidget {
@@ -43,7 +44,7 @@ class OverlayButtonState extends State<OverlayButton> {
               offset: const Offset(32, 0),
               child: Material(
                 elevation: 4.0,
-                color: Colors.white,
+                color: context.colors.surfaceContainerLowest,
                 borderRadius: BorderRadius.circular(8.0),
                 child: widget.overlayContent,
               ),

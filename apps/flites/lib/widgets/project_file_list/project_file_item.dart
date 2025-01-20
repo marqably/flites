@@ -1,3 +1,4 @@
+import 'package:flites/main.dart';
 import 'package:flites/states/selected_images_controller.dart';
 import 'package:flites/types/flites_image.dart';
 import 'package:flutter/material.dart';
@@ -68,9 +69,9 @@ class ProjectFileItem extends StatelessWidget {
                           color: Theme.of(context).colorScheme.primary,
                           borderRadius: BorderRadius.circular(4),
                         ),
-                        child: const Icon(
+                        child: Icon(
                           Icons.edit,
-                          color: Colors.white,
+                          color: context.colors.surfaceContainerLowest,
                         ),
                       ),
                     ),
@@ -85,9 +86,9 @@ class ProjectFileItem extends StatelessWidget {
                         color: Theme.of(context).colorScheme.primary,
                         borderRadius: BorderRadius.circular(4),
                       ),
-                      child: const Icon(
+                      child: Icon(
                         Icons.remove_red_eye_outlined,
-                        color: Colors.white,
+                        color: context.colors.surfaceContainerLowest,
                       ),
                     ),
                   ),

@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:flites/main.dart';
 import 'package:flites/states/open_project.dart';
 import 'package:flites/utils/get_flite_image.dart';
 import 'package:flutter/material.dart';
@@ -94,7 +95,7 @@ class _RotationWrapperState extends State<RotationWrapper> {
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       border: Border.all(
-                        color: const Color.fromARGB(255, 102, 102, 102),
+                        color: context.colors.outline,
                         width: 2,
                       ),
                     ),
@@ -116,9 +117,9 @@ class _RotationWrapperState extends State<RotationWrapper> {
                               details.localPosition));
                         },
                         child: Container(
-                          decoration: const BoxDecoration(
+                          decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: Color.fromARGB(255, 31, 31, 31),
+                            color: context.colors.onSurfaceVariant,
                           ),
                           height: dotSize,
                           width: dotSize,
@@ -136,7 +137,7 @@ class _RotationWrapperState extends State<RotationWrapper> {
             bottom: 0,
             child: Container(
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: context.colors.surfaceContainerLowest,
                 borderRadius: BorderRadius.circular(32),
               ),
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
