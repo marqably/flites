@@ -1,6 +1,4 @@
-import 'package:flites/states/open_project.dart';
 import 'package:flites/utils/generate_sprite.dart';
-import 'package:flites/utils/get_flite_image.dart';
 import 'package:flites/widgets/buttons/stadium_button.dart';
 import 'package:flutter/material.dart';
 import 'package:signals/signals_flutter.dart';
