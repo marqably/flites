@@ -1,9 +1,11 @@
 import 'dart:math';
+
+import 'package:flites/states/canvas_controller.dart';
 import 'package:flites/utils/image_processing_utils.dart';
 import 'package:flites/utils/image_utils.dart';
-import 'package:flites/states/canvas_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 import '../states/open_project.dart';
 
 /// A working file type we use to work with this image
@@ -83,7 +85,7 @@ class FlitesImage {
   }
 
   void trimImage() async {
-    image = await ImageProcessingUtils.rotateImage(image, rotation);
+    image = await ImageProcessingUtils.rotateInIsolates(image, rotation);
 
     rotation = 0;
   }

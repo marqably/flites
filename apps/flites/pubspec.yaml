@@ -43,6 +43,7 @@ dependencies:
   file_saver: ^0.2.14
   flutter_box_transform: ^0.4.6
   file_picker: ^8.1.4
+  flutter_isolate: ^2.1.0
 
 dev_dependencies:
   flutter_test:
