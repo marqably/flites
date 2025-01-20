@@ -1,27 +1,19 @@
-import 'package:file_picker/file_picker.dart';
+import 'package:flites/states/canvas_controller.dart';
 import 'package:flites/states/open_project.dart';
 import 'package:flites/states/selected_images_controller.dart';
+import 'package:flites/states/tool_controller.dart';
 import 'package:flites/types/flites_image.dart';
-import 'package:flites/utils/image_utils.dart';
+import 'package:flites/utils/image_picker.dart';
 import 'package:flites/widgets/buttons/icon_text_button.dart';
 import 'package:flites/widgets/controls/checkbox_button.dart';
 import 'package:flites/widgets/controls/control_header.dart';
-import 'package:flites/widgets/image_editor/image_editor.dart';
-import 'package:flites/widgets/upload_area/file_drop_area.dart';
+import 'package:flites/widgets/project_file_list/file_item.dart';
+import 'package:flites/widgets/project_file_list/hoverable_widget.dart';
+import 'package:flites/widgets/project_file_list/overlay_button.dart';
+import 'package:flites/widgets/project_file_list/tool_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:signals/signals_flutter.dart';
-
-// TODO(beau): refactor
-enum Tool {
-  canvas,
-  move,
-  rotate,
-}
-
-// TODO(beau): refactor
-final selectedToolSignal = signal(Tool.canvas);
-final hoveredToolSignal = signal<Tool?>(null);
 
 class ProjectFileListVertical extends StatefulWidget {
   const ProjectFileListVertical({super.key});
@@ -148,51 +140,13 @@ class _ProjectFileListVerticalState extends State<ProjectFileListVertical> {
                   builder: (isHovered) {
                     return GestureDetector(
                       onTap: () async {
-                        // TODO(beau): refactor, this logic should not live in a widget file
-                        FilePickerResult? result =
-                            await FilePicker.platform.pickFiles(
-                          allowMultiple: true,
-                          withData: true,
-                          type: FileType.custom,
-                          allowedExtensions: ['png'],
-                        );
-
-                        if (result == null) {
-                          return;
-                        }
-
-                        final imagesAndNames = (await Future.wait(result.files
-                                .map(ImageUtils.rawImageFroMPlatformFile)))
-                            .whereType<RawImageAndName>()
-                            .where((e) => e.image != null && isPng(e.image!))
-                            .toList();
-
-                        if (imagesAndNames.isNotEmpty) {
-                          final scalingFactor =
-                              ImageUtils.getScalingFactorForMultipleImages(
-                            images:
-                                imagesAndNames.map((e) => e.image!).toList(),
-                            sizeLongestSideOnCanvas: defaultSizeOnCanvas,
-                          );
-
-                          imagesAndNames.sort((a, b) {
-                            if (a.name != null && b.name != null) {
-                              return a.name!.compareTo(b.name!);
-                            }
-
-                            return 0;
-                          });
-
-                          for (final img in imagesAndNames) {
-                            final flitesImage = FlitesImage.scaled(img.image!,
-                                scalingFactor: scalingFactor,
-                                originalName: img.name);
-
-                            projectSourceFiles.value = [
-                              ...projectSourceFiles.value,
-                              flitesImage,
-                            ];
-                          }
+                        final newImages =
+                            await imagePickerService.pickAndProcessImages();
+                        if (newImages.isNotEmpty) {
+                          projectSourceFiles.value = [
+                            ...projectSourceFiles.value,
+                            ...newImages,
+                          ];
                         }
                       },
                       child: Container(
@@ -250,12 +204,12 @@ class _ProjectFileListVerticalState extends State<ProjectFileListVertical> {
                           children: [
                             const ControlHeader(text: 'Canvas Controls'),
                             CheckboxButton(
-                              text: 'Use Previos Frame as Reference',
+                              text: 'Use Previous Frame as Reference',
                               value: usePreviousImageAsReference,
                             ),
                             CheckboxButton(
                               text: 'Show bounding border',
-                              value: showBoundingBorderSignal,
+                              value: canvasController.showBoundingBorderSignal,
                             ),
                             const SizedBox(height: 32),
                             const ControlHeader(text: 'Image Controls'),
@@ -314,259 +268,6 @@ class _ProjectFileListVerticalState extends State<ProjectFileListVertical> {
           ),
         );
       },
-    );
-  }
-}
-
-// TODO(beau): refactor
-class FileItem extends StatefulWidget {
-  const FileItem({super.key, required this.file});
-
-  final FlitesImage file;
-
-  @override
-  State<FileItem> createState() => _FileItemState();
-}
-
-class _FileItemState extends State<FileItem> {
-  final isHoveredState = signal<bool>(false);
-
-  @override
-  Widget build(BuildContext context) {
-    // TODO(beau): refactor
-    return Watch((context) {
-      final isHovered = isHoveredState.value;
-
-      final isCurrentlySelected = selectedImage.value == widget.file.id;
-      final isCurrentReferenceImage =
-          selectedReferenceImages.value.contains(widget.file.id);
-
-      return MouseRegion(
-        onEnter: (event) => isHoveredState.value = true,
-        onExit: (event) => isHoveredState.value = false,
-        child: Container(
-          margin: const EdgeInsets.symmetric(vertical: 2, horizontal: 8),
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8),
-            color: isCurrentlySelected
-                ? Theme.of(context).primaryColor.withOpacity(0.3)
-                : isHovered
-                    ? Colors.grey[200]
-                    : Colors.transparent,
-          ),
-          child: GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: () {
-              SelectedImagesController().toggleSingle(widget.file.id);
-            },
-            child: Row(
-              children: [
-                Image.memory(
-                  widget.file.image,
-                  fit: BoxFit.contain,
-                  width: 24,
-                  height: 24,
-                ),
-                if (widget.file.displayName != null)
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 24, right: 16),
-                      child: Text(
-                        widget.file.displayName!,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ),
-                if (isHovered)
-                  Padding(
-                    padding: const EdgeInsets.only(left: 16),
-                    child: InkWell(
-                      onTap: () {
-                        projectSourceFiles.value = [...projectSourceFiles.value]
-                          ..removeWhere((e) => e.id == widget.file.id);
-                      },
-                      child: const Icon(Icons.delete, size: 16),
-                    ),
-                  ),
-                if (isCurrentReferenceImage || isHovered)
-                  Padding(
-                    padding: const EdgeInsets.only(left: 16),
-                    child: InkWell(
-                      onTap: () {
-                        if (isCurrentReferenceImage) {
-                          selectedReferenceImages.value =
-                              selectedReferenceImages.value
-                                  .where((e) => e != widget.file.id)
-                                  .toList();
-                        } else {
-                          selectedReferenceImages.value = [
-                            ...selectedReferenceImages.value,
-                            widget.file.id
-                          ];
-                        }
-                      },
-                      child: const Icon(
-                        CupertinoIcons.eye_solid,
-                        size: 16,
-                        // color: Colors.grey,
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-          ),
-        ),
-      );
-    });
-  }
-}
-
-// TODO(beau): refactor
-class HoverableWidget extends StatefulWidget {
-  const HoverableWidget({super.key, required this.builder});
-
-  final Widget Function(bool isHovered) builder;
-
-  @override
-  State<HoverableWidget> createState() => _HoverableWidgetState();
-}
-
-class _HoverableWidgetState extends State<HoverableWidget> {
-  final Signal<bool> isHoveredSignal = signal(false);
-  @override
-  Widget build(BuildContext context) {
-    return MouseRegion(
-      onEnter: (event) => isHoveredSignal.value = true,
-      onExit: (event) => isHoveredSignal.value = false,
-      child: Watch((context) {
-        return widget.builder(isHoveredSignal.value);
-      }),
-    );
-  }
-}
-
-// TODO(beau): refactor
-class ToolButton extends StatelessWidget {
-  const ToolButton({super.key, required this.tool, required this.icon});
-  final Tool tool;
-  final IconData icon;
-
-  @override
-  Widget build(BuildContext context) {
-    return Watch(
-      (context) {
-        final selectedTool = selectedToolSignal.value;
-        final hoveredTool = hoveredToolSignal.value;
-
-        final isSelected = selectedTool == tool;
-        final isHovered = hoveredTool == tool;
-
-        return InkWell(
-          onHover: (value) {
-            hoveredToolSignal.value = value ? tool : null;
-          },
-          onTap: () {
-            selectedToolSignal.value = tool;
-          },
-          child: Container(
-            padding: const EdgeInsets.all(6),
-            decoration: BoxDecoration(
-              color: isSelected
-                  ? const Color.fromARGB(255, 96, 96, 96)
-                  : isHovered
-                      ? const Color.fromARGB(255, 185, 185, 185)
-                      : const Color.fromARGB(0, 19, 255, 188),
-              borderRadius: BorderRadius.circular(4),
-            ),
-            child: Icon(
-              icon,
-              size: 16,
-              color: isSelected ? Colors.white : Colors.black,
-            ),
-          ),
-        );
-      },
-    );
-  }
-}
-
-// TODO(beau): refactor
-class OverlayButton extends StatefulWidget {
-  final Widget buttonChild;
-  final Widget overlayContent;
-
-  const OverlayButton({
-    super.key,
-    required this.buttonChild,
-    required this.overlayContent,
-  });
-
-  @override
-  _OverlayButtonState createState() => _OverlayButtonState();
-}
-
-class _OverlayButtonState extends State<OverlayButton> {
-  final LayerLink _layerLink = LayerLink();
-  OverlayEntry? _overlayEntry;
-
-  void _showOverlay() {
-    // If overlay is already showing, do nothing
-    if (_overlayEntry != null) return;
-
-    _overlayEntry = OverlayEntry(
-      builder: (context) => Stack(
-        children: [
-          // Dismissible area
-          GestureDetector(
-            onTap: _hideOverlay, // Hide overlay when tapped outside
-            behavior:
-                HitTestBehavior.opaque, // Ensures tap is registered anywhere
-            child: Container(
-              color: Colors.transparent, // Transparent overlay background
-            ),
-          ),
-          // Positioned overlay
-          Positioned(
-            child: CompositedTransformFollower(
-              link: _layerLink,
-              showWhenUnlinked: false,
-              followerAnchor: Alignment.bottomLeft,
-              offset: const Offset(32, 0),
-              child: Material(
-                elevation: 4.0,
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(8.0),
-                child: widget.overlayContent,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-
-    Overlay.of(context).insert(_overlayEntry!);
-  }
-
-  void _hideOverlay() {
-    _overlayEntry?.remove();
-    _overlayEntry = null;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return CompositedTransformTarget(
-      link: _layerLink,
-      child: InkWell(
-        onTap: () {
-          if (_overlayEntry == null) {
-            _showOverlay();
-          } else {
-            _hideOverlay();
-          }
-        },
-        child: widget.buttonChild,
-      ),
     );
   }
 }

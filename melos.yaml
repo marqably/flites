@@ -4,6 +4,10 @@ packages:
   - apps/**
   - packages/**
 
+ignore:
+  - "**/build/**"  
+  - "**/.dart_tool/**"
+
 scripts:
   ### Needed in case of adding a build_runner
   # install:

@@ -1,7 +1,8 @@
+import 'package:flites/states/canvas_controller.dart';
 import 'package:flites/states/key_events.dart';
 import 'package:flites/states/selected_images_controller.dart';
+import 'package:flites/states/tool_controller.dart';
 import 'package:flites/widgets/canvas_controls/canvas_controls.dart';
-import 'package:flites/widgets/project_file_list/project_file_list_vertical.dart';
 import 'package:flites/widgets/rotation/rotation_wrapper.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -10,13 +11,6 @@ import 'package:signals/signals_flutter.dart';
 
 import '../../states/open_project.dart';
 import '../../utils/get_flite_image.dart';
-
-// TODO(beau): refactor
-final showBoundingBorderSignal = signal(false);
-
-final canvasScalingFactorSignal = signal(300.0);
-final canvasPositionSignal = signal(Offset.zero);
-final canvasSizePixelSignal = signal(const Size(1000, 1000));
 
 class ImageEditor extends StatefulWidget {
   const ImageEditor({
@@ -40,15 +34,15 @@ class _ImageEditorState extends State<ImageEditor> {
       builder: (context, constraints) {
         return Watch(
           (context) {
-            canvasSizePixelSignal.value = constraints.biggest;
-            final showBoundingBorder = showBoundingBorderSignal.value;
+            canvasController.updateCanvasSize(constraints.biggest);
+            final showBoundingBorder = canvasController.showBoundingBorder;
 
             final canvasScalingFactor =
-                canvasScalingFactorSignal.value; // constraints.maxWidth;
+                canvasController.canvasScalingFactor; // constraints.maxWidth;
 
             final currentSelection = getFliteImage(selectedImage.value);
 
-            final canvasPosition = canvasPositionSignal.value;
+            final canvasPosition = canvasController.canvasPosition;
 
             final referenceImages =
                 getFliteImages(selectedReferenceImages.value);
@@ -59,7 +53,7 @@ class _ImageEditorState extends State<ImageEditor> {
 
             final rotationAngle = rotationSignal.value ?? 0;
 
-            final selectedTool = selectedToolSignal.value;
+            final selectedTool = toolController.selectedTool;
 
             final inCanvasMode = selectedTool == Tool.canvas;
             final inMoveMode = selectedTool == Tool.move;
@@ -100,7 +94,7 @@ class _ImageEditorState extends State<ImageEditor> {
 
                   final offset = pointerSignal.localDelta / canvasScalingFactor;
 
-                  canvasPositionSignal.value += offset;
+                  canvasController.updateCanvasPosition(offset);
 
                   setState(() {});
                 }
@@ -111,7 +105,7 @@ class _ImageEditorState extends State<ImageEditor> {
 
                   scale = scale + pointerSignal.scrollDelta.dy / 1000;
 
-                  final isInreasingSize = pointerSignal.scrollDelta.dy < 0;
+                  final isIncreasingSize = pointerSignal.scrollDelta.dy < 0;
 
                   final canvasCenter = Offset(
                     constraints.maxWidth / 2,
@@ -124,11 +118,10 @@ class _ImageEditorState extends State<ImageEditor> {
                   final offsetFromCenter =
                       canvasCenter - pointerSignal.localPosition;
 
-                  canvasPositionSignal.value -=
-                      offsetFromCenter * (isInreasingSize ? -0.05 : 0.05);
-
-                  canvasScalingFactorSignal.value =
-                      canvasScalingFactor * (isInreasingSize ? 1.05 : 0.95);
+                  canvasController.updateCanvasScale(
+                    offsetFromCenter: offsetFromCenter,
+                    isIncreasingSize: isIncreasingSize,
+                  );
 
                   setState(() {});
                 }
@@ -149,7 +142,7 @@ class _ImageEditorState extends State<ImageEditor> {
                   });
                 },
                 onPanUpdate: (details) {
-                  canvasPositionSignal.value += details.delta;
+                  canvasController.updateCanvasPosition(details.delta);
                   setState(() {});
                 },
                 child: Stack(
@@ -168,7 +161,8 @@ class _ImageEditorState extends State<ImageEditor> {
                     // Bounding Box
                     if (boundingBox != null && showBoundingBorder)
                       Positioned(
-                        key: ValueKey('${boundingBox.hashCode}${currentSelection?.rotation}'),
+                        key: ValueKey(
+                            '${boundingBox.hashCode}${currentSelection?.rotation}'),
                         left: (boundingBox.position.dx * canvasScalingFactor) +
                             canvasPosition.dx,
                         top: (boundingBox.position.dy * canvasScalingFactor) +

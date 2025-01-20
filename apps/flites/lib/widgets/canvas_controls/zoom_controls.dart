@@ -1,4 +1,4 @@
-import 'package:flites/widgets/image_editor/image_editor.dart';
+import 'package:flites/states/canvas_controller.dart';
 import 'package:flutter/material.dart';
 
 class ZoomControls extends StatelessWidget {
@@ -16,7 +16,7 @@ class ZoomControls extends StatelessWidget {
         children: [
           IconButton(
             onPressed: () {
-              canvasScalingFactorSignal.value -= 20;
+              canvasController.updateCanvasScalingFactor(-20);
             },
             icon: const Icon(
               Icons.zoom_out,
@@ -26,7 +26,7 @@ class ZoomControls extends StatelessWidget {
           ),
           IconButton(
             onPressed: () {
-              canvasScalingFactorSignal.value += 20;
+              canvasController.updateCanvasScalingFactor(20);
             },
             icon: const Icon(
               Icons.zoom_in,

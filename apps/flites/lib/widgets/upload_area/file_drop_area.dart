@@ -1,6 +1,6 @@
-import 'dart:typed_data';
-
+import 'package:flites/constants/image_constants.dart';
 import 'package:flites/utils/image_utils.dart';
+import 'package:flites/utils/png_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:super_drag_and_drop/super_drag_and_drop.dart';
 
@@ -73,7 +73,7 @@ class _FileDropAreaState extends State<FileDropArea> {
         final imagesAndNames =
             (await Future.wait(items.map(ImageUtils.rawImageFromDropData)))
                 .whereType<RawImageAndName>()
-                .where((e) => e.image != null && isPng(e.image!))
+                .where((e) => e.image != null && PngUtils.isPng(e.image!))
                 .toList();
 
         if (imagesAndNames.isNotEmpty) {
@@ -105,26 +105,4 @@ class _FileDropAreaState extends State<FileDropArea> {
       child: widget.child,
     );
   }
-}
-
-// TODO(beau): refactor
-// Move to fitting utils file
-bool isPng(Uint8List data) {
-  // PNG signature
-  const List<int> pngSignature = [
-    0x89,
-    0x50,
-    0x4E,
-    0x47,
-    0x0D,
-    0x0A,
-    0x1A,
-    0x0A
-  ];
-
-  // Check if data has enough length and starts with the PNG signature
-  return data.length >= 8 &&
-      data
-          .sublist(0, 8)
-          .every((byte) => byte == pngSignature[data.indexOf(byte)]);
 }

@@ -1,11 +1,7 @@
-import 'package:flites/states/open_project.dart';
 import 'package:flites/utils/generate_sprite.dart';
-import 'package:flites/utils/get_flite_image.dart';
 import 'package:flites/widgets/buttons/stadium_button.dart';
 import 'package:flutter/material.dart';
 import 'package:signals/signals_flutter.dart';
-
-import '../buttons/icon_text_button.dart';
 
 final rotationSignal = signal<double?>(null);
 
@@ -37,30 +33,9 @@ class _CanvasControlsState extends State<CanvasControls> {
       width: 300,
       padding: const EdgeInsets.all(16),
       child: Watch((context) {
-        final currentImage = selectedImage;
-
-        print('currentImage: $currentImage');
-
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // todo(beau): this is where currently the save after the rotation
-            // is happening. This needs to have different UI, be more obvious,
-            // and potentially even necessary after rotating, such that the
-            // picture is resized correctly and the bounding box correct again.
-            IconTextButton(
-              text: 'Save',
-              onPressed: () {
-                final currentImage = getFliteImage(selectedImage.value);
-
-                if (currentImage != null) {
-                  currentImage.trimImage();
-                }
-              },
-            ),
-
-            const Spacer(),
-
             // TODO(beau): this needs to include options for exporting, either
             // here or in a popup
             Center(

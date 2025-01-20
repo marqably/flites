@@ -81,11 +81,13 @@ class _PlayerControlsState extends State<PlayerControls> {
           return Row(
             children: [
               const SizedBox(width: 32),
-              const Text(
-                'Playback Speed',
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Color.fromARGB(255, 49, 49, 49),
+              const Flexible(
+                child: Text(
+                  'Player Speed',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Color.fromARGB(255, 49, 49, 49),
+                  ),
                 ),
               ),
               const SizedBox(width: 16),
