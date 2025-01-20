@@ -11,10 +11,10 @@ class OverlayButton extends StatefulWidget {
   });
 
   @override
-  _OverlayButtonState createState() => _OverlayButtonState();
+  OverlayButtonState createState() => OverlayButtonState();
 }
 
-class _OverlayButtonState extends State<OverlayButton> {
+class OverlayButtonState extends State<OverlayButton> {
   final LayerLink _layerLink = LayerLink();
   OverlayEntry? _overlayEntry;
 
