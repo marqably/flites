@@ -1,4 +1,5 @@
 import 'package:flites/screens/overview.dart';
+import 'package:flites/theme/themes.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -11,16 +12,16 @@ class FlitesApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color.fromARGB(255, 172, 233, 255),
-          primary: const Color.fromARGB(255, 97, 213, 255),
-        ),
-        useMaterial3: true,
-      ),
+      themeMode: ThemeMode.light,
+      theme: lightTheme,
+      darkTheme: darkTheme,
       home: const Scaffold(
         body: Overview(),
       ),
     );
   }
+}
+
+extension ThemeExtension on BuildContext {
+  ColorScheme get colors => Theme.of(this).colorScheme;
 }
