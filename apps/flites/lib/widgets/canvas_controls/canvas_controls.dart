@@ -1,3 +1,4 @@
+import 'package:flites/main.dart';
 import 'package:flites/utils/generate_sprite.dart';
 import 'package:flites/widgets/buttons/stadium_button.dart';
 import 'package:flutter/material.dart';
@@ -29,7 +30,7 @@ class _CanvasControlsState extends State<CanvasControls> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.white,
+      color: context.colors.surfaceContainerLowest,
       width: 300,
       padding: const EdgeInsets.all(16),
       child: Watch((context) {

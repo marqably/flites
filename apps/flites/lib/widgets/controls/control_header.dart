@@ -1,3 +1,4 @@
+import 'package:flites/main.dart';
 import 'package:flutter/material.dart';
 
 class ControlHeader extends StatelessWidget {
@@ -10,10 +11,10 @@ class ControlHeader extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 16.0),
       child: Text(
         text,
-        style: const TextStyle(
+        style: TextStyle(
           fontWeight: FontWeight.w700,
           fontSize: 18,
-          color: Color.fromARGB(255, 64, 64, 64),
+          color: context.colors.surfaceBright,
         ),
       ),
     );

@@ -1,3 +1,4 @@
+import 'package:flites/main.dart';
 import 'package:flites/states/open_project.dart';
 import 'package:flites/states/selected_images_controller.dart';
 import 'package:flites/types/flites_image.dart';
@@ -38,7 +39,7 @@ class _FileItemState extends State<FileItem> {
             color: isCurrentlySelected
                 ? Theme.of(context).primaryColor.withValues(alpha: 0.3)
                 : isHovered
-                    ? Colors.grey[200]
+                    ? context.colors.surface
                     : Colors.transparent,
           ),
           child: GestureDetector(

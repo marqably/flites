@@ -1,3 +1,4 @@
+import 'package:flites/main.dart';
 import 'package:flites/states/canvas_controller.dart';
 import 'package:flites/states/key_events.dart';
 import 'package:flites/states/selected_images_controller.dart';
@@ -153,7 +154,7 @@ class _ImageEditorState extends State<ImageEditor> {
                           : SystemMouseCursors.grab,
                       child: Container(
                         decoration: BoxDecoration(
-                          color: Colors.grey[200],
+                          color: context.colors.surface,
                         ),
                       ),
                     ),
@@ -171,7 +172,7 @@ class _ImageEditorState extends State<ImageEditor> {
                           decoration: BoxDecoration(
                             border: Border.all(
                               width: 4,
-                              color: Colors.white,
+                              color: context.colors.surfaceContainerLowest,
                             ),
                           ),
                           height: boundingBox.size.height * canvasScalingFactor,
@@ -238,7 +239,7 @@ class _ImageEditorState extends State<ImageEditor> {
                           return AngularHandle(
                             handle: handle,
                             length: 16,
-                            color: Colors.grey[300],
+                            color: context.colors.surfaceContainerLow,
                             thickness: 3,
                           );
                         },
