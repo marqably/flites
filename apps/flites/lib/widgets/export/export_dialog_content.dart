@@ -8,10 +8,10 @@ class ExportDialogContent extends StatefulWidget {
   const ExportDialogContent({super.key});
 
   @override
-  _ExportDialogContentState createState() => _ExportDialogContentState();
+  ExportDialogContentState createState() => ExportDialogContentState();
 }
 
-class _ExportDialogContentState extends State<ExportDialogContent> {
+class ExportDialogContentState extends State<ExportDialogContent> {
   final fileNameController = TextEditingController(text: 'sprite');
   String? exportPath;
 
@@ -39,7 +39,7 @@ class _ExportDialogContentState extends State<ExportDialogContent> {
             TextField(
               decoration: InputDecoration(
                 hintText: 'Enter sprite name',
-                border: OutlineInputBorder(),
+                border: const OutlineInputBorder(),
                 fillColor: context.colors.surface,
                 isDense: true,
                 filled: true,
