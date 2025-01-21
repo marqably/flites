@@ -1,6 +1,5 @@
 import 'package:flites/main.dart';
-import 'package:flites/utils/generate_sprite.dart';
-import 'package:flites/widgets/buttons/stadium_button.dart';
+import 'package:flites/widgets/export/export_button.dart';
 import 'package:flutter/material.dart';
 import 'package:signals/signals_flutter.dart';
 
@@ -34,20 +33,11 @@ class _CanvasControlsState extends State<CanvasControls> {
       width: 300,
       padding: const EdgeInsets.all(16),
       child: Watch((context) {
-        return Column(
+        return const Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // TODO(beau): this needs to include options for exporting, either
-            // here or in a popup
-            Center(
-              child: StadiumButton(
-                text: 'Export Sprite',
-                onPressed: () {
-                  GenerateSprite.exportSprite(
-                      ExportSettings.widthConstrained(widthPx: 620));
-                },
-              ),
-            ),
+            Spacer(),
+            Center(child: ExportButton()),
           ],
         );
       }),

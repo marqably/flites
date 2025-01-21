@@ -2,14 +2,20 @@ import 'package:flites/main.dart';
 import 'package:flutter/material.dart';
 
 class OverlayButton extends StatefulWidget {
-  final Widget buttonChild;
-  final Widget overlayContent;
-
   const OverlayButton({
     super.key,
     required this.buttonChild,
     required this.overlayContent,
+    this.followerAnchor = Alignment.bottomLeft,
+    this.targetAnchor = Alignment.topLeft,
+    this.offset = const Offset(32, 0),
   });
+
+  final Widget buttonChild;
+  final Widget overlayContent;
+  final Alignment followerAnchor;
+  final Alignment targetAnchor;
+  final Offset offset;
 
   @override
   OverlayButtonState createState() => OverlayButtonState();
@@ -40,8 +46,9 @@ class OverlayButtonState extends State<OverlayButton> {
             child: CompositedTransformFollower(
               link: _layerLink,
               showWhenUnlinked: false,
-              followerAnchor: Alignment.bottomLeft,
-              offset: const Offset(32, 0),
+              followerAnchor: widget.followerAnchor,
+              targetAnchor: widget.targetAnchor,
+              offset: widget.offset,
               child: Material(
                 elevation: 4.0,
                 color: context.colors.surfaceContainerLowest,

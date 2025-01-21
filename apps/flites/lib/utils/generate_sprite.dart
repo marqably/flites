@@ -1,5 +1,7 @@
 // import 'dart:ui';
 
+import 'dart:io';
+
 import 'package:file_saver/file_saver.dart';
 import 'package:flites/states/open_project.dart';
 import 'package:flites/types/flites_image.dart';
@@ -34,6 +36,8 @@ class ExportSettings {
   final double? marginRightPx;
   final double? marginBottomPx;
   final double? marginLeftPx;
+  final String? fileName;
+  final String? path;
 
   final SpriteConstraints constraints;
 
@@ -42,6 +46,8 @@ class ExportSettings {
     this.marginRightPx,
     this.marginBottomPx,
     this.marginLeftPx,
+    this.fileName,
+    this.path,
     required double heightPx,
   }) : constraints = SpriteHeightConstrained(heightPx);
 
@@ -50,6 +56,8 @@ class ExportSettings {
     this.marginRightPx,
     this.marginBottomPx,
     this.marginLeftPx,
+    this.fileName,
+    this.path,
     required double widthPx,
   }) : constraints = SpriteWidthConstrained(widthPx);
 
@@ -58,6 +66,8 @@ class ExportSettings {
     this.marginRightPx,
     this.marginBottomPx,
     this.marginLeftPx,
+    this.fileName,
+    this.path,
     required double widthPx,
     required double heightPx,
   }) : constraints = SpriteSizeConstrained(widthPx, heightPx);
@@ -142,14 +152,26 @@ class GenerateSprite {
     }
 
     final file = img.encodePng(compositeImage);
+    final fileName = settings.fileName ?? 'sprite';
 
-    // save the file
-    await FileSaver.instance.saveFile(
-      name: 'sprite',
-      bytes: file,
-      ext: 'png',
-      mimeType: MimeType.png,
-    );
+    try {
+      if (settings.path != null) {
+        // Direct file write to selected path
+        final savePath = '${settings.path}/$fileName.png';
+        await File(savePath).writeAsBytes(file);
+      } else {
+        // Use FileSaver for default Downloads location
+        await FileSaver.instance.saveFile(
+          name: fileName,
+          bytes: file,
+          ext: 'png',
+          mimeType: MimeType.png,
+        );
+      }
+    } catch (e) {
+      debugPrint('Error saving file: $e');
+      rethrow;
+    }
   }
 
   static List<img.Image> separateSpriteImages(
