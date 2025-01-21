@@ -44,6 +44,7 @@ dependencies:
   flutter_box_transform: ^0.4.6
   file_picker: ^8.1.4
   flutter_isolate: ^2.1.0
+  path_provider: ^2.1.5
 
 dev_dependencies:
   flutter_test:
