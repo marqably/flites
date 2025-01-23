@@ -1,0 +1,62 @@
+name: 🪟 Windows Build
+
+env:
+  PACKAGE_VERSION: ${{ github.ref_name || '0.0.1' }}
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*'
+  pull_request:
+    branches:
+      - main
+      - feat/beau-windows-build
+
+jobs:
+  build-windows:
+    name: 🪟 Build and Deploy Windows
+    runs-on: windows-latest
+    steps:
+      - name: 📚 Git Checkout
+        uses: actions/checkout@v4
+
+      - name: 🔢 Set Version
+        run: |
+          echo "Building version: ${{ env.PACKAGE_VERSION }}"
+          ((Get-Content -path pubspec.yaml) -replace 'version: .*', 'version: ${{ env.PACKAGE_VERSION }}') | Set-Content -Path pubspec.yaml
+
+      - name: 🗄️ Cache Flutter
+        uses: actions/cache@v3
+        with:
+          path: |
+            %LOCALAPPDATA%\Pub\Cache
+          key: windows-pub-cache-${{ hashFiles('**/pubspec.lock') }}
+
+      - name: 📦 Setup Melos
+        uses: bluefireteam/melos-action@v2
+
+      - name: 🔧 Install Dependencies
+        run: |
+          flutter config --enable-windows-desktop
+          flutter doctor -v
+
+      - name: 🏗️ Build Windows App
+        run: |
+          flutter build windows --release
+
+      - name: ⬆️ Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: flites-windows-${{ env.PACKAGE_VERSION }}
+          path: |
+            build/windows/runner/Release/flites.exe
+            build/windows/runner/Release/*.dll
+
+      - name: 🛠️ Test Installation
+        run: |
+          cd build/windows/runner/Release
+          ./flites.exe --version
+          if ($LASTEXITCODE -ne 0) { exit 1 }
