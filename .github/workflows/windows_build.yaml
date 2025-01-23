@@ -23,6 +23,13 @@ jobs:
       - name: 📚 Git Checkout
         uses: actions/checkout@v4
 
+      - name: 📦 Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.27.2'
+          channel: 'stable'
+          architecture: x64
+
       - name: 🔢 Set Version
         run: |
           echo "Building version: ${{ env.PACKAGE_VERSION }}"
