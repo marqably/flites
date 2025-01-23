@@ -1,7 +1,7 @@
 name: 🪟 Windows Build
 
 env:
-  PACKAGE_VERSION: ${{ github.ref_name || '0.0.1' }}
+  PACKAGE_VERSION: '0.0.1'
 
 on:
   workflow_dispatch:
@@ -29,7 +29,6 @@ jobs:
           flutter-version: '3.27.2'
           channel: 'stable'
           architecture: x64
-          working-directory: ./apps/flites
 
       - name: 🔢 Set Version
         run: |
