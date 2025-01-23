@@ -1,5 +1,8 @@
 name: 🐧 Debian Build
 
+env:
+  PACKAGE_VERSION: 0.0.1
+
 on:
   workflow_dispatch:
   push:
@@ -64,7 +67,7 @@ jobs:
         run: |
           cat > debian/DEBIAN/control << EOL
           Package: flites
-          Version: 0.0.1
+          Version: ${{ env.PACKAGE_VERSION }}
           Section: utils
           Priority: optional
           Architecture: amd64
@@ -109,21 +112,21 @@ jobs:
 
       - name: 📦 Build Package
         run: |
-          rm -rf flites_0.0.1_amd64.deb
-          dpkg-deb --build debian ./flites_0.0.1_amd64.deb
-          ls -l ./flites_0.0.1_amd64.deb
-          file ./flites_0.0.1_amd64.deb
+          rm -rf flites_${{ env.PACKAGE_VERSION }}_amd64.deb
+          dpkg-deb --build debian ./flites_${{ env.PACKAGE_VERSION }}_amd64.deb
+          ls -l ./flites_${{ env.PACKAGE_VERSION }}_amd64.deb
+          file ./flites_${{ env.PACKAGE_VERSION }}_amd64.deb
 
       - name: ✅ Verify Package
         run: |
-          dpkg -I flites_0.0.1_amd64.deb
-          dpkg --contents flites_0.0.1_amd64.deb
+          dpkg -I flites_${{ env.PACKAGE_VERSION }}_amd64.deb
+          dpkg --contents flites_${{ env.PACKAGE_VERSION }}_amd64.deb
 
       - name: ⬆️ Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: flites-debian-package
-          path: flites_0.0.1_amd64.deb
+          path: flites_${{ env.PACKAGE_VERSION }}_amd64.deb
 
       - name: 🛠️ Test Debian Package
         run: |
@@ -140,7 +143,7 @@ jobs:
             apt-get install -y libgtk-3-0"
           
           # Install package
-          docker cp flites_0.0.1_amd64.deb $CONTAINER_ID:/package.deb
+          docker cp flites_${{ env.PACKAGE_VERSION }}_amd64.deb $CONTAINER_ID:/package.deb
           docker exec $CONTAINER_ID bash -c "
             dpkg -i /package.deb || \
             (apt-get install -f -y && dpkg -i /package.deb)"
