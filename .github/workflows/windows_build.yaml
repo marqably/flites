@@ -8,12 +8,12 @@ on:
   push:
     branches:
       - main
+      - feat/beau-windows-build
     tags:
       - 'v*'
   pull_request:
     branches:
       - main
-      - feat/beau-windows-build
 
 jobs:
   build-windows:
