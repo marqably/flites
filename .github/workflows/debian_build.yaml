@@ -109,8 +109,10 @@ jobs:
 
       - name: 📦 Build Package
         run: |
-          dpkg-deb --build debian
-          mv debian.deb flites_0.0.1_amd64.deb
+          rm -rf flites_0.0.1_amd64.deb
+          dpkg-deb --build debian ./flites_0.0.1_amd64.deb
+          ls -l ./flites_0.0.1_amd64.deb
+          file ./flites_0.0.1_amd64.deb
 
       - name: ✅ Verify Package
         run: |
@@ -118,12 +120,33 @@ jobs:
           dpkg --contents flites_0.0.1_amd64.deb
 
       - name: ⬆️ Upload Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: flites-debian-package
           path: flites_0.0.1_amd64.deb
 
       - name: 🛠️ Test Debian Package
         run: |
-          docker run --rm -v $(pwd):/data debian:stable bash -c "
-          apt-get update && apt-get install -y ./flites_0.0.1_amd64.deb && flites --help"
+          # Create container with tty to keep it running
+          CONTAINER_ID=$(docker create -t debian:stable sleep infinity)
+          
+          # Start container
+          docker start $CONTAINER_ID
+          
+          # Install dependencies
+          docker exec $CONTAINER_ID bash -c "
+            set -ex && \
+            apt-get update && \
+            apt-get install -y libgtk-3-0"
+          
+          # Install package
+          docker cp flites_0.0.1_amd64.deb $CONTAINER_ID:/package.deb
+          docker exec $CONTAINER_ID bash -c "
+            dpkg -i /package.deb || \
+            (apt-get install -f -y && dpkg -i /package.deb)"
+          
+          # Verify installation
+          docker exec $CONTAINER_ID which flites
+          
+          # Cleanup
+          docker rm -f $CONTAINER_ID
