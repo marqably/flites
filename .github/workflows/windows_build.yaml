@@ -29,9 +29,11 @@ jobs:
           flutter-version: '3.27.2'
           channel: 'stable'
           architecture: x64
+          working-directory: ./apps/flites
 
       - name: 🔢 Set Version
         run: |
+          cd apps/flites
           echo "Building version: ${{ env.PACKAGE_VERSION }}"
           ((Get-Content -path pubspec.yaml) -replace 'version: .*', 'version: ${{ env.PACKAGE_VERSION }}') | Set-Content -Path pubspec.yaml
 
@@ -47,11 +49,13 @@ jobs:
 
       - name: 🔧 Install Dependencies
         run: |
+          cd apps/flites
           flutter config --enable-windows-desktop
           flutter doctor -v
 
       - name: 🏗️ Build Windows App
         run: |
+          cd apps/flites
           flutter build windows --release
 
       - name: ⬆️ Upload Artifacts
@@ -59,11 +63,11 @@ jobs:
         with:
           name: flites-windows-${{ env.PACKAGE_VERSION }}
           path: |
-            build/windows/runner/Release/flites.exe
-            build/windows/runner/Release/*.dll
+            apps/flites/build/windows/runner/Release/flites.exe
+            apps/flites/build/windows/runner/Release/*.dll
 
       - name: 🛠️ Test Installation
         run: |
-          cd build/windows/runner/Release
+          cd apps/flites/build/windows/runner/Release
           ./flites.exe --version
           if ($LASTEXITCODE -ne 0) { exit 1 }
