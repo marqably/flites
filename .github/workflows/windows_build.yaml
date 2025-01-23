@@ -41,7 +41,12 @@ jobs:
         with:
           path: |
             %LOCALAPPDATA%\Pub\Cache
-          key: windows-pub-cache-${{ hashFiles('**/pubspec.lock') }}
+            build\
+            .dart_tool/
+          key: windows-flutter-${{ runner.os }}-${{ hashFiles('**/pubspec.lock') }}
+          restore-keys: |
+            windows-flutter-${{ runner.os }}-
+            windows-flutter-
 
       - name: 📦 Setup Melos
         uses: bluefireteam/melos-action@v2
