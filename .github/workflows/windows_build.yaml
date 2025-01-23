@@ -56,7 +56,13 @@ jobs:
         run: |
           cd apps/flites
           flutter build windows --release
-
+          
+          # Verify build output
+          $buildPath = "build/windows/x64/runner/Release"
+          if (-not (Test-Path "$buildPath/flites.exe")) {
+            Write-Error "Build failed - executable not found"
+            exit 1
+          }
 
       - name: ⬆️ Upload Artifacts
         uses: actions/upload-artifact@v4
@@ -68,11 +74,5 @@ jobs:
 
       - name: 🛠️ Test Installation
         run: |
-          $buildPath = "apps/flites/build/windows/x64/runner/Release"
-          if (-not (Test-Path $buildPath)) {
-            Write-Error "Build output not found at: $buildPath"
-            exit 1
-          }
-          cd $buildPath
+          cd apps/flites/build/windows/x64/runner/Release
           ./flites.exe --version
-          if ($LASTEXITCODE -ne 0) { exit 1 }
