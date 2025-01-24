@@ -84,10 +84,10 @@ class _PlayerControlsState extends State<PlayerControls> {
               const SizedBox(width: 32),
               Flexible(
                 child: Text(
-                  'Playback Speed',
+                  'Player Speed',
                   style: TextStyle(
                     fontSize: 16,
-                    color: context.colors.surfaceContainerHighest,
+                    color: context.colors.outline,
                   ),
                 ),
               ),
