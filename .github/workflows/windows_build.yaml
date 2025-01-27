@@ -73,10 +73,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: flites-windows-${{ env.PACKAGE_VERSION }}
-          path: |
-            apps/flites/build/windows/x64/runner/Release/flites.exe
-            apps/flites/build/windows/x64/runner/Release/app.so
-            apps/flites/build/windows/x64/runner/Release/*.dll
+          path: apps/flites/build/windows/x64/runner/Release/**
+          
 
       - name: 🛠️ Test Installation
         run: |
