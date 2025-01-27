@@ -68,35 +68,42 @@ class _FileItemState extends State<FileItem> {
                 if (isHovered)
                   Padding(
                     padding: const EdgeInsets.only(left: 16),
-                    child: InkWell(
-                      onTap: () {
-                        projectSourceFiles.value = [...projectSourceFiles.value]
-                          ..removeWhere((e) => e.id == widget.file.id);
-                      },
-                      child: const Icon(Icons.delete, size: 16),
+                    child: Tooltip(
+                      message: 'Delete',
+                      child: InkWell(
+                        onTap: () {
+                          projectSourceFiles.value = [
+                            ...projectSourceFiles.value
+                          ]..removeWhere((e) => e.id == widget.file.id);
+                        },
+                        child: const Icon(Icons.delete, size: 16),
+                      ),
                     ),
                   ),
                 if (isCurrentReferenceImage || isHovered)
                   Padding(
                     padding: const EdgeInsets.only(left: 16),
-                    child: InkWell(
-                      onTap: () {
-                        if (isCurrentReferenceImage) {
-                          selectedReferenceImages.value =
-                              selectedReferenceImages.value
-                                  .where((e) => e != widget.file.id)
-                                  .toList();
-                        } else {
-                          selectedReferenceImages.value = [
-                            ...selectedReferenceImages.value,
-                            widget.file.id
-                          ];
-                        }
-                      },
-                      child: const Icon(
-                        CupertinoIcons.eye_solid,
-                        size: 16,
-                        // color: Colors.grey,
+                    child: Tooltip(
+                      message: 'Toggle visibility',
+                      child: InkWell(
+                        onTap: () {
+                          if (isCurrentReferenceImage) {
+                            selectedReferenceImages.value =
+                                selectedReferenceImages.value
+                                    .where((e) => e != widget.file.id)
+                                    .toList();
+                          } else {
+                            selectedReferenceImages.value = [
+                              ...selectedReferenceImages.value,
+                              widget.file.id
+                            ];
+                          }
+                        },
+                        child: const Icon(
+                          CupertinoIcons.eye_solid,
+                          size: 16,
+                          // color: Colors.grey,
+                        ),
                       ),
                     ),
                   ),
