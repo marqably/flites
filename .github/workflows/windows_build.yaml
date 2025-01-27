@@ -8,6 +8,7 @@ on:
   push:
     branches:
       - main
+      - fix/beau-windows-build
     tags:
       - 'v*'
   pull_request:
@@ -74,6 +75,7 @@ jobs:
           name: flites-windows-${{ env.PACKAGE_VERSION }}
           path: |
             apps/flites/build/windows/x64/runner/Release/flites.exe
+            apps/flites/build/windows/x64/runner/Release/app.so
             apps/flites/build/windows/x64/runner/Release/*.dll
 
       - name: 🛠️ Test Installation
