@@ -68,16 +68,19 @@ class _ProjectFileListVerticalState extends State<ProjectFileListVertical> {
                       ToolButton(
                         tool: Tool.canvas,
                         icon: CupertinoIcons.square_split_2x2,
+                        tooltip: 'Canvas Mode',
                       ),
                       SizedBox(width: 16),
                       ToolButton(
                         tool: Tool.move,
                         icon: CupertinoIcons.move,
+                        tooltip: 'Move Tool',
                       ),
                       SizedBox(width: 16),
                       ToolButton(
                         tool: Tool.rotate,
                         icon: CupertinoIcons.rotate_right,
+                        tooltip: 'Rotate Tool',
                       ),
                     ],
                   ),
@@ -89,21 +92,24 @@ class _ProjectFileListVerticalState extends State<ProjectFileListVertical> {
                     children: [
                       const ControlHeader(text: 'Frames'),
                       const Spacer(),
-                      InkWell(
-                        onTap: () {
-                          if (projectSourceFiles.value.length <=
-                              selectedReferenceImages.value.toSet().length) {
-                            selectedReferenceImages.value = [];
-                          } else {
-                            selectedReferenceImages.value = projectSourceFiles
-                                .value
-                                .map((e) => e.id)
-                                .toList();
-                          }
-                        },
-                        child: const Icon(
-                          CupertinoIcons.eye_solid,
-                          size: 16,
+                      Tooltip(
+                        message: 'Toggle visibility',
+                        child: InkWell(
+                          onTap: () {
+                            if (projectSourceFiles.value.length <=
+                                selectedReferenceImages.value.toSet().length) {
+                              selectedReferenceImages.value = [];
+                            } else {
+                              selectedReferenceImages.value = projectSourceFiles
+                                  .value
+                                  .map((e) => e.id)
+                                  .toList();
+                            }
+                          },
+                          child: const Icon(
+                            CupertinoIcons.eye_solid,
+                            size: 16,
+                          ),
                         ),
                       ),
                     ],
@@ -185,6 +191,7 @@ class _ProjectFileListVerticalState extends State<ProjectFileListVertical> {
                 Padding(
                   padding: const EdgeInsets.all(16),
                   child: OverlayButton(
+                    tooltip: 'Canvas and Image Controls',
                     buttonChild: Container(
                       padding: const EdgeInsets.all(6),
                       decoration: BoxDecoration(

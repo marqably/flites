@@ -6,6 +6,7 @@ class OverlayButton extends StatefulWidget {
     super.key,
     required this.buttonChild,
     required this.overlayContent,
+    this.tooltip,
     this.followerAnchor = Alignment.bottomLeft,
     this.targetAnchor = Alignment.topLeft,
     this.offset = const Offset(32, 0),
@@ -13,6 +14,7 @@ class OverlayButton extends StatefulWidget {
 
   final Widget buttonChild;
   final Widget overlayContent;
+  final String? tooltip;
   final Alignment followerAnchor;
   final Alignment targetAnchor;
   final Offset offset;
@@ -73,15 +75,18 @@ class OverlayButtonState extends State<OverlayButton> {
   Widget build(BuildContext context) {
     return CompositedTransformTarget(
       link: _layerLink,
-      child: InkWell(
-        onTap: () {
-          if (_overlayEntry == null) {
-            _showOverlay();
-          } else {
-            _hideOverlay();
-          }
-        },
-        child: widget.buttonChild,
+      child: Tooltip(
+        message: widget.tooltip ?? '',
+        child: InkWell(
+          onTap: () {
+            if (_overlayEntry == null) {
+              _showOverlay();
+            } else {
+              _hideOverlay();
+            }
+          },
+          child: widget.buttonChild,
+        ),
       ),
     );
   }
