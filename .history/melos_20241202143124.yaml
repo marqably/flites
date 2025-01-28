@@ -1,5 +1,0 @@
-name: my_project
-
-packages:
-  - apps/**
-  - packages/**
