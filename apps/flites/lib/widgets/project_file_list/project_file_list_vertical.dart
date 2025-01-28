@@ -29,9 +29,6 @@ class _ProjectFileListVerticalState extends State<ProjectFileListVertical> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO(beau): refactor
-    int i = 0;
-
     return Watch(
       (context) {
         return GestureDetector(
@@ -121,25 +118,40 @@ class _ProjectFileListVerticalState extends State<ProjectFileListVertical> {
                   shrinkWrap: true,
                   scrollController: _scrollController,
                   physics: const AlwaysScrollableScrollPhysics(),
-                  children: projectSourceFiles.value.map((file) {
-                    i++;
-                    return FileItem(
-                      file: file,
-                      key: Key('file-$i'),
+                  proxyDecorator: (child, index, animation) {
+                    return AnimatedBuilder(
+                      animation: animation,
+                      builder: (context, child) {
+                        return Transform.scale(
+                          scale: 1.05,
+                          child: Material(
+                            color: Colors.transparent,
+                            child: child,
+                          ),
+                        );
+                      },
+                      child: child,
+                    );
+                  },
+                  children:
+                      projectSourceFiles.value.asMap().entries.map((entry) {
+                    return ReorderableDragStartListener(
+                      key: Key('file-${entry.key}'),
+                      index: entry.key,
+                      child: FileItem(
+                        file: entry.value,
+                        key: Key('file-item-${entry.key}'),
+                      ),
                     );
                   }).toList(),
                   onReorder: (oldIndex, newIndex) {
                     if (oldIndex < newIndex) {
                       newIndex -= 1;
                     }
-
-                    final currentImages =
-                        List<FlitesImage>.from(projectSourceFiles.value);
-
-                    // reorder
-                    final image = currentImages.removeAt(oldIndex);
-                    currentImages.insert(newIndex, image);
-
+                    final List<FlitesImage> currentImages =
+                        List.from(projectSourceFiles.value);
+                    final item = currentImages.removeAt(oldIndex);
+                    currentImages.insert(newIndex, item);
                     projectSourceFiles.value = currentImages;
                   },
                 ),
