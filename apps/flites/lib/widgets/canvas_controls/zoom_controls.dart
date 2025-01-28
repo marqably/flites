@@ -16,7 +16,7 @@ class ZoomControls extends StatelessWidget {
       child: Column(
         children: [
           IconButton(
-            tooltip: 'Zoom Out',
+            tooltip: context.l10n.zoomOut,
             onPressed: () {
               canvasController.updateCanvasScalingFactor(-20);
             },
@@ -27,7 +27,7 @@ class ZoomControls extends StatelessWidget {
             ),
           ),
           IconButton(
-            tooltip: 'Zoom In',
+            tooltip: context.l10n.zoomIn,
             onPressed: () {
               canvasController.updateCanvasScalingFactor(20);
             },

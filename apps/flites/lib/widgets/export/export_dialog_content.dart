@@ -27,18 +27,18 @@ class ExportDialogContentState extends State<ExportDialogContent> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Export Sprite',
+              context.l10n.exportSprite,
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 24),
             Text(
-              'File name',
+              context.l10n.fileName,
               style: Theme.of(context).textTheme.titleSmall,
             ),
             const SizedBox(height: 8),
             TextField(
               decoration: InputDecoration(
-                hintText: 'Enter sprite name',
+                hintText: context.l10n.enterSpriteName,
                 border: const OutlineInputBorder(),
                 fillColor: context.colors.surface,
                 isDense: true,
@@ -48,7 +48,7 @@ class ExportDialogContentState extends State<ExportDialogContent> {
             ),
             const SizedBox(height: 16),
             Text(
-              'Location',
+              context.l10n.location,
               style: Theme.of(context).textTheme.titleSmall,
             ),
             const SizedBox(height: 8),
@@ -61,7 +61,7 @@ class ExportDialogContentState extends State<ExportDialogContent> {
             Align(
               alignment: Alignment.centerRight,
               child: StadiumButton(
-                text: 'Export',
+                text: context.l10n.export,
                 onPressed: () {
                   GenerateSprite.exportSprite(
                     ExportSettings.widthConstrained(

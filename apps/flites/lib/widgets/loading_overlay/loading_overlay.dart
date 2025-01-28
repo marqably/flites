@@ -1,3 +1,4 @@
+import 'package:flites/main.dart';
 import 'package:flutter/material.dart';
 import 'package:signals/signals_flutter.dart';
 
@@ -12,13 +13,13 @@ class LoadingOverlay extends StatelessWidget {
       body: Center(
         child: Container(
           color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.5),
-          child: const Center(
+          child: Center(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text('Please wait while we process your image'),
-                SizedBox(height: 16),
-                SizedBox(
+                Text(context.l10n.processingImage),
+                const SizedBox(height: 16),
+                const SizedBox(
                   width: 300,
                   child: LinearProgressIndicator(),
                 ),

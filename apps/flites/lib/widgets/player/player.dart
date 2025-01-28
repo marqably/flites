@@ -121,7 +121,7 @@ class _PlayerControlsState extends State<PlayerControls> {
               ),
               const Spacer(),
               IconButton(
-                tooltip: 'Play/Pause',
+                tooltip: context.l10n.playPause,
                 onPressed: hasMultipleImages
                     ? () {
                         isPlayingSignal.value = !currentlyPlaying;

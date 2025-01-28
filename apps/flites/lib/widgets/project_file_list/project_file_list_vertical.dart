@@ -41,13 +41,13 @@ class _ProjectFileListVerticalState extends State<ProjectFileListVertical> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Padding(
-                  padding: EdgeInsets.all(16),
+                Padding(
+                  padding: const EdgeInsets.all(16),
                   child: Row(
                     children: [
                       Text(
-                        'Flites',
-                        style: TextStyle(
+                        context.l10n.title,
+                        style: const TextStyle(
                           fontSize: 36,
                           fontWeight: FontWeight.w800,
                         ),
@@ -56,28 +56,28 @@ class _ProjectFileListVerticalState extends State<ProjectFileListVertical> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                const Padding(
-                  padding: EdgeInsets.only(left: 16.0, right: 32.0),
+                Padding(
+                  padding: const EdgeInsets.only(left: 16.0, right: 32.0),
                   child: Row(
                     children: [
-                      ControlHeader(text: 'Tools'),
-                      Spacer(),
+                      ControlHeader(text: context.l10n.tools),
+                      const Spacer(),
                       ToolButton(
                         tool: Tool.canvas,
                         icon: CupertinoIcons.square_split_2x2,
-                        tooltip: 'Canvas Mode',
+                        tooltip: context.l10n.canvasMode,
                       ),
-                      SizedBox(width: 16),
+                      const SizedBox(width: 16),
                       ToolButton(
                         tool: Tool.move,
                         icon: CupertinoIcons.move,
-                        tooltip: 'Move Tool',
+                        tooltip: context.l10n.moveTool,
                       ),
-                      SizedBox(width: 16),
+                      const SizedBox(width: 16),
                       ToolButton(
                         tool: Tool.rotate,
                         icon: CupertinoIcons.rotate_right,
-                        tooltip: 'Rotate Tool',
+                        tooltip: context.l10n.rotateTool,
                       ),
                     ],
                   ),
@@ -87,10 +87,10 @@ class _ProjectFileListVerticalState extends State<ProjectFileListVertical> {
                   padding: const EdgeInsets.only(left: 16.0, right: 32.0),
                   child: Row(
                     children: [
-                      const ControlHeader(text: 'Frames'),
+                      ControlHeader(text: context.l10n.frames),
                       const Spacer(),
                       Tooltip(
-                        message: 'Toggle visibility',
+                        message: context.l10n.toggleVisibility,
                         child: InkWell(
                           onTap: () {
                             if (projectSourceFiles.value.length <=
@@ -197,7 +197,7 @@ class _ProjectFileListVerticalState extends State<ProjectFileListVertical> {
                                   color: context.colors.surfaceDim,
                                 ),
                                 const SizedBox(width: 16),
-                                const Text('Add Image'),
+                                Text(context.l10n.addImage),
                               ],
                             ),
                           ),
@@ -207,7 +207,7 @@ class _ProjectFileListVerticalState extends State<ProjectFileListVertical> {
                     Padding(
                       padding: const EdgeInsets.all(16),
                       child: OverlayButton(
-                        tooltip: 'Canvas and Image Controls',
+                        tooltip: context.l10n.canvasAndImageControls,
                         buttonChild: Container(
                           padding: const EdgeInsets.all(6),
                           decoration: BoxDecoration(
@@ -227,18 +227,21 @@ class _ProjectFileListVerticalState extends State<ProjectFileListVertical> {
                               mainAxisSize: MainAxisSize.min,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const ControlHeader(text: 'Canvas Controls'),
+                                ControlHeader(
+                                    text: context.l10n.canvasControls),
                                 CheckboxButton(
-                                  text: 'Use Previous Frame as Reference',
+                                  text:
+                                      context.l10n.usePreviousFrameAsReference,
                                   value: usePreviousImageAsReference,
                                 ),
                                 CheckboxButton(
-                                  text: 'Show bounding border',
+                                  text: context.l10n.showBoundingBorder,
                                   value:
                                       canvasController.showBoundingBorderSignal,
                                 ),
                                 const SizedBox(height: 32),
-                                const ControlHeader(text: 'Image Controls'),
+                                ControlHeader(
+                                    text: context.l10n.canvasControls),
                                 IconTextButton(
                                   onPressed: () {
                                     final images = [
@@ -257,7 +260,7 @@ class _ProjectFileListVerticalState extends State<ProjectFileListVertical> {
 
                                     projectSourceFiles.value = images;
                                   },
-                                  text: 'Sort by name',
+                                  text: context.l10n.sortByName,
                                 ),
                                 IconTextButton(
                                   onPressed: () {
@@ -272,7 +275,8 @@ class _ProjectFileListVerticalState extends State<ProjectFileListVertical> {
 
                                     projectSourceFiles.value = images;
                                   },
-                                  text: 'Rename Files according to order',
+                                  text:
+                                      context.l10n.renameFilesAccordingToOrder,
                                 ),
                                 IconTextButton(
                                   onPressed: () {
@@ -287,7 +291,7 @@ class _ProjectFileListVerticalState extends State<ProjectFileListVertical> {
 
                                     projectSourceFiles.value = images;
                                   },
-                                  text: 'Reset Names',
+                                  text: context.l10n.resetNames,
                                 ),
                               ],
                             ),

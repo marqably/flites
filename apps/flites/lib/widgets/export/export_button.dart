@@ -1,3 +1,4 @@
+import 'package:flites/main.dart';
 import 'package:flites/widgets/buttons/stadium_button.dart';
 import 'package:flites/widgets/export/export_dialog_content.dart';
 import 'package:flites/widgets/project_file_list/overlay_button.dart';
@@ -8,14 +9,14 @@ class ExportButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const OverlayButton(
+    return OverlayButton(
       followerAnchor: Alignment.bottomRight,
       targetAnchor: Alignment.topRight,
-      offset: Offset(0, 50),
+      offset: const Offset(0, 50),
       buttonChild: StadiumButton(
-        text: 'Export Sprite',
+        text: context.l10n.exportSprite,
       ),
-      overlayContent: ExportDialogContent(),
+      overlayContent: const ExportDialogContent(),
     );
   }
 }
