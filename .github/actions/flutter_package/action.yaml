@@ -51,6 +51,10 @@ runs:
       shell: ${{ inputs.shell }}
       run: flutter pub get
 
+    - name: 🌍 Generate Localizations
+      shell: ${{ inputs.shell }}
+      run: flutter gen-l10n
+
     - name: ✨ Format
       # working-directory: ${{ inputs.working_directory }}
       shell: ${{ inputs.shell }}
