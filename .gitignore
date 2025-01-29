@@ -7,11 +7,12 @@ pubspec_overrides.yaml
 *.swp
 .DS_Store
 .atom/
-.history
 .buildlog/
-.history
 .svn/
 migrate_working_dir/
+
+# VS Code History plugin
+.history/
 
 # IntelliJ related
 *.iml
