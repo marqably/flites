@@ -1,0 +1,111 @@
+{
+    "@@locale": "en",
+    "title": "Flites",
+    "@title": {
+        "description": "The application title"
+    },
+    "addImage": "Add Image",
+    "@addImage": {
+        "description": "Button text for adding a new image"
+    },
+    "tools": "Tools",
+    "@tools": {
+        "description": "Tools section header"
+    },
+    "frames": "Frames",
+    "@frames": {
+        "description": "Frames section header"
+    },
+    "canvasMode": "Canvas Mode",
+    "@canvasMode": {
+        "description": "Tooltip for canvas mode button"
+    },
+    "moveTool": "Move Tool",
+    "@moveTool": {
+        "description": "Tooltip for move tool button"
+    },
+    "rotateTool": "Rotate Tool",
+    "@rotateTool": {
+        "description": "Tooltip for rotate tool button"
+    },
+    "toggleVisibility": "Toggle visibility",
+    "@toggleVisibility": {
+        "description": "Tooltip for visibility toggle button"
+    },
+    "canvasAndImageControls": "Canvas and Image Controls",
+    "@canvasAndImageControls": {
+        "description": "Title for canvas and image controls overlay"
+    },
+    "canvasControls": "Canvas Controls",
+    "@canvasControls": {
+        "description": "Section header for canvas controls"
+    },
+    "imageControls": "Image Controls",
+    "@imageControls": {
+        "description": "Section header for image controls"
+    },
+    "usePreviousFrameAsReference": "Use Previous Frame as Reference",
+    "@usePreviousFrameAsReference": {
+        "description": "Checkbox label for using previous frame as reference"
+    },
+    "showBoundingBorder": "Show bounding border",
+    "@showBoundingBorder": {
+        "description": "Checkbox label for showing bounding border"
+    },
+    "sortByName": "Sort by name",
+    "@sortByName": {
+        "description": "Button text for sorting images by name"
+    },
+    "renameFilesAccordingToOrder": "Rename Files according to order",
+    "@renameFilesAccordingToOrder": {
+        "description": "Button text for renaming files according to order"
+    },
+    "resetNames": "Reset Names",
+    "@resetNames": {
+        "description": "Button text for resetting file names"
+    },
+    "delete": "Delete",
+    "@delete": {
+        "description": "Delete button tooltip"
+    },
+    "playPause": "Play/Pause",
+    "@playPause": {
+        "description": "Tooltip for play/pause button"
+    },
+    "exportSprite": "Export Sprite",
+    "@exportSprite": {
+        "description": "Button text for exporting sprite"
+    },
+    "fileName": "File name",
+    "@fileName": {
+        "description": "Label for file name input"
+    },
+    "location": "Location",
+    "@location": {
+        "description": "Label for location selection"
+    },
+    "export": "Export",
+    "@export": {
+        "description": "Export button text"
+    },
+    "enterSpriteName": "Enter sprite name",
+    "@enterSpriteName": {
+        "description": "Hint text for TextField for sprite name"
+    },
+    "selectLocation": "Select download location",
+    "@selectLocation": {
+        "description": "Tooltip for location picker button"
+    },
+    "zoomIn": "Zoom In",
+    "@zoomIn": {
+        "description": "Tooltip for zoom in button"
+    },
+    "zoomOut": "Zoom Out",
+    "@zoomOut": {
+        "description": "Tooltip for zoom out button"
+    },
+    "processingImage": "Please wait while we process your image",
+    "@processingImage": {
+        "description": "Message shown while image is being processed"
+    }
+}

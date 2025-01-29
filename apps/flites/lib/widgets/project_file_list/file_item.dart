@@ -69,7 +69,7 @@ class _FileItemState extends State<FileItem> {
                   Padding(
                     padding: const EdgeInsets.only(left: 16),
                     child: Tooltip(
-                      message: 'Delete',
+                      message: context.l10n.delete,
                       child: InkWell(
                         onTap: () {
                           projectSourceFiles.value = [
@@ -84,7 +84,7 @@ class _FileItemState extends State<FileItem> {
                   Padding(
                     padding: const EdgeInsets.only(left: 16),
                     child: Tooltip(
-                      message: 'Toggle visibility',
+                      message: context.l10n.toggleVisibility,
                       child: InkWell(
                         onTap: () {
                           if (isCurrentReferenceImage) {

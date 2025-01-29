@@ -1,0 +1,115 @@
+{
+    "@@locale": "de",
+    "title": "Flites",
+    "@title": {
+        "description": "The application title"
+    },
+    "addImage": "Bild hinzufügen",
+    "@addImage": {
+        "description": "Button text for adding a new image"
+    },
+    "tools": "Werkzeuge",
+    "@tools": {
+        "description": "Tools section header"
+    },
+    "frames": "Frames",
+    "@frames": {
+        "description": "Frames section header"
+    },
+    "canvasMode": "Leinwand-Modus",
+    "@canvasMode": {
+        "description": "Tooltip for canvas mode button"
+    },
+    "moveTool": "Bewegungswerkzeug",
+    "@moveTool": {
+        "description": "Tooltip for move tool button"
+    },
+    "rotateTool": "Rotationswerkzeug",
+    "@rotateTool": {
+        "description": "Tooltip for rotate tool button"
+    },
+    "toggleVisibility": "Sichtbarkeit umschalten",
+    "@toggleVisibility": {
+        "description": "Tooltip for visibility toggle button"
+    },
+    "canvasAndImageControls": "Leinwand- und Bildsteuerung",
+    "@canvasAndImageControls": {
+        "description": "Title for canvas and image controls overlay"
+    },
+    "canvasControls": "Leinwandsteuerung",
+    "@canvasControls": {
+        "description": "Section header for canvas controls"
+    },
+    "imageControls": "Bildsteuerung",
+    "@imageControls": {
+        "description": "Section header for image controls"
+    },
+    "usePreviousFrameAsReference": "Vorheriges Frame als Referenz verwenden",
+    "@usePreviousFrameAsReference": {
+        "description": "Checkbox label for using previous frame as reference"
+    },
+    "showBoundingBorder": "Begrenzungsrahmen anzeigen",
+    "@showBoundingBorder": {
+        "description": "Checkbox label for showing bounding border"
+    },
+    "sortByName": "Nach Namen sortieren",
+    "@sortByName": {
+        "description": "Button text for sorting images by name"
+    },
+    "renameFilesAccordingToOrder": "Dateien nach Reihenfolge umbenennen",
+    "@renameFilesAccordingToOrder": {
+        "description": "Button text for renaming files according to order"
+    },
+    "resetNames": "Namen zurücksetzen",
+    "@resetNames": {
+        "description": "Button text for resetting file names"
+    },
+    "delete": "Löschen",
+    "@delete": {
+        "description": "Delete button tooltip"
+    },
+    "playerSpeed": "Speed",
+    "@playerSpeed": {
+        "description": "Label for player speed control"
+    },
+    "playPause": "Abspielen/Pause",
+    "@playPause": {
+        "description": "Tooltip for play/pause button"
+    },
+    "exportSprite": "Sprite Exportieren",
+    "@exportSprite": {
+        "description": "Button text for exporting sprite"
+    },
+    "fileName": "Dateiname",
+    "@fileName": {
+        "description": "Label for file name input"
+    },
+    "location": "Speicherort",
+    "@location": {
+        "description": "Label for location selection"
+    },
+    "export": "Exportieren",
+    "@export": {
+        "description": "Export button text"
+    },
+    "enterSpriteName": "Sprite-Namen eingeben",
+    "@enterSpriteName": {
+        "description": "Hint text for TextField for sprite name"
+    },
+    "selectLocation": "Download-Speicherort auswählen",
+    "@selectLocation": {
+        "description": "Tooltip for location picker button"
+    },
+    "zoomIn": "Vergrößern",
+    "@zoomIn": {
+        "description": "Tooltip for zoom in button"
+    },
+    "zoomOut": "Verkleinern",
+    "@zoomOut": {
+        "description": "Tooltip for zoom out button"
+    },
+    "processingImage": "Bitte warten Sie, während Ihr Bild verarbeitet wird",
+    "@processingImage": {
+        "description": "Message shown while image is being processed"
+    }
+}

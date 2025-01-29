@@ -68,6 +68,7 @@ class _FilePathPickerState extends State<FilePathPicker> {
         ),
         IconButton(
           icon: const Icon(Icons.folder_open_outlined),
+          tooltip: context.l10n.selectLocation,
           onPressed: _pickDirectory,
         ),
       ],
