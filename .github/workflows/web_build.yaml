@@ -59,7 +59,7 @@ jobs:
 
       - name: 🏗️ Build Web
         working-directory: apps/flites
-        run: flutter build web --release --base-href /flites/
+        run: flutter build web --release --base-href "/"
 
       - name: ⬆️ Upload Artifact
         uses: actions/upload-artifact@v4
