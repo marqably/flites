@@ -1,0 +1,77 @@
+name: 🌐 Web Build
+
+env:
+  PACKAGE_VERSION: 0.0.1
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - feat/beau-web-build-workflow
+    tags:
+      - 'v*'
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-web:
+    name: 🌐 Build and Deploy Web
+    runs-on: ubuntu-22.04
+    steps:
+      - name: 📚 Git Checkout
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.27.2'
+          architecture: x64
+
+      - name: 🔢 Set Version
+        working-directory: apps/flites
+        run: |
+          echo "Building version: ${{ env.PACKAGE_VERSION }}"
+          sed -i "s/version: .*/version: ${{ env.PACKAGE_VERSION }}/" pubspec.yaml
+
+      - name: 🗄️ Cache Flutter
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cache/flutter
+          key: flutter-${{ runner.os }}-${{ hashFiles('**/pubspec.lock') }}
+
+      - name: 🗄️ Cache Pub Dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.pub-cache
+          key: pub-${{ runner.os }}-${{ hashFiles('**/pubspec.lock') }}
+
+      - name: 📦 Setup Melos
+        uses: bluefireteam/melos-action@v2
+
+      - name: 🔄 Get Dependencies
+        run: |
+          melos bootstrap
+          flutter pub get
+
+      - name: 🏗️ Build Web
+        working-directory: apps/flites
+        run: flutter build web --release --base-href /flites/
+
+      - name: ⬆️ Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: flites-web-${{ env.PACKAGE_VERSION }}
+          path: apps/flites/build/web
+
+      - name: 🛠️ Test Web Build
+        working-directory: apps/flites/build/web
+        run: |
+          if [ ! -f "index.html" ]; then
+            echo "Build failed - index.html not found"
+            exit 1
+          fi
+
