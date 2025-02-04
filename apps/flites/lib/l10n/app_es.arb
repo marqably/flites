@@ -107,5 +107,33 @@
     "processingImage": "Por favor espere mientras procesamos su imagen",
     "@processingImage": {
         "description": "Message shown while image is being processed"
+    },
+    "menuFile": "Archivo",
+    "@menuFile": {
+        "description": "File menu label"
+    },
+    "menuPreferences": "Preferencias",
+    "@menuPreferences": {
+        "description": "Preferences menu label"
+    },
+    "menuTheme": "Tema",
+    "@menuTheme": {
+        "description": "Theme menu label"
+    },
+    "menuThemeLight": "Claro",
+    "@menuThemeLight": {
+        "description": "Light theme menu option"
+    },
+    "menuThemeDark": "Oscuro",
+    "@menuThemeDark": {
+        "description": "Dark theme menu option"
+    },
+    "menuThemeSystem": "Sistema",
+    "@menuThemeSystem": {
+        "description": "System theme menu option"
+    },
+    "menuLanguage": "Idioma",
+    "@menuLanguage": {
+        "description": "Language menu label"
     }
 }
