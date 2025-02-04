@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flites/states/canvas_controller.dart';
+import 'package:flutter/foundation.dart';
 import 'package:super_drag_and_drop/super_drag_and_drop.dart';
 
 /// A utility class for working with images.
@@ -114,9 +114,17 @@ class ImageUtils {
   static Future<RawImageAndName?> rawImageFroMPlatformFile(
     PlatformFile item,
   ) async {
-    final bytes = await File(item.path!).readAsBytes();
+    if (kIsWeb) {
+      // Web implementation
+      final bytes = item.bytes;
+      if (bytes == null) return null;
+      return RawImageAndName(image: bytes, name: item.name);
+    } else {
+      // Desktop/Mobile implementation
+      final bytes = await File(item.path!).readAsBytes();
 
-    return RawImageAndName(image: bytes, name: item.name);
+      return RawImageAndName(image: bytes, name: item.name);
+    }
   }
 }
 

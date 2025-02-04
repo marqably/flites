@@ -2,6 +2,7 @@ import 'package:flites/main.dart';
 import 'package:flites/utils/generate_sprite.dart';
 import 'package:flites/widgets/buttons/stadium_button.dart';
 import 'package:flites/widgets/export/file_path_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class ExportDialogContent extends StatefulWidget {
@@ -47,17 +48,26 @@ class ExportDialogContentState extends State<ExportDialogContent> {
               controller: fileNameController,
             ),
             const SizedBox(height: 16),
-            Text(
-              context.l10n.location,
-              style: Theme.of(context).textTheme.titleSmall,
-            ),
-            const SizedBox(height: 8),
-            FilePathPicker(
-              onPathSelected: (selectedPath) {
-                exportPath = selectedPath;
-              },
-            ),
-            const SizedBox(height: 24),
+            if (!kIsWeb) ...[
+              Text(
+                'Location',
+                style: Theme.of(context).textTheme.titleSmall,
+              ),
+              const SizedBox(height: 8),
+              FilePathPicker(
+                onPathSelected: (selectedPath) {
+                  exportPath = selectedPath;
+                },
+              ),
+              const SizedBox(height: 24),
+            ],
+            if (kIsWeb) ...[
+              Text(
+                'File will be saved to your downloads folder.',
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+              const SizedBox(height: 16),
+            ],
             Align(
               alignment: Alignment.centerRight,
               child: StadiumButton(
