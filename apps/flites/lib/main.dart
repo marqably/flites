@@ -1,9 +1,11 @@
 import 'package:flites/screens/overview.dart';
+import 'package:flites/states/app_settings.dart';
 import 'package:flites/theme/themes.dart';
 import 'package:flites/widgets/loading_overlay/loading_overlay.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flites/widgets/menu_bar/app_menu_bar.dart';
 import 'package:signals/signals_flutter.dart';
 
 void main() {
@@ -34,11 +36,14 @@ class FlitesApp extends StatelessWidget {
               Locale('es'),
               Locale('de'),
             ],
-            themeMode: ThemeMode.light,
+            locale: AppSettings.currentLocale,
+            themeMode: AppSettings.themeMode,
             theme: lightTheme,
             darkTheme: darkTheme,
-            home: const Scaffold(
-              body: Overview(),
+            home: const AppMenuBar(
+              child: Scaffold(
+                body: Overview(),
+              ),
             ),
           ),
         ),

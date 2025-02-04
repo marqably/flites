@@ -108,6 +108,34 @@
     "@processingImage": {
         "description": "Message shown while image is being processed"
     },
+    "menuFile": "File",
+    "@menuFile": {
+        "description": "File menu label"
+    },
+    "menuPreferences": "Preferences",
+    "@menuPreferences": {
+        "description": "Preferences menu label"
+    },
+    "menuTheme": "Theme",
+    "@menuTheme": {
+        "description": "Theme menu label"
+    },
+    "menuThemeLight": "Light",
+    "@menuThemeLight": {
+        "description": "Light theme menu option"
+    },
+    "menuThemeDark": "Dark",
+    "@menuThemeDark": {
+        "description": "Dark theme menu option"
+    },
+    "menuThemeSystem": "System",
+    "@menuThemeSystem": {
+        "description": "System theme menu option"
+    },
+    "menuLanguage": "Language",
+    "@menuLanguage": {
+        "description": "Language menu label"
+    },
     "processingMightTakeAMoment": "This might take a moment...",
     "@processingMightTakeAMoment": {
         "description": "Message shown during processing on web platform"
