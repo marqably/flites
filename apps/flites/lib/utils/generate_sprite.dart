@@ -134,21 +134,43 @@ class GenerateSprite {
     final width = images.first.width;
     final height = images.first.height;
 
+    final double leftPadding = settings.paddingLeftPx ?? 0;
+    final double rightPadding = settings.paddingRightPx ?? 0;
+    final double topPadding = settings.paddingTopPx ?? 0;
+    final double bottomPadding = settings.paddingBottomPx ?? 0;
+
+    // Calculate the total width and height including padding
+    final double totalWidth =
+        (width * images.length) + leftPadding + rightPadding;
+    final double totalHeight = height + topPadding + bottomPadding;
+
+    // Create the composite image with the total dimensions
     final compositeImage = img.Image(
-      width: width * images.length,
-      height: height,
+      width: totalWidth.toInt(),
+      height: totalHeight.toInt(),
       numChannels: 4,
       format: img.Format.uint8,
     );
 
-    for (int i = 0; i < images.length; i++) {
-      // export images
-
+    // Check the number of images
+    if (images.length == 1) {
+      // Handle the case for a single image
       img.compositeImage(
         compositeImage,
-        images[i],
-        dstX: width * i,
+        images[0],
+        dstX: ((compositeImage.width - width) / 2).toInt(),
+        dstY: ((compositeImage.height - height) / 2).toInt(),
       );
+    } else {
+      // Loop through each image for multiple images
+      for (int i = 0; i < images.length; i++) {
+        img.compositeImage(
+          compositeImage,
+          images[i],
+          dstX: (width * i) + leftPadding.toInt(), // Adjust for left padding
+          dstY: topPadding.toInt(), // Adjust for top padding
+        );
+      }
     }
 
     final file = img.encodePng(compositeImage);
