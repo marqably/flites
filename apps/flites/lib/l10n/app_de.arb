@@ -111,5 +111,6 @@
     "processingImage": "Bitte warten Sie, während Ihr Bild verarbeitet wird",
     "@processingImage": {
         "description": "Message shown while image is being processed"
-    }
+    },
+    "processingMightTakeAMoment": "Dies könnte einen Moment dauern..."
 }

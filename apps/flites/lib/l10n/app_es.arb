@@ -107,5 +107,6 @@
     "processingImage": "Por favor espere mientras procesamos su imagen",
     "@processingImage": {
         "description": "Message shown while image is being processed"
-    }
+    },
+    "processingMightTakeAMoment": "Esto puede tardar un momento..."
 }
