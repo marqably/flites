@@ -108,6 +108,10 @@
     "@processingImage": {
         "description": "Message shown while image is being processed"
     },
+    "processingMightTakeAMoment": "This might take a moment...",
+    "@processingMightTakeAMoment": {
+        "description": "Message shown during processing on web platform"
+    },
     "menuFile": "File",
     "@menuFile": {
         "description": "File menu label"
@@ -135,9 +139,5 @@
     "menuLanguage": "Language",
     "@menuLanguage": {
         "description": "Language menu label"
-    },
-    "processingMightTakeAMoment": "This might take a moment...",
-    "@processingMightTakeAMoment": {
-        "description": "Message shown during processing on web platform"
     }
 }
