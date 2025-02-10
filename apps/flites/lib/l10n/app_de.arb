@@ -68,7 +68,7 @@
     "@delete": {
         "description": "Delete button tooltip"
     },
-    "playerSpeed": "Speed",
+    "playerSpeed": "Geschwindigkeit",
     "@playerSpeed": {
         "description": "Label for player speed control"
     },
@@ -140,5 +140,20 @@
     "menuLanguage": "Sprache",
     "@menuLanguage": {
         "description": "Language menu label"
+    },
+    "@processingMightTakeAMoment": {
+        "description": "Message shown during processing on web platform"
+    },
+    "padding": "Padding",
+    "@padding": {
+        "description": "General term for padding"
+    },
+    "width": "Breite",
+    "@width": {
+        "description": "Label for width input"
+    },
+    "height": "Höhe",
+    "@height": {
+        "description": "Label for height input"
     }
 }

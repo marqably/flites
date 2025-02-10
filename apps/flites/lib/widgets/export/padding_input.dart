@@ -1,3 +1,4 @@
+import 'package:flites/main.dart';
 import 'package:flutter/material.dart';
 import 'numeric_input_with_buttons.dart';
 
@@ -31,7 +32,10 @@ class PaddingInput extends StatelessWidget {
       children: [
         Row(
           children: [
-            Text('Padding', style: Theme.of(context).textTheme.titleSmall),
+            Text(
+              context.l10n.padding,
+              style: Theme.of(context).textTheme.titleSmall,
+            ),
           ],
         ),
         SizedBox(

@@ -62,7 +62,7 @@ class ExportDialogContentState extends State<ExportDialogContent> {
               children: [
                 Expanded(
                   child: NumericInputWithButtons(
-                    label: 'Width (px)',
+                    label: '${context.l10n.width} (px)',
                     currentValue: currentWidthPx,
                     onChanged: (value) {
                       setState(() {
@@ -74,7 +74,7 @@ class ExportDialogContentState extends State<ExportDialogContent> {
                 const SizedBox(width: 8),
                 Expanded(
                   child: NumericInputWithButtons(
-                    label: 'Height (px)',
+                    label: '${context.l10n.height} (px)',
                     currentValue: currentHeightPx,
                     onChanged: (value) {
                       setState(() {

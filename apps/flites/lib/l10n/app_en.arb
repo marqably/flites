@@ -139,5 +139,17 @@
     "menuLanguage": "Language",
     "@menuLanguage": {
         "description": "Language menu label"
+    },
+    "padding": "Padding",
+    "@padding": {
+        "description": "General term for padding"
+    },
+    "width": "Width",
+    "@width": {
+        "description": "Label for width input"
+    },
+    "height": "Height",
+    "@height": {
+        "description": "Label for height input"
     }
 }
