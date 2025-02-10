@@ -32,48 +32,48 @@ class SpriteSizeConstrained extends SpriteConstraints {
 }
 
 class ExportSettings {
-  final double? marginTopPx;
-  final double? marginRightPx;
-  final double? marginBottomPx;
-  final double? marginLeftPx;
+  final double? paddingTopPx;
+  final double? paddingRightPx;
+  final double? paddingBottomPx;
+  final double? paddingLeftPx;
   final String? fileName;
   final String? path;
 
   final SpriteConstraints constraints;
 
   ExportSettings.heightConstrained({
-    this.marginTopPx,
-    this.marginRightPx,
-    this.marginBottomPx,
-    this.marginLeftPx,
+    this.paddingTopPx,
+    this.paddingRightPx,
+    this.paddingBottomPx,
+    this.paddingLeftPx,
     this.fileName,
     this.path,
     required double heightPx,
   }) : constraints = SpriteHeightConstrained(heightPx);
 
   ExportSettings.widthConstrained({
-    this.marginTopPx,
-    this.marginRightPx,
-    this.marginBottomPx,
-    this.marginLeftPx,
+    this.paddingTopPx,
+    this.paddingRightPx,
+    this.paddingBottomPx,
+    this.paddingLeftPx,
     this.fileName,
     this.path,
     required double widthPx,
   }) : constraints = SpriteWidthConstrained(widthPx);
 
   ExportSettings.sizeConstrained({
-    this.marginTopPx,
-    this.marginRightPx,
-    this.marginBottomPx,
-    this.marginLeftPx,
+    this.paddingTopPx,
+    this.paddingRightPx,
+    this.paddingBottomPx,
+    this.paddingLeftPx,
     this.fileName,
     this.path,
     required double widthPx,
     required double heightPx,
   }) : constraints = SpriteSizeConstrained(widthPx, heightPx);
 
-  double get horizontalMargin => (marginLeftPx ?? 0) + (marginRightPx ?? 0);
-  double get verticalMargin => (marginTopPx ?? 0) + (marginBottomPx ?? 0);
+  double get horizontalMargin => (paddingLeftPx ?? 0) + (paddingRightPx ?? 0);
+  double get verticalMargin => (paddingTopPx ?? 0) + (paddingBottomPx ?? 0);
 
   SpriteConstraints get maxDimensionsAfterPadding {
     // Needed so that the switch can match the type
@@ -82,18 +82,18 @@ class ExportSettings {
     return switch (constraintsV) {
       // If we have a height constraint, we can calculate the width
       SpriteHeightConstrained() => SpriteHeightConstrained(
-          constraintsV.heightPx - (marginTopPx ?? 0) - (marginBottomPx ?? 0),
+          constraintsV.heightPx - (paddingTopPx ?? 0) - (paddingBottomPx ?? 0),
         ),
 
       // If we have a width constraint, we can calculate the height
       SpriteWidthConstrained() => SpriteWidthConstrained(
-          constraintsV.widthPx - (marginLeftPx ?? 0) - (marginRightPx ?? 0),
+          constraintsV.widthPx - (paddingLeftPx ?? 0) - (paddingRightPx ?? 0),
         ),
 
       // If we have both, we can just use them
       SpriteSizeConstrained() => SpriteSizeConstrained(
-          constraintsV.widthPx - (marginLeftPx ?? 0) - (marginRightPx ?? 0),
-          constraintsV.heightPx - (marginTopPx ?? 0) - (marginBottomPx ?? 0),
+          constraintsV.widthPx - (paddingLeftPx ?? 0) - (paddingRightPx ?? 0),
+          constraintsV.heightPx - (paddingTopPx ?? 0) - (paddingBottomPx ?? 0),
         ),
     };
   }
