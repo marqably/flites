@@ -1,0 +1,89 @@
+name: 🍎 macOS Build
+
+env:
+  PACKAGE_VERSION: '0.0.1'
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*'
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-macos:
+    name: 🍎 Build and Deploy macOS
+    runs-on: macos-latest
+    steps:
+      - name: 📚 Git Checkout
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.27.2'
+          channel: 'stable'
+          architecture: x64
+
+      - name: 🗄️ Cache Flutter
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/Library/Caches/CocoaPods
+            ~/.pub-cache
+            build/
+            .dart_tool/
+          key: macos-flutter-${{ runner.os }}-${{ hashFiles('**/pubspec.lock') }}
+          restore-keys: |
+            macos-flutter-${{ runner.os }}-
+            macos-flutter-
+
+      - name: 📦 Setup Melos
+        uses: bluefireteam/melos-action@v2
+
+      - name: 🔧 Install Dependencies
+        run: |
+          flutter config --enable-macos-desktop
+          flutter doctor -v
+          
+      - name: 🏗️ Build macOS App
+        run: |
+          cd apps/flites
+          flutter build macos --release
+
+      - name: 📦 Create DMG
+        run: |
+          cd apps/flites/build/macos/Build/Products/Release
+          # Clean up any existing DMG contents
+          rm -rf dmg_contents
+          # Create a temporary directory for DMG contents
+          mkdir -p dmg_contents
+          # Copy the app bundle
+          cp -r flites.app dmg_contents/
+          # Create a symbolic link to Applications folder
+          ln -s /Applications dmg_contents/Applications
+          # Create the DMG with error checking
+          if ! hdiutil create -volname "Flites" -srcfolder dmg_contents -ov -format UDZO flites-${{ env.PACKAGE_VERSION }}.dmg; then
+            echo "Failed to create DMG"
+            exit 1
+          fi
+          # Clean up
+          rm -rf dmg_contents
+
+      - name: ⬆️ Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: flites-macos-${{ env.PACKAGE_VERSION }}
+          path: apps/flites/build/macos/Build/Products/Release/flites-${{ env.PACKAGE_VERSION }}.dmg
+
+      - name: 🧪 Test App Bundle
+        run: |
+          cd apps/flites/build/macos/Build/Products/Release
+          # Verify app bundle exists
+          test -d flites.app || (echo "App bundle not found" && exit 1)
+          # List app bundle contents
+          ls -la flites.app/Contents/MacOS/ 
