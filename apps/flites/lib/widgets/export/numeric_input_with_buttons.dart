@@ -69,7 +69,7 @@ class NumericInputWithButtons extends StatelessWidget {
                   IconButton(
                     icon: const Icon(Icons.arrow_downward),
                     onPressed: () {
-                      onChanged(max(currentValue, 0));
+                      onChanged(max(currentValue - 1, 0));
                     },
                     padding: EdgeInsets.zero,
                     constraints: const BoxConstraints(),
