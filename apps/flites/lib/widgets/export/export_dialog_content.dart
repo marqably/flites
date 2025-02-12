@@ -128,7 +128,7 @@ class ExportDialogContentState extends State<ExportDialogContent> {
             ],
             if (kIsWeb) ...[
               Text(
-                'File will be saved to your downloads folder.',
+                context.l10n.webDownloadLocation,
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
               const SizedBox(height: 16),
@@ -188,9 +188,8 @@ class ExportDialogContentState extends State<ExportDialogContent> {
                     // Handle the case where neither width nor height is provided
                     // For example, show an error message
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text(
-                            'Please provide at least one dimension (width or height).'),
+                      SnackBar(
+                        content: Text(context.l10n.provideDimensionError),
                       ),
                     );
                   }

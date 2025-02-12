@@ -155,5 +155,13 @@
     "height": "Höhe",
     "@height": {
         "description": "Label for height input"
+    },
+    "provideDimensionError": "Bitte geben Sie mindestens eine Dimension (Breite oder Höhe) an.",
+    "@provideDimensionError": {
+        "description": "Error message shown when no dimensions are provided for export"
+    },
+    "webDownloadLocation": "Die Datei wird in Ihrem Download-Ordner gespeichert.",
+    "@webDownloadLocation": {
+        "description": "Message indicating where files will be saved on web platform"
     }
 }
