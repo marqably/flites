@@ -36,8 +36,8 @@ class FlitesApp extends StatelessWidget {
               Locale('es'),
               Locale('de'),
             ],
-            locale: AppSettings.currentLocale,
-            themeMode: AppSettings.themeMode,
+            locale: appSettings.currentLocale,
+            themeMode: appSettings.themeMode,
             theme: lightTheme,
             darkTheme: darkTheme,
             home: const AppMenuBar(

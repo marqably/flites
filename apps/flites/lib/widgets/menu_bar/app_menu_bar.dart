@@ -36,16 +36,16 @@ class AppMenuBar extends StatelessWidget {
   MenuButton _buildThemeMenuItem(String text, ThemeMode mode) {
     return MenuButton(
       text: Text(text),
-      onTap: () => AppSettings.themeMode = mode,
-      icon: AppSettings.themeMode == mode ? checkIcon : emptySpace,
+      onTap: () => appSettings.themeMode = mode,
+      icon: appSettings.themeMode == mode ? checkIcon : emptySpace,
     );
   }
 
   MenuButton _buildLanguageMenuItem(String text, String languageCode) {
     return MenuButton(
       text: Text(text),
-      onTap: () => AppSettings.currentLocale = Locale(languageCode),
-      icon: AppSettings.currentLocale.languageCode == languageCode
+      onTap: () => appSettings.currentLocale = Locale(languageCode),
+      icon: appSettings.currentLocale.languageCode == languageCode
           ? checkIcon
           : emptySpace,
     );
