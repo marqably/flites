@@ -24,7 +24,7 @@ scripts:
 
   format:
     run: |
-      melos exec --concurrency 1 --fail-fast -- dart format . --fix
+      melos exec --concurrency 1 --fail-fast -- dart format .
 
   fix:
     run: "melos exec --concurrency 1 --fail-fast -- dart fix --apply ."
