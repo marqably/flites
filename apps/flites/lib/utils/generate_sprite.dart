@@ -394,6 +394,7 @@ class GenerateSprite {
   static double _calculateSpriteSheetHeight(ExportSettings settings,
       double frameHeight, double topPadding, double bottomPadding) {
     switch (settings.constraints.runtimeType) {
+      // ignore: type_literal_in_constant_pattern
       case SpriteSizeConstrained:
         return (settings.constraints as SpriteSizeConstrained).heightPx;
       default:
