@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flites/constants/app_sizes.dart';
 import 'package:flites/main.dart';
 import 'package:flites/states/open_project.dart';
 import 'package:flites/utils/get_flite_image.dart';
@@ -81,7 +82,7 @@ class _PlayerControlsState extends State<PlayerControls> {
 
           return Row(
             children: [
-              const SizedBox(width: 32),
+              gapW32,
               Flexible(
                 child: Text(
                   'Player Speed',
@@ -91,7 +92,7 @@ class _PlayerControlsState extends State<PlayerControls> {
                   ),
                 ),
               ),
-              const SizedBox(width: 16),
+              gapW16,
               SizedBox(
                 width: 100,
                 child: TextField(
@@ -141,7 +142,7 @@ class _PlayerControlsState extends State<PlayerControls> {
                           .withValues(alpha: 0.38),
                 ),
               ),
-              const SizedBox(width: 32),
+              gapW32,
             ],
           );
         },

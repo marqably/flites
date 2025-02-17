@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:flites/constants/app_sizes.dart';
 import 'package:flites/main.dart';
 import 'package:flites/states/open_project.dart';
 import 'package:flites/utils/get_flite_image.dart';
@@ -153,7 +154,7 @@ class _RotationWrapperState extends State<RotationWrapper> {
                       dragStartPoint = Offset(0, circleRadius);
                     },
                   ),
-                  const SizedBox(width: 8),
+                  gapW8,
                   IconButton(
                     icon: const Icon(Icons.check),
                     onPressed: () {

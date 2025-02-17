@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:flites/constants/app_sizes.dart';
 import 'package:flites/main.dart';
 import 'package:flutter/material.dart';
 
@@ -26,7 +27,7 @@ class NumericInputWithButtons extends StatelessWidget {
             label!,
             style: Theme.of(context).textTheme.titleSmall,
           ),
-          const SizedBox(height: 4),
+          gapH4,
         ],
         Container(
           height: 40,

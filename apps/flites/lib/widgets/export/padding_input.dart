@@ -1,3 +1,4 @@
+import 'package:flites/constants/app_sizes.dart';
 import 'package:flites/main.dart';
 import 'package:flutter/material.dart';
 import 'numeric_input_with_buttons.dart';
@@ -45,7 +46,7 @@ class PaddingInput extends StatelessWidget {
             onChanged: onTopChanged,
           ),
         ),
-        const SizedBox(height: 16),
+        gapH16,
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -66,7 +67,7 @@ class PaddingInput extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 16),
+        gapH16,
         SizedBox(
           width: 100,
           child: NumericInputWithButtons(

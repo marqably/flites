@@ -1,3 +1,4 @@
+import 'package:flites/constants/app_sizes.dart';
 import 'package:flites/main.dart';
 import 'package:flites/states/canvas_controller.dart';
 import 'package:flites/states/open_project.dart';
@@ -55,7 +56,7 @@ class _ProjectFileListVerticalState extends State<ProjectFileListVertical> {
                     ],
                   ),
                 ),
-                const SizedBox(height: 16),
+                gapH16,
                 Padding(
                   padding: const EdgeInsets.only(left: 16.0, right: 32.0),
                   child: Row(
@@ -67,13 +68,13 @@ class _ProjectFileListVerticalState extends State<ProjectFileListVertical> {
                         icon: CupertinoIcons.square_split_2x2,
                         tooltip: context.l10n.canvasMode,
                       ),
-                      const SizedBox(width: 16),
+                      gapW16,
                       ToolButton(
                         tool: Tool.move,
                         icon: CupertinoIcons.move,
                         tooltip: context.l10n.moveTool,
                       ),
-                      const SizedBox(width: 16),
+                      gapW16,
                       ToolButton(
                         tool: Tool.rotate,
                         icon: CupertinoIcons.rotate_right,
@@ -82,7 +83,7 @@ class _ProjectFileListVerticalState extends State<ProjectFileListVertical> {
                     ],
                   ),
                 ),
-                const SizedBox(height: 8),
+                gapH8,
                 Padding(
                   padding: const EdgeInsets.only(left: 16.0, right: 32.0),
                   child: Row(
@@ -196,7 +197,7 @@ class _ProjectFileListVerticalState extends State<ProjectFileListVertical> {
                                   size: 16,
                                   color: context.colors.surfaceDim,
                                 ),
-                                const SizedBox(width: 16),
+                                gapW16,
                                 Text(context.l10n.addImage),
                               ],
                             ),
@@ -239,7 +240,7 @@ class _ProjectFileListVerticalState extends State<ProjectFileListVertical> {
                                   value:
                                       canvasController.showBoundingBorderSignal,
                                 ),
-                                const SizedBox(height: 32),
+                                gapH32,
                                 ControlHeader(
                                     text: context.l10n.canvasControls),
                                 IconTextButton(

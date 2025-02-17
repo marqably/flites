@@ -2,6 +2,7 @@ import 'package:flites/main.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:signals/signals_flutter.dart';
+import 'package:flites/constants/app_sizes.dart';
 
 final showLoadingOverlay = signal(false);
 
@@ -41,7 +42,7 @@ class LoadingOverlay extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const SizedBox(height: 8),
+              gapH8,
               if (kIsWeb)
                 const Icon(
                   Icons.hourglass_empty,
@@ -49,12 +50,12 @@ class LoadingOverlay extends StatelessWidget {
                 )
               else
                 const CircularProgressIndicator(),
-              const SizedBox(height: 24),
+              gapH24,
               Text(
                 context.l10n.processingImage,
                 style: Theme.of(context).textTheme.titleMedium,
               ),
-              const SizedBox(height: 8),
+              gapH8,
               Text(
                 context.l10n.processingMightTakeAMoment,
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(

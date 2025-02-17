@@ -1,3 +1,4 @@
+import 'package:flites/constants/app_sizes.dart';
 import 'package:flites/main.dart';
 import 'package:flutter/material.dart';
 import 'package:signals/signals_flutter.dart';
@@ -33,7 +34,7 @@ class CheckboxButton extends StatelessWidget {
                 isChecked ? Icons.check_circle : Icons.circle_outlined,
                 color: context.colors.surfaceDim,
               ),
-              const SizedBox(width: 8),
+              gapW8,
               Expanded(
                 child: Text(
                   text,
