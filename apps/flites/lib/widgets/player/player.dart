@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flites/constants/app_sizes.dart';
 import 'package:flites/main.dart';
 import 'package:flites/states/open_project.dart';
 import 'package:flites/utils/get_flite_image.dart';
@@ -72,7 +73,7 @@ class _PlayerControlsState extends State<PlayerControls> {
         color: context.colors.surfaceContainerLowest,
         borderRadius: BorderRadius.circular(32),
       ),
-      height: 64,
+      height: Sizes.p64,
       width: 344,
       child: Watch(
         (context) {
@@ -81,17 +82,17 @@ class _PlayerControlsState extends State<PlayerControls> {
 
           return Row(
             children: [
-              const SizedBox(width: 32),
+              gapW32,
               Flexible(
                 child: Text(
                   'Player Speed',
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: Sizes.p16,
                     color: context.colors.outline,
                   ),
                 ),
               ),
-              const SizedBox(width: 16),
+              gapW16,
               SizedBox(
                 width: 100,
                 child: TextField(
@@ -100,7 +101,7 @@ class _PlayerControlsState extends State<PlayerControls> {
                   ],
                   textAlign: TextAlign.end,
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: Sizes.p16,
                     fontWeight: FontWeight.w700,
                     color: context.colors.onSurfaceVariant,
                   ),
@@ -108,7 +109,7 @@ class _PlayerControlsState extends State<PlayerControls> {
                     suffix: Text(
                       ' ms',
                       style: TextStyle(
-                        fontSize: 16,
+                        fontSize: Sizes.p16,
                         fontWeight: FontWeight.w400,
                         color: context.colors.surfaceContainerHighest,
                       ),
@@ -141,7 +142,7 @@ class _PlayerControlsState extends State<PlayerControls> {
                           .withValues(alpha: 0.38),
                 ),
               ),
-              const SizedBox(width: 32),
+              gapW32,
             ],
           );
         },

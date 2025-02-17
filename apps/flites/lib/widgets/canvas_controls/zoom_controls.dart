@@ -1,3 +1,4 @@
+import 'package:flites/constants/app_sizes.dart';
 import 'package:flites/main.dart';
 import 'package:flites/states/canvas_controller.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +12,7 @@ class ZoomControls extends StatelessWidget {
       // width: 64,
       decoration: BoxDecoration(
         color: context.colors.surfaceContainerLowest,
-        borderRadius: BorderRadius.circular(32),
+        borderRadius: BorderRadius.circular(Sizes.p32),
       ),
       child: Column(
         children: [
@@ -22,7 +23,7 @@ class ZoomControls extends StatelessWidget {
             },
             icon: Icon(
               Icons.zoom_out,
-              size: 28,
+              size: Sizes.p24,
               color: context.colors.surfaceContainer,
             ),
           ),
@@ -33,7 +34,7 @@ class ZoomControls extends StatelessWidget {
             },
             icon: Icon(
               Icons.zoom_in,
-              size: 28,
+              size: Sizes.p24,
               color: context.colors.surfaceContainer,
             ),
           ),

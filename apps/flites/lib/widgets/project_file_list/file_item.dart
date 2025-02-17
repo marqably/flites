@@ -1,3 +1,4 @@
+import 'package:flites/constants/app_sizes.dart';
 import 'package:flites/main.dart';
 import 'package:flites/states/open_project.dart';
 import 'package:flites/states/selected_images_controller.dart';
@@ -32,10 +33,16 @@ class _FileItemState extends State<FileItem> {
         onEnter: (event) => isHoveredState.value = true,
         onExit: (event) => isHoveredState.value = false,
         child: Container(
-          margin: const EdgeInsets.symmetric(vertical: 2, horizontal: 8),
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+          margin: const EdgeInsets.symmetric(
+            vertical: Sizes.p2,
+            horizontal: Sizes.p8,
+          ),
+          padding: const EdgeInsets.symmetric(
+            horizontal: Sizes.p24,
+            vertical: Sizes.p8,
+          ),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(Sizes.p8),
             color: isCurrentlySelected
                 ? Theme.of(context).primaryColor.withValues(alpha: 0.3)
                 : isHovered
@@ -52,13 +59,16 @@ class _FileItemState extends State<FileItem> {
                 Image.memory(
                   widget.file.image,
                   fit: BoxFit.contain,
-                  width: 24,
-                  height: 24,
+                  width: Sizes.p24,
+                  height: Sizes.p24,
                 ),
                 if (widget.file.displayName != null)
                   Expanded(
                     child: Padding(
-                      padding: const EdgeInsets.only(left: 24, right: 16),
+                      padding: const EdgeInsets.only(
+                        left: Sizes.p24,
+                        right: Sizes.p16,
+                      ),
                       child: Text(
                         widget.file.displayName!,
                         overflow: TextOverflow.ellipsis,
@@ -67,7 +77,7 @@ class _FileItemState extends State<FileItem> {
                   ),
                 if (isHovered)
                   Padding(
-                    padding: const EdgeInsets.only(left: 16),
+                    padding: const EdgeInsets.only(left: Sizes.p16),
                     child: Tooltip(
                       message: context.l10n.delete,
                       child: InkWell(
@@ -76,13 +86,13 @@ class _FileItemState extends State<FileItem> {
                             ...projectSourceFiles.value
                           ]..removeWhere((e) => e.id == widget.file.id);
                         },
-                        child: const Icon(Icons.delete, size: 16),
+                        child: const Icon(Icons.delete, size: Sizes.p16),
                       ),
                     ),
                   ),
                 if (isCurrentReferenceImage || isHovered)
                   Padding(
-                    padding: const EdgeInsets.only(left: 16),
+                    padding: const EdgeInsets.only(left: Sizes.p16),
                     child: Tooltip(
                       message: context.l10n.toggleVisibility,
                       child: InkWell(
@@ -101,7 +111,7 @@ class _FileItemState extends State<FileItem> {
                         },
                         child: const Icon(
                           CupertinoIcons.eye_solid,
-                          size: 16,
+                          size: Sizes.p16,
                           // color: Colors.grey,
                         ),
                       ),
