@@ -1,0 +1,163 @@
+{
+    "@@locale": "zh",
+    "title": "Flites",
+    "@title": {
+        "description": "The application title"
+    },
+    "addImage": "添加图片",
+    "@addImage": {
+        "description": "Button text for adding a new image"
+    },
+    "tools": "工具",
+    "@tools": {
+        "description": "Tools section header"
+    },
+    "frames": "帧",
+    "@frames": {
+        "description": "Frames section header"
+    },
+    "canvasMode": "画布模式",
+    "@canvasMode": {
+        "description": "Tooltip for canvas mode button"
+    },
+    "moveTool": "移动工具",
+    "@moveTool": {
+        "description": "Tooltip for move tool button"
+    },
+    "rotateTool": "旋转工具",
+    "@rotateTool": {
+        "description": "Tooltip for rotate tool button"
+    },
+    "toggleVisibility": "切换可见性",
+    "@toggleVisibility": {
+        "description": "Tooltip for visibility toggle button"
+    },
+    "canvasAndImageControls": "画布和图像控制",
+    "@canvasAndImageControls": {
+        "description": "Title for canvas and image controls overlay"
+    },
+    "canvasControls": "画布控制",
+    "@canvasControls": {
+        "description": "Section header for canvas controls"
+    },
+    "imageControls": "图像控制",
+    "@imageControls": {
+        "description": "Section header for image controls"
+    },
+    "usePreviousFrameAsReference": "使用前一帧作为参考",
+    "@usePreviousFrameAsReference": {
+        "description": "Checkbox label for using previous frame as reference"
+    },
+    "showBoundingBorder": "显示边界框",
+    "@showBoundingBorder": {
+        "description": "Checkbox label for showing bounding border"
+    },
+    "sortByName": "按名称排序",
+    "@sortByName": {
+        "description": "Button text for sorting images by name"
+    },
+    "renameFilesAccordingToOrder": "按顺序重命名文件",
+    "@renameFilesAccordingToOrder": {
+        "description": "Button text for renaming files according to order"
+    },
+    "resetNames": "重置名称",
+    "@resetNames": {
+        "description": "Button text for resetting file names"
+    },
+    "delete": "删除",
+    "@delete": {
+        "description": "Delete button tooltip"
+    },
+    "playPause": "播放/暂停",
+    "@playPause": {
+        "description": "Tooltip for play/pause button"
+    },
+    "exportSprite": "导出精灵图",
+    "@exportSprite": {
+        "description": "Button text for exporting sprite"
+    },
+    "fileName": "文件名",
+    "@fileName": {
+        "description": "Label for file name input"
+    },
+    "location": "位置",
+    "@location": {
+        "description": "Label for location selection"
+    },
+    "export": "导出",
+    "@export": {
+        "description": "Export button text"
+    },
+    "enterSpriteName": "输入精灵图名称",
+    "@enterSpriteName": {
+        "description": "Hint text for TextField for sprite name"
+    },
+    "selectLocation": "选择下载位置",
+    "@selectLocation": {
+        "description": "Tooltip for location picker button"
+    },
+    "zoomIn": "放大",
+    "@zoomIn": {
+        "description": "Tooltip for zoom in button"
+    },
+    "zoomOut": "缩小",
+    "@zoomOut": {
+        "description": "Tooltip for zoom out button"
+    },
+    "processingImage": "正在处理您的图片",
+    "@processingImage": {
+        "description": "Message shown while image is being processed"
+    },
+    "processingMightTakeAMoment": "这可能需要一点时间...",
+    "@processingMightTakeAMoment": {
+        "description": "Message shown during processing on web platform"
+    },
+    "menuFile": "文件",
+    "@menuFile": {
+        "description": "File menu label"
+    },
+    "menuPreferences": "首选项",
+    "@menuPreferences": {
+        "description": "Preferences menu label"
+    },
+    "menuTheme": "主题",
+    "@menuTheme": {
+        "description": "Theme menu label"
+    },
+    "menuThemeLight": "浅色",
+    "@menuThemeLight": {
+        "description": "Light theme menu option"
+    },
+    "menuThemeDark": "深色",
+    "@menuThemeDark": {
+        "description": "Dark theme menu option"
+    },
+    "menuThemeSystem": "系统",
+    "@menuThemeSystem": {
+        "description": "System theme menu option"
+    },
+    "menuLanguage": "语言",
+    "@menuLanguage": {
+        "description": "Language menu label"
+    },
+    "padding": "内边距",
+    "@padding": {
+        "description": "General term for padding"
+    },
+    "width": "宽度",
+    "@width": {
+        "description": "Label for width input"
+    },
+    "height": "高度",
+    "@height": {
+        "description": "Label for height input"
+    },
+    "provideDimensionError": "请提供至少一个尺寸（宽度或高度）。",
+    "@provideDimensionError": {
+        "description": "Error message shown when no dimensions are provided for export"
+    },
+    "webDownloadLocation": "文件将保存到您的下载文件夹。",
+    "@webDownloadLocation": {
+        "description": "Message indicating where files will be saved on web platform"
+    }
+}

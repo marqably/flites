@@ -1,0 +1,163 @@
+{
+    "@@locale": "pt",
+    "title": "Flites",
+    "@title": {
+        "description": "The application title"
+    },
+    "addImage": "Adicionar imagem",
+    "@addImage": {
+        "description": "Button text for adding a new image"
+    },
+    "tools": "Ferramentas",
+    "@tools": {
+        "description": "Tools section header"
+    },
+    "frames": "Quadros",
+    "@frames": {
+        "description": "Frames section header"
+    },
+    "canvasMode": "Modo canvas",
+    "@canvasMode": {
+        "description": "Tooltip for canvas mode button"
+    },
+    "moveTool": "Ferramenta de movimento",
+    "@moveTool": {
+        "description": "Tooltip for move tool button"
+    },
+    "rotateTool": "Ferramenta de rotação",
+    "@rotateTool": {
+        "description": "Tooltip for rotate tool button"
+    },
+    "toggleVisibility": "Alternar visibilidade",
+    "@toggleVisibility": {
+        "description": "Tooltip for visibility toggle button"
+    },
+    "canvasAndImageControls": "Controles de canvas e imagem",
+    "@canvasAndImageControls": {
+        "description": "Title for canvas and image controls overlay"
+    },
+    "canvasControls": "Controles de canvas",
+    "@canvasControls": {
+        "description": "Section header for canvas controls"
+    },
+    "imageControls": "Controles de imagem",
+    "@imageControls": {
+        "description": "Section header for image controls"
+    },
+    "usePreviousFrameAsReference": "Usar quadro anterior como referência",
+    "@usePreviousFrameAsReference": {
+        "description": "Checkbox label for using previous frame as reference"
+    },
+    "showBoundingBorder": "Mostrar borda delimitadora",
+    "@showBoundingBorder": {
+        "description": "Checkbox label for showing bounding border"
+    },
+    "sortByName": "Ordenar por nome",
+    "@sortByName": {
+        "description": "Button text for sorting images by name"
+    },
+    "renameFilesAccordingToOrder": "Renomear arquivos de acordo com a ordem",
+    "@renameFilesAccordingToOrder": {
+        "description": "Button text for renaming files according to order"
+    },
+    "resetNames": "Redefinir nomes",
+    "@resetNames": {
+        "description": "Button text for resetting file names"
+    },
+    "delete": "Excluir",
+    "@delete": {
+        "description": "Delete button tooltip"
+    },
+    "playPause": "Reproduzir/Pausar",
+    "@playPause": {
+        "description": "Tooltip for play/pause button"
+    },
+    "exportSprite": "Exportar sprite",
+    "@exportSprite": {
+        "description": "Button text for exporting sprite"
+    },
+    "fileName": "Nome do arquivo",
+    "@fileName": {
+        "description": "Label for file name input"
+    },
+    "location": "Localização",
+    "@location": {
+        "description": "Label for location selection"
+    },
+    "export": "Exportar",
+    "@export": {
+        "description": "Export button text"
+    },
+    "enterSpriteName": "Digite o nome do sprite",
+    "@enterSpriteName": {
+        "description": "Hint text for TextField for sprite name"
+    },
+    "selectLocation": "Selecionar local de download",
+    "@selectLocation": {
+        "description": "Tooltip for location picker button"
+    },
+    "zoomIn": "Aumentar zoom",
+    "@zoomIn": {
+        "description": "Tooltip for zoom in button"
+    },
+    "zoomOut": "Diminuir zoom",
+    "@zoomOut": {
+        "description": "Tooltip for zoom out button"
+    },
+    "processingImage": "Aguarde enquanto processamos sua imagem",
+    "@processingImage": {
+        "description": "Message shown while image is being processed"
+    },
+    "processingMightTakeAMoment": "Isso pode levar um momento...",
+    "@processingMightTakeAMoment": {
+        "description": "Message shown during processing on web platform"
+    },
+    "menuFile": "Arquivo",
+    "@menuFile": {
+        "description": "File menu label"
+    },
+    "menuPreferences": "Preferências",
+    "@menuPreferences": {
+        "description": "Preferences menu label"
+    },
+    "menuTheme": "Tema",
+    "@menuTheme": {
+        "description": "Theme menu label"
+    },
+    "menuThemeLight": "Claro",
+    "@menuThemeLight": {
+        "description": "Light theme menu option"
+    },
+    "menuThemeDark": "Escuro",
+    "@menuThemeDark": {
+        "description": "Dark theme menu option"
+    },
+    "menuThemeSystem": "Sistema",
+    "@menuThemeSystem": {
+        "description": "System theme menu option"
+    },
+    "menuLanguage": "Idioma",
+    "@menuLanguage": {
+        "description": "Language menu label"
+    },
+    "padding": "Preenchimento",
+    "@padding": {
+        "description": "General term for padding"
+    },
+    "width": "Largura",
+    "@width": {
+        "description": "Label for width input"
+    },
+    "height": "Altura",
+    "@height": {
+        "description": "Label for height input"
+    },
+    "provideDimensionError": "Forneça pelo menos uma dimensão (largura ou altura).",
+    "@provideDimensionError": {
+        "description": "Error message shown when no dimensions are provided for export"
+    },
+    "webDownloadLocation": "O arquivo será salvo na sua pasta de downloads.",
+    "@webDownloadLocation": {
+        "description": "Message indicating where files will be saved on web platform"
+    }
+}
