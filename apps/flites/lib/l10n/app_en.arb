@@ -139,5 +139,25 @@
     "menuLanguage": "Language",
     "@menuLanguage": {
         "description": "Language menu label"
+    },
+    "padding": "Padding",
+    "@padding": {
+        "description": "General term for padding"
+    },
+    "width": "Width",
+    "@width": {
+        "description": "Label for width input"
+    },
+    "height": "Height",
+    "@height": {
+        "description": "Label for height input"
+    },
+    "provideDimensionError": "Please provide at least one dimension (width or height).",
+    "@provideDimensionError": {
+        "description": "Error message shown when no dimensions are provided for export"
+    },
+    "webDownloadLocation": "File will be saved to your downloads folder.",
+    "@webDownloadLocation": {
+        "description": "Message indicating where files will be saved on web platform"
     }
 }
