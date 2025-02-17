@@ -73,7 +73,7 @@ class _PlayerControlsState extends State<PlayerControls> {
         color: context.colors.surfaceContainerLowest,
         borderRadius: BorderRadius.circular(32),
       ),
-      height: 64,
+      height: Sizes.p64,
       width: 344,
       child: Watch(
         (context) {
@@ -87,7 +87,7 @@ class _PlayerControlsState extends State<PlayerControls> {
                 child: Text(
                   'Player Speed',
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: Sizes.p16,
                     color: context.colors.outline,
                   ),
                 ),
@@ -101,7 +101,7 @@ class _PlayerControlsState extends State<PlayerControls> {
                   ],
                   textAlign: TextAlign.end,
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: Sizes.p16,
                     fontWeight: FontWeight.w700,
                     color: context.colors.onSurfaceVariant,
                   ),
@@ -109,7 +109,7 @@ class _PlayerControlsState extends State<PlayerControls> {
                     suffix: Text(
                       ' ms',
                       style: TextStyle(
-                        fontSize: 16,
+                        fontSize: Sizes.p16,
                         fontWeight: FontWeight.w400,
                         color: context.colors.surfaceContainerHighest,
                       ),

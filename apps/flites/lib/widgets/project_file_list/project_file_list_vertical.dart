@@ -43,13 +43,13 @@ class _ProjectFileListVerticalState extends State<ProjectFileListVertical> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(Sizes.p16),
                   child: Row(
                     children: [
                       Text(
                         context.l10n.title,
                         style: const TextStyle(
-                          fontSize: 36,
+                          fontSize: Sizes.p36,
                           fontWeight: FontWeight.w800,
                         ),
                       ),
@@ -58,7 +58,10 @@ class _ProjectFileListVerticalState extends State<ProjectFileListVertical> {
                 ),
                 gapH16,
                 Padding(
-                  padding: const EdgeInsets.only(left: 16.0, right: 32.0),
+                  padding: const EdgeInsets.only(
+                    left: Sizes.p16,
+                    right: Sizes.p32,
+                  ),
                   child: Row(
                     children: [
                       ControlHeader(text: context.l10n.tools),
@@ -85,7 +88,10 @@ class _ProjectFileListVerticalState extends State<ProjectFileListVertical> {
                 ),
                 gapH8,
                 Padding(
-                  padding: const EdgeInsets.only(left: 16.0, right: 32.0),
+                  padding: const EdgeInsets.only(
+                    left: Sizes.p16,
+                    right: Sizes.p32,
+                  ),
                   child: Row(
                     children: [
                       ControlHeader(text: context.l10n.frames),
@@ -106,7 +112,7 @@ class _ProjectFileListVerticalState extends State<ProjectFileListVertical> {
                           },
                           child: const Icon(
                             CupertinoIcons.eye_solid,
-                            size: 16,
+                            size: Sizes.p16,
                           ),
                         ),
                       ),
@@ -177,15 +183,15 @@ class _ProjectFileListVerticalState extends State<ProjectFileListVertical> {
                           child: Container(
                             width: double.infinity,
                             margin: const EdgeInsets.symmetric(
-                              vertical: 2,
-                              horizontal: 8,
+                              vertical: Sizes.p2,
+                              horizontal: Sizes.p8,
                             ),
                             padding: const EdgeInsets.symmetric(
-                              horizontal: 24,
-                              vertical: 8,
+                              horizontal: Sizes.p24,
+                              vertical: Sizes.p8,
                             ),
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8),
+                              borderRadius: BorderRadius.circular(Sizes.p8),
                               color: isHovered
                                   ? context.colors.surface
                                   : Colors.transparent,
@@ -194,7 +200,7 @@ class _ProjectFileListVerticalState extends State<ProjectFileListVertical> {
                               children: [
                                 Icon(
                                   CupertinoIcons.add,
-                                  size: 16,
+                                  size: Sizes.p16,
                                   color: context.colors.surfaceDim,
                                 ),
                                 gapW16,
@@ -206,14 +212,14 @@ class _ProjectFileListVerticalState extends State<ProjectFileListVertical> {
                       },
                     ),
                     Padding(
-                      padding: const EdgeInsets.all(16),
+                      padding: const EdgeInsets.all(Sizes.p16),
                       child: OverlayButton(
                         tooltip: context.l10n.canvasAndImageControls,
                         buttonChild: Container(
-                          padding: const EdgeInsets.all(6),
+                          padding: const EdgeInsets.all(Sizes.p8),
                           decoration: BoxDecoration(
                             color: context.colors.surfaceContainerLow,
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(Sizes.p8),
                           ),
                           child: Icon(
                             CupertinoIcons.layers,
@@ -221,7 +227,7 @@ class _ProjectFileListVerticalState extends State<ProjectFileListVertical> {
                           ),
                         ),
                         overlayContent: Padding(
-                          padding: const EdgeInsets.all(16.0),
+                          padding: const EdgeInsets.all(Sizes.p16),
                           child: SizedBox(
                             width: 280,
                             child: Column(

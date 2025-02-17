@@ -1,8 +1,8 @@
+import 'package:flites/constants/app_sizes.dart';
 import 'package:flites/main.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:signals/signals_flutter.dart';
-import 'package:flites/constants/app_sizes.dart';
 
 final showLoadingOverlay = signal(false);
 
@@ -27,15 +27,18 @@ class LoadingOverlay extends StatelessWidget {
       color: Colors.black54,
       child: Center(
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          padding: const EdgeInsets.symmetric(
+            horizontal: Sizes.p24,
+            vertical: Sizes.p16,
+          ),
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.surface,
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(Sizes.p16),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withValues(alpha: 0.1),
-                blurRadius: 12,
-                offset: const Offset(0, 4),
+                blurRadius: Sizes.p12,
+                offset: const Offset(0, Sizes.p4),
               ),
             ],
           ),
@@ -46,7 +49,7 @@ class LoadingOverlay extends StatelessWidget {
               if (kIsWeb)
                 const Icon(
                   Icons.hourglass_empty,
-                  size: 32,
+                  size: Sizes.p32,
                 )
               else
                 const CircularProgressIndicator(),

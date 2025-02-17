@@ -1,3 +1,4 @@
+import 'package:flites/constants/app_sizes.dart';
 import 'package:flites/widgets/blocking_widget/blocking_container.dart';
 import 'package:flites/widgets/canvas_controls/canvas_controls.dart';
 import 'package:flites/widgets/canvas_controls/zoom_controls.dart';
@@ -37,8 +38,8 @@ class _OverviewState extends State<Overview> {
                   children: [
                     ImageEditor(),
                     Positioned(
-                      right: 32,
-                      bottom: 32,
+                      right: Sizes.p32,
+                      bottom: Sizes.p32,
                       child: ZoomControls(),
                     ),
                   ],
@@ -49,7 +50,7 @@ class _OverviewState extends State<Overview> {
           ),
           BlockingContainer(),
           Positioned(
-            bottom: 64,
+            bottom: Sizes.p64,
             child: PlayerControls(),
           ),
         ],

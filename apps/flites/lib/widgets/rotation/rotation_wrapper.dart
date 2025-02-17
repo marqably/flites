@@ -75,7 +75,7 @@ class _RotationWrapperState extends State<RotationWrapper> {
       alignment: Alignment.center,
       children: [
         Padding(
-          padding: const EdgeInsets.only(bottom: 50),
+          padding: const EdgeInsets.only(bottom: Sizes.p48),
           child: Transform.rotate(
             origin: const Offset(0, 0),
             angle: rotation,
@@ -97,7 +97,7 @@ class _RotationWrapperState extends State<RotationWrapper> {
                       shape: BoxShape.circle,
                       border: Border.all(
                         color: context.colors.outline,
-                        width: 2,
+                        width: Sizes.p2,
                       ),
                     ),
                     width: circleRadius * 2 - (dotSize * 2 / 3),
@@ -139,9 +139,12 @@ class _RotationWrapperState extends State<RotationWrapper> {
             child: Container(
               decoration: BoxDecoration(
                 color: context.colors.surfaceContainerLowest,
-                borderRadius: BorderRadius.circular(32),
+                borderRadius: BorderRadius.circular(Sizes.p32),
               ),
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              padding: const EdgeInsets.symmetric(
+                horizontal: Sizes.p8,
+                vertical: Sizes.p4,
+              ),
               child: Row(
                 children: [
                   IconButton(

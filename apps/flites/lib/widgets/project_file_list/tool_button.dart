@@ -1,3 +1,4 @@
+import 'package:flites/constants/app_sizes.dart';
 import 'package:flites/main.dart';
 import 'package:flites/states/tool_controller.dart';
 import 'package:flutter/material.dart';
@@ -46,11 +47,11 @@ class ToolButton extends StatelessWidget {
                     : isHovered
                         ? context.colors.surfaceTint
                         : Colors.transparent,
-                borderRadius: BorderRadius.circular(4),
+                borderRadius: BorderRadius.circular(Sizes.p4),
               ),
               child: Icon(
                 icon,
-                size: 16,
+                size: Sizes.p16,
                 color: isSelected
                     ? context.colors.surfaceContainerLowest
                     : context.colors.onSurface,
