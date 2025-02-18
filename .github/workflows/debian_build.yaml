@@ -8,6 +8,7 @@ on:
   push:
     branches:
       - main
+      - feat/beau/appimage-workflow
     tags:
       - 'v*'
   pull_request:
@@ -63,7 +64,7 @@ jobs:
           mkdir -p debian/DEBIAN
           mkdir -p debian/usr/bin
           mkdir -p debian/usr/share/applications
-          mkdir -p debian/usr/share/icons/hicolor/scalable/apps
+          mkdir -p debian/usr/share/icons/hicolor/256x256/apps
 
       - name: 📄 Create Control File
         run: |
@@ -102,15 +103,15 @@ jobs:
           [Desktop Entry]
           Name=Flites
           Exec=/usr/bin/flites
-          Icon=steps
+          Icon=flites
           Type=Application
-          Categories=Utility;
+          Categories=Utility;Graphics;
           EOL
 
       - name: 🎨 Copy Icons
         run: |
-          cp apps/flites/assets/icons/steps.svg debian/usr/share/icons/hicolor/scalable/apps/steps.svg
-          chmod 644 debian/usr/share/icons/hicolor/scalable/apps/steps.svg
+          cp apps/flites/assets/images/flites_logo.png debian/usr/share/icons/hicolor/256x256/apps/flites.png
+          chmod 644 debian/usr/share/icons/hicolor/256x256/apps/flites.png
 
       - name: 📦 Build Package
         run: |
