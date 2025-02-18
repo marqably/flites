@@ -76,7 +76,7 @@ jobs:
 
       - name: 🖥️ Create Desktop Entry
         run: |
-          cat > AppDir/usr/share/applications/flites.desktop << EOL
+          cat > AppDir/flites.desktop << EOL
           [Desktop Entry]
           Name=Flites
           Exec=flites
@@ -85,6 +85,7 @@ jobs:
           Categories=Utility;Graphics;
           Comment=A sprite generator written in flutter
           EOL
+          cp AppDir/flites.desktop AppDir/usr/share/applications/
 
       - name: 🎨 Copy Icons
         run: |
