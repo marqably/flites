@@ -82,13 +82,14 @@ jobs:
           Exec=flites
           Icon=flites
           Type=Application
-          Categories=Utility;Graphics;
+          Categories=Utility;
           Comment=A sprite generator written in flutter
           EOL
           cp AppDir/flites.desktop AppDir/usr/share/applications/
 
       - name: 🎨 Copy Icons
         run: |
+          cp apps/flites/assets/images/flites_logo.png AppDir/flites.png
           cp apps/flites/assets/images/flites_logo.png AppDir/usr/share/icons/hicolor/256x256/apps/flites.png
 
       - name: 📜 Create AppRun Script
@@ -119,7 +120,6 @@ jobs:
             </description>
             <categories>
               <category>Utility</category>
-              <category>Graphics</category>
             </categories>
             <releases>
               <release version="${{ env.PACKAGE_VERSION }}" date="2024-03-14"/>
