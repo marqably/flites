@@ -1,0 +1,157 @@
+name: 🐧 AppImage Build
+
+env:
+  PACKAGE_VERSION: 0.0.1
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*'
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-appimage:
+    name: 🐧 Build and Deploy AppImage
+    runs-on: ubuntu-22.04
+    steps:
+      - name: 📚 Git Checkout
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.27.2'
+          architecture: x64
+
+      - name: 🗄️ Cache Flutter
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cache/flutter
+          key: flutter-${{ runner.os }}-${{ hashFiles('**/pubspec.lock') }}
+
+      - name: 🗄️ Cache Pub Dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.pub-cache
+          key: pub-${{ runner.os }}-${{ hashFiles('**/pubspec.lock') }}
+
+      - name: 📦 Setup Melos
+        uses: bluefireteam/melos-action@v2
+
+      - name: 🔧 Basic Linux Setup
+        run: |
+          set -e
+          sudo apt-get update || exit 1
+          sudo apt-get install -y ninja-build libgtk-3-dev cmake pkg-config || exit 1
+          sudo apt-get install -y wget fuse || exit 1
+          wget -O appimagetool "https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage"
+          chmod +x appimagetool
+          sudo mv appimagetool /usr/local/bin/
+          flutter config --enable-linux-desktop || exit 1
+
+      - name: 🔄 Get Dependencies
+        run: |
+          melos bootstrap
+          flutter pub get
+
+      - name: 🏗️ Build Linux App
+        run: |
+          export CXX=/usr/bin/clang++
+          export CC=/usr/bin/clang
+          cd apps/flites
+          flutter build linux --release
+
+      - name: 📋 Copy Build Artifacts
+        run: |
+          mkdir -p AppDir/usr/{bin,share/{applications,icons/hicolor/256x256/apps,metainfo}}
+          cp -r apps/flites/build/linux/x64/release/bundle/* AppDir/usr/bin/
+
+      - name: 🖥️ Create Desktop Entry
+        run: |
+          cat > AppDir/flites.desktop << EOL
+          [Desktop Entry]
+          Name=Flites
+          Exec=flites
+          Icon=flites
+          Type=Application
+          Categories=Utility;
+          Comment=A sprite generator written in flutter
+          EOL
+          cp AppDir/flites.desktop AppDir/usr/share/applications/
+
+      - name: 🎨 Copy Icons
+        run: |
+          cp apps/flites/assets/images/flites_logo.png AppDir/flites.png
+          cp apps/flites/assets/images/flites_logo.png AppDir/usr/share/icons/hicolor/256x256/apps/flites.png
+
+      - name: 📜 Create AppRun Script
+        run: |
+          cat > AppDir/AppRun << EOL
+          #!/bin/sh
+          HERE=\$(dirname \$(readlink -f \${0}))
+          export PATH="\${HERE}/usr/bin/:\${PATH}"
+          export LD_LIBRARY_PATH="\${HERE}/usr/lib/:\${LD_LIBRARY_PATH}"
+          exec "\${HERE}/usr/bin/flites" "\$@"
+          EOL
+          chmod +x AppDir/AppRun
+
+      - name: 📝 Create Metadata
+        run: |
+          cat > AppDir/usr/share/metainfo/flites.appdata.xml << EOL
+          <?xml version="1.0" encoding="UTF-8"?>
+          <component type="desktop-application">
+            <id>com.marqably.flites</id>
+            <name>Flites</name>
+            <summary>A sprite generator written in flutter</summary>
+            <metadata_license>MIT</metadata_license>
+            <project_license>MIT</project_license>
+            <description>
+              <p>
+                Flites is a sprite generator built with Flutter.
+              </p>
+            </description>
+            <categories>
+              <category>Utility</category>
+            </categories>
+            <releases>
+              <release version="${{ env.PACKAGE_VERSION }}" date="2024-03-14"/>
+            </releases>
+          </component>
+          EOL
+
+      - name: 📦 Create AppImage
+        run: |
+          ARCH=x86_64 appimagetool AppDir flites-${{ env.PACKAGE_VERSION }}-x86_64.AppImage
+
+      - name: ⬆️ Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: flites-appimage-${{ env.PACKAGE_VERSION }}
+          path: flites-${{ env.PACKAGE_VERSION }}-x86_64.AppImage 
+
+      - name: 🧪 Test AppImage
+        run: |
+          chmod +x flites-${{ env.PACKAGE_VERSION }}-x86_64.AppImage
+          
+          CONTAINER_ID=$(docker create -t debian:stable sleep infinity)
+          docker start $CONTAINER_ID
+          
+          docker exec $CONTAINER_ID bash -c "
+            set -e && \
+            apt-get update && \
+            apt-get install -y libgtk-3-0 libfuse2"
+          
+          docker cp flites-${{ env.PACKAGE_VERSION }}-x86_64.AppImage $CONTAINER_ID:/flites.AppImage
+          
+          docker exec $CONTAINER_ID bash -c "
+            chmod +x /flites.AppImage && \
+            which /flites.AppImage"
+          
+          docker rm -f $CONTAINER_ID 
