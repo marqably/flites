@@ -19,7 +19,7 @@ class ExportDialogContentState extends State<ExportDialogContent> {
   String? exportPath;
 
   int currentWidthPx = 300;
-  int currentHeightPx = 300;
+  int currentHeightPx = 0;
 
   int currentPaddingTop = 0;
   int currentPaddingBottom = 0;
