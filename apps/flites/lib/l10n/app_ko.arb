@@ -1,0 +1,163 @@
+{
+    "@@locale": "ko",
+    "title": "Flites",
+    "@title": {
+        "description": "The application title"
+    },
+    "addImage": "이미지 추가",
+    "@addImage": {
+        "description": "Button text for adding a new image"
+    },
+    "tools": "도구",
+    "@tools": {
+        "description": "Tools section header"
+    },
+    "frames": "프레임",
+    "@frames": {
+        "description": "Frames section header"
+    },
+    "canvasMode": "캔버스 모드",
+    "@canvasMode": {
+        "description": "Tooltip for canvas mode button"
+    },
+    "moveTool": "이동 도구",
+    "@moveTool": {
+        "description": "Tooltip for move tool button"
+    },
+    "rotateTool": "회전 도구",
+    "@rotateTool": {
+        "description": "Tooltip for rotate tool button"
+    },
+    "toggleVisibility": "표시 전환",
+    "@toggleVisibility": {
+        "description": "Tooltip for visibility toggle button"
+    },
+    "canvasAndImageControls": "캔버스 및 이미지 설정",
+    "@canvasAndImageControls": {
+        "description": "Title for canvas and image controls overlay"
+    },
+    "canvasControls": "캔버스 제어",
+    "@canvasControls": {
+        "description": "Section header for canvas controls"
+    },
+    "imageControls": "이미지 제어",
+    "@imageControls": {
+        "description": "Section header for image controls"
+    },
+    "usePreviousFrameAsReference": "이전 프레임을 기준으로 사용",
+    "@usePreviousFrameAsReference": {
+        "description": "Checkbox label for using previous frame as reference"
+    },
+    "showBoundingBorder": "경계선 표시",
+    "@showBoundingBorder": {
+        "description": "Checkbox label for showing bounding border"
+    },
+    "sortByName": "이름순 정렬",
+    "@sortByName": {
+        "description": "Button text for sorting images by name"
+    },
+    "renameFilesAccordingToOrder": "파일을 순서대로 이름 변경",
+    "@renameFilesAccordingToOrder": {
+        "description": "Button text for renaming files according to order"
+    },
+    "resetNames": "이름 되돌리기",
+    "@resetNames": {
+        "description": "Button text for resetting file names"
+    },
+    "delete": "삭제",
+    "@delete": {
+        "description": "Delete button tooltip"
+    },
+    "playPause": "재생/일시정지",
+    "@playPause": {
+        "description": "Tooltip for play/pause button"
+    },
+    "exportSprite": "스프라이트 내보내기",
+    "@exportSprite": {
+        "description": "Button text for exporting sprite"
+    },
+    "fileName": "파일 이름",
+    "@fileName": {
+        "description": "Label for file name input"
+    },
+    "location": "위치",
+    "@location": {
+        "description": "Label for location selection"
+    },
+    "export": "내보내기",
+    "@export": {
+        "description": "Export button text"
+    },
+    "enterSpriteName": "스프라이트 이름 입력",
+    "@enterSpriteName": {
+        "description": "Hint text for TextField for sprite name"
+    },
+    "selectLocation": "다운로드 위치 선택",
+    "@selectLocation": {
+        "description": "Tooltip for location picker button"
+    },
+    "zoomIn": "확대",
+    "@zoomIn": {
+        "description": "Tooltip for zoom in button"
+    },
+    "zoomOut": "축소",
+    "@zoomOut": {
+        "description": "Tooltip for zoom out button"
+    },
+    "processingImage": "이미지 처리 중입니다",
+    "@processingImage": {
+        "description": "Message shown while image is being processed"
+    },
+    "processingMightTakeAMoment": "잠시만 기다려주세요...",
+    "@processingMightTakeAMoment": {
+        "description": "Message shown during processing on web platform"
+    },
+    "menuFile": "파일",
+    "@menuFile": {
+        "description": "File menu label"
+    },
+    "menuPreferences": "설정",
+    "@menuPreferences": {
+        "description": "Preferences menu label"
+    },
+    "menuTheme": "테마",
+    "@menuTheme": {
+        "description": "Theme menu label"
+    },
+    "menuThemeLight": "밝은 테마",
+    "@menuThemeLight": {
+        "description": "Light theme menu option"
+    },
+    "menuThemeDark": "어두운 테마",
+    "@menuThemeDark": {
+        "description": "Dark theme menu option"
+    },
+    "menuThemeSystem": "시스템 설정과 동일",
+    "@menuThemeSystem": {
+        "description": "System theme menu option"
+    },
+    "menuLanguage": "언어",
+    "@menuLanguage": {
+        "description": "Language menu label"
+    },
+    "padding": "여백",
+    "@padding": {
+        "description": "General term for padding"
+    },
+    "width": "너비",
+    "@width": {
+        "description": "Label for width input"
+    },
+    "height": "높이",
+    "@height": {
+        "description": "Label for height input"
+    },
+    "provideDimensionError": "너비나 높이 중 하나를 입력하세요.",
+    "@provideDimensionError": {
+        "description": "Error message shown when no dimensions are provided for export"
+    },
+    "webDownloadLocation": "파일이 다운로드 폴더에 저장됩니다.",
+    "@webDownloadLocation": {
+        "description": "Message indicating where files will be saved on web platform"
+    }
+}
