@@ -1,3 +1,4 @@
+import 'package:flites/constants/app_sizes.dart';
 import 'package:flutter/material.dart';
 
 class IconTextButton extends StatelessWidget {
@@ -17,7 +18,7 @@ class IconTextButton extends StatelessWidget {
     return InkWell(
       onTap: onPressed,
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 6),
+        padding: const EdgeInsets.symmetric(vertical: Sizes.p8),
         child: icon == null
             ? Text(text)
             : Row(

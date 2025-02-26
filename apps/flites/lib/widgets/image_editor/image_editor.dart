@@ -1,3 +1,4 @@
+import 'package:flites/constants/app_sizes.dart';
 import 'package:flites/main.dart';
 import 'package:flites/states/canvas_controller.dart';
 import 'package:flites/states/key_events.dart';
@@ -172,7 +173,7 @@ class _ImageEditorState extends State<ImageEditor> {
                         child: Container(
                           decoration: BoxDecoration(
                             border: Border.all(
-                              width: 4,
+                              width: Sizes.p4,
                               color: context.colors.surfaceContainerLowest,
                             ),
                           ),

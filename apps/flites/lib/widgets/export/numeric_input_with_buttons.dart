@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:flites/constants/app_sizes.dart';
 import 'package:flites/main.dart';
 import 'package:flutter/material.dart';
 
@@ -26,13 +27,13 @@ class NumericInputWithButtons extends StatelessWidget {
             label!,
             style: Theme.of(context).textTheme.titleSmall,
           ),
-          const SizedBox(height: 4),
+          gapH4,
         ],
         Container(
-          height: 40,
+          height: Sizes.p40,
           decoration: BoxDecoration(
             border: Border.all(color: context.colors.onSurface),
-            borderRadius: BorderRadius.circular(4),
+            borderRadius: BorderRadius.circular(Sizes.p4),
             color: context.colors.surface,
           ),
           child: Row(
@@ -43,7 +44,7 @@ class NumericInputWithButtons extends StatelessWidget {
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
                     hintText: currentValue.toString(),
-                    contentPadding: const EdgeInsets.only(left: 8),
+                    contentPadding: const EdgeInsets.only(left: Sizes.p8),
                     border: InputBorder.none,
                     fillColor: context.colors.surface,
                     isDense: true,
@@ -63,7 +64,7 @@ class NumericInputWithButtons extends StatelessWidget {
                     },
                     padding: EdgeInsets.zero,
                     constraints: const BoxConstraints(),
-                    iconSize: 16,
+                    iconSize: Sizes.p16,
                     color: context.colors.onSurface,
                   ),
                   IconButton(
@@ -73,7 +74,7 @@ class NumericInputWithButtons extends StatelessWidget {
                     },
                     padding: EdgeInsets.zero,
                     constraints: const BoxConstraints(),
-                    iconSize: 16,
+                    iconSize: Sizes.p16,
                     color: context.colors.onSurface,
                   ),
                 ],

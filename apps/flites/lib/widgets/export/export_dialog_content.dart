@@ -6,6 +6,7 @@ import 'package:flites/widgets/export/numeric_input_with_buttons.dart';
 import 'package:flites/widgets/export/padding_input.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flites/constants/app_sizes.dart';
 
 class ExportDialogContent extends StatefulWidget {
   const ExportDialogContent({super.key});
@@ -41,12 +42,12 @@ class ExportDialogContentState extends State<ExportDialogContent> {
               context.l10n.exportSprite,
               style: Theme.of(context).textTheme.titleLarge,
             ),
-            const SizedBox(height: 24),
+            gapH24,
             Text(
               context.l10n.fileName,
               style: Theme.of(context).textTheme.titleSmall,
             ),
-            const SizedBox(height: 8),
+            gapH8,
             TextField(
               decoration: InputDecoration(
                 hintText: context.l10n.enterSpriteName,
@@ -57,7 +58,7 @@ class ExportDialogContentState extends State<ExportDialogContent> {
               ),
               controller: fileNameController,
             ),
-            const SizedBox(height: 24),
+            gapH24,
             Row(
               children: [
                 Expanded(
@@ -71,7 +72,7 @@ class ExportDialogContentState extends State<ExportDialogContent> {
                     },
                   ),
                 ),
-                const SizedBox(width: 8),
+                gapW8,
                 Expanded(
                   child: NumericInputWithButtons(
                     label: '${context.l10n.height} (px)',
@@ -85,7 +86,7 @@ class ExportDialogContentState extends State<ExportDialogContent> {
                 ),
               ],
             ),
-            const SizedBox(height: 24),
+            gapH24,
             PaddingInput(
               topPadding: currentPaddingTop,
               bottomPadding: currentPaddingBottom,
@@ -112,28 +113,28 @@ class ExportDialogContentState extends State<ExportDialogContent> {
                 });
               },
             ),
-            const SizedBox(height: 24),
+            gapH24,
             if (!kIsWeb) ...[
               Text(
                 'Location',
                 style: Theme.of(context).textTheme.titleSmall,
               ),
-              const SizedBox(height: 8),
+              gapH8,
               FilePathPicker(
                 onPathSelected: (selectedPath) {
                   exportPath = selectedPath;
                 },
               ),
-              const SizedBox(height: 24),
+              gapH24,
             ],
             if (kIsWeb) ...[
               Text(
                 context.l10n.webDownloadLocation,
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
-              const SizedBox(height: 16),
+              gapH16,
             ],
-            const SizedBox(height: 16),
+            gapH16,
             Align(
               alignment: Alignment.centerRight,
               child: StadiumButton(

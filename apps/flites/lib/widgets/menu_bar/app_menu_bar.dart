@@ -1,3 +1,4 @@
+import 'package:flites/constants/app_sizes.dart';
 import 'package:flutter/material.dart';
 import 'package:menu_bar/menu_bar.dart';
 import 'package:flites/main.dart';
@@ -12,25 +13,25 @@ class AppMenuBar extends StatelessWidget {
 
   final Widget child;
 
-  static const double _indicatorWidth = 16.0;
-  static const double _menuHeight = 24.0;
+  static const double _indicatorWidth = Sizes.p16;
   static const checkIcon = Icon(Icons.check, size: _indicatorWidth);
   static const emptySpace = SizedBox(width: _indicatorWidth);
 
   MenuStyle _createMenuStyle(BuildContext context) => MenuStyle(
         backgroundColor:
             WidgetStatePropertyAll(context.colors.surfaceContainerLow),
-        fixedSize: const WidgetStatePropertyAll(Size.fromHeight(_menuHeight)),
+        fixedSize: const WidgetStatePropertyAll(Size.fromHeight(menuBarHeight)),
         padding: const WidgetStatePropertyAll(EdgeInsets.zero),
       );
 
   ButtonStyle _createButtonStyle(BuildContext context) => ButtonStyle(
         backgroundColor:
             WidgetStatePropertyAll(context.colors.surfaceContainerLow),
-        fixedSize: const WidgetStatePropertyAll(Size.fromHeight(_menuHeight)),
-        padding:
-            const WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: 8)),
-        minimumSize: const WidgetStatePropertyAll(Size.fromHeight(_menuHeight)),
+        fixedSize: const WidgetStatePropertyAll(Size.fromHeight(menuBarHeight)),
+        padding: const WidgetStatePropertyAll(
+            EdgeInsets.symmetric(horizontal: Sizes.p8)),
+        minimumSize:
+            const WidgetStatePropertyAll(Size.fromHeight(menuBarHeight)),
       );
 
   MenuButton _buildThemeMenuItem(String text, ThemeMode mode) {

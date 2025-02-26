@@ -1,3 +1,4 @@
+import 'package:flites/constants/app_sizes.dart';
 import 'package:flites/main.dart';
 import 'package:flutter/material.dart';
 
@@ -7,7 +8,7 @@ class StadiumButton extends StatelessWidget {
     required this.text,
     this.onPressed,
     this.color,
-    this.height = 48,
+    this.height = Sizes.p48,
     this.width = 140,
   });
 
@@ -27,7 +28,7 @@ class StadiumButton extends StatelessWidget {
         alignment: Alignment.center,
         decoration: BoxDecoration(
           color: color ?? context.colors.onSurface,
-          borderRadius: BorderRadius.circular(32),
+          borderRadius: BorderRadius.circular(Sizes.p32),
         ),
         child: Text(
           text,
