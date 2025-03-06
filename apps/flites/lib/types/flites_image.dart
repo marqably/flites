@@ -37,31 +37,48 @@ class FlitesImage {
 
   double rotation = 0;
 
+  /// Creates a scaled FlitesImage from raw image data.
+  ///
+  /// This constructor:
+  /// 1. Stores the original image data
+  /// 2. Calculates the dimensions on canvas based on the scaling factor
+  /// 3. Positions the image at the center of the canvas
+  /// 4. Generates a unique ID for the image
+  ///
+  /// Throws an exception if any step fails.
   FlitesImage.scaled(
     Uint8List rawImage, {
     required double scalingFactor,
     this.originalName,
   }) : displayName = originalName {
-    image = rawImage;
+    try {
+      // Store the original image data
+      image = rawImage;
+      originalScalingFactor = scalingFactor;
 
-    originalScalingFactor = scalingFactor;
+      // Get canvas dimensions and scaling factor
+      final currentCanvasSize = canvasController.canvasSizePixel;
+      final canvasScalingFactor = canvasController.canvasScalingFactor;
 
-    final currentCanvasSize = canvasController.canvasSizePixel;
-    final canvasScalingFactor = canvasController.canvasScalingFactor;
+      // Calculate image dimensions on canvas
+      final imageSize = ImageUtils.sizeOfRawImage(rawImage);
+      widthOnCanvas = imageSize.width *
+          scalingFactor *
+          (currentCanvasSize.width / canvasScalingFactor);
 
-    widthOnCanvas = ImageUtils.sizeOfRawImage(rawImage).width *
-        scalingFactor *
-        (currentCanvasSize.width / canvasScalingFactor);
+      // Calculate initial position (centered on canvas)
+      final initialCoordinates = ImageUtils.getCenteredCoordinatesForPicture(
+        Size(widthOnCanvas, heightOnCanvas),
+      );
+      positionOnCanvas = Offset(initialCoordinates.dx, initialCoordinates.dy);
 
-    final initialCoordinates = ImageUtils.getCenteredCoordinatesForPicture(
-      Size(widthOnCanvas, heightOnCanvas),
-    );
-
-    positionOnCanvas = Offset(initialCoordinates.dx, initialCoordinates.dy);
-
-    // generate a random id to identify this image
-    id =
-        '${DateTime.now().millisecondsSinceEpoch}-${0 + Random().nextInt(14000)}-${0 + Random().nextInt(15000)}';
+      // Generate a unique ID for this image
+      id =
+          '${DateTime.now().millisecondsSinceEpoch}-${Random().nextInt(14000)}-${Random().nextInt(15000)}';
+    } catch (e) {
+      // Rethrow with more context
+      throw Exception('Failed to create FlitesImage: $e');
+    }
   }
 
   /// Allows us to make changes, that will automatically be saved in the global project source file signal

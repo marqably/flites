@@ -2,7 +2,9 @@ import 'package:flites/constants/app_sizes.dart';
 import 'package:flites/main.dart';
 import 'package:flites/states/selected_images_controller.dart';
 import 'package:flites/types/flites_image.dart';
+import 'package:flites/utils/svg_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:signals/signals_flutter.dart';
 
 import '../../states/open_project.dart';
@@ -52,12 +54,19 @@ class ProjectFileItem extends StatelessWidget {
               },
               child: Stack(
                 children: [
-                  Image.memory(
-                    file.image,
-                    fit: BoxFit.contain,
-                    width: 150,
-                    height: 150,
-                  ),
+                  SvgUtils.isSvg(file.image)
+                      ? SvgPicture.memory(
+                          file.image,
+                          fit: BoxFit.contain,
+                          width: 150,
+                          height: 150,
+                        )
+                      : Image.memory(
+                          file.image,
+                          fit: BoxFit.contain,
+                          width: 150,
+                          height: 150,
+                        ),
 
                   // Reference image indicator
                   if (isCurrentlySelected)

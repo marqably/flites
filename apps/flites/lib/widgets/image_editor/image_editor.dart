@@ -4,12 +4,14 @@ import 'package:flites/states/canvas_controller.dart';
 import 'package:flites/states/key_events.dart';
 import 'package:flites/states/selected_images_controller.dart';
 import 'package:flites/states/tool_controller.dart';
+import 'package:flites/utils/svg_utils.dart';
 import 'package:flites/widgets/canvas_controls/canvas_controls.dart';
 import 'package:flites/widgets/loading_overlay/loading_overlay.dart';
 import 'package:flites/widgets/rotation/rotation_wrapper.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_box_transform/flutter_box_transform.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:signals/signals_flutter.dart';
 
 import '../../states/open_project.dart';
@@ -194,9 +196,13 @@ class _ImageEditorState extends State<ImageEditor> {
                         width: image.widthOnCanvas * canvasScalingFactor,
                         child: Opacity(
                           opacity: 0.5,
-                          child: Image.memory(
-                            image.image,
-                          ),
+                          child: SvgUtils.isSvg(image.image)
+                              ? SvgPicture.memory(
+                                  image.image,
+                                )
+                              : Image.memory(
+                                  image.image,
+                                ),
                         ),
                       ),
                     ),
@@ -205,9 +211,13 @@ class _ImageEditorState extends State<ImageEditor> {
                     if (currentSelection != null && inCanvasMode)
                       Positioned.fromRect(
                         rect: selectedImageRect,
-                        child: Image.memory(
-                          currentSelection.image,
-                        ),
+                        child: SvgUtils.isSvg(currentSelection.image)
+                            ? SvgPicture.memory(
+                                currentSelection.image,
+                              )
+                            : Image.memory(
+                                currentSelection.image,
+                              ),
                       ),
 
                     /// Rotating selected image
@@ -223,9 +233,13 @@ class _ImageEditorState extends State<ImageEditor> {
                             currentSelection.rotation = newAngle;
                           },
                           initialRotation: currentSelection.rotation,
-                          child: Image.memory(
-                            currentSelection.image,
-                          ),
+                          child: SvgUtils.isSvg(currentSelection.image)
+                              ? SvgPicture.memory(
+                                  currentSelection.image,
+                                )
+                              : Image.memory(
+                                  currentSelection.image,
+                                ),
                         ),
                       ),
 
@@ -258,9 +272,13 @@ class _ImageEditorState extends State<ImageEditor> {
                           setState(() {});
                         },
                         contentBuilder: (context, rect, flip) {
-                          return Image.memory(
-                            currentSelection.image,
-                          );
+                          return SvgUtils.isSvg(currentSelection.image)
+                              ? SvgPicture.memory(
+                                  currentSelection.image,
+                                )
+                              : Image.memory(
+                                  currentSelection.image,
+                                );
                         },
                       ),
 
