@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'dart:math';
 import 'dart:ui';
 import 'package:flutter/foundation.dart';
 
@@ -92,5 +94,61 @@ class SvgUtils {
     // Remove units like px, em, etc.
     final numericValue = dimension.replaceAll(RegExp(r'[^0-9.]'), '');
     return double.tryParse(numericValue) ?? 0;
+  }
+
+  /// Rotates an SVG image by applying a rotation transform directly to the SVG content.
+  ///
+  /// This is a simple approach that directly adds a rotation transform to the SVG.
+  /// Some content may be cut off after rotation if it extends beyond the original boundaries.
+  ///
+  /// Returns a new Uint8List containing the rotated SVG data.
+  static Future<Uint8List> rotateAndTrimSvg(
+      Uint8List svgData, double angleRadians) async {
+    try {
+      // If angle is close to 0, return the original SVG
+      if (angleRadians.abs() < 0.001) {
+        return svgData;
+      }
+
+      // Convert SVG bytes to string
+      final svgString = String.fromCharCodes(svgData);
+
+      // Extract original dimensions
+      final size = getSvgSize(svgData);
+      final originalWidth = size.width;
+      final originalHeight = size.height;
+
+      // Calculate the center point
+      final centerX = originalWidth / 2;
+      final centerY = originalHeight / 2;
+
+      // Convert angle to degrees for SVG transform
+      final angleDegrees = (angleRadians * 180 / pi) % 360;
+
+      // Extract the SVG content (everything between the <svg> and </svg> tags)
+      final contentMatch =
+          RegExp(r'<svg[^>]*>([\s\S]*)<\/svg>').firstMatch(svgString);
+      final svgContent = contentMatch?.group(1) ?? '';
+
+      // Extract all attributes from the original SVG
+      final attributesMatch = RegExp(r'<svg([^>]*)>').firstMatch(svgString);
+      String originalAttributes = attributesMatch?.group(1) ?? '';
+
+      // Create a new SVG with the original attributes and a rotation transform
+      final rotatedSvg = '''
+<svg$originalAttributes>
+  <g transform="rotate($angleDegrees, $centerX, $centerY)">
+    $svgContent
+  </g>
+</svg>
+''';
+
+      // Convert back to Uint8List
+      return Uint8List.fromList(utf8.encode(rotatedSvg));
+    } catch (e) {
+      // If anything goes wrong, return the original SVG data
+      debugPrint('Error rotating SVG: $e');
+      return svgData;
+    }
   }
 }

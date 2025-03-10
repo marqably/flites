@@ -3,6 +3,8 @@ import 'dart:math';
 import 'package:flites/states/canvas_controller.dart';
 import 'package:flites/utils/image_processing_utils.dart';
 import 'package:flites/utils/image_utils.dart';
+import 'package:flites/utils/svg_utils.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -81,29 +83,52 @@ class FlitesImage {
     }
   }
 
-  /// Allows us to make changes, that will automatically be saved in the global project source file signal
-  void saveChanges({
-    Size? size,
-    double? scalingFactor,
-    EdgeInsets? margin,
-  }) {
-    final newImage = this;
+  /// Applies the current rotation to the image.
+  ///
+  /// For both SVG and bitmap images, this applies the rotation to the image data
+  /// and resets the rotation value to 0.
+  ///
+  /// The original size and position on canvas are preserved.
+  Future<void> trimImage() async {
+    // If rotation is close to 0, do nothing
+    if (rotation.abs() < 0.001) return;
 
-    // now save the changes in the project source files
+    try {
+      // Store only what we need to preserve
+      final originalWidth = widthOnCanvas;
+      final originalPosition = positionOnCanvas;
+
+      // Apply rotation to the image data based on type
+      if (SvgUtils.isSvg(image)) {
+        image = await SvgUtils.rotateAndTrimSvg(image, rotation);
+      } else {
+        image = await ImageProcessingUtils.rotateInIsolates(image, rotation);
+      }
+
+      // Reset rotation after applying it to the image data
+      rotation = 0;
+
+      // Preserve the original width and position
+      widthOnCanvas = originalWidth;
+      positionOnCanvas = originalPosition;
+
+      // Save the changes
+      saveChanges();
+    } catch (e) {
+      debugPrint('Error applying rotation: $e');
+    }
+  }
+
+  /// Updates this image in the project source files.
+  void saveChanges() {
     final images = projectSourceFiles.value;
 
     for (var i = 0; i < images.length; i++) {
       if (images[i].id == id) {
-        images[i] = newImage;
+        images[i] = this;
         break;
       }
     }
     projectSourceFiles.value = [...images];
-  }
-
-  void trimImage() async {
-    image = await ImageProcessingUtils.rotateInIsolates(image, rotation);
-
-    rotation = 0;
   }
 }

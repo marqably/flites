@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -90,6 +91,85 @@ void main() {
         expect(
             SvgUtils.getSvgSize(svgNoDimensions), equals(const Size(100, 100)),
             reason: 'Should use default size for SVGs without dimensions');
+      });
+    });
+
+    group('SVG Rotation', () {
+      test('rotateAndTrimSvg should rotate SVG content', () async {
+        // Create a simple SVG
+        final svgString = '''
+<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+  <rect x="25" y="25" width="50" height="50" fill="blue" />
+</svg>''';
+        final svgData = Uint8List.fromList(utf8.encode(svgString));
+
+        // Rotate by 90 degrees (π/2 radians)
+        final rotatedData = await SvgUtils.rotateAndTrimSvg(svgData, pi / 2);
+        final rotatedString = String.fromCharCodes(rotatedData);
+
+        // Debug print to see the actual output
+        print('Rotated SVG (90 degrees): $rotatedString');
+
+        // Verify that the rotation transform is present with the correct angle and center point
+        expect(rotatedString.contains('rotate(90'), isTrue);
+        expect(rotatedString.contains('50.0, 50.0)'), isTrue);
+
+        // Verify that the original content is preserved
+        expect(
+            rotatedString.contains(
+                '<rect x="25" y="25" width="50" height="50" fill="blue" />'),
+            isTrue);
+
+        // Verify that the expanded viewBox is present
+        expect(rotatedString.contains('viewBox='), isTrue);
+
+        // Verify that the original width and height are preserved
+        expect(rotatedString.contains('width="100'), isTrue);
+        expect(rotatedString.contains('height="100'), isTrue);
+      });
+
+      test('rotateAndTrimSvg should handle small angles correctly', () async {
+        // Create a simple SVG
+        final svgString = '''
+<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+  <rect x="25" y="25" width="50" height="50" fill="blue" />
+</svg>''';
+        final svgData = Uint8List.fromList(utf8.encode(svgString));
+
+        // Rotate by a small angle (0.1 radians ≈ 5.73 degrees)
+        final rotatedData = await SvgUtils.rotateAndTrimSvg(svgData, 0.1);
+        final rotatedString = String.fromCharCodes(rotatedData);
+
+        // Debug print to see the actual output
+        print('Rotated SVG (small angle): $rotatedString');
+
+        // Verify that the rotation transform is present with the correct angle and center point
+        // 0.1 radians ≈ 5.73 degrees
+        expect(rotatedString.contains('rotate(5.7'), isTrue);
+        expect(rotatedString.contains('50.0, 50.0)'), isTrue);
+
+        // Verify that the original content is preserved
+        expect(
+            rotatedString.contains(
+                '<rect x="25" y="25" width="50" height="50" fill="blue" />'),
+            isTrue);
+
+        // Verify that the expanded viewBox is present
+        expect(rotatedString.contains('viewBox='), isTrue);
+      });
+
+      test('rotateAndTrimSvg should handle invalid SVG gracefully', () async {
+        // Create an invalid SVG
+        final svgString = '<svg>Invalid SVG content</svg>';
+        final svgData = Uint8List.fromList(utf8.encode(svgString));
+
+        // Attempt to rotate the invalid SVG
+        final rotatedData = await SvgUtils.rotateAndTrimSvg(svgData, pi / 4);
+        final rotatedString = String.fromCharCodes(rotatedData);
+
+        // Verify that rotation was attempted
+        expect(rotatedString.contains('rotate(45'), isTrue);
+        expect(rotatedString.contains('Invalid SVG content'), isTrue);
       });
     });
   });

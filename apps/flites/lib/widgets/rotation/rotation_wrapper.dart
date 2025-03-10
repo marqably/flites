@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:flites/constants/app_sizes.dart';
 import 'package:flites/main.dart';
 import 'package:flites/states/open_project.dart';
+import 'package:flites/states/tool_controller.dart';
 import 'package:flites/utils/get_flite_image.dart';
 import 'package:flutter/material.dart';
 
@@ -36,15 +37,24 @@ class _RotationWrapperState extends State<RotationWrapper> {
     dragStartPoint = Offset(0, circleRadius);
 
     rotation = widget.initialRotation ?? 0;
+
+    // If we're in rotation mode and initializing with a non-zero rotation,
+    // we need to reset the rotation in the UI controls but keep it in the image
+    if (rotation != 0 && toolController.selectedTool == Tool.rotate) {
+      // Schedule this for after the build to avoid setState during build
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        setState(() {
+          rotation = 0;
+          dragStartPoint = Offset(0, circleRadius);
+        });
+      });
+    }
   }
 
   double calculateAngle(Offset start, Offset end) {
     double startAngle = atan2(start.dy, start.dx);
     double endAngle = atan2(end.dy, end.dx);
-
-    double angleDifference = endAngle - startAngle;
-
-    return angleDifference;
+    return endAngle - startAngle;
   }
 
   void _updateRotation(Offset currentPosition) {
@@ -71,6 +81,10 @@ class _RotationWrapperState extends State<RotationWrapper> {
   Widget build(BuildContext context) {
     final dotSize = widget.rect.height * 0.1;
 
+    // Get the current tool to check if we're in rotation mode
+    final currentTool = toolController.selectedTool;
+    final inRotationMode = currentTool == Tool.rotate;
+
     return Stack(
       alignment: Alignment.center,
       children: [
@@ -85,55 +99,60 @@ class _RotationWrapperState extends State<RotationWrapper> {
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  ConstrainedBox(
-                    constraints: BoxConstraints(
-                      maxWidth: widget.rect.width,
-                      maxHeight: widget.rect.height,
+                  SizedBox(
+                    width: widget.rect.width,
+                    height: widget.rect.height,
+                    child: Center(
+                      child: widget.child,
                     ),
-                    child: widget.child,
                   ),
-                  Container(
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: context.colors.outline,
-                        width: Sizes.p2,
+                  // Only show the rotation circle when in rotation mode
+                  if (inRotationMode)
+                    Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: context.colors.outline,
+                          width: Sizes.p2,
+                        ),
                       ),
+                      width: circleRadius * 2 - (dotSize * 2 / 3),
                     ),
-                    width: circleRadius * 2 - (dotSize * 2 / 3),
-                  ),
-                  Positioned(
-                    top: 0,
-                    child: MouseRegion(
-                      cursor: SystemMouseCursors.precise,
-                      child: GestureDetector(
-                        behavior: HitTestBehavior.opaque,
-                        onPanStart: (details) {},
-                        onPanUpdate: (details) {
-                          _updateRotation(standardizeOffsetToRotation(
-                              details.localPosition));
-                        },
-                        onPanEnd: (details) {
-                          updateStartPoint(standardizeOffsetToRotation(
-                              details.localPosition));
-                        },
-                        child: Container(
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: context.colors.onSurfaceVariant,
+                  // Only show the rotation handle when in rotation mode
+                  if (inRotationMode)
+                    Positioned(
+                      top: 0,
+                      child: MouseRegion(
+                        cursor: SystemMouseCursors.precise,
+                        child: GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onPanStart: (_) {},
+                          onPanUpdate: (details) {
+                            _updateRotation(standardizeOffsetToRotation(
+                                details.localPosition));
+                          },
+                          onPanEnd: (details) {
+                            updateStartPoint(standardizeOffsetToRotation(
+                                details.localPosition));
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: context.colors.onSurfaceVariant,
+                            ),
+                            height: dotSize,
+                            width: dotSize,
                           ),
-                          height: dotSize,
-                          width: dotSize,
                         ),
                       ),
                     ),
-                  ),
                 ],
               ),
             ),
           ),
         ),
-        if (rotation != 0)
+        // Only show the rotation controls when in rotation mode and rotation is not 0
+        if (rotation != 0 && inRotationMode)
           Positioned(
             bottom: 0,
             child: Container(
@@ -160,11 +179,60 @@ class _RotationWrapperState extends State<RotationWrapper> {
                   gapW8,
                   IconButton(
                     icon: const Icon(Icons.check),
-                    onPressed: () {
+                    onPressed: () async {
                       final currentImage = getFliteImage(selectedImage.value);
 
                       if (currentImage != null) {
-                        currentImage.trimImage();
+                        // Store the original dimensions before applying rotation
+                        final originalWidth = currentImage.widthOnCanvas;
+                        final originalPosition = currentImage.positionOnCanvas;
+                        final originalScalingFactor =
+                            currentImage.originalScalingFactor;
+                        final originalAspectRatio = currentImage.aspectRatio;
+
+                        // Reset the rotation in the UI controls
+                        setState(() {
+                          rotation = 0;
+                          dragStartPoint = Offset(0, circleRadius);
+                        });
+
+                        // Apply the rotation to the image
+                        await currentImage.trimImage();
+
+                        // Calculate the new aspect ratio
+                        final newAspectRatio = currentImage.aspectRatio;
+
+                        // Double-check that the dimensions are preserved
+                        if (currentImage.widthOnCanvas != originalWidth) {
+                          debugPrint(
+                              'Width changed from $originalWidth to ${currentImage.widthOnCanvas}, forcing original size');
+
+                          // If this is the first rotation, we might need to adjust the width
+                          // to account for aspect ratio changes
+                          if (originalAspectRatio != newAspectRatio) {
+                            // Calculate a scaling factor to maintain the original visual size
+                            final scaleFactor =
+                                sqrt(originalAspectRatio / newAspectRatio);
+                            if (scaleFactor.isFinite && scaleFactor > 0) {
+                              debugPrint(
+                                  'Applying aspect ratio correction: $scaleFactor');
+                              currentImage.widthOnCanvas =
+                                  originalWidth * scaleFactor;
+                            } else {
+                              currentImage.widthOnCanvas = originalWidth;
+                            }
+                          } else {
+                            currentImage.widthOnCanvas = originalWidth;
+                          }
+
+                          currentImage.positionOnCanvas = originalPosition;
+                          currentImage.originalScalingFactor =
+                              originalScalingFactor;
+                          currentImage.saveChanges();
+                        }
+
+                        // Switch back to canvas mode after rotation is applied
+                        toolController.selectTool(Tool.canvas);
                       }
                     },
                   ),
@@ -185,22 +253,9 @@ class _RotationWrapperState extends State<RotationWrapper> {
   }
 }
 
-// TODO(beau): refactor
-// Move these functions to a fitting Utils class (as static methods)
-// from Ben: maybe an abstract class
-double longestSide(Offset offset) {
-  return offset.dx.abs() > offset.dy.abs() ? offset.dx.abs() : offset.dy.abs();
-}
-
+// Helper functions for offset and size calculations
 double longestSideSize(Size size) {
   return size.width > size.height ? size.width : size.height;
-}
-
-Offset pointFromAngleAndLength(double angle, double length) {
-  double adjustedAngle = angle - pi / 2;
-  double x = length * cos(adjustedAngle);
-  double y = length * sin(adjustedAngle);
-  return flipY(Offset(x, y));
 }
 
 Offset flipY(Offset offset) {
@@ -212,13 +267,4 @@ Offset rotateOffset(Offset offset, double angle) {
     offset.dx * cos(angle) - offset.dy * sin(angle),
     offset.dx * sin(angle) + offset.dy * cos(angle),
   );
-}
-
-Offset scaleOffset(Offset offset, double length) {
-  double currentLength = offset.distance; // Magnitude of the vector
-  if (currentLength == 0) {
-    return Offset.zero; // Avoid division by zero for a zero-length vector
-  }
-  double scale = length / currentLength;
-  return Offset(offset.dx * scale, offset.dy * scale);
 }
