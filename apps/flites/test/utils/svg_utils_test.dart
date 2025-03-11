@@ -97,7 +97,7 @@ void main() {
     group('SVG Rotation', () {
       test('rotateAndTrimSvg should rotate SVG content', () async {
         // Create a simple SVG
-        final svgString = '''
+        const svgString = '''
 <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
   <rect x="25" y="25" width="50" height="50" fill="blue" />
 </svg>''';
@@ -106,9 +106,6 @@ void main() {
         // Rotate by 90 degrees (π/2 radians)
         final rotatedData = await SvgUtils.rotateAndTrimSvg(svgData, pi / 2);
         final rotatedString = String.fromCharCodes(rotatedData);
-
-        // Debug print to see the actual output
-        print('Rotated SVG (90 degrees): $rotatedString');
 
         // Verify that the rotation transform is present with the correct angle and center point
         expect(rotatedString.contains('rotate(90'), isTrue);
@@ -130,7 +127,7 @@ void main() {
 
       test('rotateAndTrimSvg should handle small angles correctly', () async {
         // Create a simple SVG
-        final svgString = '''
+        const svgString = '''
 <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
   <rect x="25" y="25" width="50" height="50" fill="blue" />
 </svg>''';
@@ -139,9 +136,6 @@ void main() {
         // Rotate by a small angle (0.1 radians ≈ 5.73 degrees)
         final rotatedData = await SvgUtils.rotateAndTrimSvg(svgData, 0.1);
         final rotatedString = String.fromCharCodes(rotatedData);
-
-        // Debug print to see the actual output
-        print('Rotated SVG (small angle): $rotatedString');
 
         // Verify that the rotation transform is present with the correct angle and center point
         // 0.1 radians ≈ 5.73 degrees
@@ -160,7 +154,7 @@ void main() {
 
       test('rotateAndTrimSvg should handle invalid SVG gracefully', () async {
         // Create an invalid SVG
-        final svgString = '<svg>Invalid SVG content</svg>';
+        const svgString = '<svg>Invalid SVG content</svg>';
         final svgData = Uint8List.fromList(utf8.encode(svgString));
 
         // Attempt to rotate the invalid SVG

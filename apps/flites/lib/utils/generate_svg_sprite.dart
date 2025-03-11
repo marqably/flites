@@ -183,7 +183,7 @@ class GenerateSvgSprite {
     double bottomPadding,
   ) {
     switch (settings.constraints.runtimeType) {
-      case SpriteSizeConstrained:
+      case SpriteSizeConstrained _:
         return (settings.constraints as SpriteSizeConstrained).heightPx;
       default:
         return frameHeight + topPadding + bottomPadding;

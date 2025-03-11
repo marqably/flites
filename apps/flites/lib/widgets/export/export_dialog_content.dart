@@ -155,7 +155,8 @@ class ExportDialogContentState extends State<ExportDialogContent> {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.surfaceVariant,
+                    color:
+                        Theme.of(context).colorScheme.surfaceContainerHighest,
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Row(
@@ -168,7 +169,7 @@ class ExportDialogContentState extends State<ExportDialogContent> {
                       ),
                       const SizedBox(width: 4),
                       Text(
-                        'Output: ${_outputFormatText}',
+                        'Output: $_outputFormatText',
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
                               color: Theme.of(context)
                                   .colorScheme
