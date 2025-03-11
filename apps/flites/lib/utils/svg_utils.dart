@@ -151,4 +151,41 @@ class SvgUtils {
       return svgData;
     }
   }
+
+  /// Extracts the viewBox from SVG data.
+  ///
+  /// This method parses the viewBox attribute from the SVG and returns it as a Rect.
+  /// If no viewBox is defined, returns null.
+  static Rect? getViewBox(Uint8List data) {
+    try {
+      // Convert to string to parse the SVG
+      final svgString = String.fromCharCodes(data);
+
+      // Extract viewBox using regex
+      final viewBoxMatch = RegExp(r'viewBox="([^"]*)"').firstMatch(svgString) ??
+          RegExp(r"viewBox='([^']*)'").firstMatch(svgString);
+
+      if (viewBoxMatch != null) {
+        final viewBoxParts =
+            viewBoxMatch.group(1)?.split(RegExp(r'[ ,]+')) ?? [];
+
+        if (viewBoxParts.length >= 4) {
+          final x = double.tryParse(viewBoxParts[0]) ?? 0;
+          final y = double.tryParse(viewBoxParts[1]) ?? 0;
+          final width = double.tryParse(viewBoxParts[2]) ?? 0;
+          final height = double.tryParse(viewBoxParts[3]) ?? 0;
+
+          if (width > 0 && height > 0) {
+            return Rect.fromLTWH(x, y, width, height);
+          }
+        }
+      }
+
+      // If no viewBox is found, try to create one from width/height
+      final size = getSvgSize(data);
+      return Rect.fromLTWH(0, 0, size.width, size.height);
+    } catch (e) {
+      return null;
+    }
+  }
 }
