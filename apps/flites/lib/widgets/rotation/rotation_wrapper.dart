@@ -34,46 +34,51 @@ class _RotationWrapperState extends State<RotationWrapper> {
   void initState() {
     super.initState();
     circleRadius = (longestSideSize(widget.rect.size) / 2) * 1.5;
-    dragStartPoint = Offset(0, circleRadius);
 
+    // Initialize rotation from the widget's initialRotation property
     rotation = widget.initialRotation ?? 0;
 
-    // If we're in rotation mode and initializing with a non-zero rotation,
-    // we need to reset the rotation in the UI controls but keep it in the image
-    if (rotation != 0 && toolController.selectedTool == Tool.rotate) {
-      // Schedule this for after the build to avoid setState during build
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        setState(() {
-          rotation = 0;
-          dragStartPoint = Offset(0, circleRadius);
-        });
-      });
-    }
+    // Set the initial drag point at the top of the circle
+    // When rotation is 0, the handle should be at the top (0, -circleRadius)
+    dragStartPoint = Offset(0, -circleRadius);
   }
 
   double calculateAngle(Offset start, Offset end) {
+    // Calculate angles from the origin (0,0)
     double startAngle = atan2(start.dy, start.dx);
     double endAngle = atan2(end.dy, end.dx);
+
+    // Return the difference between the angles
     return endAngle - startAngle;
   }
 
   void _updateRotation(Offset currentPosition) {
     final newAngle = calculateAngle(
-        const Offset(0, 1), dragStartPoint + flipY(currentPosition));
+        const Offset(0, -1), // Top of circle as reference
+        dragStartPoint + flipY(currentPosition));
 
     setState(() {
       rotation = -newAngle;
     });
 
+    // Always call the onRotate callback when rotation changes
     widget.onRotate?.call(rotation);
   }
 
   void updateStartPoint(Offset endPosition) {
-    final endAngle =
-        calculateAngle(dragStartPoint, dragStartPoint + flipY(endPosition));
+    // When a drag ends, we need to update the dragStartPoint
+    // to match the current rotation angle for the next drag
+
+    // For a clean UX, keep the handle at the same visual position
+    // by calculating the offset based on the current rotation
+    final endAngle = calculateAngle(
+        const Offset(0, -1), // Top of circle
+        dragStartPoint + flipY(endPosition));
 
     setState(() {
-      dragStartPoint = rotateOffset(dragStartPoint, endAngle);
+      // Update the start point for the next drag
+      // This keeps the handle visually at the position where the user released it
+      dragStartPoint = rotateOffset(Offset(0, -circleRadius), endAngle);
     });
   }
 
@@ -173,7 +178,7 @@ class _RotationWrapperState extends State<RotationWrapper> {
                         rotation = 0;
                       });
                       widget.onRotate?.call(0);
-                      dragStartPoint = Offset(0, circleRadius);
+                      dragStartPoint = Offset(0, -circleRadius);
                     },
                   ),
                   gapW8,
@@ -183,6 +188,9 @@ class _RotationWrapperState extends State<RotationWrapper> {
                       final currentImage = getFliteImage(selectedImage.value);
 
                       if (currentImage != null) {
+                        // Store the current rotation before resetting UI
+                        final currentRotation = rotation;
+
                         // Store the original dimensions before applying rotation
                         final originalWidth = currentImage.widthOnCanvas;
                         final originalPosition = currentImage.positionOnCanvas;
@@ -190,13 +198,16 @@ class _RotationWrapperState extends State<RotationWrapper> {
                             currentImage.originalScalingFactor;
                         final originalAspectRatio = currentImage.aspectRatio;
 
+                        // Apply the rotation value to the actual image rotation
+                        currentImage.rotation = currentRotation;
+
                         // Reset the rotation in the UI controls
                         setState(() {
                           rotation = 0;
-                          dragStartPoint = Offset(0, circleRadius);
+                          dragStartPoint = Offset(0, -circleRadius);
                         });
 
-                        // Apply the rotation to the image
+                        // Apply the rotation to the image by trimming
                         await currentImage.trimImage();
 
                         // Calculate the new aspect ratio
