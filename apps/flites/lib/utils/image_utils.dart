@@ -4,6 +4,7 @@ import 'dart:ui';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flites/states/canvas_controller.dart';
+import 'package:flites/utils/svg_utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:super_drag_and_drop/super_drag_and_drop.dart';
 
@@ -14,16 +15,27 @@ class ImageUtils {
     required List<Uint8List> images,
     required double sizeLongestSideOnCanvas,
   }) {
-    final biggestScaleFactor = images
-        .map(
-          (e) => _scaleImageToCanvas(
-            e,
-            sizeLongerSideOnCanvas: sizeLongestSideOnCanvas,
-          ),
-        )
-        .fold(0.0, (value, element) => value > element ? value : element);
+    try {
+      final factors = images.map(
+        (e) {
+          try {
+            return _scaleImageToCanvas(
+              e,
+              sizeLongerSideOnCanvas: sizeLongestSideOnCanvas,
+            );
+          } catch (e) {
+            return 1.0; // Default scaling factor
+          }
+        },
+      ).toList();
 
-    return biggestScaleFactor;
+      final biggestScaleFactor = factors.fold(
+          0.0, (value, element) => value > element ? value : element);
+
+      return biggestScaleFactor > 0 ? biggestScaleFactor : 1.0;
+    } catch (e) {
+      return 1.0; // Default scaling factor
+    }
   }
 
   static double _scaleImageToCanvas(
@@ -72,12 +84,34 @@ class ImageUtils {
     );
   }
 
+  /// Gets the size of a raw image.
+  ///
+  /// This method handles both bitmap images (PNG, JPEG, etc.) and SVG images:
+  /// - For SVG images, it delegates to SvgUtils.getSvgSize
+  /// - For bitmap images, it reads the width and height from the image header
+  ///
+  /// Returns a default size of 100x100 if the image format is not recognized or dimensions can't be determined.
   static Size sizeOfRawImage(Uint8List image) {
-    final byteData = ByteData.sublistView(image);
-    final width = byteData.getUint32(16, Endian.big).toDouble();
-    final height = byteData.getUint32(20, Endian.big).toDouble();
+    // Check if it's an SVG file
+    if (SvgUtils.isSvg(image)) {
+      return SvgUtils.getSvgSize(image);
+    }
 
-    return Size(width, height);
+    // Handle PNG and other bitmap formats
+    try {
+      final byteData = ByteData.sublistView(image);
+      final width = byteData.getUint32(16, Endian.big).toDouble();
+      final height = byteData.getUint32(20, Endian.big).toDouble();
+
+      // Validate dimensions (avoid unreasonable values)
+      if (width > 0 && width < 10000 && height > 0 && height < 10000) {
+        return Size(width, height);
+      } else {
+        return const Size(100, 100); // Default size for invalid dimensions
+      }
+    } catch (e) {
+      return const Size(100, 100); // Default size for unrecognized formats
+    }
   }
 
   static Future<RawImageAndName?> rawImageFromDropData(DropItem item) async {

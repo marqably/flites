@@ -4,12 +4,14 @@ import 'package:flites/states/canvas_controller.dart';
 import 'package:flites/states/key_events.dart';
 import 'package:flites/states/selected_images_controller.dart';
 import 'package:flites/states/tool_controller.dart';
+import 'package:flites/utils/svg_utils.dart';
 import 'package:flites/widgets/canvas_controls/canvas_controls.dart';
 import 'package:flites/widgets/loading_overlay/loading_overlay.dart';
 import 'package:flites/widgets/rotation/rotation_wrapper.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_box_transform/flutter_box_transform.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:signals/signals_flutter.dart';
 
 import '../../states/open_project.dart';
@@ -194,9 +196,27 @@ class _ImageEditorState extends State<ImageEditor> {
                         width: image.widthOnCanvas * canvasScalingFactor,
                         child: Opacity(
                           opacity: 0.5,
-                          child: Image.memory(
-                            image.image,
-                          ),
+                          child: SvgUtils.isSvg(image.image)
+                              ? Transform.rotate(
+                                  angle: image.rotation,
+                                  alignment: Alignment.center,
+                                  child: SvgPicture.memory(
+                                    image.image,
+                                    fit: BoxFit.contain,
+                                    width: image.widthOnCanvas *
+                                        canvasScalingFactor,
+                                    height: image.heightOnCanvas *
+                                        canvasScalingFactor,
+                                  ),
+                                )
+                              : Image.memory(
+                                  image.image,
+                                  fit: BoxFit.contain,
+                                  width:
+                                      image.widthOnCanvas * canvasScalingFactor,
+                                  height: image.heightOnCanvas *
+                                      canvasScalingFactor,
+                                ),
                         ),
                       ),
                     ),
@@ -205,9 +225,23 @@ class _ImageEditorState extends State<ImageEditor> {
                     if (currentSelection != null && inCanvasMode)
                       Positioned.fromRect(
                         rect: selectedImageRect,
-                        child: Image.memory(
-                          currentSelection.image,
-                        ),
+                        child: SvgUtils.isSvg(currentSelection.image)
+                            ? Transform.rotate(
+                                angle: currentSelection.rotation,
+                                alignment: Alignment.center,
+                                child: SvgPicture.memory(
+                                  currentSelection.image,
+                                  fit: BoxFit.contain,
+                                  width: selectedImageRect.width,
+                                  height: selectedImageRect.height,
+                                ),
+                              )
+                            : Image.memory(
+                                currentSelection.image,
+                                fit: BoxFit.contain,
+                                width: selectedImageRect.width,
+                                height: selectedImageRect.height,
+                              ),
                       ),
 
                     /// Rotating selected image
@@ -217,15 +251,29 @@ class _ImageEditorState extends State<ImageEditor> {
                         left: rotatedImageOffset.dx,
                         child: RotationWrapper(
                           key: ValueKey(currentSelection.id +
-                              canvasScalingFactor.toString()),
+                              canvasScalingFactor.toString() +
+                              selectedTool.toString() +
+                              DateTime.now().millisecondsSinceEpoch.toString()),
                           rect: selectedImageRect,
                           onRotate: (newAngle) {
                             currentSelection.rotation = newAngle;
                           },
                           initialRotation: currentSelection.rotation,
-                          child: Image.memory(
-                            currentSelection.image,
-                          ),
+                          child: SvgUtils.isSvg(currentSelection.image)
+                              ? SizedBox(
+                                  width: selectedImageRect.width,
+                                  height: selectedImageRect.height,
+                                  child: SvgPicture.memory(
+                                    currentSelection.image,
+                                    fit: BoxFit.contain,
+                                  ),
+                                )
+                              : Image.memory(
+                                  currentSelection.image,
+                                  width: selectedImageRect.width,
+                                  height: selectedImageRect.height,
+                                  fit: BoxFit.contain,
+                                ),
                         ),
                       ),
 
@@ -258,9 +306,25 @@ class _ImageEditorState extends State<ImageEditor> {
                           setState(() {});
                         },
                         contentBuilder: (context, rect, flip) {
-                          return Image.memory(
-                            currentSelection.image,
-                          );
+                          return SvgUtils.isSvg(currentSelection.image)
+                              ? SizedBox(
+                                  width: rect.width,
+                                  height: rect.height,
+                                  child: Transform.rotate(
+                                    angle: currentSelection.rotation,
+                                    alignment: Alignment.center,
+                                    child: SvgPicture.memory(
+                                      currentSelection.image,
+                                      fit: BoxFit.contain,
+                                    ),
+                                  ),
+                                )
+                              : Image.memory(
+                                  currentSelection.image,
+                                  width: rect.width,
+                                  height: rect.height,
+                                  fit: BoxFit.contain,
+                                );
                         },
                       ),
 

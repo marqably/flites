@@ -3,8 +3,10 @@ import 'package:flites/main.dart';
 import 'package:flites/states/open_project.dart';
 import 'package:flites/states/selected_images_controller.dart';
 import 'package:flites/types/flites_image.dart';
+import 'package:flites/utils/svg_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:signals/signals_flutter.dart';
 
 class FileItem extends StatefulWidget {
@@ -56,12 +58,19 @@ class _FileItemState extends State<FileItem> {
             },
             child: Row(
               children: [
-                Image.memory(
-                  widget.file.image,
-                  fit: BoxFit.contain,
-                  width: Sizes.p24,
-                  height: Sizes.p24,
-                ),
+                SvgUtils.isSvg(widget.file.image)
+                    ? SvgPicture.memory(
+                        widget.file.image,
+                        fit: BoxFit.contain,
+                        width: Sizes.p24,
+                        height: Sizes.p24,
+                      )
+                    : Image.memory(
+                        widget.file.image,
+                        fit: BoxFit.contain,
+                        width: Sizes.p24,
+                        height: Sizes.p24,
+                      ),
                 if (widget.file.displayName != null)
                   Expanded(
                     child: Padding(

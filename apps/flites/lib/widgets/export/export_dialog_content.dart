@@ -1,5 +1,8 @@
 import 'package:flites/main.dart';
+import 'package:flites/states/open_project.dart';
 import 'package:flites/utils/generate_sprite.dart';
+import 'package:flites/utils/generate_svg_sprite.dart';
+import 'package:flites/utils/svg_utils.dart';
 import 'package:flites/widgets/buttons/stadium_button.dart';
 import 'package:flites/widgets/export/file_path_picker.dart';
 import 'package:flites/widgets/export/numeric_input_with_buttons.dart';
@@ -26,6 +29,16 @@ class ExportDialogContentState extends State<ExportDialogContent> {
   int currentPaddingBottom = 0;
   int currentPaddingLeft = 0;
   int currentPaddingRight = 0;
+
+  bool get _allImagesAreSvg {
+    final images = projectSourceFiles.value;
+    if (images.isEmpty) return false;
+    return images.every((image) => SvgUtils.isSvg(image.image));
+  }
+
+  String get _outputFormatText {
+    return _allImagesAreSvg ? 'SVG' : 'PNG';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -134,21 +147,51 @@ class ExportDialogContentState extends State<ExportDialogContent> {
               ),
               gapH16,
             ],
-            gapH16,
-            Align(
-              alignment: Alignment.centerRight,
-              child: StadiumButton(
-                text: context.l10n.export,
-                onPressed: () {
-                  double? width =
-                      currentWidthPx > 0 ? currentWidthPx.toDouble() : null;
-                  double? height =
-                      currentHeightPx > 0 ? currentHeightPx.toDouble() : null;
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // Output format indicator
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color:
+                        Theme.of(context).colorScheme.surfaceContainerHighest,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        _allImagesAreSvg ? Icons.photo : Icons.image,
+                        size: 16,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        'Output: $_outputFormatText',
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurfaceVariant,
+                            ),
+                      ),
+                    ],
+                  ),
+                ),
+                StadiumButton(
+                  text: context.l10n.export,
+                  onPressed: () {
+                    double? width =
+                        currentWidthPx > 0 ? currentWidthPx.toDouble() : null;
+                    double? height =
+                        currentHeightPx > 0 ? currentHeightPx.toDouble() : null;
 
-                  if (width != null && height != null) {
-                    // Both width and height are provided
-                    GenerateSprite.exportSprite(
-                      ExportSettings.sizeConstrained(
+                    // Prepare export settings based on the provided dimensions
+                    ExportSettings? settings;
+                    if (width != null && height != null) {
+                      // Both width and height are provided
+                      settings = ExportSettings.sizeConstrained(
                         fileName: fileNameController.text,
                         path: exportPath,
                         widthPx: width,
@@ -157,12 +200,10 @@ class ExportDialogContentState extends State<ExportDialogContent> {
                         paddingBottomPx: currentPaddingBottom.toDouble(),
                         paddingLeftPx: currentPaddingLeft.toDouble(),
                         paddingRightPx: currentPaddingRight.toDouble(),
-                      ),
-                    );
-                  } else if (width != null) {
-                    // Only width is provided
-                    GenerateSprite.exportSprite(
-                      ExportSettings.widthConstrained(
+                      );
+                    } else if (width != null) {
+                      // Only width is provided
+                      settings = ExportSettings.widthConstrained(
                         fileName: fileNameController.text,
                         path: exportPath,
                         widthPx: width,
@@ -170,12 +211,10 @@ class ExportDialogContentState extends State<ExportDialogContent> {
                         paddingBottomPx: currentPaddingBottom.toDouble(),
                         paddingLeftPx: currentPaddingLeft.toDouble(),
                         paddingRightPx: currentPaddingRight.toDouble(),
-                      ),
-                    );
-                  } else if (height != null) {
-                    // Only height is provided
-                    GenerateSprite.exportSprite(
-                      ExportSettings.heightConstrained(
+                      );
+                    } else if (height != null) {
+                      // Only height is provided
+                      settings = ExportSettings.heightConstrained(
                         fileName: fileNameController.text,
                         path: exportPath,
                         heightPx: height,
@@ -183,19 +222,27 @@ class ExportDialogContentState extends State<ExportDialogContent> {
                         paddingBottomPx: currentPaddingBottom.toDouble(),
                         paddingLeftPx: currentPaddingLeft.toDouble(),
                         paddingRightPx: currentPaddingRight.toDouble(),
-                      ),
-                    );
-                  } else {
-                    // Handle the case where neither width nor height is provided
-                    // For example, show an error message
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(context.l10n.provideDimensionError),
-                      ),
-                    );
-                  }
-                },
-              ),
+                      );
+                    }
+
+                    if (settings != null) {
+                      // Use the appropriate generator based on image types
+                      if (_allImagesAreSvg) {
+                        GenerateSvgSprite.exportSprite(settings);
+                      } else {
+                        GenerateSprite.exportSprite(settings);
+                      }
+                    } else {
+                      // Handle the case where neither width nor height is provided
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(context.l10n.provideDimensionError),
+                        ),
+                      );
+                    }
+                  },
+                ),
+              ],
             ),
           ],
         ),

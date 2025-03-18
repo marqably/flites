@@ -3,6 +3,8 @@ import 'dart:math';
 import 'package:flites/states/canvas_controller.dart';
 import 'package:flites/utils/image_processing_utils.dart';
 import 'package:flites/utils/image_utils.dart';
+import 'package:flites/utils/svg_utils.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -37,56 +39,96 @@ class FlitesImage {
 
   double rotation = 0;
 
+  /// Creates a scaled FlitesImage from raw image data.
+  ///
+  /// This constructor:
+  /// 1. Stores the original image data
+  /// 2. Calculates the dimensions on canvas based on the scaling factor
+  /// 3. Positions the image at the center of the canvas
+  /// 4. Generates a unique ID for the image
+  ///
+  /// Throws an exception if any step fails.
   FlitesImage.scaled(
     Uint8List rawImage, {
     required double scalingFactor,
     this.originalName,
   }) : displayName = originalName {
-    image = rawImage;
+    try {
+      // Store the original image data
+      image = rawImage;
+      originalScalingFactor = scalingFactor;
 
-    originalScalingFactor = scalingFactor;
+      // Get canvas dimensions and scaling factor
+      final currentCanvasSize = canvasController.canvasSizePixel;
+      final canvasScalingFactor = canvasController.canvasScalingFactor;
 
-    final currentCanvasSize = canvasController.canvasSizePixel;
-    final canvasScalingFactor = canvasController.canvasScalingFactor;
+      // Calculate image dimensions on canvas
+      final imageSize = ImageUtils.sizeOfRawImage(rawImage);
+      widthOnCanvas = imageSize.width *
+          scalingFactor *
+          (currentCanvasSize.width / canvasScalingFactor);
 
-    widthOnCanvas = ImageUtils.sizeOfRawImage(rawImage).width *
-        scalingFactor *
-        (currentCanvasSize.width / canvasScalingFactor);
+      // Calculate initial position (centered on canvas)
+      final initialCoordinates = ImageUtils.getCenteredCoordinatesForPicture(
+        Size(widthOnCanvas, heightOnCanvas),
+      );
+      positionOnCanvas = Offset(initialCoordinates.dx, initialCoordinates.dy);
 
-    final initialCoordinates = ImageUtils.getCenteredCoordinatesForPicture(
-      Size(widthOnCanvas, heightOnCanvas),
-    );
-
-    positionOnCanvas = Offset(initialCoordinates.dx, initialCoordinates.dy);
-
-    // generate a random id to identify this image
-    id =
-        '${DateTime.now().millisecondsSinceEpoch}-${0 + Random().nextInt(14000)}-${0 + Random().nextInt(15000)}';
+      // Generate a unique ID for this image
+      id =
+          '${DateTime.now().millisecondsSinceEpoch}-${Random().nextInt(14000)}-${Random().nextInt(15000)}';
+    } catch (e) {
+      // Rethrow with more context
+      throw Exception('Failed to create FlitesImage: $e');
+    }
   }
 
-  /// Allows us to make changes, that will automatically be saved in the global project source file signal
-  void saveChanges({
-    Size? size,
-    double? scalingFactor,
-    EdgeInsets? margin,
-  }) {
-    final newImage = this;
+  /// Applies the current rotation to the image.
+  ///
+  /// For both SVG and bitmap images, this applies the rotation to the image data
+  /// and resets the rotation value to 0.
+  ///
+  /// The original size and position on canvas are preserved.
+  Future<void> trimImage() async {
+    // If rotation is close to 0, do nothing
+    if (rotation.abs() < 0.001) return;
 
-    // now save the changes in the project source files
+    try {
+      // Store only what we need to preserve
+      final originalWidth = widthOnCanvas;
+      final originalPosition = positionOnCanvas;
+
+      // Apply rotation to the image data based on type
+      if (SvgUtils.isSvg(image)) {
+        image = await SvgUtils.rotateAndTrimSvg(image, rotation);
+      } else {
+        image = await ImageProcessingUtils.rotateInIsolates(image, rotation);
+      }
+
+      // Reset rotation after applying it to the image data
+      rotation = 0;
+
+      // Preserve the original width and position
+      widthOnCanvas = originalWidth;
+      positionOnCanvas = originalPosition;
+
+      // Save the changes
+      saveChanges();
+    } catch (e) {
+      debugPrint('Error applying rotation: $e');
+    }
+  }
+
+  /// Updates this image in the project source files.
+  void saveChanges() {
     final images = projectSourceFiles.value;
 
     for (var i = 0; i < images.length; i++) {
       if (images[i].id == id) {
-        images[i] = newImage;
+        images[i] = this;
         break;
       }
     }
     projectSourceFiles.value = [...images];
-  }
-
-  void trimImage() async {
-    image = await ImageProcessingUtils.rotateInIsolates(image, rotation);
-
-    rotation = 0;
   }
 }

@@ -49,6 +49,7 @@ dependencies:
   flutter_isolate: ^2.1.0
   path_provider: ^2.1.5
   menu_bar: ^0.5.3
+  flutter_svg: ^2.0.17
 
 dev_dependencies:
   flutter_test:
