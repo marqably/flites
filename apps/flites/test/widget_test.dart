@@ -5,6 +5,6 @@ void main() {
   testWidgets('Find flites text', (WidgetTester tester) async {
     await tester.pumpWidget(const FlitesApp());
 
-    expect(find.text('Flites'), findsOneWidget);
+    expect(find.text('Export'), findsOneWidget);
   });
 }
