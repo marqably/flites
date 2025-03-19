@@ -133,10 +133,7 @@ class ExportDialogContentState extends State<ExportDialogContent> {
           ),
           gapH24,
           if (!kIsWeb) ...[
-            Text(
-              context.l10n.location.toUpperCase(),
-              style: Theme.of(context).textTheme.titleSmall,
-            ),
+            buildLabelText(context.l10n.location.toUpperCase()),
             gapH8,
             FilePathPicker(
               onPathSelected: (selectedPath) {
@@ -146,10 +143,7 @@ class ExportDialogContentState extends State<ExportDialogContent> {
             gapH48,
           ],
           if (kIsWeb) ...[
-            Text(
-              context.l10n.webDownloadLocation,
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
+            buildLabelText(context.l10n.webDownloadLocation),
             gapH16,
           ],
           StadiumButton(
