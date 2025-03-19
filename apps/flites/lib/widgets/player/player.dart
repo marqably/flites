@@ -101,6 +101,7 @@ class _PlayerControlsState extends State<PlayerControls> {
                   inputFormatters: [
                     FilteringTextInputFormatter.digitsOnly,
                   ],
+                  maxLength: 3,
                   textAlign: TextAlign.end,
                   style: const TextStyle(
                     fontSize: Sizes.p32,
@@ -108,6 +109,7 @@ class _PlayerControlsState extends State<PlayerControls> {
                     color: Colors.white,
                   ),
                   decoration: const InputDecoration(
+                    counterText: '',
                     suffix: Text(
                       ' ms',
                       style: TextStyle(
