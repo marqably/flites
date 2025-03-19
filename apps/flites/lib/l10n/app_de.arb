@@ -68,10 +68,6 @@
     "@delete": {
         "description": "Delete button tooltip"
     },
-    "playerSpeed": "Geschwindigkeit",
-    "@playerSpeed": {
-        "description": "Label for player speed control"
-    },
     "playPause": "Abspielen/Pause",
     "@playPause": {
         "description": "Tooltip for play/pause button"
@@ -163,5 +159,29 @@
     "webDownloadLocation": "Die Datei wird in Ihrem Download-Ordner gespeichert.",
     "@webDownloadLocation": {
         "description": "Message indicating where files will be saved on web platform"
+    },
+    "addMoreImagesToPlay": "Fügen Sie mehr als ein Bild hinzu, um abzuspielen",
+    "@addMoreImagesToPlay": {
+        "description": "Tooltip shown when trying to play with only one image"
+    },
+    "themeMode": "Themenmodus",
+    "@themeMode": {
+        "description": "Title for theme mode section in settings"
+    },
+    "languageSection": "Sprache",
+    "@languageSection": {
+        "description": "Title for language section in settings"
+    },
+    "sizePx": "GRÖSSE (px)",
+    "@sizePx": {
+        "description": "Label for size in pixels"
+    },
+    "widthLabel": "B",
+    "@widthLabel": {
+        "description": "Label for width input"
+    },
+    "heightLabel": "H",
+    "@heightLabel": {
+        "description": "Label for height input"
     }
 }
