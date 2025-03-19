@@ -36,216 +36,186 @@ class ExportDialogContentState extends State<ExportDialogContent> {
     return images.every((image) => SvgUtils.isSvg(image.image));
   }
 
-  String get _outputFormatText {
-    return _allImagesAreSvg ? 'SVG' : 'PNG';
-  }
-
   @override
   Widget build(BuildContext context) {
+    Text buildLabelText(String text) {
+      return Text(
+        text,
+        style: const TextStyle(fontSize: Sizes.p12),
+      );
+    }
+
     return Container(
-      padding: const EdgeInsets.all(16),
-      margin: const EdgeInsets.only(bottom: 16),
-      child: SizedBox(
-        width: 280,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              context.l10n.exportSprite,
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            gapH24,
-            Text(
-              context.l10n.fileName,
-              style: Theme.of(context).textTheme.titleSmall,
-            ),
-            gapH8,
-            TextField(
+      padding: const EdgeInsets.symmetric(
+        vertical: Sizes.p16,
+        horizontal: Sizes.p16,
+      ),
+      margin: const EdgeInsets.only(bottom: Sizes.p16),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          buildLabelText(context.l10n.fileName.toUpperCase()),
+          gapH8,
+          SizedBox(
+            height: 30,
+            child: TextField(
               decoration: InputDecoration(
                 hintText: context.l10n.enterSpriteName,
-                border: const OutlineInputBorder(),
+                border: const OutlineInputBorder(
+                  borderSide: BorderSide.none,
+                ),
                 fillColor: context.colors.surface,
                 isDense: true,
                 filled: true,
               ),
               controller: fileNameController,
             ),
-            gapH24,
-            Row(
-              children: [
-                Expanded(
-                  child: NumericInputWithButtons(
-                    label: '${context.l10n.width} (px)',
-                    currentValue: currentWidthPx,
-                    onChanged: (value) {
-                      setState(() {
-                        currentWidthPx = value;
-                      });
-                    },
-                  ),
-                ),
-                gapW8,
-                Expanded(
-                  child: NumericInputWithButtons(
-                    label: '${context.l10n.height} (px)',
-                    currentValue: currentHeightPx,
-                    onChanged: (value) {
-                      setState(() {
-                        currentHeightPx = value;
-                      });
-                    },
-                  ),
-                ),
-              ],
-            ),
-            gapH24,
-            PaddingInput(
-              topPadding: currentPaddingTop,
-              bottomPadding: currentPaddingBottom,
-              leftPadding: currentPaddingLeft,
-              rightPadding: currentPaddingRight,
-              onTopChanged: (value) {
-                setState(() {
-                  currentPaddingTop = value;
-                });
-              },
-              onBottomChanged: (value) {
-                setState(() {
-                  currentPaddingBottom = value;
-                });
-              },
-              onLeftChanged: (value) {
-                setState(() {
-                  currentPaddingLeft = value;
-                });
-              },
-              onRightChanged: (value) {
-                setState(() {
-                  currentPaddingRight = value;
-                });
-              },
-            ),
-            gapH24,
-            if (!kIsWeb) ...[
-              Text(
-                'Location',
-                style: Theme.of(context).textTheme.titleSmall,
-              ),
-              gapH8,
-              FilePathPicker(
-                onPathSelected: (selectedPath) {
-                  exportPath = selectedPath;
-                },
-              ),
-              gapH24,
-            ],
-            if (kIsWeb) ...[
-              Text(
-                context.l10n.webDownloadLocation,
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-              gapH16,
-            ],
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                // Output format indicator
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color:
-                        Theme.of(context).colorScheme.surfaceContainerHighest,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        _allImagesAreSvg ? Icons.photo : Icons.image,
-                        size: 16,
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        'Output: $_outputFormatText',
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .onSurfaceVariant,
-                            ),
-                      ),
-                    ],
-                  ),
-                ),
-                StadiumButton(
-                  text: context.l10n.export,
-                  onPressed: () {
-                    double? width =
-                        currentWidthPx > 0 ? currentWidthPx.toDouble() : null;
-                    double? height =
-                        currentHeightPx > 0 ? currentHeightPx.toDouble() : null;
-
-                    // Prepare export settings based on the provided dimensions
-                    ExportSettings? settings;
-                    if (width != null && height != null) {
-                      // Both width and height are provided
-                      settings = ExportSettings.sizeConstrained(
-                        fileName: fileNameController.text,
-                        path: exportPath,
-                        widthPx: width,
-                        heightPx: height,
-                        paddingTopPx: currentPaddingTop.toDouble(),
-                        paddingBottomPx: currentPaddingBottom.toDouble(),
-                        paddingLeftPx: currentPaddingLeft.toDouble(),
-                        paddingRightPx: currentPaddingRight.toDouble(),
-                      );
-                    } else if (width != null) {
-                      // Only width is provided
-                      settings = ExportSettings.widthConstrained(
-                        fileName: fileNameController.text,
-                        path: exportPath,
-                        widthPx: width,
-                        paddingTopPx: currentPaddingTop.toDouble(),
-                        paddingBottomPx: currentPaddingBottom.toDouble(),
-                        paddingLeftPx: currentPaddingLeft.toDouble(),
-                        paddingRightPx: currentPaddingRight.toDouble(),
-                      );
-                    } else if (height != null) {
-                      // Only height is provided
-                      settings = ExportSettings.heightConstrained(
-                        fileName: fileNameController.text,
-                        path: exportPath,
-                        heightPx: height,
-                        paddingTopPx: currentPaddingTop.toDouble(),
-                        paddingBottomPx: currentPaddingBottom.toDouble(),
-                        paddingLeftPx: currentPaddingLeft.toDouble(),
-                        paddingRightPx: currentPaddingRight.toDouble(),
-                      );
-                    }
-
-                    if (settings != null) {
-                      // Use the appropriate generator based on image types
-                      if (_allImagesAreSvg) {
-                        GenerateSvgSprite.exportSprite(settings);
-                      } else {
-                        GenerateSprite.exportSprite(settings);
-                      }
-                    } else {
-                      // Handle the case where neither width nor height is provided
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(context.l10n.provideDimensionError),
-                        ),
-                      );
-                    }
+          ),
+          gapH24,
+          buildLabelText(context.l10n.sizePx),
+          gapH16,
+          Row(
+            children: [
+              buildLabelText(context.l10n.widthLabel),
+              gapW4,
+              Expanded(
+                child: NumericInputWithButtons(
+                  currentValue: currentWidthPx,
+                  onChanged: (value) {
+                    setState(() {
+                      currentWidthPx = value;
+                    });
                   },
                 ),
-              ],
+              ),
+              gapW32,
+              buildLabelText(context.l10n.heightLabel),
+              gapW4,
+              Expanded(
+                child: NumericInputWithButtons(
+                  currentValue: currentHeightPx,
+                  onChanged: (value) {
+                    setState(() {
+                      currentHeightPx = value;
+                    });
+                  },
+                ),
+              ),
+            ],
+          ),
+          gapH24,
+          PaddingInput(
+            topPadding: currentPaddingTop,
+            bottomPadding: currentPaddingBottom,
+            leftPadding: currentPaddingLeft,
+            rightPadding: currentPaddingRight,
+            onTopChanged: (value) {
+              setState(() {
+                currentPaddingTop = value;
+              });
+            },
+            onBottomChanged: (value) {
+              setState(() {
+                currentPaddingBottom = value;
+              });
+            },
+            onLeftChanged: (value) {
+              setState(() {
+                currentPaddingLeft = value;
+              });
+            },
+            onRightChanged: (value) {
+              setState(() {
+                currentPaddingRight = value;
+              });
+            },
+          ),
+          gapH24,
+          if (!kIsWeb) ...[
+            Text(
+              context.l10n.location.toUpperCase(),
+              style: Theme.of(context).textTheme.titleSmall,
             ),
+            gapH8,
+            FilePathPicker(
+              onPathSelected: (selectedPath) {
+                exportPath = selectedPath;
+              },
+            ),
+            gapH48,
           ],
-        ),
+          if (kIsWeb) ...[
+            Text(
+              context.l10n.webDownloadLocation,
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+            gapH16,
+          ],
+          StadiumButton(
+            text: context.l10n.export,
+            onPressed: () {
+              double? width =
+                  currentWidthPx > 0 ? currentWidthPx.toDouble() : null;
+              double? height =
+                  currentHeightPx > 0 ? currentHeightPx.toDouble() : null;
+
+              // Prepare export settings based on the provided dimensions
+              ExportSettings? settings;
+              if (width != null && height != null) {
+                // Both width and height are provided
+                settings = ExportSettings.sizeConstrained(
+                  fileName: fileNameController.text,
+                  path: exportPath,
+                  widthPx: width,
+                  heightPx: height,
+                  paddingTopPx: currentPaddingTop.toDouble(),
+                  paddingBottomPx: currentPaddingBottom.toDouble(),
+                  paddingLeftPx: currentPaddingLeft.toDouble(),
+                  paddingRightPx: currentPaddingRight.toDouble(),
+                );
+              } else if (width != null) {
+                // Only width is provided
+                settings = ExportSettings.widthConstrained(
+                  fileName: fileNameController.text,
+                  path: exportPath,
+                  widthPx: width,
+                  paddingTopPx: currentPaddingTop.toDouble(),
+                  paddingBottomPx: currentPaddingBottom.toDouble(),
+                  paddingLeftPx: currentPaddingLeft.toDouble(),
+                  paddingRightPx: currentPaddingRight.toDouble(),
+                );
+              } else if (height != null) {
+                // Only height is provided
+                settings = ExportSettings.heightConstrained(
+                  fileName: fileNameController.text,
+                  path: exportPath,
+                  heightPx: height,
+                  paddingTopPx: currentPaddingTop.toDouble(),
+                  paddingBottomPx: currentPaddingBottom.toDouble(),
+                  paddingLeftPx: currentPaddingLeft.toDouble(),
+                  paddingRightPx: currentPaddingRight.toDouble(),
+                );
+              }
+
+              if (settings != null) {
+                // Use the appropriate generator based on image types
+                if (_allImagesAreSvg) {
+                  GenerateSvgSprite.exportSprite(settings);
+                } else {
+                  GenerateSprite.exportSprite(settings);
+                }
+              } else {
+                // Handle the case where neither width nor height is provided
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(context.l10n.provideDimensionError),
+                  ),
+                );
+              }
+            },
+          ),
+        ],
       ),
     );
   }

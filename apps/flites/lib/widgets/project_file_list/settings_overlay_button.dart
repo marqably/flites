@@ -58,7 +58,7 @@ class SettingsOverlayButton extends StatelessWidget {
           children: [
             ExpansionTile(
               dense: true,
-              title: const Text('Theme Mode'),
+              title: Text(context.l10n.themeMode),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(Sizes.p8),
               ),
@@ -96,7 +96,7 @@ class SettingsOverlayButton extends StatelessWidget {
               final locale = appSettings.currentLocale;
               return ExpansionTile(
                 dense: true,
-                title: const Text('Language'),
+                title: Text(context.l10n.languageSection),
                 shape: Border.all(color: Colors.transparent),
                 tilePadding:
                     const EdgeInsets.symmetric(horizontal: 12, vertical: 0),

@@ -43,19 +43,19 @@ class _ToolControlsState extends State<ToolControls> {
         ),
       ),
       width: 300,
-      padding: const EdgeInsets.all(16),
       child: Watch((context) {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ExpansionTile(
               shape: Border.all(color: Colors.transparent),
-              tilePadding: EdgeInsets.zero,
+              tilePadding: const EdgeInsets.only(left: Sizes.p16),
               title: const Text(
                 'Export',
                 style: TextStyle(fontWeight: FontWeight.w600),
               ),
               iconColor: context.colors.onSurface,
+              collapsedIconColor: context.colors.onSurface,
               children: const [ExportDialogContent()],
             ),
             divider,

@@ -40,21 +40,19 @@ class ToolButton extends StatelessWidget {
               toolController.selectTool(tool);
             },
             child: Container(
-              padding: const EdgeInsets.all(6),
+              padding: const EdgeInsets.all(5),
               decoration: BoxDecoration(
                 color: isSelected
-                    ? context.colors.surfaceContainerHigh
+                    ? context.colors.surfaceContainer
                     : isHovered
-                        ? context.colors.surfaceTint
-                        : Colors.transparent,
+                        ? context.colors.surfaceContainer
+                        : context.colors.surface,
                 borderRadius: BorderRadius.circular(Sizes.p4),
               ),
               child: Icon(
                 icon,
-                size: Sizes.p16,
-                color: isSelected
-                    ? context.colors.surfaceContainerLowest
-                    : context.colors.onSurface,
+                size: Sizes.p24,
+                color: context.colors.onSurface,
               ),
             ),
           ),

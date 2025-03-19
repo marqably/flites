@@ -2,7 +2,6 @@ import 'package:flites/constants/app_sizes.dart';
 import 'package:flites/main.dart';
 import 'package:flites/states/canvas_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 
 class ZoomControls extends StatelessWidget {
   const ZoomControls({super.key});

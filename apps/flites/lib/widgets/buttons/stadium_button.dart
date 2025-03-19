@@ -8,8 +8,8 @@ class StadiumButton extends StatelessWidget {
     required this.text,
     this.onPressed,
     this.color,
-    this.height = Sizes.p48,
-    this.width = 140,
+    this.height = Sizes.p32,
+    this.width = 104,
   });
 
   final String text;
@@ -27,13 +27,14 @@ class StadiumButton extends StatelessWidget {
         width: width,
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: color ?? context.colors.onSurface,
+          color: color ?? context.colors.primary,
           borderRadius: BorderRadius.circular(Sizes.p32),
         ),
         child: Text(
-          text,
-          style: TextStyle(
-            color: context.colors.surfaceContainerLowest,
+          text.toUpperCase(),
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: Sizes.p16,
           ),
         ),
       ),

@@ -61,9 +61,9 @@ class LoadingOverlay extends StatelessWidget {
               gapH8,
               Text(
                 context.l10n.processingMightTakeAMoment,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
+                style: TextStyle(
+                  color: context.colors.onSurface,
+                ),
               ),
             ],
           ),

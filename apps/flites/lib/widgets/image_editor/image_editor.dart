@@ -5,7 +5,7 @@ import 'package:flites/states/key_events.dart';
 import 'package:flites/states/selected_images_controller.dart';
 import 'package:flites/states/tool_controller.dart';
 import 'package:flites/utils/svg_utils.dart';
-import 'package:flites/widgets/canvas_controls/canvas_controls.dart';
+import 'package:flites/widgets/tool_controls/tool_controls.dart';
 import 'package:flites/widgets/loading_overlay/loading_overlay.dart';
 import 'package:flites/widgets/rotation/rotation_wrapper.dart';
 import 'package:flutter/gestures.dart';

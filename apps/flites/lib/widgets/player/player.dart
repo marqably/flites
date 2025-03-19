@@ -70,11 +70,11 @@ class _PlayerControlsState extends State<PlayerControls> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: context.colors.surfaceContainerLowest,
+        color: context.colors.primary,
         borderRadius: BorderRadius.circular(32),
       ),
+      width: 260,
       height: Sizes.p64,
-      width: 344,
       child: Watch(
         (context) {
           final hasMultipleImages = projectSourceFiles.value.length > 1;
@@ -82,47 +82,50 @@ class _PlayerControlsState extends State<PlayerControls> {
 
           return Row(
             children: [
-              gapW32,
-              Flexible(
+              gapW24,
+              const SizedBox(
+                // This has to be 44 to not break during widget tests
+                width: 44,
                 child: Text(
-                  'Player Speed',
+                  'PLAYER\nSPEED',
                   style: TextStyle(
-                    fontSize: Sizes.p16,
-                    color: context.colors.outline,
+                    fontSize: Sizes.p12,
+                    color: Colors.white,
                   ),
                 ),
               ),
-              gapW16,
-              SizedBox(
-                width: 100,
+              Container(
+                margin: const EdgeInsets.only(bottom: Sizes.p20),
+                width: 120,
                 child: TextField(
                   inputFormatters: [
                     FilteringTextInputFormatter.digitsOnly,
                   ],
                   textAlign: TextAlign.end,
-                  style: TextStyle(
-                    fontSize: Sizes.p16,
-                    fontWeight: FontWeight.w700,
-                    color: context.colors.onSurfaceVariant,
+                  style: const TextStyle(
+                    fontSize: Sizes.p32,
+                    fontWeight: FontWeight.w300,
+                    color: Colors.white,
                   ),
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     suffix: Text(
                       ' ms',
                       style: TextStyle(
-                        fontSize: Sizes.p16,
-                        fontWeight: FontWeight.w400,
-                        color: context.colors.surfaceContainerHighest,
+                        fontSize: Sizes.p12,
+                        fontWeight: FontWeight.w300,
+                        color: Colors.white,
                       ),
                     ),
-                    border:
-                        const OutlineInputBorder(borderSide: BorderSide.none),
+                    border: OutlineInputBorder(borderSide: BorderSide.none),
                   ),
                   controller: playbackSpeedController,
                 ),
               ),
-              const Spacer(),
+              gapW8,
               IconButton(
-                tooltip: context.l10n.playPause,
+                tooltip: hasMultipleImages
+                    ? context.l10n.playPause
+                    : context.l10n.addMoreImagesToPlay,
                 onPressed: hasMultipleImages
                     ? () {
                         isPlayingSignal.value = !currentlyPlaying;
@@ -134,15 +137,31 @@ class _PlayerControlsState extends State<PlayerControls> {
                         }
                       }
                     : null,
-                icon: Icon(
-                  currentlyPlaying ? CupertinoIcons.pause : CupertinoIcons.play,
-                  color: hasMultipleImages
-                      ? context.colors.surfaceContainerHighest
-                      : context.colors.surfaceContainerHighest
-                          .withValues(alpha: 0.38),
+                icon: Container(
+                  width: Sizes.p48,
+                  height: Sizes.p48,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: context.colors.primary,
+                    borderRadius: BorderRadius.circular(Sizes.p48),
+                    border: Border.all(
+                      color: hasMultipleImages
+                          ? Colors.white
+                          : Colors.white.withValues(alpha: 0.38),
+                      width: 2,
+                    ),
+                  ),
+                  child: Icon(
+                    currentlyPlaying
+                        ? CupertinoIcons.pause
+                        : CupertinoIcons.play_arrow,
+                    color: hasMultipleImages
+                        ? Colors.white
+                        : Colors.white.withValues(alpha: 0.38),
+                    size: Sizes.p24,
+                  ),
                 ),
               ),
-              gapW32,
             ],
           );
         },

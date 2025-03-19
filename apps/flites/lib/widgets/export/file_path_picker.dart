@@ -1,3 +1,4 @@
+import 'package:flites/constants/app_sizes.dart';
 import 'package:flites/main.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
@@ -19,19 +20,42 @@ class FilePathPicker extends StatefulWidget {
 
 class _FilePathPickerState extends State<FilePathPicker> {
   late final TextEditingController _controller;
+  late String selectedPath;
+  bool isSelectedPathInitialized = false;
 
   @override
   void initState() {
     super.initState();
     _controller = TextEditingController();
-    _initDefaultPath();
+    // Initialize with widget's initial path if provided
+    selectedPath = widget.initialPath ?? '';
+    isSelectedPathInitialized = widget.initialPath != null;
+    // Set up initial path if needed
+    if (!isSelectedPathInitialized) {
+      _initDefaultPath();
+    }
   }
 
   Future<void> _initDefaultPath() async {
     final downloadsDir = await getDownloadsDirectory();
     if (downloadsDir != null) {
-      _controller.text = downloadsDir.path;
-      widget.onPathSelected(downloadsDir.path);
+      setState(() {
+        selectedPath = downloadsDir.path;
+        isSelectedPathInitialized = true;
+      });
+      widget.onPathSelected(selectedPath);
+    }
+  }
+
+  Future<void> _pickDirectory() async {
+    final result = await FilePicker.platform.getDirectoryPath();
+
+    if (result != null) {
+      setState(() {
+        selectedPath = result;
+        isSelectedPathInitialized = true;
+      });
+      widget.onPathSelected(selectedPath);
     }
   }
 
@@ -41,37 +65,38 @@ class _FilePathPickerState extends State<FilePathPicker> {
     super.dispose();
   }
 
-  Future<void> _pickDirectory() async {
-    final result = await FilePicker.platform.getDirectoryPath();
-
-    if (result != null) {
-      _controller.text = result;
-      widget.onPathSelected(result);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: TextField(
-            controller: _controller,
-            decoration: InputDecoration(
-              border: const OutlineInputBorder(),
-              isDense: true,
-              filled: true,
-              fillColor: context.colors.surface,
+    return InkWell(
+      onTap: _pickDirectory,
+      child: Container(
+        height: 30,
+        decoration: BoxDecoration(
+          color: context.colors.surface,
+          borderRadius: BorderRadius.circular(Sizes.p4),
+        ),
+        child: Row(
+          children: [
+            gapW8,
+            Expanded(
+              child: Text(
+                selectedPath,
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
             ),
-            onChanged: widget.onPathSelected,
-          ),
+            gapW8,
+            Container(
+              width: 30,
+              height: 30,
+              decoration: BoxDecoration(
+                color: context.colors.surfaceContainer,
+                borderRadius: BorderRadius.circular(Sizes.p4),
+              ),
+              child: const Icon(Icons.folder_open_outlined, size: 16),
+            ),
+          ],
         ),
-        IconButton(
-          icon: const Icon(Icons.folder_open_outlined),
-          tooltip: context.l10n.selectLocation,
-          onPressed: _pickDirectory,
-        ),
-      ],
+      ),
     );
   }
 }

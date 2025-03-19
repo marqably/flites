@@ -46,7 +46,7 @@ class _FileItemState extends State<FileItem> {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(Sizes.p8),
             color: isCurrentlySelected
-                ? Theme.of(context).primaryColor.withValues(alpha: 0.3)
+                ? context.colors.surface
                 : isHovered
                     ? context.colors.surface
                     : Colors.transparent,

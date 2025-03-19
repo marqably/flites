@@ -1,3 +1,5 @@
+import 'package:flites/constants/app_sizes.dart';
+import 'package:flites/main.dart';
 import 'package:flutter/material.dart';
 
 class GradientBorderWidget extends StatelessWidget {
@@ -11,19 +13,23 @@ class GradientBorderWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.bottomCenter,
           end: Alignment.topCenter,
           colors: [
-            Color(0xFF964EFF),
-            Color(0xFF383839),
+            context.colors.primary,
+            context.colors.surface,
           ],
-          stops: [0.0, 0.2],
+          stops: const [0.0, 0.2],
         ),
       ),
       child: Container(
-        margin: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 8.0),
+        margin: const EdgeInsets.only(
+          left: Sizes.p8,
+          right: Sizes.p8,
+          bottom: Sizes.p8,
+        ),
         child: child,
       ),
     );

@@ -143,7 +143,7 @@ class _RotationWrapperState extends State<RotationWrapper> {
                           child: Container(
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              color: context.colors.onSurfaceVariant,
+                              color: context.colors.onSurface,
                             ),
                             height: dotSize,
                             width: dotSize,
