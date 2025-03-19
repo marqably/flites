@@ -1,5 +1,5 @@
 import 'dart:math';
-import 'package:flites/widgets/loading_overlay/loading_overlay.dart';
+import 'package:flites/services/loading_overlay_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:image/image.dart' as img;
 
