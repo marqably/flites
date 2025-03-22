@@ -1,5 +1,8 @@
+import 'package:flites/constants/app_sizes.dart';
 import 'package:flites/main.dart';
 import 'package:flites/widgets/export/export_button.dart';
+import 'package:flites/widgets/export/load_project_button.dart';
+import 'package:flites/widgets/export/save_button.dart';
 import 'package:flutter/material.dart';
 import 'package:signals/signals_flutter.dart';
 
@@ -37,6 +40,10 @@ class _CanvasControlsState extends State<CanvasControls> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Spacer(),
+            Center(child: SaveButton()),
+            gapH16,
+            Center(child: LoadProjectButton()),
+            gapH16,
             Center(child: ExportButton()),
           ],
         );

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:convert';
 
 import 'package:file_saver/file_saver.dart';
 import 'package:flites/states/open_project.dart';
@@ -8,18 +9,47 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:image/image.dart' as img;
 
-sealed class SpriteConstraints {}
+sealed class SpriteConstraints {
+  /// Converts constraints to a JSON map representation
+  Map<String, dynamic> toJson();
+}
 
 class SpriteHeightConstrained extends SpriteConstraints {
   final double heightPx;
 
   SpriteHeightConstrained(this.heightPx);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      'type': 'heightConstrained',
+      'heightPx': heightPx,
+    };
+  }
+
+  /// Creates a SpriteHeightConstrained from a JSON map
+  factory SpriteHeightConstrained.fromJson(Map<String, dynamic> json) {
+    return SpriteHeightConstrained(json['heightPx'] as double);
+  }
 }
 
 class SpriteWidthConstrained extends SpriteConstraints {
   final double widthPx;
 
   SpriteWidthConstrained(this.widthPx);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      'type': 'widthConstrained',
+      'widthPx': widthPx,
+    };
+  }
+
+  /// Creates a SpriteWidthConstrained from a JSON map
+  factory SpriteWidthConstrained.fromJson(Map<String, dynamic> json) {
+    return SpriteWidthConstrained(json['widthPx'] as double);
+  }
 }
 
 class SpriteSizeConstrained extends SpriteConstraints {
@@ -27,6 +57,23 @@ class SpriteSizeConstrained extends SpriteConstraints {
   final double heightPx;
 
   SpriteSizeConstrained(this.widthPx, this.heightPx);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      'type': 'sizeConstrained',
+      'widthPx': widthPx,
+      'heightPx': heightPx,
+    };
+  }
+
+  /// Creates a SpriteSizeConstrained from a JSON map
+  factory SpriteSizeConstrained.fromJson(Map<String, dynamic> json) {
+    return SpriteSizeConstrained(
+      json['widthPx'] as double,
+      json['heightPx'] as double,
+    );
+  }
 }
 
 class ExportSettings {
@@ -69,6 +116,61 @@ class ExportSettings {
     required double widthPx,
     required double heightPx,
   }) : constraints = SpriteSizeConstrained(widthPx, heightPx);
+
+  /// Converts ExportSettings to a JSON map
+  Map<String, dynamic> toJson() {
+    return {
+      'paddingTopPx': paddingTopPx,
+      'paddingRightPx': paddingRightPx,
+      'paddingBottomPx': paddingBottomPx,
+      'paddingLeftPx': paddingLeftPx,
+      'fileName': fileName,
+      'path': path,
+      'constraints': constraints.toJson(),
+    };
+  }
+
+  /// Creates an ExportSettings object from a JSON map
+  static ExportSettings fromJson(Map<String, dynamic> json) {
+    final constraintsJson = json['constraints'] as Map<String, dynamic>;
+    final constraintType = constraintsJson['type'] as String;
+
+    switch (constraintType) {
+      case 'heightConstrained':
+        return ExportSettings.heightConstrained(
+          paddingTopPx: json['paddingTopPx'] as double?,
+          paddingRightPx: json['paddingRightPx'] as double?,
+          paddingBottomPx: json['paddingBottomPx'] as double?,
+          paddingLeftPx: json['paddingLeftPx'] as double?,
+          fileName: json['fileName'] as String?,
+          path: json['path'] as String?,
+          heightPx: constraintsJson['heightPx'] as double,
+        );
+      case 'widthConstrained':
+        return ExportSettings.widthConstrained(
+          paddingTopPx: json['paddingTopPx'] as double?,
+          paddingRightPx: json['paddingRightPx'] as double?,
+          paddingBottomPx: json['paddingBottomPx'] as double?,
+          paddingLeftPx: json['paddingLeftPx'] as double?,
+          fileName: json['fileName'] as String?,
+          path: json['path'] as String?,
+          widthPx: constraintsJson['widthPx'] as double,
+        );
+      case 'sizeConstrained':
+        return ExportSettings.sizeConstrained(
+          paddingTopPx: json['paddingTopPx'] as double?,
+          paddingRightPx: json['paddingRightPx'] as double?,
+          paddingBottomPx: json['paddingBottomPx'] as double?,
+          paddingLeftPx: json['paddingLeftPx'] as double?,
+          fileName: json['fileName'] as String?,
+          path: json['path'] as String?,
+          widthPx: constraintsJson['widthPx'] as double,
+          heightPx: constraintsJson['heightPx'] as double,
+        );
+      default:
+        throw ArgumentError('Unknown constraint type: $constraintType');
+    }
+  }
 
   double get horizontalMargin => (paddingLeftPx ?? 0) + (paddingRightPx ?? 0);
   double get verticalMargin => (paddingTopPx ?? 0) + (paddingBottomPx ?? 0);
