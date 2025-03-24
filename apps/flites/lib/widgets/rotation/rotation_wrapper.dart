@@ -162,7 +162,7 @@ class _RotationWrapperState extends State<RotationWrapper> {
             bottom: 0,
             child: Container(
               decoration: BoxDecoration(
-                color: context.colors.surfaceContainerLowest,
+                color: context.colors.onSurface,
                 borderRadius: BorderRadius.circular(Sizes.p32),
               ),
               padding: const EdgeInsets.symmetric(
@@ -172,7 +172,10 @@ class _RotationWrapperState extends State<RotationWrapper> {
               child: Row(
                 children: [
                   IconButton(
-                    icon: const Icon(Icons.undo),
+                    icon: Icon(
+                      Icons.cancel_outlined,
+                      color: context.colors.surfaceContainer,
+                    ),
                     onPressed: () {
                       setState(() {
                         rotation = 0;
@@ -183,7 +186,10 @@ class _RotationWrapperState extends State<RotationWrapper> {
                   ),
                   gapW8,
                   IconButton(
-                    icon: const Icon(Icons.check),
+                    icon: Icon(
+                      Icons.check_circle_outlined,
+                      color: context.colors.surfaceContainer,
+                    ),
                     onPressed: () async {
                       final currentImage = getFliteImage(selectedImage.value);
 
