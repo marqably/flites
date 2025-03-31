@@ -31,8 +31,8 @@ class CheckboxButton extends StatelessWidget {
           child: Row(
             children: [
               Icon(
-                isChecked ? Icons.check_circle : Icons.circle_outlined,
-                color: context.colors.surfaceDim,
+                isChecked ? Icons.check_box : Icons.check_box_outline_blank,
+                color: context.colors.onSurface,
               ),
               gapW8,
               Expanded(
@@ -40,7 +40,6 @@ class CheckboxButton extends StatelessWidget {
                   text,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.labelLarge,
                 ),
               ),
             ],

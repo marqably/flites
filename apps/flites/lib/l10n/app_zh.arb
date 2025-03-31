@@ -159,5 +159,29 @@
     "webDownloadLocation": "文件将保存到您的下载文件夹。",
     "@webDownloadLocation": {
         "description": "Message indicating where files will be saved on web platform"
+    },
+    "addMoreImagesToPlay": "添加多个图片以播放",
+    "@addMoreImagesToPlay": {
+        "description": "Tooltip shown when trying to play with only one image"
+    },
+    "themeMode": "主题模式",
+    "@themeMode": {
+        "description": "Title for theme mode section in settings"
+    },
+    "languageSection": "语言",
+    "@languageSection": {
+        "description": "Title for language section in settings"
+    },
+    "sizePx": "尺寸 (px)",
+    "@sizePx": {
+        "description": "Label for size in pixels"
+    },
+    "widthLabel": "宽",
+    "@widthLabel": {
+        "description": "Label for width input"
+    },
+    "heightLabel": "高",
+    "@heightLabel": {
+        "description": "Label for height input"
     }
 }

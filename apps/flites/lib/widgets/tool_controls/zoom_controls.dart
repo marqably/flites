@@ -24,7 +24,7 @@ class ZoomControls extends StatelessWidget {
             icon: Icon(
               Icons.zoom_out,
               size: Sizes.p24,
-              color: context.colors.surfaceContainer,
+              color: context.colors.onSurface,
             ),
           ),
           IconButton(
@@ -35,7 +35,7 @@ class ZoomControls extends StatelessWidget {
             icon: Icon(
               Icons.zoom_in,
               size: Sizes.p24,
-              color: context.colors.surfaceContainer,
+              color: context.colors.onSurface,
             ),
           ),
         ],

@@ -3,7 +3,7 @@ import 'package:flites/main.dart';
 import 'package:flutter/material.dart';
 import 'numeric_input_with_buttons.dart';
 
-class PaddingInput extends StatelessWidget {
+class PaddingInput extends StatefulWidget {
   final int topPadding;
   final int bottomPadding;
   final int leftPadding;
@@ -26,6 +26,41 @@ class PaddingInput extends StatelessWidget {
   });
 
   @override
+  State<PaddingInput> createState() => _PaddingInputState();
+}
+
+class _PaddingInputState extends State<PaddingInput> {
+  bool _isLocked = false;
+
+  void _handleLeftChange(int value) {
+    widget.onLeftChanged(value);
+    if (_isLocked) {
+      widget.onRightChanged(value);
+    }
+  }
+
+  void _handleRightChange(int value) {
+    widget.onRightChanged(value);
+    if (_isLocked) {
+      widget.onLeftChanged(value);
+    }
+  }
+
+  void _handleTopChange(int value) {
+    widget.onTopChanged(value);
+    if (_isLocked) {
+      widget.onBottomChanged(value);
+    }
+  }
+
+  void _handleBottomChange(int value) {
+    widget.onBottomChanged(value);
+    if (_isLocked) {
+      widget.onTopChanged(value);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -34,16 +69,17 @@ class PaddingInput extends StatelessWidget {
         Row(
           children: [
             Text(
-              context.l10n.padding,
-              style: Theme.of(context).textTheme.titleSmall,
+              '${context.l10n.padding.toUpperCase()} (px)',
+              style: const TextStyle(fontSize: Sizes.p12),
             ),
           ],
         ),
+        gapH16,
         SizedBox(
           width: 100,
           child: NumericInputWithButtons(
-            currentValue: topPadding,
-            onChanged: onTopChanged,
+            currentValue: widget.topPadding,
+            onChanged: _handleTopChange,
           ),
         ),
         gapH16,
@@ -53,16 +89,24 @@ class PaddingInput extends StatelessWidget {
             SizedBox(
               width: 100,
               child: NumericInputWithButtons(
-                currentValue: leftPadding,
-                onChanged: onLeftChanged,
+                currentValue: widget.leftPadding,
+                onChanged: _handleLeftChange,
               ),
+            ),
+            const Spacer(),
+            IconButton(
+              icon: Icon(
+                _isLocked ? Icons.lock_outline : Icons.lock_open_outlined,
+                size: 16,
+              ),
+              onPressed: () => setState(() => _isLocked = !_isLocked),
             ),
             const Spacer(),
             SizedBox(
               width: 100,
               child: NumericInputWithButtons(
-                currentValue: rightPadding,
-                onChanged: onRightChanged,
+                currentValue: widget.rightPadding,
+                onChanged: _handleRightChange,
               ),
             ),
           ],
@@ -71,8 +115,8 @@ class PaddingInput extends StatelessWidget {
         SizedBox(
           width: 100,
           child: NumericInputWithButtons(
-            currentValue: bottomPadding,
-            onChanged: onBottomChanged,
+            currentValue: widget.bottomPadding,
+            onChanged: _handleBottomChange,
           ),
         ),
       ],

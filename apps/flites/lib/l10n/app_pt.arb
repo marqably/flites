@@ -159,5 +159,29 @@
     "webDownloadLocation": "O arquivo será salvo na sua pasta de downloads.",
     "@webDownloadLocation": {
         "description": "Message indicating where files will be saved on web platform"
+    },
+    "addMoreImagesToPlay": "Adicione mais de uma imagem para reproduzir",
+    "@addMoreImagesToPlay": {
+        "description": "Tooltip shown when trying to play with only one image"
+    },
+    "themeMode": "Modo de tema",
+    "@themeMode": {
+        "description": "Title for theme mode section in settings"
+    },
+    "languageSection": "Idioma",
+    "@languageSection": {
+        "description": "Title for language section in settings"
+    },
+    "sizePx": "TAMANHO (px)",
+    "@sizePx": {
+        "description": "Label for size in pixels"
+    },
+    "widthLabel": "L",
+    "@widthLabel": {
+        "description": "Label for width input"
+    },
+    "heightLabel": "A",
+    "@heightLabel": {
+        "description": "Label for height input"
     }
 }

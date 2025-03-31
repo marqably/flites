@@ -30,9 +30,8 @@ class NumericInputWithButtons extends StatelessWidget {
           gapH4,
         ],
         Container(
-          height: Sizes.p40,
+          height: 25,
           decoration: BoxDecoration(
-            border: Border.all(color: context.colors.onSurface),
             borderRadius: BorderRadius.circular(Sizes.p4),
             color: context.colors.surface,
           ),
@@ -44,6 +43,9 @@ class NumericInputWithButtons extends StatelessWidget {
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
                     hintText: currentValue.toString(),
+                    hintStyle: TextStyle(
+                      color: context.colors.onSurface,
+                    ),
                     contentPadding: const EdgeInsets.only(left: Sizes.p8),
                     border: InputBorder.none,
                     fillColor: context.colors.surface,
@@ -55,27 +57,49 @@ class NumericInputWithButtons extends StatelessWidget {
                 ),
               ),
               Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  IconButton(
-                    icon: const Icon(Icons.arrow_upward),
-                    onPressed: () {
-                      onChanged(currentValue + 1);
-                    },
-                    padding: EdgeInsets.zero,
-                    constraints: const BoxConstraints(),
-                    iconSize: Sizes.p16,
-                    color: context.colors.onSurface,
+                  Container(
+                    decoration: BoxDecoration(
+                      color: context.colors.surfaceContainer,
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(Sizes.p4),
+                        topRight: Radius.circular(Sizes.p4),
+                      ),
+                    ),
+                    child: IconButton(
+                      icon: const Icon(Icons.arrow_drop_up),
+                      onPressed: () {
+                        onChanged(currentValue + 1);
+                      },
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
+                      iconSize: Sizes.p12,
+                      color: context.colors.onSurface,
+                    ),
                   ),
-                  IconButton(
-                    icon: const Icon(Icons.arrow_downward),
-                    onPressed: () {
-                      onChanged(max(currentValue - 1, 0));
-                    },
-                    padding: EdgeInsets.zero,
-                    constraints: const BoxConstraints(),
-                    iconSize: Sizes.p16,
-                    color: context.colors.onSurface,
+                  Divider(
+                    color: context.colors.surfaceContainerLow,
+                    height: 1,
+                    thickness: 1,
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: context.colors.surfaceContainer,
+                      borderRadius: const BorderRadius.only(
+                        bottomLeft: Radius.circular(Sizes.p4),
+                        bottomRight: Radius.circular(Sizes.p4),
+                      ),
+                    ),
+                    child: IconButton(
+                      icon: const Icon(Icons.arrow_drop_down),
+                      onPressed: () {
+                        onChanged(max(currentValue - 1, 0));
+                      },
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
+                      iconSize: Sizes.p12,
+                      color: context.colors.onSurface,
+                    ),
                   ),
                 ],
               ),

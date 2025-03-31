@@ -159,5 +159,26 @@
     "webDownloadLocation": "ファイルはダウンロードフォルダーに自動保存されます。",
     "@webDownloadLocation": {
         "description": "Message indicating where files will be saved on web platform"
-    }
+    },
+    "addMoreImagesToPlay": "再生するには複数の画像を追加してください",
+    "@addMoreImagesToPlay": {
+        "description": "Tooltip shown when trying to play with only one image"
+    },
+    "themeMode": "テーマモード",
+    "@themeMode": {
+        "description": "Title for theme mode section in settings"
+    },
+    "languageSection": "言語",
+    "@languageSection": {
+        "description": "Title for language section in settings"
+    },
+    "sizePx": "サイズ (px)",
+    "@sizePx": {
+        "description": "Label for size in pixels"
+    },
+    "widthLabel": "幅",
+    "@widthLabel": {
+        "description": "Label for width input"
+    },
+    "heightLabel": "高"
 }

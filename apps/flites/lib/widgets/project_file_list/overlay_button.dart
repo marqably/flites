@@ -53,7 +53,7 @@ class OverlayButtonState extends State<OverlayButton> {
               offset: widget.offset,
               child: Material(
                 elevation: 4.0,
-                color: context.colors.surfaceContainerLowest,
+                color: context.colors.surface,
                 borderRadius: BorderRadius.circular(8.0),
                 child: widget.overlayContent,
               ),
