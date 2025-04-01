@@ -98,19 +98,19 @@ runs:
           if [ -z "${PR_NUM}" ]; then echo "Error: PR number required for PR build."; exit 1; fi
           PACKAGE_VERSION="0.0.0-pr${PR_NUM}"
           SUFFIX_TEMPLATE_KEY="pr_suffix_template"
-          ARTIFACT_NAME_TEMPLATE_KEY="pr_artifact_name"
+          ARTIFACT_NAME_TEMPLATE_KEY="pr_artifact_name_template"
 
         else
           BUILD_TYPE="manual"
           RUN_ID="${{ inputs.run_id }}"
           PACKAGE_VERSION="0.0.0-dev${RUN_ID}"
-          SUFFIX_TEMPLATE_KEY="dev_suffix_template"
-          ARTIFACT_NAME_TEMPLATE_KEY="dev_artifact_name"
+          SUFFIX_TEMPLATE_KEY="manual_suffix_template"
+          ARTIFACT_NAME_TEMPLATE_KEY="manual_artifact_name_template"
         fi
 
         # --- Get templates from config file ---
-        ARTIFACT_SUFFIX=$(yq eval ".${PLATFORM}.${SUFFIX_TEMPLATE_KEY}" "${CONFIG_FILE}")
-        ARTIFACT_UPLOAD_NAME=$(yq eval ".${PLATFORM}.${ARTIFACT_NAME_TEMPLATE_KEY}" "${CONFIG_FILE}")
+        ARTIFACT_SUFFIX=$(yq eval ".platforms.${PLATFORM}.${SUFFIX_TEMPLATE_KEY}" "${CONFIG_FILE}")
+        ARTIFACT_UPLOAD_NAME=$(yq eval ".platforms.${PLATFORM}.${ARTIFACT_NAME_TEMPLATE_KEY}" "${CONFIG_FILE}")
 
         # --- Replace placeholders in templates ---
         ARTIFACT_SUFFIX=$(echo "${ARTIFACT_SUFFIX}" | sed "s/\${VERSION}/${PACKAGE_VERSION}/g")
