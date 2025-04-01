@@ -1,14 +1,27 @@
 import 'package:flites/screens/overview.dart';
+import 'package:flites/services/update_service.dart';
 import 'package:flites/states/app_settings.dart';
 import 'package:flites/theme/themes.dart';
 import 'package:flites/widgets/layout/gradient_border_widget.dart';
 import 'package:flites/widgets/loading_overlay/loading_overlay.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:signals/signals_flutter.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Only initialize in release mode and not on web
+  if (!kDebugMode && !kIsWeb) {
+    try {
+      await UpdateService.initialize();
+    } catch (e) {
+      debugPrint('Failed to initialize UpdateService: $e');
+    }
+  }
+
   runApp(const FlitesApp());
 }
 
