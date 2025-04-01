@@ -137,6 +137,12 @@ jobs:
         run: |
           ARCH=x86_64 appimagetool AppDir ${{ steps.vars.outputs.artifact_suffix }}
 
+      - name: 🔍 Debug Paths
+        run: |
+          echo "Artifact suffix: ${{ steps.vars.outputs.artifact_suffix }}"
+          echo "Artifact upload name: ${{ steps.vars.outputs.artifact_upload_name }}"
+          ls -l "${{ steps.vars.outputs.artifact_suffix }}"
+
       - name: ⬆️ Upload Artifact
         uses: actions/upload-artifact@v4
         with:
