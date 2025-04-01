@@ -135,18 +135,18 @@ jobs:
 
       - name: 📦 Create AppImage
         run: |
-          ARCH=x86_64 appimagetool AppDir ${{ env.APP_NAME }}-${{ steps.vars.outputs.artifact_suffix }}
+          ARCH=x86_64 appimagetool AppDir ${{ steps.vars.outputs.artifact_suffix }}
 
       - name: ⬆️ Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: ${{ steps.vars.outputs.artifact_upload_name }}
-          path: ${{ env.APP_NAME }}-${{ steps.vars.outputs.artifact_suffix }}
+          path: ${{ steps.vars.outputs.artifact_suffix }}
 
       - name: 🧪 Test AppImage
         run: |
           # Use the dynamic filename determined by the composite action
-          APPIMAGE_FILE="${{ env.APP_NAME }}-${{ steps.vars.outputs.artifact_suffix }}"
+          APPIMAGE_FILE="${{ steps.vars.outputs.artifact_suffix }}"
 
           chmod +x "${APPIMAGE_FILE}"
 

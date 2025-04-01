@@ -1,8 +1,8 @@
 platforms:
   linux:
-    release_suffix_template: '${VERSION}-x86_64.AppImage'
-    pr_suffix_template: 'pr${PR_NUM}-x86_64.AppImage'
-    manual_suffix_template: 'manual${RUN_ID}-x86_64.AppImage'
+    release_suffix_template: 'flites-${VERSION}-x86_64.AppImage'
+    pr_suffix_template: 'flites-pr${PR_NUM}-x86_64.AppImage'
+    manual_suffix_template: 'flites-manual${RUN_ID}-x86_64.AppImage'
     release_artifact_name: 'linux-artifact' # Consistent name for release job
     pr_artifact_name_template: 'linux-pr-build-${PR_NUM}' # Unique name for PR check
     manual_artifact_name_template: 'linux-manual-build-${RUN_ID}' # Unique name for manual run
