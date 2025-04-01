@@ -25,12 +25,12 @@ class _OverviewState extends State<Overview> {
     super.initState();
 
     ModifierController.listenToGlobalKeyboardEvents();
-    Future.delayed(const Duration(seconds: 1), _checkForUpdates);
+    if (!kDebugMode) {
+      Future.delayed(const Duration(seconds: 1), _checkForUpdates);
+    }
   }
 
   Future<void> _checkForUpdates() async {
-    if (kDebugMode) return;
-
     final UpdateInfo? updateInfo = await UpdateService.checkForUpdates();
     final bool hasUpdate = updateInfo != null;
 
