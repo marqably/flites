@@ -51,6 +51,9 @@ jobs:
       - name: 📦 Setup Melos
         uses: bluefireteam/melos-action@v2
 
+      - name: 🗑️ Remove potentially stale lock file
+        run: rm -f apps/flites/pubspec.lock
+
       - name: 🔄 Get Dependencies
         run: |
           melos bootstrap
