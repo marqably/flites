@@ -64,10 +64,20 @@ runs:
         echo "DEBUG: Action received tag_input: ${{ inputs.tag_input }}"
         set -e
 
+        # --- Determine Build Type & Base Version ---
+        BUILD_TYPE=""
+        PACKAGE_VERSION=""
+        PR_NUM=""
+        RUN_ID=""
+        SUFFIX_TEMPLATE_KEY=""
+
         # --- Use the config file name the user chose ---
         CONFIG_FILE=".github/build_config.yaml"
         PLATFORM="${{ inputs.platform }}"
         EVENT_NAME="${{ inputs.event_name }}"
+        TAG_INPUT="${{ inputs.tag_input }}"
+        PR_NUM="${{ inputs.pr_number }}"
+        RUN_ID="${{ inputs.run_id }}"
 
         echo "Reading config from: ${CONFIG_FILE}"
         echo "Running for event: ${EVENT_NAME}, Platform: ${PLATFORM}"
@@ -77,13 +87,7 @@ runs:
           exit 1
         fi
 
-        # --- Determine Build Type & Base Version ---
-        BUILD_TYPE=""
-        PACKAGE_VERSION=""
-        PR_NUM=""
-        RUN_ID=""
-        SUFFIX_TEMPLATE_KEY=""
-        ARTIFACT_NAME_TEMPLATE_KEY=""
+
 
         if [ -n "${TAG_INPUT}" ]; then
             BUILD_TYPE="release"
