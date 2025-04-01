@@ -50,6 +50,9 @@ jobs:
       contents: write 
 
     steps:
+      - name: DEBUG Print Trigger Tag
+        run: |
+         echo "Triggering Tag (github.ref_name): ${{ github.ref_name }}"
       # Step 1: Download all artifacts produced by the 'needs' jobs
       - name: Download all build artifacts
         uses: actions/download-artifact@v4

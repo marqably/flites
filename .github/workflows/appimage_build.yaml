@@ -25,6 +25,10 @@ jobs:
       APP_ID: com.marqably.flites
       APP_NAME_LOWER: flites
     steps:
+      - name: DEBUG Print Workflow Input Tag
+        run: |
+          echo "Workflow Input (inputs.tag): ${{ inputs.tag }}"
+
       - name: 📚 Git Checkout
         uses: actions/checkout@v4
         with:
