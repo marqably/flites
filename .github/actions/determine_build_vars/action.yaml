@@ -84,28 +84,31 @@ runs:
         SUFFIX_TEMPLATE_KEY=""
         ARTIFACT_NAME_TEMPLATE_KEY=""
 
-        if [ "${EVENT_NAME}" == "workflow_call" ]; then
-          BUILD_TYPE="release"
-          TAG_INPUT="${{ inputs.tag_input }}"
-          if [ -z "${TAG_INPUT}" ]; then echo "Error: Tag input required for release."; exit 1; fi
-          PACKAGE_VERSION=${TAG_INPUT#v} # Use tag version
-          SUFFIX_TEMPLATE_KEY="release_suffix_template"
-          ARTIFACT_NAME_TEMPLATE_KEY="release_artifact_name"
+        if [ -n "${TAG_INPUT}" ]; then
+            BUILD_TYPE="release"
+            if [[ ! "${TAG_INPUT}" =~ ^v ]]; then echo "Error: Tag input '${TAG_INPUT}' missing 'v' prefix."; exit 1; fi
+            PACKAGE_VERSION=${TAG_INPUT#v} # Use tag version
+            SUFFIX_TEMPLATE_KEY="release_suffix_template"
+            ARTIFACT_NAME_TEMPLATE_KEY="release_artifact_name"
 
         elif [ "${EVENT_NAME}" == "pull_request" ]; then
-          BUILD_TYPE="pr"
-          PR_NUM="${{ inputs.pr_number }}"
-          if [ -z "${PR_NUM}" ]; then echo "Error: PR number required for PR build."; exit 1; fi
-          PACKAGE_VERSION="0.0.0-pr${PR_NUM}"
-          SUFFIX_TEMPLATE_KEY="pr_suffix_template"
-          ARTIFACT_NAME_TEMPLATE_KEY="pr_artifact_name_template"
+            BUILD_TYPE="pr"
+            if [ -z "${PR_NUM}" ]; then echo "Error: PR number required for PR build."; exit 1; fi
+            PACKAGE_VERSION="0.0.0-pr${PR_NUM}" # Placeholder version
+            SUFFIX_TEMPLATE_KEY="pr_suffix_template"
+            ARTIFACT_NAME_TEMPLATE_KEY="pr_artifact_name_template"
+
+        elif [ "${EVENT_NAME}" == "workflow_dispatch" ]; then
+            BUILD_TYPE="manual"
+            if [ -z "${RUN_ID}" ]; then echo "Error: Run ID required for manual build."; exit 1; fi
+            PACKAGE_VERSION="0.0.0-manual${RUN_ID}" # Placeholder version
+            SUFFIX_TEMPLATE_KEY="manual_suffix_template"
+            ARTIFACT_NAME_TEMPLATE_KEY="manual_artifact_name_template"
 
         else
-          BUILD_TYPE="manual"
-          RUN_ID="${{ inputs.run_id }}"
-          PACKAGE_VERSION="0.0.0-dev${RUN_ID}"
-          SUFFIX_TEMPLATE_KEY="manual_suffix_template"
-          ARTIFACT_NAME_TEMPLATE_KEY="manual_artifact_name_template"
+            # Fallback/Error for unexpected combinations
+            echo "Error: Could not determine build type from event '${EVENT_NAME}' and tag input '${TAG_INPUT}'."
+            exit 1
         fi
 
         # --- Get templates from config file ---
