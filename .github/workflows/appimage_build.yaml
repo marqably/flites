@@ -24,8 +24,6 @@ jobs:
       APP_NAME: Flites
       APP_ID: com.marqably.flites
       APP_NAME_LOWER: flites
-    outputs:
-      artifact_name: ${{ steps.vars.outputs.artifact_upload_name }}
     steps:
       - name: 📚 Git Checkout
         uses: actions/checkout@v4
@@ -139,12 +137,6 @@ jobs:
         run: |
           ARCH=x86_64 appimagetool AppDir ${{ steps.vars.outputs.artifact_suffix }}
 
-      - name: 🔍 Debug Paths
-        run: |
-          echo "Artifact suffix: ${{ steps.vars.outputs.artifact_suffix }}"
-          echo "Artifact upload name: ${{ steps.vars.outputs.artifact_upload_name }}"
-          ls -l "${{ steps.vars.outputs.artifact_suffix }}"
-
       - name: ⬆️ Upload Artifact
         uses: actions/upload-artifact@v4
         with:
@@ -175,22 +167,3 @@ jobs:
             which /${APPIMAGE_FILE}" # Or other basic tests like --appimage-extract
 
           docker rm -f $CONTAINER_ID 
-  
-  test-download:
-    runs-on: ubuntu-latest
-    needs: build-appimage 
-    steps:
-      - name: Download artifact produced by build job
-        uses: actions/download-artifact@v4
-        with:
-          name: ${{ steps.vars.outputs.artifact_upload_name }}
-
-      - name: List downloaded files
-        run: |
-          echo "Listing files in current directory:"
-          ls -lA ./
-          echo "------------------"
-          echo "Checking file type (if artifact was a single file):"
-          # Try to identify the type of the expected file if it exists
-          # The artifact name might be different on download if it was zipped by UI?
-          # Let's just list everything first. The ls output is key.
