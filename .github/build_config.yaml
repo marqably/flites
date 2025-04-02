@@ -21,12 +21,12 @@ platforms:
     pr_artifact_name_template: 'flites-windows-pr-build-${PR_NUM}'
     manual_artifact_name_template: 'flites-windows-manual-build-${RUN_ID}'
   macos:
-    release_suffix_template: '${VERSION}-macos-x64.zip' # Usually a zip of the .app
-    pr_suffix_template: 'pr${PR_NUM}-macos-x64.zip'
-    manual_suffix_template: 'manual${RUN_ID}-macos-x64.zip'
-    release_artifact_name: 'macos-artifact'
-    pr_artifact_name_template: 'macos-pr-build-${PR_NUM}'
-    manual_artifact_name_template: 'macos-manual-build-${RUN_ID}'
+    release_suffix_template: 'flites-${VERSION}-macos-x64.zip'
+    pr_suffix_template: 'flites-pr${PR_NUM}-macos-x64.zip'
+    manual_suffix_template: 'flites-manual${RUN_ID}-macos-x64.zip'
+    release_artifact_name: 'flites-macos-artifact'
+    pr_artifact_name_template: 'flites-macos-pr-build-${PR_NUM}'
+    manual_artifact_name_template: 'flites-macos-manual-build-${RUN_ID}'
   web:
     release_suffix_template: 'flites-${VERSION}-web.zip'
     pr_suffix_template: 'flites-pr${PR_NUM}-web.zip'
