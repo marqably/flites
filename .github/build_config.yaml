@@ -6,6 +6,13 @@ platforms:
     release_artifact_name: 'flites-linux-artifact' # Consistent name for release job
     pr_artifact_name_template: 'flites-linux-pr-build-${PR_NUM}' # Unique name for PR check
     manual_artifact_name_template: 'flites-linux-manual-build-${RUN_ID}' # Unique name for manual run
+  linux_deb:
+   release_suffix_template: 'flites_${VERSION}_amd64.deb'
+   pr_suffix_template: 'flites_0.0.0-pr${PR_NUM}_amd64.deb'
+   manual_suffix_template: 'flites_0.0.0-manual${RUN_ID}_amd64.deb'
+   release_artifact_name: 'flites-linux-deb-artifact'
+   pr_artifact_name_template: 'flites-linux-deb-pr-build-${PR_NUM}'
+   manual_artifact_name_template: 'flites-linux-deb-manual-build-${RUN_ID}'
   windows:
     release_suffix_template: 'flites-${VERSION}-windows-x64.zip' # Adjust extension if needed (e.g., .exe, .msix)
     pr_suffix_template: 'flites-pr${PR_NUM}-windows-x64.zip'
