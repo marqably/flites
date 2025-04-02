@@ -97,7 +97,7 @@ jobs:
           # You MUST verify these are correct for your app on a minimal Debian/Ubuntu
           # Use tools like 'ldd' on your built binary, or check Flutter docs
           # Example dependencies:
-          DEPENDS="libc6, libstdc++6, libgtk-3-0" 
+          DEPENDS="libc6 (>= 2.35), libstdc++6 (>= 12), libgtk-3-0 (>= 3.24.33), libglib2.0-0 (>= 2.72)"
 
           cat > debian/DEBIAN/control << EOL
           Package: ${{ env.APP_NAME_LOWER }}
