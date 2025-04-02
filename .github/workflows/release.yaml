@@ -6,8 +6,8 @@ on:
       - 'v*' 
 
 jobs:
-  call_build_linux:
-    name: Call Linux Build 🐧
+  call_build_appimage:
+    name: Call Appimage Build 🐧
     uses: ./.github/workflows/appimage_build.yaml
     with:
       tag: ${{ github.ref_name }} 
@@ -41,7 +41,7 @@ jobs:
     runs-on: ubuntu-latest
     # This job runs only after all specified build jobs succeed
     needs:
-      - call_build_linux
+      - call_build_appimage
       - call_build_windows
       # - call_build_macos
       - call_build_web

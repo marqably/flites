@@ -1,5 +1,5 @@
 platforms:
-  linux:
+  linux_appimage:
     release_suffix_template: 'flites-${VERSION}-x86_64.AppImage'
     pr_suffix_template: 'flites-pr${PR_NUM}-x86_64.AppImage'
     manual_suffix_template: 'flites-manual${RUN_ID}-x86_64.AppImage'
