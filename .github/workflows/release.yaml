@@ -14,12 +14,12 @@ jobs:
       
     secrets: inherit 
 
-  # call_build_windows:
-  #   name: Call Windows Build ⬜
-  #   uses: ./.github/workflows/build_windows.yaml # Assuming this filename
-  #   with:
-  #     tag: ${{ github.ref_name }}
-  #   secrets: inherit
+  call_build_windows:
+    name: Call Windows Build ⬜
+    uses: ./.github/workflows/build_windows.yaml # Assuming this filename
+    with:
+      tag: ${{ github.ref_name }}
+    secrets: inherit
 
   # call_build_macos:
   #   name: Call macOS Build 🍎
@@ -42,7 +42,7 @@ jobs:
     # This job runs only after all specified build jobs succeed
     needs:
       - call_build_linux
-      # - call_build_windows
+      - call_build_windows
       # - call_build_macos
       # - call_build_web
 
@@ -79,7 +79,7 @@ jobs:
             # Paths to the files *inside* the directories created by download-artifact
             # The directory name matches the 'release_artifact_name' from your config
             artifacts/flites-linux-artifact/*.AppImage
-            # artifacts/windows-artifact/*.zip
+            artifacts/windows-artifact/*.zip
             # artifacts/macos-artifact/*.zip
             # artifacts/web-artifact/* # Might be a directory or zip
         env:
