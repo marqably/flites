@@ -1,61 +1,87 @@
 name: 🐧 Debian Build
 
-env:
-  PACKAGE_VERSION: 0.0.1
-
 on:
-  workflow_dispatch:
-  push:
-    branches:
-      - main
+  workflow_call:
+    inputs:
+      tag:
+        description: 'Git tag for release builds.'
+        required: false
+        type: string
+      flutter-version:
+        description: 'Flutter version (optional).'
+        required: false
+        type: string
+        # default: '3.27.2' # Default set in Setup Flutter step
+
+  # Triggers on Pull Requests targeting main
   pull_request:
     branches:
       - main
 
+  # Allows manual triggering
+  workflow_dispatch:
+
 jobs:
   build-debian:
     name: 🐧 Build and Deploy Debian
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest 
+    env: 
+      APP_NAME: Flites
+      APP_ID: com.marqably.flites
+      APP_NAME_LOWER: flites
     steps:
+      - name: DEBUG Print Workflow Input Tag
+        if: github.event_name == 'workflow_call'
+        run: |
+          echo "Workflow Input (inputs.tag): ${{ inputs.tag }}"
+
       - name: 📚 Git Checkout
         uses: actions/checkout@v4
+        with:
+          # Checkout tag only if called for release, otherwise default
+          ref: ${{ github.event_name == 'workflow_call' && inputs.tag || github.ref }}
+
+      - name: Determine Build Context & Variables
+        id: vars
+        uses: ./.github/actions/determine_build_vars@main
+        with:
+          platform: 'linux_deb' 
+          event_name: ${{ github.event_name }}
+          tag_input: ${{ inputs.tag }}
+          pr_number: ${{ github.event.number }}
+          run_id: ${{ github.run_id }}
 
       - name: 📦 Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.27.2'
+          flutter-version: ${{ inputs.flutter-version || '3.27.2' }}
           architecture: x64
-
-      - name: 🗄️ Cache Flutter
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.cache/flutter
-          key: flutter-${{ runner.os }}-${{ hashFiles('**/pubspec.lock') }}
-
-      - name: 🗄️ Cache Pub Dependencies
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.pub-cache
-          key: pub-${{ runner.os }}-${{ hashFiles('**/pubspec.lock') }}
+          cache: true
 
       - name: 📦 Setup Melos
         uses: bluefireteam/melos-action@v2
 
-      - name: 🔧 Basic Linux Setup
+      - name: 🔧 Basic Linux & Debian Setup
         run: |
           set -e
-          sudo apt-get update || exit 1
-          sudo apt-get install -y ninja-build libgtk-3-dev cmake pkg-config || exit 1
-          sudo apt-get install -y dpkg-dev debhelper || exit 1
-          flutter config --enable-linux-desktop || exit 1
+          sudo apt-get update -y
+          sudo apt-get install -y ninja-build libgtk-3-dev cmake pkg-config dpkg-dev debhelper clang wget fuse libfuse2
+          flutter config --enable-linux-desktop
+          clang++ --version # Verify clang install
 
       - name: 🔄 Get Dependencies
+        run: melos bootstrap
+
+      - name: 🏗️ Build Linux App (for Debian package)
         run: |
-          melos bootstrap
-          flutter pub get
-      
+          # Setting CXX/CC might still be needed depending on specific toolchain requirements
+          # export CXX=/usr/bin/clang++
+          # export CC=/usr/bin/clang
+          cd apps/flites # Ensure path is correct
+          echo "Building Linux app version ${{ steps.vars.outputs.package_version }}"
+          flutter build linux --release
+
+      # ---- Debian Packaging Steps ----
       - name: 📝 Create debian structure
         run: |
           mkdir -p debian/DEBIAN
@@ -65,91 +91,102 @@ jobs:
 
       - name: 📄 Create Control File
         run: |
+          # Determine architecture (amd64 for x64 runner)
+          DEB_ARCH="amd64"
+          # --- CRITICAL: Define runtime dependencies ---
+          # You MUST verify these are correct for your app on a minimal Debian/Ubuntu
+          # Use tools like 'ldd' on your built binary, or check Flutter docs
+          # Example dependencies:
+          DEPENDS="libc6, libstdc++6, libgtk-3-0" 
+
           cat > debian/DEBIAN/control << EOL
-          Package: flites
-          Version: ${{ env.PACKAGE_VERSION }}
+          Package: ${{ env.APP_NAME_LOWER }}
+          Version: ${{ steps.vars.outputs.package_version }} 
           Section: utils
           Priority: optional
-          Architecture: amd64
-          Maintainer: marqably vienna@marqably.com
-          Description: A sprite generator written in flutter
+          Architecture: ${DEB_ARCH}
+          Depends: ${DEPENDS} 
+          Maintainer: marqably vienna@marqably.com 
+          Description: A sprite generator written in flutter.
+           More details about Flites can be added here if desired,
+           spanning multiple lines if needed (start subsequent lines with a space).
           EOL
-      
-      - name: 🔧 Install Build Dependencies
-        run: |
-          set -e
-          sudo apt-get update
-          sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev
-          clang++ --version
+          echo "Generated debian/DEBIAN/control:"
+          cat debian/DEBIAN/control
 
-      - name: 🏗️ Build Linux App
+      - name: 📋 Copy Build Artifacts to deb structure
         run: |
-          export CXX=/usr/bin/clang++
-          export CC=/usr/bin/clang
-          cd apps/flites
-          flutter build linux --release
-
-      - name: 📋 Copy Build Artifacts
-        run: |
+          # Copy the *contents* of the bundle directory
           cp -r apps/flites/build/linux/x64/release/bundle/* debian/usr/bin/
-          chmod +x debian/usr/bin/flites
+          # Ensure executable has correct permissions
+          chmod +x debian/usr/bin/${{ env.APP_NAME_LOWER }}
 
-      - name: 🖥️ Create Desktop Entry
+      - name: 🖥️ Create Desktop Entry in deb structure
         run: |
-          cat > debian/usr/share/applications/flites.desktop << EOL
+          # Use full path expected after installation
+          cat > debian/usr/share/applications/${{ env.APP_NAME_LOWER }}.desktop << EOL
           [Desktop Entry]
-          Name=Flites
-          Exec=/usr/bin/flites
-          Icon=flites
+          Name=${{ env.APP_NAME }}
+          Exec=/usr/bin/${{ env.APP_NAME_LOWER }} # Path after installation
+          Icon=${{ env.APP_NAME_LOWER }}
           Type=Application
-          Categories=Utility;Graphics;
+          Categories=Utility;Graphics; # Add relevant categories
+          Comment=A sprite generator written in flutter
           EOL
 
-      - name: 🎨 Copy Icons
+      - name: 🎨 Copy Icons to deb structure
         run: |
-          cp apps/flites/assets/images/flites_logo.png debian/usr/share/icons/hicolor/256x256/apps/flites.png
-          chmod 644 debian/usr/share/icons/hicolor/256x256/apps/flites.png
+          ICON_SOURCE_PATH="apps/flites/assets/images/flites_logo.png" # Check source path
+          ICON_DEST_PATH="debian/usr/share/icons/hicolor/256x256/apps/${{ env.APP_NAME_LOWER }}.png"
+          cp "${ICON_SOURCE_PATH}" "${ICON_DEST_PATH}"
+          # Set standard permissions for data files
+          chmod 644 "${ICON_DEST_PATH}"
 
-      - name: 📦 Build Package
-        run: |
-          rm -rf flites_${{ env.PACKAGE_VERSION }}_amd64.deb
-          dpkg-deb --build debian ./flites_${{ env.PACKAGE_VERSION }}_amd64.deb
-          ls -l ./flites_${{ env.PACKAGE_VERSION }}_amd64.deb
-          file ./flites_${{ env.PACKAGE_VERSION }}_amd64.deb
 
-      - name: ✅ Verify Package
+
+      - name: 📦 Build Debian Package
         run: |
-          dpkg -I flites_${{ env.PACKAGE_VERSION }}_amd64.deb
-          dpkg --contents flites_${{ env.PACKAGE_VERSION }}_amd64.deb
+          DEB_FILENAME="${{ steps.vars.outputs.artifact_suffix }}" # Get filename from action output
+          echo "Building ${DEB_FILENAME}..."
+          # Build the package using the 'debian' directory structure
+          dpkg-deb --build debian "${DEB_FILENAME}"
+          echo "Package built:"
+          ls -l "./${DEB_FILENAME}"
+          file "./${DEB_FILENAME}"
+
+      - name: ✅ Verify Debian Package
+        run: |
+          DEB_FILENAME="${{ steps.vars.outputs.artifact_suffix }}"
+          echo "Verifying ${DEB_FILENAME} info..."
+          dpkg -I "${DEB_FILENAME}"
+          echo "Verifying ${DEB_FILENAME} contents..."
+          dpkg --contents "${DEB_FILENAME}"
 
       - name: ⬆️ Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: flites-debian-package
-          path: flites_${{ env.PACKAGE_VERSION }}_amd64.deb
+          name: ${{ steps.vars.outputs.artifact_upload_name }}
+          path: ${{ steps.vars.outputs.artifact_suffix }}
 
-      - name: 🛠️ Test Debian Package
+      - name: 🛠️ Test Debian Package Installation
         run: |
-          # Create container with tty to keep it running
+          DEB_FILENAME="${{ steps.vars.outputs.artifact_suffix }}"
+          # Check dependencies listed in control file are installed here for test
+          # Example based on Depends above: libgtk-3-0
+          TEST_DEPENDENCIES="libgtk-3-0"
+
+          echo "Testing installation of ${DEB_FILENAME} in Docker..."
           CONTAINER_ID=$(docker create -t debian:stable sleep infinity)
-          
-          # Start container
           docker start $CONTAINER_ID
-          
-          # Install dependencies
-          docker exec $CONTAINER_ID bash -c "
-            set -ex && \
-            apt-get update && \
-            apt-get install -y libgtk-3-0"
-          
-          # Install package
-          docker cp flites_${{ env.PACKAGE_VERSION }}_amd64.deb $CONTAINER_ID:/package.deb
-          docker exec $CONTAINER_ID bash -c "
-            dpkg -i /package.deb || \
-            (apt-get install -f -y && dpkg -i /package.deb)"
-          
-          # Verify installation
-          docker exec $CONTAINER_ID which flites
-          
-          # Cleanup
+
+          # Install test dependencies first
+          docker exec $CONTAINER_ID bash -c "set -ex && apt-get update && apt-get install -y ${TEST_DEPENDENCIES}"
+
+          # Copy and install the package
+          docker cp "${DEB_FILENAME}" $CONTAINER_ID:/package.deb
+          docker exec $CONTAINER_ID bash -c "set -ex && dpkg -i /package.deb || (echo 'Install failed, trying apt install -f' && apt-get install -f -y && dpkg -i /package.deb)"
+
+          # Verify command exists
+          docker exec $CONTAINER_ID which ${{ env.APP_NAME_LOWER }}
+
           docker rm -f $CONTAINER_ID

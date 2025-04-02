@@ -14,6 +14,14 @@ jobs:
       
     secrets: inherit 
 
+  call_build_debian:
+    name: Call Debian Build 🐧
+    uses: ./.github/workflows/debian_build.yaml
+    with:
+      tag: ${{ github.ref_name }} 
+      
+    secrets: inherit 
+
   call_build_windows:
     name: Call Windows Build ⬜
     uses: ./.github/workflows/windows_build.yaml # Assuming this filename
@@ -42,6 +50,7 @@ jobs:
     # This job runs only after all specified build jobs succeed
     needs:
       - call_build_appimage
+      - call_build_debian
       - call_build_windows
       # - call_build_macos
       - call_build_web
@@ -79,6 +88,7 @@ jobs:
             # Paths to the files *inside* the directories created by download-artifact
             # The directory name matches the 'release_artifact_name' from your config
             artifacts/flites-linux-artifact/*.AppImage
+            artifacts/flites-linux-deb-artifact/*.deb
             artifacts/flites-windows-artifact/*.zip
             # artifacts/macos-artifact/*.zip
             artifacts/flites-web-artifact/*.zip
