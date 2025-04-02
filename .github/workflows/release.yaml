@@ -16,7 +16,7 @@ jobs:
 
   call_build_windows:
     name: Call Windows Build ⬜
-    uses: ./.github/workflows/build_windows.yaml # Assuming this filename
+    uses: ./.github/workflows/windows_build.yaml # Assuming this filename
     with:
       tag: ${{ github.ref_name }}
     secrets: inherit
