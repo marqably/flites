@@ -30,7 +30,7 @@ jobs:
 
   call_build_web:
     name: Call Web Build 🌐
-    uses: ./.github/workflows/build_web.yaml # Assuming this filename
+    uses: ./.github/workflows/web_build.yaml # Assuming this filename
     with:
       tag: ${{ github.ref_name }}
     secrets: inherit
