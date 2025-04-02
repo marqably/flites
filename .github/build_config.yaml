@@ -21,9 +21,9 @@ platforms:
     pr_artifact_name_template: 'macos-pr-build-${PR_NUM}'
     manual_artifact_name_template: 'macos-manual-build-${RUN_ID}'
   web:
-    release_suffix_template: '${VERSION}-web' # Example: No zip extension needed
-    pr_suffix_template: 'pr${PR_NUM}-web'
-    manual_suffix_template: 'manual${RUN_ID}-web'
-    release_artifact_name: 'web-artifact' 
-    pr_artifact_name_template: 'web-pr-build-${PR_NUM}'
-    manual_artifact_name_template: 'web-manual-build-${RUN_ID}'
+    release_suffix_template: 'flites-${VERSION}-web.zip'
+    pr_suffix_template: 'flites-pr${PR_NUM}-web.zip'
+    manual_suffix_template: 'flites-manual${RUN_ID}-web.zip'
+    release_artifact_name: 'flites-web-artifact'
+    pr_artifact_name_template: 'flites-web-pr-build-${PR_NUM}'
+    manual_artifact_name_template: 'flites-web-manual-build-${RUN_ID}' 
