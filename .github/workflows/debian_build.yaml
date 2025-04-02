@@ -43,7 +43,7 @@ jobs:
 
       - name: Determine Build Context & Variables
         id: vars
-        uses: ./.github/actions/determine_build_vars@main
+        uses: ./.github/actions/determine_build_vars
         with:
           platform: 'linux_deb' 
           event_name: ${{ github.event_name }}
