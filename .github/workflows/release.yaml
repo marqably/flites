@@ -79,7 +79,7 @@ jobs:
             # Paths to the files *inside* the directories created by download-artifact
             # The directory name matches the 'release_artifact_name' from your config
             artifacts/flites-linux-artifact/*.AppImage
-            artifacts/windows-artifact/*.zip
+            artifacts/flites-windows-artifact/*.zip
             # artifacts/macos-artifact/*.zip
             # artifacts/web-artifact/* # Might be a directory or zip
         env:
