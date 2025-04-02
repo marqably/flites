@@ -24,7 +24,7 @@ on:
 jobs:
   build-debian:
     name: 🐧 Build and Deploy Debian
-    runs-on: ubuntu-latest 
+    runs-on: ubuntu-20.04
     env: 
       APP_NAME: Flites
       APP_ID: com.marqably.flites
@@ -97,7 +97,7 @@ jobs:
           # You MUST verify these are correct for your app on a minimal Debian/Ubuntu
           # Use tools like 'ldd' on your built binary, or check Flutter docs
           # Example dependencies:
-          DEPENDS="libc6 (>= 2.35), libstdc++6 (>= 12), libgtk-3-0 (>= 3.24.33), libglib2.0-0 (>= 2.72)"
+          DEPENDS="libc6 (>= 2.31), libstdc++6 (>= 10), libgtk-3-0 (>= 3.24.20), libglib2.0-0 (>= 2.64)"
 
           cat > debian/DEBIAN/control << EOL
           Package: ${{ env.APP_NAME_LOWER }}
