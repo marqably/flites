@@ -86,10 +86,12 @@ jobs:
       - name: 📦 Package Web Build into Zip
         shell: bash
         run: |
-          # Adjust source directory if your web build output is elsewhere
+          # Adjust source directory relative to workspace root if needed
           SOURCE_DIR="apps/flites/build/web"
-          # Get zip filename from composite action output (should include .zip)
+          # Get zip filename from composite action output
           ZIP_FILE_NAME="${{ steps.vars.outputs.artifact_suffix }}"
+          # Get absolute path to workspace root
+          WORKSPACE_ROOT="${{ github.workspace }}"
 
           # Check if source directory exists
           if [ ! -d "${SOURCE_DIR}" ]; then
@@ -97,12 +99,14 @@ jobs:
             ls -lR "apps/flites/build/" # List build output for debugging
             exit 1
           fi
-          # Create the zip archive containing the contents of the SOURCE_DIR
-          # Use -j flag to junk directory paths within zip (optional, depends on deployment)
-          # cd into source dir first to avoid including parent dirs in zip
-          cd "${SOURCE_DIR}"
-          zip -r ../../../../../"${ZIP_FILE_NAME}" . # Zip contents into file at workspace root
-          cd ../../../../../ # Go back to workspace root
+
+          echo "Zipping contents of ${SOURCE_DIR} into ${WORKSPACE_ROOT}/${ZIP_FILE_NAME}"
+          # Use a subshell: cd into source, zip contents to absolute path, subshell exits (no need to cd back)
+          (cd "${SOURCE_DIR}" && zip -r "${WORKSPACE_ROOT}/${ZIP_FILE_NAME}" .)
+
+          # Verify zip file was created at the workspace root
+          echo "Verifying zip file:"
+          ls -l "${WORKSPACE_ROOT}/${ZIP_FILE_NAME}"
           echo "Created ${ZIP_FILE_NAME}"
 
 
