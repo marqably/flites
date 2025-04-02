@@ -28,12 +28,12 @@ jobs:
   #     tag: ${{ github.ref_name }}
   #   secrets: inherit
 
-  # call_build_web:
-  #   name: Call Web Build 🌐
-  #   uses: ./.github/workflows/build_web.yaml # Assuming this filename
-  #   with:
-  #     tag: ${{ github.ref_name }}
-  #   secrets: inherit
+  call_build_web:
+    name: Call Web Build 🌐
+    uses: ./.github/workflows/build_web.yaml # Assuming this filename
+    with:
+      tag: ${{ github.ref_name }}
+    secrets: inherit
 
   # --- Publish Release Job ---
   publish_release:
@@ -44,7 +44,7 @@ jobs:
       - call_build_linux
       - call_build_windows
       # - call_build_macos
-      # - call_build_web
+      - call_build_web
 
     permissions:
       contents: write 
@@ -81,7 +81,7 @@ jobs:
             artifacts/flites-linux-artifact/*.AppImage
             artifacts/flites-windows-artifact/*.zip
             # artifacts/macos-artifact/*.zip
-            # artifacts/web-artifact/* # Might be a directory or zip
+            artifacts/flites-web-artifact/*.zip
         env:
           # The GITHUB_TOKEN is automatically available to the workflow
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
