@@ -46,7 +46,7 @@ jobs:
       - name: Determine Build Context & Variables
         id: vars
         # Use the specific ref for stability, e.g. @main or @<commit_sha>
-        uses: ./.github/actions/determine_build_vars@main
+        uses: ./.github/actions/determine_build_vars
         with:
           platform: 'windows'
           event_name: ${{ github.event_name }}
