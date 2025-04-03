@@ -1,0 +1,136 @@
+name: 'Determine Build Variables'
+description: 'Calculates build variables from .github/build_config.yaml based on context.'
+
+# Define the inputs the action expects
+inputs:
+  platform:
+    description: 'Target platform (must match key in build_config.yaml: linux, windows, macos, web)'
+    required: true
+    type: string
+  event_name:
+    description: 'The event that triggered the workflow (e.g., workflow_call, pull_request, workflow_dispatch)'
+    required: true
+    type: string
+  tag_input:
+    description: 'The git tag for release builds (only provided for workflow_call on tag push)'
+    required: false
+    type: string
+  pr_number:
+    description: 'The pull request number (only relevant for pull_request event)'
+    required: false
+    type: string
+  run_id:
+    description: 'The unique ID for the workflow run (mostly relevant for workflow_dispatch)'
+    required: false
+    type: string
+
+# Define the outputs the action will provide
+outputs:
+  build_type:
+    description: 'Type of build (release, pr, manual)'
+    value: ${{ steps.set_vars.outputs.build_type }}
+  package_version:
+    description: 'Version string (e.g., 1.0.0 or 0.0.0-pr123)'
+    value: ${{ steps.set_vars.outputs.package_version }}
+  artifact_suffix:
+    description: 'Calculated filename suffix including version/platform specifics'
+    value: ${{ steps.set_vars.outputs.artifact_suffix }}
+  artifact_upload_name:
+    description: 'Calculated name for actions/upload-artifact'
+    value: ${{ steps.set_vars.outputs.artifact_upload_name }}
+
+runs:
+  using: "composite"
+  steps:
+    # Step 1: Checkout code to access the config file in the repo
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    # Step 2: Install yq (YAML processor)
+    - name: Install yq
+      shell: bash
+      run: |
+        if ! command -v yq &> /dev/null; then
+          echo "Installing yq..."
+          sudo wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq && sudo chmod +x /usr/bin/yq
+        fi
+        yq --version
+
+    # Step 3: Calculate variables based on context and config file
+    - name: Calculate Variables
+      id: set_vars
+      shell: bash
+      run: |
+        echo "DEBUG: Action received tag_input: ${{ inputs.tag_input }}"
+        set -e
+
+        # --- Determine Build Type & Base Version ---
+        BUILD_TYPE=""
+        PACKAGE_VERSION=""
+        PR_NUM=""
+        RUN_ID=""
+        SUFFIX_TEMPLATE_KEY=""
+
+        # --- Use the config file name the user chose ---
+        CONFIG_FILE=".github/build_config.yaml"
+        PLATFORM="${{ inputs.platform }}"
+        EVENT_NAME="${{ inputs.event_name }}"
+        TAG_INPUT="${{ inputs.tag_input }}"
+        PR_NUM="${{ inputs.pr_number }}"
+        RUN_ID="${{ inputs.run_id }}"
+
+        echo "Reading config from: ${CONFIG_FILE}"
+        echo "Running for event: ${EVENT_NAME}, Platform: ${PLATFORM}"
+
+        if [ ! -f "${CONFIG_FILE}" ]; then
+          echo "Error: Config file not found at ${CONFIG_FILE}"
+          exit 1
+        fi
+
+
+
+        if [ -n "${TAG_INPUT}" ]; then
+            BUILD_TYPE="release"
+            if [[ ! "${TAG_INPUT}" =~ ^v ]]; then echo "Error: Tag input '${TAG_INPUT}' missing 'v' prefix."; exit 1; fi
+            PACKAGE_VERSION=${TAG_INPUT#v} # Use tag version
+            SUFFIX_TEMPLATE_KEY="release_suffix_template"
+            ARTIFACT_NAME_TEMPLATE_KEY="release_artifact_name"
+
+        elif [ "${EVENT_NAME}" == "pull_request" ]; then
+            BUILD_TYPE="pr"
+            if [ -z "${PR_NUM}" ]; then echo "Error: PR number required for PR build."; exit 1; fi
+            PACKAGE_VERSION="0.0.0-pr${PR_NUM}" # Placeholder version
+            SUFFIX_TEMPLATE_KEY="pr_suffix_template"
+            ARTIFACT_NAME_TEMPLATE_KEY="pr_artifact_name_template"
+
+        elif [ "${EVENT_NAME}" == "workflow_dispatch" ]; then
+            BUILD_TYPE="manual"
+            if [ -z "${RUN_ID}" ]; then echo "Error: Run ID required for manual build."; exit 1; fi
+            PACKAGE_VERSION="0.0.0-manual${RUN_ID}" # Placeholder version
+            SUFFIX_TEMPLATE_KEY="manual_suffix_template"
+            ARTIFACT_NAME_TEMPLATE_KEY="manual_artifact_name_template"
+
+        else
+            # Fallback/Error for unexpected combinations
+            echo "Error: Could not determine build type from event '${EVENT_NAME}' and tag input '${TAG_INPUT}'."
+            exit 1
+        fi
+
+        # --- Get templates from config file ---
+        ARTIFACT_SUFFIX=$(yq eval ".platforms.${PLATFORM}.${SUFFIX_TEMPLATE_KEY}" "${CONFIG_FILE}")
+        ARTIFACT_UPLOAD_NAME=$(yq eval ".platforms.${PLATFORM}.${ARTIFACT_NAME_TEMPLATE_KEY}" "${CONFIG_FILE}")
+
+        # --- Replace placeholders in templates ---
+        ARTIFACT_SUFFIX=$(echo "${ARTIFACT_SUFFIX}" | sed "s/\${VERSION}/${PACKAGE_VERSION}/g")
+        ARTIFACT_SUFFIX=$(echo "${ARTIFACT_SUFFIX}" | sed "s/\${PR_NUM}/${PR_NUM}/g")
+        ARTIFACT_SUFFIX=$(echo "${ARTIFACT_SUFFIX}" | sed "s/\${RUN_ID}/${RUN_ID}/g")
+
+        ARTIFACT_UPLOAD_NAME=$(echo "${ARTIFACT_UPLOAD_NAME}" | sed "s/\${VERSION}/${PACKAGE_VERSION}/g")
+        ARTIFACT_UPLOAD_NAME=$(echo "${ARTIFACT_UPLOAD_NAME}" | sed "s/\${PR_NUM}/${PR_NUM}/g")
+        ARTIFACT_UPLOAD_NAME=$(echo "${ARTIFACT_UPLOAD_NAME}" | sed "s/\${RUN_ID}/${RUN_ID}/g")
+
+        # --- Set outputs ---
+        echo "build_type=${BUILD_TYPE}" >> $GITHUB_OUTPUT
+        echo "package_version=${PACKAGE_VERSION}" >> $GITHUB_OUTPUT
+        echo "artifact_suffix=${ARTIFACT_SUFFIX}" >> $GITHUB_OUTPUT
+        echo "artifact_upload_name=${ARTIFACT_UPLOAD_NAME}" >> $GITHUB_OUTPUT
