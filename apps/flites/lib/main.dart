@@ -1,4 +1,5 @@
 import 'package:flites/screens/overview.dart';
+import 'package:flites/services/update_service.dart';
 import 'package:flites/states/app_settings.dart';
 import 'package:flites/theme/themes.dart';
 import 'package:flites/widgets/layout/gradient_border_widget.dart';
@@ -8,7 +9,11 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:signals/signals_flutter.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await UpdateService.initialize();
+
   runApp(const FlitesApp());
 }
 
