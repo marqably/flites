@@ -1,16 +1,9 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
+import 'package:flites/types/update_info.dart';
+import 'package:flutter/foundation.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:pub_semver/pub_semver.dart';
 import 'package:url_launcher/url_launcher.dart';
-
-// Define a class to hold update information
-class UpdateInfo {
-  final String currentVersion;
-  final String newVersion;
-
-  UpdateInfo({required this.currentVersion, required this.newVersion});
-}
 
 class UpdateService {
   static late final Dio _dio;
