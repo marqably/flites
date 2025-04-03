@@ -9,14 +9,27 @@ class UpdateService {
   static late final Dio _dio;
 
   static Future<void> initialize() async {
-    final packageInfo = await PackageInfo.fromPlatform();
-    _dio = Dio(BaseOptions(
-      connectTimeout: const Duration(seconds: 5),
-      receiveTimeout: const Duration(seconds: 5),
-      headers: {
-        'User-Agent': 'FlitesUpdateService/${packageInfo.version}',
-      },
-    ));
+    if (!kDebugMode && !kIsWeb) {
+      try {
+        // Initialize Dio with default options
+        final packageInfo = await PackageInfo.fromPlatform();
+        _initializeDio(packageInfo.version);
+      } catch (e) {
+        debugPrint('Failed to initialize UpdateService: $e');
+      }
+    }
+  }
+
+  static void _initializeDio(String versionString) {
+    _dio = Dio(
+      BaseOptions(
+        connectTimeout: const Duration(seconds: 5),
+        receiveTimeout: const Duration(seconds: 5),
+        headers: {
+          'User-Agent': 'FlitesUpdateService/$versionString',
+        },
+      ),
+    );
   }
 
   static Future<UpdateInfo?> checkForUpdates() async {
