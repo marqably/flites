@@ -33,33 +33,25 @@ class UpdateService {
   }
 
   static Future<UpdateInfo?> checkForUpdates() async {
-    try {
-      // Get current app version info
-      final currentVersion = await _getCurrentAppVersion();
+    // Get current app version info
+    final currentVersion = await _getCurrentAppVersion();
 
-      // Get latest release from GitHub
-      final latestVersion = await _getLatestVersionFromGithub();
+    // Get latest release from GitHub
+    final latestVersion = await _getLatestVersionFromGithub();
 
-      if (latestVersion == null) {
-        debugPrint('No latest version found');
-        return null;
-      }
-
-      final bool isUpdateAvailable = latestVersion > currentVersion;
-
-      if (isUpdateAvailable) {
-        return UpdateInfo(
-          currentVersion: currentVersion.toString(),
-          newVersion: latestVersion.toString(),
-        );
-      } else {
-        return null;
-      }
-    } on DioException catch (e) {
-      debugPrint('Error checking for updates (Dio): ${e.message}');
+    if (latestVersion == null) {
+      debugPrint('No latest version found');
       return null;
-    } catch (e) {
-      debugPrint('Error checking for updates: $e');
+    }
+
+    final bool isUpdateAvailable = latestVersion > currentVersion;
+
+    if (isUpdateAvailable) {
+      return UpdateInfo(
+        currentVersion: currentVersion.toString(),
+        newVersion: latestVersion.toString(),
+      );
+    } else {
       return null;
     }
   }
@@ -78,6 +70,7 @@ class UpdateService {
 
       if (response.statusCode == 200 && response.data != null) {
         final tagName = response.data['tag_name']?.toString();
+
         if (tagName == null || tagName.isEmpty) {
           debugPrint('Release found but no tag name');
           return null;
@@ -87,6 +80,9 @@ class UpdateService {
         return Version.parse(newVersionString);
       }
 
+      return null;
+    } on DioException catch (e) {
+      debugPrint('Error checking for updates (Dio): ${e.message}');
       return null;
     } catch (e) {
       debugPrint('Error fetching latest version from GitHub: $e');
