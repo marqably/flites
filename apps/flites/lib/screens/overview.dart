@@ -1,13 +1,15 @@
 import 'package:flites/constants/app_sizes.dart';
 import 'package:flites/services/update_service.dart';
+import 'package:flites/types/update_info.dart';
 import 'package:flites/widgets/blocking_widget/blocking_container.dart';
-import 'package:flites/widgets/tool_controls/tool_controls.dart';
-import 'package:flites/widgets/tool_controls/zoom_controls.dart';
 import 'package:flites/widgets/image_editor/image_editor.dart';
 import 'package:flites/widgets/project_file_list/project_file_list_vertical.dart';
+import 'package:flites/widgets/tool_controls/tool_controls.dart';
+import 'package:flites/widgets/tool_controls/zoom_controls.dart';
 import 'package:flites/widgets/update/update_dialog.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+
 import '../states/key_events.dart';
 import '../widgets/player/player.dart';
 import '../widgets/upload_area/file_drop_area.dart';
@@ -47,7 +49,7 @@ class _OverviewState extends State<Overview> {
           false;
 
       if (shouldUpdate && mounted) {
-        final success = await UpdateService.performUpdate();
+        final success = await UpdateService.getReleaseAndLaunchUrl();
         if (!success && mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(

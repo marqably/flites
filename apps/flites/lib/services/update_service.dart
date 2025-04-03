@@ -35,11 +35,43 @@ class UpdateService {
   static Future<UpdateInfo?> checkForUpdates() async {
     try {
       // Get current app version info
-      final packageInfo = await PackageInfo.fromPlatform();
-      final currentVersionString = packageInfo.version;
-      final currentVersion = Version.parse(currentVersionString);
+      final currentVersion = await _getCurrentAppVersion();
 
       // Get latest release from GitHub
+      final latestVersion = await _getLatestVersionFromGithub();
+
+      if (latestVersion == null) {
+        debugPrint('No latest version found');
+        return null;
+      }
+
+      final bool isUpdateAvailable = latestVersion > currentVersion;
+
+      if (isUpdateAvailable) {
+        return UpdateInfo(
+          currentVersion: currentVersion.toString(),
+          newVersion: latestVersion.toString(),
+        );
+      } else {
+        return null;
+      }
+    } on DioException catch (e) {
+      debugPrint('Error checking for updates (Dio): ${e.message}');
+      return null;
+    } catch (e) {
+      debugPrint('Error checking for updates: $e');
+      return null;
+    }
+  }
+
+  static Future<Version> _getCurrentAppVersion() async {
+    final packageInfo = await PackageInfo.fromPlatform();
+    final currentVersionString = packageInfo.version;
+    return Version.parse(currentVersionString);
+  }
+
+  static Future<Version?> _getLatestVersionFromGithub() async {
+    try {
       final response = await _dio.get(
         'https://api.github.com/repos/marqably/flites/releases/latest',
       );
@@ -52,33 +84,17 @@ class UpdateService {
         }
 
         final String newVersionString = tagName.replaceAll('v', '');
-        final latestVersion = Version.parse(newVersionString);
-
-        final bool isUpdateAvailable = latestVersion > currentVersion;
-
-        if (isUpdateAvailable) {
-          return UpdateInfo(
-            currentVersion: currentVersionString,
-            newVersion: newVersionString,
-          );
-        } else {
-          return null;
-        }
+        return Version.parse(newVersionString);
       }
 
-      debugPrint(
-          'Failed to fetch latest release: Status Code ${response.statusCode}');
-      return null;
-    } on DioException catch (e) {
-      debugPrint('Error checking for updates (Dio): ${e.message}');
       return null;
     } catch (e) {
-      debugPrint('Error checking for updates: $e');
+      debugPrint('Error fetching latest version from GitHub: $e');
       return null;
     }
   }
 
-  static Future<bool> performUpdate() async {
+  static Future<bool> getReleaseAndLaunchUrl() async {
     try {
       final response = await _dio.get(
         'https://api.github.com/repos/marqably/flites/releases/latest',
