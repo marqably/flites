@@ -52,115 +52,117 @@ class SettingsOverlayButton extends StatelessWidget {
       ),
       overlayContent: SizedBox(
         width: 200,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ExpansionTile(
-              dense: true,
-              title: Text(context.l10n.themeMode),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(Sizes.p8),
-              ),
-              iconColor: context.colors.onSurface,
-              tilePadding: const EdgeInsets.symmetric(horizontal: 12),
-              children: [
-                buildListTile(
-                  context.l10n.menuThemeLight,
-                  'light',
-                  appSettings.themeMode == ThemeMode.light,
-                  () => appSettings.themeMode = ThemeMode.light,
-                ),
-                buildListTile(
-                  context.l10n.menuThemeDark,
-                  'dark',
-                  appSettings.themeMode == ThemeMode.dark,
-                  () => appSettings.themeMode = ThemeMode.dark,
-                ),
-                buildListTile(
-                  context.l10n.menuThemeSystem,
-                  'system',
-                  appSettings.themeMode == ThemeMode.system,
-                  () => appSettings.themeMode = ThemeMode.system,
-                ),
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: Sizes.p4),
-              child: Divider(
-                color: context.colors.secondaryContainer,
-                height: 1,
-              ),
-            ),
-            Watch((context) {
-              final locale = appSettings.currentLocale;
-              return ExpansionTile(
+        child: Watch((context) {
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ExpansionTile(
                 dense: true,
-                title: Text(context.l10n.languageSection),
-                shape: Border.all(color: Colors.transparent),
-                tilePadding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
+                title: Text(context.l10n.themeMode),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(Sizes.p8),
+                ),
                 iconColor: context.colors.onSurface,
+                tilePadding: const EdgeInsets.symmetric(horizontal: 12),
                 children: [
                   buildListTile(
-                    'English',
-                    'en',
-                    locale == const Locale('en'),
-                    () => appSettings.currentLocale = const Locale('en'),
+                    context.l10n.menuThemeLight,
+                    'light',
+                    appSettings.themeMode.value == ThemeMode.light,
+                    () => appSettings.setThemeMode(ThemeMode.light),
                   ),
                   buildListTile(
-                    'Deutsch',
-                    'de',
-                    locale == const Locale('de'),
-                    () => appSettings.currentLocale = const Locale('de'),
+                    context.l10n.menuThemeDark,
+                    'dark',
+                    appSettings.themeMode.value == ThemeMode.dark,
+                    () => appSettings.setThemeMode(ThemeMode.dark),
                   ),
                   buildListTile(
-                    'Español',
-                    'es',
-                    locale == const Locale('es'),
-                    () => appSettings.currentLocale = const Locale('es'),
-                  ),
-                  buildListTile(
-                    'Français',
-                    'fr',
-                    locale == const Locale('fr'),
-                    () => appSettings.currentLocale = const Locale('fr'),
-                  ),
-                  buildListTile(
-                    'Italiano',
-                    'it',
-                    locale == const Locale('it'),
-                    () => appSettings.currentLocale = const Locale('it'),
-                  ),
-                  buildListTile(
-                    '日本語',
-                    'ja',
-                    locale == const Locale('ja'),
-                    () => appSettings.currentLocale = const Locale('ja'),
-                  ),
-                  buildListTile(
-                    '한국어',
-                    'ko',
-                    locale == const Locale('ko'),
-                    () => appSettings.currentLocale = const Locale('ko'),
-                  ),
-                  buildListTile(
-                    'Português',
-                    'pt',
-                    locale == const Locale('pt'),
-                    () => appSettings.currentLocale = const Locale('pt'),
-                  ),
-                  buildListTile(
-                    '中文',
-                    'zh',
-                    locale == const Locale('zh'),
-                    () => appSettings.currentLocale = const Locale('zh'),
+                    context.l10n.menuThemeSystem,
+                    'system',
+                    appSettings.themeMode.value == ThemeMode.system,
+                    () => appSettings.setThemeMode(ThemeMode.system),
                   ),
                 ],
-              );
-            }),
-          ],
-        ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: Sizes.p4),
+                child: Divider(
+                  color: context.colors.secondaryContainer,
+                  height: 1,
+                ),
+              ),
+              Watch((context) {
+                final locale = appSettings.currentLocale;
+                return ExpansionTile(
+                  dense: true,
+                  title: Text(context.l10n.languageSection),
+                  shape: Border.all(color: Colors.transparent),
+                  tilePadding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
+                  iconColor: context.colors.onSurface,
+                  children: [
+                    buildListTile(
+                      'English',
+                      'en',
+                      locale.value == const Locale('en'),
+                      () => appSettings.setLocale(const Locale('en')),
+                    ),
+                    buildListTile(
+                      'Deutsch',
+                      'de',
+                      locale.value == const Locale('de'),
+                      () => appSettings.setLocale(const Locale('de')),
+                    ),
+                    buildListTile(
+                      'Español',
+                      'es',
+                      locale.value == const Locale('es'),
+                      () => appSettings.setLocale(const Locale('es')),
+                    ),
+                    buildListTile(
+                      'Français',
+                      'fr',
+                      locale.value == const Locale('fr'),
+                      () => appSettings.setLocale(const Locale('fr')),
+                    ),
+                    buildListTile(
+                      'Italiano',
+                      'it',
+                      locale.value == const Locale('it'),
+                      () => appSettings.setLocale(const Locale('it')),
+                    ),
+                    buildListTile(
+                      '日本語',
+                      'ja',
+                      locale.value == const Locale('ja'),
+                      () => appSettings.setLocale(const Locale('ja')),
+                    ),
+                    buildListTile(
+                      '한국어',
+                      'ko',
+                      locale.value == const Locale('ko'),
+                      () => appSettings.setLocale(const Locale('ko')),
+                    ),
+                    buildListTile(
+                      'Português',
+                      'pt',
+                      locale.value == const Locale('pt'),
+                      () => appSettings.setLocale(const Locale('pt')),
+                    ),
+                    buildListTile(
+                      '中文',
+                      'zh',
+                      locale.value == const Locale('zh'),
+                      () => appSettings.setLocale(const Locale('zh')),
+                    ),
+                  ],
+                );
+              }),
+            ],
+          );
+        }),
       ),
     );
   }

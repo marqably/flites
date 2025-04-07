@@ -13,6 +13,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await UpdateService.initialize();
+  await appSettings.loadSettings();
 
   runApp(const FlitesApp());
 }
@@ -47,8 +48,8 @@ class FlitesApp extends StatelessWidget {
               Locale('pt'),
               Locale('zh'),
             ],
-            locale: appSettings.currentLocale,
-            themeMode: appSettings.themeMode,
+            locale: appSettings.currentLocale.value,
+            themeMode: appSettings.themeMode.value,
             theme: lightTheme,
             darkTheme: darkTheme,
             home: const Scaffold(
