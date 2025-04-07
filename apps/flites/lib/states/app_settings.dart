@@ -20,17 +20,12 @@ class AppSettings {
     _prefs = await SharedPreferences.getInstance();
 
     final loadedThemeMode =
-        ThemeModePersistence.fromString(_prefs?.getString(_kThemeModeKey));
-
-    if (_themeMode.peek() != loadedThemeMode) {
-      _themeMode.value = loadedThemeMode;
-    }
+        ThemeModePersistence.fromString(await _tryGetString(_kThemeModeKey));
+    _themeMode.value = loadedThemeMode;
 
     final loadedLocale =
-        LocalePersistence.fromString(_prefs?.getString(_kLocaleKey));
-    if (_currentLocale.peek() != loadedLocale) {
-      _currentLocale.value = loadedLocale;
-    }
+        LocalePersistence.fromString(await _tryGetString(_kLocaleKey));
+    _currentLocale.value = loadedLocale;
   }
 
   /// Get current theme mode
@@ -45,7 +40,7 @@ class AppSettings {
     if (_themeMode.peek() == mode) return;
 
     _themeMode.value = mode;
-    await _saveThemeMode(mode);
+    await _saveValue(_kThemeModeKey, mode.stringValue);
   }
 
   /// Set the locale
@@ -54,19 +49,24 @@ class AppSettings {
     if (_currentLocale.peek() == locale) return;
 
     _currentLocale.value = locale;
-    await _saveLocale(locale);
+    await _saveValue(_kLocaleKey, locale.stringValue);
   }
 
-  /// Save the current theme mode to SharedPreferences
-  Future<void> _saveThemeMode(ThemeMode mode) async {
+  /// Saves value to passed key
+  Future<void> _saveValue(String key, value) async {
     _prefs ??= await SharedPreferences.getInstance();
-    await _prefs?.setString(_kThemeModeKey, mode.stringValue);
+    await _prefs?.setString(key, value);
   }
 
-  /// Save the current locale to SharedPreferences
-  Future<void> _saveLocale(Locale locale) async {
-    _prefs ??= await SharedPreferences.getInstance();
-    await _prefs?.setString(_kLocaleKey, locale.stringValue);
+  Future<String?> _tryGetString(String key) async {
+    try {
+      return _prefs?.getString(key);
+    } catch (e, stackTrace) {
+      debugPrint(
+        'AppSettings: Error reading SharedPreferences key "$key": $e\n$stackTrace',
+      );
+      return null;
+    }
   }
 }
 
