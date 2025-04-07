@@ -13,6 +13,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await UpdateService.initialize();
+  await appSettings.loadSettings();
 
   runApp(const FlitesApp());
 }
