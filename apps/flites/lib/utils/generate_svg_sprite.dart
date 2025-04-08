@@ -4,6 +4,8 @@ import 'dart:typed_data';
 
 import 'package:file_saver/file_saver.dart';
 import 'package:flites/states/source_files_state.dart';
+import 'package:flites/types/export_settings.dart';
+import 'package:flites/types/sprite_constraints.dart';
 import 'package:flites/utils/generate_sprite.dart';
 import 'package:flites/utils/svg_utils.dart';
 import 'package:flites/widgets/image_editor/image_editor.dart';
@@ -44,28 +46,32 @@ class GenerateSvgSprite {
       settings,
       images.length,
       frameSize.width,
-      settings.paddingLeftPx ?? 0,
+      settings.paddingLeftPx.toDouble(),
     );
     final spriteSheetHeight = _calculateSpriteSheetHeight(
       settings,
       frameSize.height,
-      settings.paddingTopPx ?? 0,
-      settings.paddingBottomPx ?? 0,
+      settings.paddingTopPx.toDouble(),
+      settings.paddingBottomPx.toDouble(),
     );
 
     // Calculate scaling factor for images
     final scalingFactor = switch (settings.constraints) {
       SpriteSizeConstrained() => GenerateSprite.scalingWithBoundingBox(
-          settings.constraints as SpriteSizeConstrained, boundingBox,
-          images: images),
+          settings.constraints as SpriteSizeConstrained,
+          boundingBox,
+          images: images,
+        ),
       SpriteHeightConstrained() => GenerateSprite.scalingFactorForSizeAlongAxis(
-          (settings.constraints as SpriteHeightConstrained).heightPx,
+          (settings.constraints as SpriteHeightConstrained).heightPx.toDouble(),
           Axis.vertical,
-          images: images),
+          images: images,
+        ),
       SpriteWidthConstrained() => GenerateSprite.scalingFactorForSizeAlongAxis(
-          (settings.constraints as SpriteWidthConstrained).widthPx,
+          (settings.constraints as SpriteWidthConstrained).widthPx.toDouble(),
           Axis.horizontal,
-          images: images),
+          images: images,
+        ),
     };
 
     // Build the SVG sprite sheet
@@ -85,7 +91,7 @@ class GenerateSvgSprite {
 
       // Calculate position for this frame's origin
       final frameXPos = i * (frameSize.width + settings.horizontalMargin);
-      final frameYPos = settings.paddingTopPx ?? 0;
+      final frameYPos = settings.paddingTopPx;
 
       // Extract the original SVG content
       final svgString = String.fromCharCodes(fliteImage.image);
@@ -109,7 +115,7 @@ class GenerateSvgSprite {
       // 2. Translate to the relative position within the frame
       // 3. Scale the SVG content appropriately
       svgBuffer.write('''
-  <g transform="translate(${(frameXPos + (settings.paddingLeftPx ?? 0)).toStringAsFixed(2)}, ${frameYPos.toStringAsFixed(2)})">
+  <g transform="translate(${(frameXPos + settings.paddingLeftPx).toStringAsFixed(2)}, ${frameYPos.toStringAsFixed(2)})">
     <g transform="translate(${relativeOffset.dx.toStringAsFixed(2)}, ${relativeOffset.dy.toStringAsFixed(2)}) scale(${imageScale.toStringAsFixed(6)})">
       $svgContent
     </g>
@@ -162,10 +168,10 @@ class GenerateSvgSprite {
     }
 
     // Validate padding
-    if ((settings.paddingLeftPx ?? 0) < 0 ||
-        (settings.paddingRightPx ?? 0) < 0 ||
-        (settings.paddingTopPx ?? 0) < 0 ||
-        (settings.paddingBottomPx ?? 0) < 0) {
+    if (settings.paddingLeftPx < 0 ||
+        settings.paddingRightPx < 0 ||
+        settings.paddingTopPx < 0 ||
+        settings.paddingBottomPx < 0) {
       throw Exception('Padding values must be non-negative');
     }
   }
@@ -178,8 +184,7 @@ class GenerateSvgSprite {
     double leftPadding,
   ) {
     // Each frame gets its own padding
-    final paddingPerFrame =
-        (settings.paddingLeftPx ?? 0) + (settings.paddingRightPx ?? 0);
+    final paddingPerFrame = settings.horizontalMargin;
     return frameWidth * frameCount + (paddingPerFrame * frameCount);
   }
 
@@ -192,7 +197,9 @@ class GenerateSvgSprite {
   ) {
     switch (settings.constraints.runtimeType) {
       case SpriteSizeConstrained _:
-        return (settings.constraints as SpriteSizeConstrained).heightPx;
+        return (settings.constraints as SpriteSizeConstrained)
+            .heightPx
+            .toDouble();
       default:
         return frameHeight + topPadding + bottomPadding;
     }

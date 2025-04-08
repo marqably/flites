@@ -1,3 +1,4 @@
+import 'package:flites/types/export_settings.dart';
 import 'package:flites/utils/generate_sprite.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -8,7 +9,7 @@ void main() {
       test('maintains aspect ratio with height constraint', () {
         // Given
         const boundingBoxSize = Size(200, 100); // 2:1 aspect ratio
-        final settings = ExportSettings.heightConstrained(
+        final settings = ExportSettings(
           heightPx: 100,
           paddingTopPx: 10,
           paddingBottomPx: 10,
@@ -26,7 +27,7 @@ void main() {
       test('includes vertical margins in calculations', () {
         // Given
         const boundingBoxSize = Size(100, 50); // 2:1 aspect ratio
-        final settings = ExportSettings.heightConstrained(
+        final settings = ExportSettings(
           heightPx: 100,
           paddingTopPx: 20,
           paddingBottomPx: 30,
@@ -46,7 +47,7 @@ void main() {
       test('maintains aspect ratio with width constraint', () {
         // Given
         const boundingBoxSize = Size(200, 100); // 2:1 aspect ratio
-        final settings = ExportSettings.widthConstrained(
+        final settings = ExportSettings(
           widthPx: 400,
           paddingLeftPx: 20,
           paddingRightPx: 20,
@@ -63,7 +64,7 @@ void main() {
       test('includes horizontal margins in calculations', () {
         // Given
         const boundingBoxSize = Size(100, 50); // 2:1 aspect ratio
-        final settings = ExportSettings.widthConstrained(
+        final settings = ExportSettings(
           widthPx: 200,
           paddingLeftPx: 30,
           paddingRightPx: 20,
@@ -82,7 +83,7 @@ void main() {
       test('uses exact dimensions from settings', () {
         // Given
         const boundingBoxSize = Size(200, 100);
-        final settings = ExportSettings.sizeConstrained(
+        final settings = ExportSettings(
           widthPx: 400,
           heightPx: 300,
           paddingLeftPx: 20,
@@ -102,7 +103,7 @@ void main() {
       test('includes all margins in calculations', () {
         // Given
         const boundingBoxSize = Size(100, 50);
-        final settings = ExportSettings.sizeConstrained(
+        final settings = ExportSettings(
           widthPx: 200,
           heightPx: 100,
           paddingLeftPx: 25,

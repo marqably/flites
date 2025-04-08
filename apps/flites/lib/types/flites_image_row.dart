@@ -1,4 +1,4 @@
-import 'package:flites/utils/generate_sprite.dart';
+import 'package:flites/types/export_settings.dart';
 
 import 'flites_image.dart';
 
@@ -13,8 +13,7 @@ class FlitesImageRow {
     required this.images,
     // required this.order,
     ExportSettings? exportSettings,
-  }) : exportSettings =
-            exportSettings ?? ExportSettings.widthConstrained(widthPx: 300);
+  }) : exportSettings = exportSettings ?? ExportSettings();
 
   FlitesImageRow copyWith({
     String? name,

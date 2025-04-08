@@ -2,6 +2,7 @@ import 'package:flites/constants/app_sizes.dart';
 import 'package:flites/main.dart';
 import 'package:flites/states/selected_image_row_state.dart';
 import 'package:flites/states/source_files_state.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:signals/signals_flutter.dart';
 
@@ -40,6 +41,7 @@ class ImageMapHeader extends StatelessWidget {
                     child: AnimationRowTabName(
                       isSelected: isSelected,
                       name: images.rows[i].name,
+                      index: i,
                     ),
                   );
                 },
@@ -74,10 +76,12 @@ class AnimationRowTabName extends StatefulWidget {
     super.key,
     required this.isSelected,
     required this.name,
+    required this.index,
   });
 
   final bool isSelected;
   final String name;
+  final int index;
 
   @override
   State<AnimationRowTabName> createState() => _AnimationRowTabNameState();
@@ -100,23 +104,50 @@ class _AnimationRowTabNameState extends State<AnimationRowTabName> {
           selectionColor: context.colors.onSurface.withAlpha(100),
         ),
       ),
-      child: TextField(
-        controller: controller,
-        decoration: const InputDecoration(
-          border: InputBorder.none,
-          isDense: true,
-        ),
-        enabled: widget.isSelected,
-        cursorColor: context.colors.onSurface,
-        textAlign: TextAlign.center,
-        textAlignVertical: TextAlignVertical.center,
-        maxLines: 1,
-        style: const TextStyle(
-          fontSize: 14,
-        ),
-        onSubmitted: (value) {
-          SourceFilesState.renameImageRow(value);
-        },
+      child: Row(
+        children: [
+          gapW24,
+          Expanded(
+            child: TextField(
+              controller: controller,
+              decoration: const InputDecoration(
+                border: InputBorder.none,
+                isDense: true,
+              ),
+              enabled: widget.isSelected,
+              cursorColor: context.colors.onSurface,
+              textAlign: TextAlign.center,
+              textAlignVertical: TextAlignVertical.center,
+              maxLines: 1,
+              style: const TextStyle(
+                fontSize: 14,
+              ),
+              onSubmitted: (value) {
+                SourceFilesState.renameImageRow(value);
+              },
+            ),
+          ),
+          Watch(
+            (context) {
+              final isDeletable = projectSourceFiles.value.rows.length > 1;
+
+              return (widget.isSelected && isDeletable)
+                  ? SizedBox(
+                      width: Sizes.p24,
+                      child: IconButton(
+                        icon: const Icon(
+                          CupertinoIcons.xmark,
+                          size: Sizes.p16,
+                        ),
+                        onPressed: () {
+                          SourceFilesState.deleteImageRow(widget.index);
+                        },
+                      ),
+                    )
+                  : gapW24;
+            },
+          )
+        ],
       ),
     );
   }

@@ -1,3 +1,4 @@
+import 'package:flites/types/export_settings.dart';
 import 'package:flites/types/flites_image.dart';
 import 'package:flites/types/flites_image_map.dart';
 import 'package:flites/types/flites_image_row.dart';
@@ -41,9 +42,15 @@ class SourceFilesState {
 
   static void deleteImageRow(int index) {
     final currentRows = [..._projectSourceFiles.value.rows];
+    final currentSelectedIndex = selectedImageRow.value;
 
     currentRows.removeAt(index);
 
+    final newRowCount = currentRows.length;
+
+    if (currentSelectedIndex >= newRowCount) {
+      SelectedImageRowState.setSelectedImageRow(newRowCount - 1);
+    }
     _projectSourceFiles.value =
         _projectSourceFiles.value.copyWith(rows: currentRows);
   }
@@ -80,6 +87,7 @@ class SourceFilesState {
 
   static Future<void> addImages() async {
     final newImages = await imagePickerService.pickAndProcessImages();
+
     final selectedRowIndex = selectedImageRow.value;
     if (newImages.isNotEmpty) {
       final currentRow = projectSourceFiles.value.rows[selectedRowIndex];
@@ -136,5 +144,15 @@ class SourceFilesState {
     // Update the project source files with a new instance
     _projectSourceFiles.value =
         projectSourceFiles.value.copyWith(rows: updatedRows);
+  }
+
+  static void changeExportSettings(int rowIndex, ExportSettings settings) {
+    final currentRows = [...projectSourceFiles.value.rows];
+
+    currentRows[rowIndex] =
+        currentRows[rowIndex].copyWith(exportSettings: settings);
+
+    _projectSourceFiles.value =
+        projectSourceFiles.value.copyWith(rows: currentRows);
   }
 }
