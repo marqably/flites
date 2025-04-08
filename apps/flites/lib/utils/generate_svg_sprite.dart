@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:file_saver/file_saver.dart';
-import 'package:flites/states/open_project.dart';
+import 'package:flites/states/source_files_state.dart';
 import 'package:flites/utils/generate_sprite.dart';
 import 'package:flites/utils/svg_utils.dart';
 import 'package:flites/widgets/image_editor/image_editor.dart';
@@ -11,22 +11,30 @@ import 'package:flutter/material.dart';
 
 /// Handles the generation of SVG sprite sheets from multiple SVG images.
 class GenerateSvgSprite {
+  static Future<void> exportSpriteMap(
+    ExportSettings settings, {
+    FileSaver? fileSaver,
+  }) async {
+    // TODO(jaco): implement
+  }
+
   /// Exports a collection of SVG images as a single SVG sprite sheet.
   ///
   /// This creates a combined SVG that includes all individual SVG images
   /// in a horizontal sprite sheet format while maintaining the vector format
   /// for high-quality scaling.
-  static Future<void> exportSprite(
+  static Future<void> exportSpriteRow(
     ExportSettings settings, {
+    required int spriteRowIndex,
     FileSaver? fileSaver,
   }) async {
     _validateInput(settings);
 
-    final sourceImages = projectSourceFiles.value;
+    final images = projectSourceFiles.value.rows[spriteRowIndex].images;
     final boundingBox = allImagesBoundingBox;
 
     // Early return if no valid images or bounding box
-    if (boundingBox == null || sourceImages.isEmpty) {
+    if (boundingBox == null || images.isEmpty) {
       return;
     }
 
@@ -34,7 +42,7 @@ class GenerateSvgSprite {
     final frameSize = GenerateSprite.sizeOfFrame(boundingBox.size, settings);
     final spriteSheetWidth = _calculateSpriteSheetWidth(
       settings,
-      sourceImages.length,
+      images.length,
       frameSize.width,
       settings.paddingLeftPx ?? 0,
     );
@@ -49,15 +57,15 @@ class GenerateSvgSprite {
     final scalingFactor = switch (settings.constraints) {
       SpriteSizeConstrained() => GenerateSprite.scalingWithBoundingBox(
           settings.constraints as SpriteSizeConstrained, boundingBox,
-          images: sourceImages),
+          images: images),
       SpriteHeightConstrained() => GenerateSprite.scalingFactorForSizeAlongAxis(
           (settings.constraints as SpriteHeightConstrained).heightPx,
           Axis.vertical,
-          images: sourceImages),
+          images: images),
       SpriteWidthConstrained() => GenerateSprite.scalingFactorForSizeAlongAxis(
           (settings.constraints as SpriteWidthConstrained).widthPx,
           Axis.horizontal,
-          images: sourceImages),
+          images: images),
     };
 
     // Build the SVG sprite sheet
@@ -69,8 +77,8 @@ class GenerateSvgSprite {
 ''');
 
     // Add each SVG image as a grouped element with appropriate translation
-    for (int i = 0; i < sourceImages.length; i++) {
-      final fliteImage = sourceImages[i];
+    for (int i = 0; i < images.length; i++) {
+      final fliteImage = images[i];
 
       // Skip non-SVG images
       if (!SvgUtils.isSvg(fliteImage.image)) continue;

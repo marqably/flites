@@ -1,6 +1,7 @@
+import 'package:flites/states/selected_image_row_state.dart';
+import 'package:flites/states/selected_image_state.dart';
+import 'package:flites/states/source_files_state.dart';
 import 'package:flites/types/flites_image.dart';
-
-import '../states/open_project.dart';
 
 /// Returns the raw [FlitesImage] object for the given [id]
 FlitesImage? getFliteImage(String? id) {
@@ -10,7 +11,16 @@ FlitesImage? getFliteImage(String? id) {
     return null;
   }
 
-  return images.firstWhere((element) => element.id == id);
+  // find the image with only the given id, without the row index
+  for (final row in images.rows) {
+    for (final image in row.images) {
+      if (image.id == id) {
+        return image;
+      }
+    }
+  }
+
+  return null;
 }
 
 List<FlitesImage> getFliteImages(List<String> ids) {
@@ -18,27 +28,33 @@ List<FlitesImage> getFliteImages(List<String> ids) {
 }
 
 String? getPreviousImageId(String imageId) {
-  final index =
-      projectSourceFiles.value.map((e) => e.id).toList().indexOf(imageId);
+  final rowIndex = selectedImageRow.value;
+  final row = projectSourceFiles.value.rows[rowIndex].images;
+
+  final index = row.map((e) => e.id).toList().indexOf(imageId);
 
   if (index <= 0) {
     return null;
   }
 
-  return projectSourceFiles.value[index - 1].id;
+  return row[index - 1].id;
 }
 
-String? getNexImageId() {
-  if (projectSourceFiles.value.isEmpty) return null;
+String? getNextImageId() {
+  final rowIndex = selectedImageRow.value;
+  final row = projectSourceFiles.value.rows[rowIndex].images;
 
-  final imageId = selectedImage.value ?? projectSourceFiles.value.first.id;
-
-  final index =
-      projectSourceFiles.value.map((e) => e.id).toList().indexOf(imageId);
-
-  if (index >= projectSourceFiles.value.length - 1) {
-    return projectSourceFiles.value.first.id;
+  if (row.isEmpty) {
+    return null;
   }
 
-  return projectSourceFiles.value[index + 1].id;
+  final imageId = selectedImage.value ?? row.first.id;
+
+  final index = row.map((e) => e.id).toList().indexOf(imageId);
+
+  if (index >= row.length - 1) {
+    return null;
+  }
+
+  return row[index + 1].id;
 }

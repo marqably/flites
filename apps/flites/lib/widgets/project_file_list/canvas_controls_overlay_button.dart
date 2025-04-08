@@ -2,6 +2,8 @@ import 'package:flites/constants/app_sizes.dart';
 import 'package:flites/main.dart';
 import 'package:flites/states/canvas_controller.dart';
 import 'package:flites/states/open_project.dart';
+import 'package:flites/states/selected_image_row_state.dart';
+import 'package:flites/states/source_files_state.dart';
 import 'package:flites/widgets/buttons/icon_text_button.dart';
 import 'package:flites/widgets/controls/checkbox_button.dart';
 import 'package:flites/widgets/project_file_list/overlay_button.dart';
@@ -50,38 +52,57 @@ class CanvasControlsButton extends StatelessWidget {
               gapH16,
               IconTextButton(
                 onPressed: () {
-                  final images = [...projectSourceFiles.value];
+                  final selectedRowIndex = selectedImageRow.value;
+                  final images = [
+                    ...projectSourceFiles.value.rows[selectedRowIndex].images
+                  ];
                   images.sort((a, b) {
                     if (a.displayName != null && b.displayName != null) {
                       return a.displayName!.compareTo(b.displayName!);
                     }
                     return 0;
                   });
-                  projectSourceFiles.value = images;
+
+                  final newRow = projectSourceFiles.value.rows[selectedRowIndex]
+                      .copyWith(images: images);
+
+                  projectSourceFiles.value.rows[selectedRowIndex] = newRow;
                 },
                 text: context.l10n.sortByName,
               ),
               gapH8,
               IconTextButton(
                 onPressed: () {
-                  final images = [...projectSourceFiles.value];
+                  final selectedRowIndex = selectedImageRow.value;
+                  final images = [
+                    ...projectSourceFiles.value.rows[selectedRowIndex].images
+                  ];
                   for (int i = 1; i <= images.length; i++) {
                     final img = images[i - 1];
                     img.displayName = 'frame_$i.png';
                   }
-                  projectSourceFiles.value = images;
+                  projectSourceFiles.value.rows[selectedRowIndex] =
+                      projectSourceFiles.value.rows[selectedRowIndex].copyWith(
+                    images: images,
+                  );
                 },
                 text: context.l10n.renameFilesAccordingToOrder,
               ),
               gapH8,
               IconTextButton(
                 onPressed: () {
-                  final images = [...projectSourceFiles.value];
+                  final selectedRowIndex = selectedImageRow.value;
+                  final images = [
+                    ...projectSourceFiles.value.rows[selectedRowIndex].images
+                  ];
                   for (int i = 1; i <= images.length; i++) {
                     final img = images[i - 1];
                     img.displayName = img.originalName;
                   }
-                  projectSourceFiles.value = images;
+                  projectSourceFiles.value.rows[selectedRowIndex] =
+                      projectSourceFiles.value.rows[selectedRowIndex].copyWith(
+                    images: images,
+                  );
                 },
                 text: context.l10n.resetNames,
               ),

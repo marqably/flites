@@ -1,7 +1,8 @@
 import 'package:flites/constants/app_sizes.dart';
 import 'package:flites/main.dart';
 import 'package:flites/states/open_project.dart';
-import 'package:flites/states/selected_images_controller.dart';
+import 'package:flites/states/selected_image_state.dart';
+import 'package:flites/states/source_files_state.dart';
 import 'package:flites/types/flites_image.dart';
 import 'package:flites/utils/svg_utils.dart';
 import 'package:flutter/cupertino.dart';
@@ -54,7 +55,7 @@ class _FileItemState extends State<FileItem> {
           child: GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTap: () {
-              SelectedImagesController().toggleSingle(widget.file.id);
+              SelectedImageState.setSelectedImage(widget.file.id);
             },
             child: Row(
               children: [
@@ -91,9 +92,7 @@ class _FileItemState extends State<FileItem> {
                       message: context.l10n.delete,
                       child: InkWell(
                         onTap: () {
-                          projectSourceFiles.value = [
-                            ...projectSourceFiles.value
-                          ]..removeWhere((e) => e.id == widget.file.id);
+                          SourceFilesState.deleteImage(widget.file.id);
                         },
                         child: const Icon(Icons.delete, size: Sizes.p16),
                       ),

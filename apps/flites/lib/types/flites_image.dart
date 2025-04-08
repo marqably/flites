@@ -1,14 +1,13 @@
 import 'dart:math';
 
 import 'package:flites/states/canvas_controller.dart';
+import 'package:flites/states/source_files_state.dart';
 import 'package:flites/utils/image_processing_utils.dart';
 import 'package:flites/utils/image_utils.dart';
 import 'package:flites/utils/svg_utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
-import '../states/open_project.dart';
 
 /// A working file type we use to work with this image
 class FlitesImage {
@@ -113,22 +112,9 @@ class FlitesImage {
       positionOnCanvas = originalPosition;
 
       // Save the changes
-      saveChanges();
+      SourceFilesState.saveImageChanges(this);
     } catch (e) {
       debugPrint('Error applying rotation: $e');
     }
-  }
-
-  /// Updates this image in the project source files.
-  void saveChanges() {
-    final images = projectSourceFiles.value;
-
-    for (var i = 0; i < images.length; i++) {
-      if (images[i].id == id) {
-        images[i] = this;
-        break;
-      }
-    }
-    projectSourceFiles.value = [...images];
   }
 }
