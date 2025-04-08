@@ -31,6 +31,7 @@ class FlitesApp extends StatelessWidget {
         child: AbsorbPointer(
           absorbing: isLoading,
           child: MaterialApp(
+            debugShowCheckedModeBanner: false,
             localizationsDelegates: const [
               AppLocalizations.delegate,
               GlobalMaterialLocalizations.delegate,

@@ -1,14 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:signals/signals.dart';
 
-import '../types/flites_image.dart';
-
-/// The list of files that are part of our current project
-final projectSourceFiles = signal<List<FlitesImage>>([], autoDispose: true);
-
-/// Defines what image is currently being edited
-final selectedImage = signal<String?>(null);
-
 /// Defines what image is currently being referenced
 /// The reference image is used as a background in the image editor to make sure we can align the images correctly
 final selectedReferenceImages = signal<List<String>>([]);

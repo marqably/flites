@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:file_saver/file_saver.dart';
-import 'package:flites/states/open_project.dart';
+import 'package:flites/states/source_files_state.dart';
 import 'package:flites/types/flites_image.dart';
 import 'package:flites/widgets/image_editor/image_editor.dart';
 import 'package:flutter/material.dart';
@@ -96,25 +96,34 @@ class ExportSettings {
 }
 
 class GenerateSprite {
-  static Future<void> exportSprite(
+  static Future<void> exportSpriteMap(
     ExportSettings settings, {
+    FileSaver? fileSaver,
+  }) async {
+    // TODO(jaco): implement
+  }
+
+  static Future<void> exportSpriteRow(
+    ExportSettings settings, {
+    required int spriteRowIndex,
     FileSaver? fileSaver,
   }) async {
     _validateDimensions(settings.constraints);
     _validatePadding(settings);
 
-    final sourceImages = projectSourceFiles.value;
+    final images = projectSourceFiles.value.rows[spriteRowIndex].images;
+
     final boundingBox = allImagesBoundingBox;
 
     // Early return if no valid images or bounding box
-    if (boundingBox == null || sourceImages.isEmpty) {
+    if (boundingBox == null || images.isEmpty) {
       return;
     }
 
     // Process frames
     final spriteSize = settings.maxDimensionsAfterPadding;
     final frames = separateSpriteImages(
-      sourceImages,
+      images,
       boundingBox,
       spriteSize,
       settings,

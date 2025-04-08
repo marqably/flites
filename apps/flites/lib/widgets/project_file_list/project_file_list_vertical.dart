@@ -1,11 +1,12 @@
 import 'package:flites/constants/app_sizes.dart';
 import 'package:flites/main.dart';
 import 'package:flites/states/open_project.dart';
-import 'package:flites/states/selected_images_controller.dart';
+import 'package:flites/states/selected_image_row_state.dart';
+import 'package:flites/states/selected_image_state.dart';
+import 'package:flites/states/source_files_state.dart';
 import 'package:flites/states/tool_controller.dart';
-import 'package:flites/types/flites_image.dart';
-import 'package:flites/utils/image_picker.dart';
 import 'package:flites/widgets/controls/control_header.dart';
+import 'package:flites/widgets/image_map_widgets/image_map_widget.dart';
 import 'package:flites/widgets/project_file_list/canvas_controls_overlay_button.dart';
 import 'package:flites/widgets/project_file_list/file_item.dart';
 import 'package:flites/widgets/project_file_list/hoverable_widget.dart';
@@ -32,7 +33,7 @@ class _ProjectFileListVerticalState extends State<ProjectFileListVertical> {
       (context) {
         return GestureDetector(
           onTap: () {
-            SelectedImagesController().clearSelection();
+            SelectedImageState.clearSelection();
           },
           child: Container(
             width: 300,
@@ -56,6 +57,7 @@ class _ProjectFileListVerticalState extends State<ProjectFileListVertical> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      const ImageMapWidget(),
                       ControlHeader(text: context.l10n.tools.toUpperCase()),
                       Row(
                         children: [
@@ -102,14 +104,15 @@ class _ProjectFileListVerticalState extends State<ProjectFileListVertical> {
                         message: context.l10n.toggleVisibility,
                         child: InkWell(
                           onTap: () {
-                            if (projectSourceFiles.value.length <=
+                            final selectedRowIndex = selectedImageRow.value;
+                            final currentRow =
+                                projectSourceFiles.value.rows[selectedRowIndex];
+                            if (currentRow.images.length <=
                                 selectedReferenceImages.value.toSet().length) {
                               selectedReferenceImages.value = [];
                             } else {
-                              selectedReferenceImages.value = projectSourceFiles
-                                  .value
-                                  .map((e) => e.id)
-                                  .toList();
+                              selectedReferenceImages.value =
+                                  currentRow.images.map((e) => e.id).toList();
                             }
                           },
                           child: const Icon(
@@ -148,7 +151,8 @@ class _ProjectFileListVerticalState extends State<ProjectFileListVertical> {
                                 child: child,
                               );
                             },
-                            children: projectSourceFiles.value
+                            children: projectSourceFiles
+                                .value.rows[selectedImageRow.value].images
                                 .asMap()
                                 .entries
                                 .map((entry) {
@@ -162,14 +166,8 @@ class _ProjectFileListVerticalState extends State<ProjectFileListVertical> {
                               );
                             }).toList(),
                             onReorder: (oldIndex, newIndex) {
-                              if (oldIndex < newIndex) {
-                                newIndex -= 1;
-                              }
-                              final List<FlitesImage> currentImages =
-                                  List.from(projectSourceFiles.value);
-                              final item = currentImages.removeAt(oldIndex);
-                              currentImages.insert(newIndex, item);
-                              projectSourceFiles.value = currentImages;
+                              SourceFilesState.reorderImages(
+                                  oldIndex, newIndex);
                             },
                           ),
                         ),
@@ -186,15 +184,8 @@ class _ProjectFileListVerticalState extends State<ProjectFileListVertical> {
                       HoverableWidget(
                         builder: (isHovered) {
                           return GestureDetector(
-                            onTap: () async {
-                              final newImages = await imagePickerService
-                                  .pickAndProcessImages();
-                              if (newImages.isNotEmpty) {
-                                projectSourceFiles.value = [
-                                  ...projectSourceFiles.value,
-                                  ...newImages,
-                                ];
-                              }
+                            onTap: () {
+                              SourceFilesState.addImages();
                             },
                             child: Container(
                               width: double.infinity,
