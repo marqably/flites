@@ -1,9 +1,6 @@
 import 'package:flites/main.dart';
 import 'package:flites/states/selected_image_row_state.dart';
 import 'package:flites/states/source_files_state.dart';
-import 'package:flites/utils/generate_sprite.dart';
-import 'package:flites/utils/generate_svg_sprite.dart';
-import 'package:flites/utils/svg_utils.dart';
 import 'package:flites/widgets/buttons/stadium_button.dart';
 import 'package:flites/widgets/export/file_path_picker.dart';
 import 'package:flites/widgets/export/numeric_input_with_buttons.dart';
@@ -24,19 +21,19 @@ class ExportDialogContentState extends State<ExportDialogContent> {
   final fileNameController = TextEditingController(text: 'sprite');
   String? exportPath;
 
-  int currentWidthPx = 300;
-  int currentHeightPx = 0;
+  // int currentWidthPx = 300;
+  // int currentHeightPx = 0;
 
-  int currentPaddingTop = 0;
-  int currentPaddingBottom = 0;
-  int currentPaddingLeft = 0;
-  int currentPaddingRight = 0;
+  // int currentPaddingTop = 0;
+  // int currentPaddingBottom = 0;
+  // int currentPaddingLeft = 0;
+  // int currentPaddingRight = 0;
 
-  bool get _allImagesAreSvg {
-    final images = projectSourceFiles.value.rows[selectedImageRow.value].images;
-    if (images.isEmpty) return false;
-    return images.every((image) => SvgUtils.isSvg(image.image));
-  }
+  // bool get _allImagesAreSvg {
+  //   final images = projectSourceFiles.value.rows[selectedImageRow.value].images;
+  //   if (images.isEmpty) return false;
+  //   return images.every((image) => SvgUtils.isSvg(image.image));
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -48,8 +45,8 @@ class ExportDialogContentState extends State<ExportDialogContent> {
     }
 
     return Watch((context) {
-      // final selectedExportSettings =
-      //     projectSourceFiles.value.rows[selectedImageRow.value].exportSettings;
+      final selectedExportSettings =
+          projectSourceFiles.value.rows[selectedImageRow.value].exportSettings;
 
       return Container(
         padding: const EdgeInsets.symmetric(
@@ -87,11 +84,12 @@ class ExportDialogContentState extends State<ExportDialogContent> {
                 gapW4,
                 Expanded(
                   child: NumericInputWithButtons(
-                    currentValue: currentWidthPx,
+                    currentValue: selectedExportSettings.widthPx,
                     onChanged: (value) {
-                      setState(() {
-                        currentWidthPx = value;
-                      });
+                      SourceFilesState.changeExportSettings(
+                        selectedImageRow.value,
+                        selectedExportSettings.copyWith(widthPx: value),
+                      );
                     },
                   ),
                 ),
@@ -100,11 +98,12 @@ class ExportDialogContentState extends State<ExportDialogContent> {
                 gapW4,
                 Expanded(
                   child: NumericInputWithButtons(
-                    currentValue: currentHeightPx,
+                    currentValue: selectedExportSettings.heightPx,
                     onChanged: (value) {
-                      setState(() {
-                        currentHeightPx = value;
-                      });
+                      SourceFilesState.changeExportSettings(
+                        selectedImageRow.value,
+                        selectedExportSettings.copyWith(heightPx: value),
+                      );
                     },
                   ),
                 ),
@@ -112,29 +111,33 @@ class ExportDialogContentState extends State<ExportDialogContent> {
             ),
             gapH24,
             PaddingInput(
-              topPadding: currentPaddingTop,
-              bottomPadding: currentPaddingBottom,
-              leftPadding: currentPaddingLeft,
-              rightPadding: currentPaddingRight,
+              topPadding: selectedExportSettings.paddingTopPx,
+              bottomPadding: selectedExportSettings.paddingBottomPx,
+              leftPadding: selectedExportSettings.paddingLeftPx,
+              rightPadding: selectedExportSettings.paddingRightPx,
               onTopChanged: (value) {
-                setState(() {
-                  currentPaddingTop = value;
-                });
+                SourceFilesState.changeExportSettings(
+                  selectedImageRow.value,
+                  selectedExportSettings.copyWith(paddingTopPx: value),
+                );
               },
               onBottomChanged: (value) {
-                setState(() {
-                  currentPaddingBottom = value;
-                });
+                SourceFilesState.changeExportSettings(
+                  selectedImageRow.value,
+                  selectedExportSettings.copyWith(paddingBottomPx: value),
+                );
               },
               onLeftChanged: (value) {
-                setState(() {
-                  currentPaddingLeft = value;
-                });
+                SourceFilesState.changeExportSettings(
+                  selectedImageRow.value,
+                  selectedExportSettings.copyWith(paddingLeftPx: value),
+                );
               },
               onRightChanged: (value) {
-                setState(() {
-                  currentPaddingRight = value;
-                });
+                SourceFilesState.changeExportSettings(
+                  selectedImageRow.value,
+                  selectedExportSettings.copyWith(paddingRightPx: value),
+                );
               },
             ),
             gapH24,
@@ -155,70 +158,72 @@ class ExportDialogContentState extends State<ExportDialogContent> {
             StadiumButton(
               text: context.l10n.export,
               onPressed: () {
-                double? width =
-                    currentWidthPx > 0 ? currentWidthPx.toDouble() : null;
-                double? height =
-                    currentHeightPx > 0 ? currentHeightPx.toDouble() : null;
+                // double? width = selectedExportSettings.widthPx > 0
+                //     ? selectedExportSettings.widthPx.toDouble()
+                //     : null;
+                // double? height = selectedExportSettings.heightPx > 0
+                //     ? selectedExportSettings.heightPx.toDouble()
+                //     : null;
 
-                // Prepare export settings based on the provided dimensions
-                ExportSettings? settings;
-                if (width != null && height != null) {
-                  // Both width and height are provided
-                  settings = ExportSettings.sizeConstrained(
-                    fileName: fileNameController.text,
-                    path: exportPath,
-                    widthPx: width,
-                    heightPx: height,
-                    paddingTopPx: currentPaddingTop.toDouble(),
-                    paddingBottomPx: currentPaddingBottom.toDouble(),
-                    paddingLeftPx: currentPaddingLeft.toDouble(),
-                    paddingRightPx: currentPaddingRight.toDouble(),
-                  );
-                } else if (width != null) {
-                  // Only width is provided
-                  settings = ExportSettings.widthConstrained(
-                    fileName: fileNameController.text,
-                    path: exportPath,
-                    widthPx: width,
-                    paddingTopPx: currentPaddingTop.toDouble(),
-                    paddingBottomPx: currentPaddingBottom.toDouble(),
-                    paddingLeftPx: currentPaddingLeft.toDouble(),
-                    paddingRightPx: currentPaddingRight.toDouble(),
-                  );
-                } else if (height != null) {
-                  // Only height is provided
-                  settings = ExportSettings.heightConstrained(
-                    fileName: fileNameController.text,
-                    path: exportPath,
-                    heightPx: height,
-                    paddingTopPx: currentPaddingTop.toDouble(),
-                    paddingBottomPx: currentPaddingBottom.toDouble(),
-                    paddingLeftPx: currentPaddingLeft.toDouble(),
-                    paddingRightPx: currentPaddingRight.toDouble(),
-                  );
-                }
+                // // Prepare export settings based on the provided dimensions
+                // ExportSettings? settings;
+                // if (width != null && height != null) {
+                //   // Both width and height are provided
+                //   settings = ExportSettings.sizeConstrained(
+                //     fileName: fileNameController.text,
+                //     path: exportPath,
+                //     widthPx: width,
+                //     heightPx: height,
+                //     paddingTopPx: currentPaddingTop.toDouble(),
+                //     paddingBottomPx: currentPaddingBottom.toDouble(),
+                //     paddingLeftPx: currentPaddingLeft.toDouble(),
+                //     paddingRightPx: currentPaddingRight.toDouble(),
+                //   );
+                // } else if (width != null) {
+                //   // Only width is provided
+                //   settings = ExportSettings.widthConstrained(
+                //     fileName: fileNameController.text,
+                //     path: exportPath,
+                //     widthPx: width,
+                //     paddingTopPx: currentPaddingTop.toDouble(),
+                //     paddingBottomPx: currentPaddingBottom.toDouble(),
+                //     paddingLeftPx: currentPaddingLeft.toDouble(),
+                //     paddingRightPx: currentPaddingRight.toDouble(),
+                //   );
+                // } else if (height != null) {
+                //   // Only height is provided
+                //   settings = ExportSettings.heightConstrained(
+                //     fileName: fileNameController.text,
+                //     path: exportPath,
+                //     heightPx: height,
+                //     paddingTopPx: currentPaddingTop.toDouble(),
+                //     paddingBottomPx: currentPaddingBottom.toDouble(),
+                //     paddingLeftPx: currentPaddingLeft.toDouble(),
+                //     paddingRightPx: currentPaddingRight.toDouble(),
+                //   );
+                // }
 
-                if (settings != null) {
-                  // Use the appropriate generator based on image types
-                  if (_allImagesAreSvg) {
-                    GenerateSvgSprite.exportSpriteRow(
-                      settings,
-                      spriteRowIndex: selectedImageRow.value,
-                    );
-                  } else {
-                    GenerateSprite.exportSpriteRow(
-                      settings,
-                      spriteRowIndex: selectedImageRow.value,
-                    );
-                  }
-                } else {
-                  // Handle the case where neither width nor height is provided
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(context.l10n.provideDimensionError),
-                    ),
-                  );
-                }
+                // if (settings != null) {
+                //   // Use the appropriate generator based on image types
+                //   if (_allImagesAreSvg) {
+                //     GenerateSvgSprite.exportSpriteRow(
+                //       settings,
+                //       spriteRowIndex: selectedImageRow.value,
+                //     );
+                //   } else {
+                //     GenerateSprite.exportSpriteRow(
+                //       settings,
+                //       spriteRowIndex: selectedImageRow.value,
+                //     );
+                //   }
+                // } else {
+                //   // Handle the case where neither width nor height is provided
+                //   ScaffoldMessenger.of(context).showSnackBar(
+                //     SnackBar(
+                //       content: Text(context.l10n.provideDimensionError),
+                //     ),
+                //   );
+                // }
               },
             ),
           ],
