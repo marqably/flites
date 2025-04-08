@@ -16,7 +16,7 @@ final _projectSourceFiles = signal<FlitesImageMap>(
   autoDispose: false,
 );
 
-ReadonlySignal<FlitesImageMap> get projectSourceFiles =>
+ReadonlySignal<FlitesImageMap> projectSourceFiles =
     _projectSourceFiles.readonly();
 
 final selectedAnimation = computed(
@@ -65,6 +65,17 @@ class SourceFilesState {
     newImageMap.rows[rowIndex] = newRow;
 
     _projectSourceFiles.value = newImageMap;
+  }
+
+  static void renameImageRow(String name) {
+    final currentRows = [..._projectSourceFiles.value.rows];
+
+    final newRow = currentRows[selectedImageRow.value].copyWith(name: name);
+
+    currentRows[selectedImageRow.value] = newRow;
+
+    _projectSourceFiles.value =
+        _projectSourceFiles.value.copyWith(rows: currentRows);
   }
 
   static Future<void> addImages() async {

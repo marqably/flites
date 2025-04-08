@@ -3,6 +3,7 @@ import 'package:flites/services/update_service.dart';
 import 'package:flites/types/update_info.dart';
 import 'package:flites/widgets/blocking_widget/blocking_container.dart';
 import 'package:flites/widgets/image_editor/image_editor.dart';
+import 'package:flites/widgets/image_map_widgets/sprite_map_header_wrapper.dart';
 import 'package:flites/widgets/overlays/update_overlay.dart';
 import 'package:flites/widgets/project_file_list/project_file_list_vertical.dart';
 import 'package:flites/widgets/tool_controls/tool_controls.dart';
@@ -45,33 +46,35 @@ class _OverviewState extends State<Overview> {
   @override
   Widget build(BuildContext context) {
     return const FileDropArea(
-      child: Stack(
-        alignment: Alignment.bottomCenter,
-        children: [
-          Row(
-            children: [
-              ProjectFileListVertical(),
-              Expanded(
-                child: Stack(
-                  children: [
-                    ImageEditor(),
-                    Positioned(
-                      right: Sizes.p32,
-                      bottom: Sizes.p32,
-                      child: ZoomControls(),
-                    ),
-                  ],
+      child: SpriteMapHeaderWrapper(
+        child: Stack(
+          alignment: Alignment.bottomCenter,
+          children: [
+            Row(
+              children: [
+                ProjectFileListVertical(),
+                Expanded(
+                  child: Stack(
+                    children: [
+                      ImageEditor(),
+                      Positioned(
+                        right: Sizes.p32,
+                        bottom: Sizes.p32,
+                        child: ZoomControls(),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              ToolControls()
-            ],
-          ),
-          BlockingContainer(),
-          Positioned(
-            bottom: Sizes.p64,
-            child: PlayerControls(),
-          ),
-        ],
+                ToolControls()
+              ],
+            ),
+            BlockingContainer(),
+            Positioned(
+              bottom: Sizes.p64,
+              child: PlayerControls(),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -6,7 +6,6 @@ import 'package:flites/states/selected_image_state.dart';
 import 'package:flites/states/source_files_state.dart';
 import 'package:flites/states/tool_controller.dart';
 import 'package:flites/widgets/controls/control_header.dart';
-import 'package:flites/widgets/image_map_widgets/image_map_widget.dart';
 import 'package:flites/widgets/project_file_list/canvas_controls_overlay_button.dart';
 import 'package:flites/widgets/project_file_list/file_item.dart';
 import 'package:flites/widgets/project_file_list/hoverable_widget.dart';
@@ -57,7 +56,6 @@ class _ProjectFileListVerticalState extends State<ProjectFileListVertical> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const ImageMapWidget(),
                       ControlHeader(text: context.l10n.tools.toUpperCase()),
                       Row(
                         children: [
