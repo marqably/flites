@@ -1,5 +1,6 @@
 import 'package:flites/constants/app_sizes.dart';
 import 'package:flites/main.dart';
+import 'package:flites/states/selected_image_row_state.dart';
 import 'package:flites/widgets/export/export_dialog_content.dart';
 import 'package:flutter/material.dart';
 import 'package:signals/signals_flutter.dart';
@@ -44,6 +45,7 @@ class _ToolControlsState extends State<ToolControls> {
       ),
       width: 300,
       child: Watch((context) {
+        final selectedRow = selectedImageRow.value;
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -56,7 +58,11 @@ class _ToolControlsState extends State<ToolControls> {
               ),
               iconColor: context.colors.onSurface,
               collapsedIconColor: context.colors.onSurface,
-              children: const [ExportDialogContent()],
+              children: [
+                ExportDialogContent(
+                  key: ValueKey('export-section-$selectedRow'),
+                ),
+              ],
             ),
             divider,
             gapH16,

@@ -2,6 +2,7 @@ import 'package:flites/constants/app_sizes.dart';
 import 'package:flites/main.dart';
 import 'package:flites/states/selected_image_row_state.dart';
 import 'package:flites/states/source_files_state.dart';
+import 'package:flites/widgets/logo/logo_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:signals/signals_flutter.dart';
@@ -19,6 +20,15 @@ class ImageMapHeader extends StatelessWidget {
       ),
       child: Row(
         children: [
+          const Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: Sizes.p16,
+              vertical: Sizes.p4,
+            ),
+            child: LogoWidget(),
+          ),
+
+          // Row items
           Watch(
             (context) {
               final images = projectSourceFiles.value;
@@ -48,6 +58,8 @@ class ImageMapHeader extends StatelessWidget {
               );
             },
           ),
+
+          // Plus butotn
           AnimationRowTabWrapper(
             width: Sizes.p48,
             isSelected: false,
@@ -59,7 +71,7 @@ class ImageMapHeader extends StatelessWidget {
               size: Sizes.p16,
             ),
           ),
-          const Spacer(),
+          // const Spacer(),
           AnimationRowTabWrapper(
             isSelected: true,
             onPressed: () {},
