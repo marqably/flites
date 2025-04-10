@@ -1,0 +1,29 @@
+platforms:
+  linux:
+    release_suffix_template: 'flites-${VERSION}-x86_64.AppImage'
+    pr_suffix_template: 'flites-pr${PR_NUM}-x86_64.AppImage'
+    manual_suffix_template: 'flites-manual${RUN_ID}-x86_64.AppImage'
+    release_artifact_name: 'flites-linux-artifact' # Consistent name for release job
+    pr_artifact_name_template: 'flites-linux-pr-build-${PR_NUM}' # Unique name for PR check
+    manual_artifact_name_template: 'flites-linux-manual-build-${RUN_ID}' # Unique name for manual run
+  windows:
+    release_suffix_template: '${VERSION}-windows-x64.zip' # Adjust extension if needed (e.g., .exe, .msix)
+    pr_suffix_template: 'pr${PR_NUM}-windows-x64.zip'
+    manual_suffix_template: 'manual${RUN_ID}-windows-x64.zip'
+    release_artifact_name: 'windows-artifact'
+    pr_artifact_name_template: 'windows-pr-build-${PR_NUM}'
+    manual_artifact_name_template: 'windows-manual-build-${RUN_ID}'
+  macos:
+    release_suffix_template: '${VERSION}-macos-x64.zip' # Usually a zip of the .app
+    pr_suffix_template: 'pr${PR_NUM}-macos-x64.zip'
+    manual_suffix_template: 'manual${RUN_ID}-macos-x64.zip'
+    release_artifact_name: 'macos-artifact'
+    pr_artifact_name_template: 'macos-pr-build-${PR_NUM}'
+    manual_artifact_name_template: 'macos-manual-build-${RUN_ID}'
+  web:
+    release_suffix_template: '${VERSION}-web' # Example: No zip extension needed
+    pr_suffix_template: 'pr${PR_NUM}-web'
+    manual_suffix_template: 'manual${RUN_ID}-web'
+    release_artifact_name: 'web-artifact' 
+    pr_artifact_name_template: 'web-pr-build-${PR_NUM}'
+    manual_artifact_name_template: 'web-manual-build-${RUN_ID}'

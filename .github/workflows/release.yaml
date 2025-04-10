@@ -1,0 +1,87 @@
+name: Create Release
+
+on:
+  push:
+    tags:
+      - 'v*' 
+
+jobs:
+  call_build_linux:
+    name: Call Linux Build 🐧
+    uses: ./.github/workflows/appimage_build.yaml
+    with:
+      tag: ${{ github.ref_name }} 
+      
+    secrets: inherit 
+
+  # call_build_windows:
+  #   name: Call Windows Build ⬜
+  #   uses: ./.github/workflows/build_windows.yaml # Assuming this filename
+  #   with:
+  #     tag: ${{ github.ref_name }}
+  #   secrets: inherit
+
+  # call_build_macos:
+  #   name: Call macOS Build 🍎
+  #   uses: ./.github/workflows/build_macos.yaml # Assuming this filename
+  #   with:
+  #     tag: ${{ github.ref_name }}
+  #   secrets: inherit
+
+  # call_build_web:
+  #   name: Call Web Build 🌐
+  #   uses: ./.github/workflows/build_web.yaml # Assuming this filename
+  #   with:
+  #     tag: ${{ github.ref_name }}
+  #   secrets: inherit
+
+  # --- Publish Release Job ---
+  publish_release:
+    name: Publish GitHub Release 🚀
+    runs-on: ubuntu-latest
+    # This job runs only after all specified build jobs succeed
+    needs:
+      - call_build_linux
+      # - call_build_windows
+      # - call_build_macos
+      # - call_build_web
+
+    permissions:
+      contents: write 
+
+    steps:
+      - name: DEBUG Print Trigger Tag
+        run: |
+         echo "Triggering Tag (github.ref_name): ${{ github.ref_name }}"
+      # Step 1: Download all artifacts produced by the 'needs' jobs
+      - name: Download all build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          # No name specified downloads all artifacts from this workflow run
+          path: artifacts # Downloads into ./artifacts/<artifact_name>/
+
+      # Step 2: List downloaded files (for debugging)
+      - name: List downloaded artifacts
+        run: ls -lR artifacts
+
+      # Step 3: Create the GitHub Release and upload assets
+      - name: Create Release and Upload Assets
+        uses: softprops/action-gh-release@v2
+        with:
+          # tag_name: ${{ github.ref_name }} # Defaults to the tag that triggered workflow
+          name: Release ${{ github.ref_name }} # Names the release (e.g., "Release v1.0.0")
+          body: | # Optional: Add release notes here
+            Released version ${{ github.ref_name }}
+            *(See CHANGELOG.md for details)*
+          draft: false # Set to true to create a draft release instead of publishing
+          prerelease: ${{ contains(github.ref_name, '-') }} # Mark as pre-release if tag contains '-' (e.g., v1.0.0-beta)
+          files: |
+            # Paths to the files *inside* the directories created by download-artifact
+            # The directory name matches the 'release_artifact_name' from your config
+            artifacts/flites-linux-artifact/*.AppImage
+            # artifacts/windows-artifact/*.zip
+            # artifacts/macos-artifact/*.zip
+            # artifacts/web-artifact/* # Might be a directory or zip
+        env:
+          # The GITHUB_TOKEN is automatically available to the workflow
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
