@@ -340,8 +340,11 @@ class _ImageEditorState extends State<ImageEditor> {
 }
 
 BoundingBox? get allImagesBoundingBox {
-  final selectedRowIndex = selectedImageRow.value;
-  final allImages = projectSourceFiles.value.rows[selectedRowIndex].images;
+  return boundingBoxOfRow(selectedImageRow.value);
+}
+
+BoundingBox? boundingBoxOfRow(int rowIndex) {
+  final allImages = projectSourceFiles.value.rows[rowIndex].images;
 
   if (allImages.isEmpty) {
     return null;

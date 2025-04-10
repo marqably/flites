@@ -7,32 +7,82 @@ import 'package:flites/types/flites_image.dart';
 import 'package:flites/types/sprite_constraints.dart';
 import 'package:flites/widgets/image_editor/image_editor.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:image/image.dart' as img;
 
 class GenerateSprite {
-  static Future<void> exportSpriteMap(
-    ExportSettings settings, {
+  static Future<img.Image?> exportSpriteMap({
     FileSaver? fileSaver,
   }) async {
-    // TODO(jaco): implement
+    final sourceFiles = projectSourceFiles.value;
+
+    final spriteRowImages = <img.Image>[];
+
+    for (int i = 0; i < sourceFiles.rows.length; i++) {
+      final spriteRowImage = await createSpriteRowImage(
+        sourceFiles.rows[i].exportSettings,
+        spriteRowIndex: i,
+      );
+
+      if (spriteRowImage != null) {
+        spriteRowImages.add(spriteRowImage);
+      }
+    }
+
+    // Find longest width
+    final longestWidth = spriteRowImages.map((e) => e.width).reduce(
+          (a, b) => a > b ? a : b,
+        );
+
+    // Find total height of all rows
+    final totalHeight = spriteRowImages.map((e) => e.height).reduce(
+          (a, b) => a + b,
+        );
+
+    // Create composite sprite sheet of a vertical list with all rows
+    final spriteSheet = img.Image(
+      width: longestWidth.toInt(),
+      height: totalHeight.toInt(),
+      numChannels: 4,
+      format: img.Format.uint8,
+    );
+
+    int offsetY = 0;
+    // Position each row in the sprite sheet
+    for (int i = 0; i < spriteRowImages.length; i++) {
+      img.compositeImage(
+        spriteSheet,
+        spriteRowImages[i],
+        dstX: 0,
+        dstY: offsetY,
+      );
+
+      offsetY += spriteRowImages[i].height;
+    }
+
+    _saveSpriteSheet(
+      spriteSheet,
+      'some',
+      null,
+      FileSaver.instance,
+    );
+
+    return spriteSheet;
   }
 
-  static Future<void> exportSpriteRow(
+  static Future<img.Image?> createSpriteRowImage(
     ExportSettings settings, {
     required int spriteRowIndex,
-    FileSaver? fileSaver,
   }) async {
     _validateDimensions(settings.constraints);
     _validatePadding(settings);
 
     final images = projectSourceFiles.value.rows[spriteRowIndex].images;
 
-    final boundingBox = allImagesBoundingBox;
+    final boundingBox = boundingBoxOfRow(spriteRowIndex);
 
     // Early return if no valid images or bounding box
     if (boundingBox == null || images.isEmpty) {
-      return;
+      return null;
     }
 
     // Process frames
@@ -44,7 +94,7 @@ class GenerateSprite {
       settings,
     );
 
-    if (frames.isEmpty) return;
+    if (frames.isEmpty) return null;
 
     // Calculate dimensions
     final frameSize = sizeOfFrame(boundingBox.size, settings);
@@ -72,21 +122,19 @@ class GenerateSprite {
     // Position each frame with padding
     for (int i = 0; i < frames.length; i++) {
       final xPos = i * (frameSize.width + settings.horizontalMargin);
+      final dstX = (xPos + settings.paddingLeftPx).toInt();
+      final dstY = settings.paddingTopPx.toInt();
+
+      // Composite the actual frame image
       img.compositeImage(
         spriteSheet,
         frames[i],
-        dstX: (xPos + settings.paddingLeftPx).toInt(),
-        dstY: settings.paddingTopPx.toInt(),
+        dstX: dstX,
+        dstY: dstY,
       );
     }
 
-    // Save the sprite
-    await _saveSpriteSheet(
-      spriteSheet,
-      settings.fileName ?? 'sprite',
-      settings.path,
-      fileSaver ?? FileSaver.instance,
-    );
+    return spriteSheet;
   }
 
   static Future<void> _saveSpriteSheet(
