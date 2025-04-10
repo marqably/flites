@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flites/constants/app_sizes.dart';
 import 'package:flites/main.dart';
 import 'package:flites/services/update_service.dart';
@@ -18,7 +20,7 @@ class UpdateOverlay extends StatelessWidget {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            'Failed to open update URL.',
+            context.l10n.failedToOpenUpdateUrl,
             style: TextStyle(
               color: context.colors.onSurface,
             ),
@@ -30,7 +32,6 @@ class UpdateOverlay extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: SizedBox(
-        width: 300,
         child: BaseDialogCard(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -43,7 +44,7 @@ class UpdateOverlay extends StatelessWidget {
               ),
               gapH16,
               Text(
-                'Update Available',
+                context.l10n.updateAvailable,
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -52,7 +53,7 @@ class UpdateOverlay extends StatelessWidget {
               ),
               gapH8,
               Text(
-                'A new version of Flites is available.',
+                context.l10n.newVersionAvailable,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: context.colors.onSurface,
@@ -73,7 +74,7 @@ class UpdateOverlay extends StatelessWidget {
                   TextButton(
                     onPressed: () => showUpdateOverlay.value = false,
                     child: Text(
-                      'Later',
+                      context.l10n.later,
                       style: TextStyle(
                         color: context.colors.onSurface,
                       ),
@@ -94,9 +95,9 @@ class UpdateOverlay extends StatelessWidget {
                         showErrorSnackbar();
                       }
                     },
-                    child: const Text(
-                      'Update Now',
-                      style: TextStyle(
+                    child: Text(
+                      context.l10n.updateNow,
+                      style: const TextStyle(
                         color: Colors.white,
                       ),
                     ),
