@@ -1,79 +1,124 @@
 name: 🪟 Windows Build
 
-env:
-  PACKAGE_VERSION: '0.0.1'
-
 on:
-  workflow_dispatch:
-  push:
-    branches:
-      - main
+  workflow_call:
+    inputs:
+      tag:
+        description: 'Git tag for release builds.'
+        required: false
+        type: string
+      flutter-version:
+        description: 'Flutter version (optional).'
+        required: false
+        type: string
+        # default: '3.27.2' 
+
+  # Triggers on Pull Requests targeting main
   pull_request:
     branches:
       - main
+
+  # Allows manual triggering
+  workflow_dispatch:
 
 jobs:
   build-windows:
     name: 🪟 Build and Deploy Windows
     runs-on: windows-latest
+    env:
+      APP_NAME: Flites
+      APP_ID: com.marqably.flites
+      APP_NAME_LOWER: flites
     steps:
+      # Optional: Debug step to see input tag when called
+      - name: DEBUG Print Workflow Input Tag
+        if: github.event_name == 'workflow_call' # Only relevant when called
+        run: |
+         echo "Workflow Input (inputs.tag): ${{ inputs.tag }}"
+        shell: pwsh # Use PowerShell for consistency on Windows
+
       - name: 📚 Git Checkout
         uses: actions/checkout@v4
+        with:
+          # Checkout tag only if called for release, otherwise default
+          ref: ${{ github.event_name == 'workflow_call' && inputs.tag || github.ref }}
+
+      - name: Determine Build Context & Variables
+        id: vars
+        # Use the specific ref for stability, e.g. @main or @<commit_sha>
+        uses: ./.github/actions/determine_build_vars
+        with:
+          platform: 'windows'
+          event_name: ${{ github.event_name }}
+          tag_input: ${{ inputs.tag }}
+          pr_number: ${{ github.event.number }}
+          run_id: ${{ github.run_id }}
 
       - name: 📦 Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.27.2'
-          channel: 'stable'
+          # Use version passed from caller or fallback
+          flutter-version: ${{ inputs.flutter-version || '3.27.2' }}
           architecture: x64
-
-      - name: 🔢 Set Version
-        run: |
-          cd apps/flites
-          echo "Building version: ${{ env.PACKAGE_VERSION }}"
-          ((Get-Content -path pubspec.yaml) -replace 'version: .*', 'version: ${{ env.PACKAGE_VERSION }}') | Set-Content -Path pubspec.yaml
-
-      - name: 🗄️ Cache Flutter
-        uses: actions/cache@v3
-        with:
-          path: |
-            %LOCALAPPDATA%\Pub\Cache
-            build\
-            .dart_tool/
-          key: windows-flutter-${{ runner.os }}-${{ hashFiles('**/pubspec.lock') }}
-          restore-keys: |
-            windows-flutter-${{ runner.os }}-
-            windows-flutter-
+          cache: true # Enable integrated caching
 
       - name: 📦 Setup Melos
         uses: bluefireteam/melos-action@v2
 
       - name: 🔧 Install Dependencies
         run: |
-          cd apps/flites
           flutter config --enable-windows-desktop
           flutter doctor -v
+        shell: pwsh
+
+      - name: 🔄 Get Dependencies
+        run: melos bootstrap
+        shell: pwsh
 
       - name: 🏗️ Build Windows App
         run: |
           cd apps/flites
+          echo "Building Windows app version ${{ steps.vars.outputs.package_version }}"
           flutter build windows --release
-          
-          # Verify build output
-          $buildPath = "build/windows/x64/runner/Release"
-          if (-not (Test-Path "$buildPath/flites.exe")) {
-            Write-Error "Build failed - executable not found"
+        shell: pwsh
+
+      - name: 📦 Package Windows Build into Zip
+        shell: pwsh
+        run: |
+          # Adjust source directory path if your Flutter project isn't in apps/flites
+          $sourceDir = "apps/flites/build/windows/x64/runner/Release"
+          # Get zip filename from composite action output (includes .zip extension via config)
+          $zipFileName = "${{ steps.vars.outputs.artifact_suffix }}"
+          # Check if source directory exists
+          if (-not (Test-Path $sourceDir)) {
+            Write-Error "Build output directory not found: $sourceDir"
+            ls -Recurse "apps/flites/build/windows" # List build output for debugging
             exit 1
           }
+          # Create the zip archive
+          Compress-Archive -Path "$sourceDir\*" -DestinationPath $zipFileName -Force
+          echo "Created $zipFileName"
 
       - name: ⬆️ Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: flites-windows-${{ env.PACKAGE_VERSION }}
-          path: apps/flites/build/windows/x64/runner/Release/**
-          
+          name: ${{ steps.vars.outputs.artifact_upload_name }}
+          path: ${{ steps.vars.outputs.artifact_suffix }}
 
       - name: 🛠️ Test Installation
+        shell: pwsh
         run: |
-          cd apps/flites/build/windows/x64/runner/Release
-          ./flites.exe --version
+          $zipFileName = "${{ steps.vars.outputs.artifact_suffix }}"
+          # Expand the archive created earlier
+          Expand-Archive -Path $zipFileName -DestinationPath ./extracted_app -Force
+          # Construct path to the executable - check if this name is correct
+          $exePath = "./extracted_app/${{ env.APP_NAME_LOWER }}.exe"
+          # Verify executable exists after extraction
+          if (-not (Test-Path $exePath)) {
+             Write-Error "Executable not found after extraction: $exePath"
+             ls -lR ./extracted_app # List extracted files for debugging
+             exit 1
+          }
+          # Attempt to run the executable with a common flag like --version
+          echo "Attempting to run $exePath --version"
+          & $exePath --version # Or change to another simple command your app supports

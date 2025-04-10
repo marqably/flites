@@ -46,15 +46,41 @@ runs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    # Step 2: Install yq (YAML processor)
-    - name: Install yq
+    # Step 2: Install yq (Conditional)
+    - name: Install yq (Linux/macOS)
+      # Run this step only if the runner OS is Linux or macOS
+      if: runner.os == 'Linux' || runner.os == 'macOS'
       shell: bash
       run: |
+        # Use wget for Linux, or brew for macOS (brew might be better if available)
+        INSTALL_CMD=""
+        if [[ "${{ runner.os }}" == "Linux" ]]; then
+          INSTALL_CMD="sudo wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq && sudo chmod +x /usr/bin/yq"
+        elif [[ "${{ runner.os }}" == "macOS" ]]; then
+          INSTALL_CMD="brew install yq" # Assumes Homebrew is available
+        fi
+
         if ! command -v yq &> /dev/null; then
-          echo "Installing yq..."
-          sudo wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq && sudo chmod +x /usr/bin/yq
+          echo "Installing yq for ${{ runner.os }}..."
+          eval $INSTALL_CMD # Run the install command
+        else
+          echo "yq already installed."
         fi
         yq --version
+
+    - name: Install yq (Windows)
+      # Run this step only if the runner OS is Windows
+      if: runner.os == 'Windows'
+      shell: pwsh
+      run: |
+        # Check if yq is already available via choco perhaps
+        if (-not (Get-Command yq -ErrorAction SilentlyContinue)) {
+          echo "Installing yq via Chocolatey..."
+          choco install yq --no-progress --yes
+        } else {
+          echo "yq already installed."
+        }
+        yq --version # Verify installation
 
     # Step 3: Calculate variables based on context and config file
     - name: Calculate Variables
