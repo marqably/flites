@@ -23,13 +23,14 @@ class SettingsOverlayButton extends StatelessWidget {
         onTap: onTap,
         selectedTileColor: context.colors.surfaceContainerLowest,
         selectedColor: context.colors.onSurface,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 14),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(Sizes.p4),
         ),
         trailing: selected
             ? const Icon(
-                CupertinoIcons.check_mark_circled,
-                size: Sizes.p16,
+                CupertinoIcons.checkmark_alt,
+                size: Sizes.p20,
               )
             : null,
         title: Text(title),
