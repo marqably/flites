@@ -1,7 +1,7 @@
 import 'package:flites/screens/overview.dart';
-import 'package:flites/services/update_service.dart';
 import 'package:flites/states/app_settings.dart';
 import 'package:flites/theme/themes.dart';
+import 'package:flites/widgets/app_loader.dart';
 import 'package:flites/widgets/layout/gradient_border_widget.dart';
 import 'package:flites/widgets/loading_overlay/loading_overlay.dart';
 import 'package:flutter/material.dart';
@@ -12,10 +12,9 @@ import 'package:signals/signals_flutter.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await UpdateService.initialize();
-  await appSettings.loadSettings();
-
-  runApp(const FlitesApp());
+  // Initialization of services and settings
+  // should be done within Future.wait() in AppLoader.
+  runApp(const AppLoader(FlitesApp()));
 }
 
 class FlitesApp extends StatelessWidget {
