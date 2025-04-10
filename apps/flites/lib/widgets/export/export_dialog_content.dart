@@ -58,24 +58,6 @@ class ExportDialogContentState extends State<ExportDialogContent> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            buildLabelText(context.l10n.fileName.toUpperCase()),
-            gapH8,
-            SizedBox(
-              height: 30,
-              child: TextField(
-                decoration: InputDecoration(
-                  hintText: context.l10n.enterSpriteName,
-                  border: const OutlineInputBorder(
-                    borderSide: BorderSide.none,
-                  ),
-                  fillColor: context.colors.surface,
-                  isDense: true,
-                  filled: true,
-                ),
-                controller: fileNameController,
-              ),
-            ),
-            gapH24,
             buildLabelText(context.l10n.sizePx),
             gapH16,
             Row(
