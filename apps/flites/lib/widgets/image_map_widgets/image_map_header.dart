@@ -106,14 +106,6 @@ class ImageMapHeader extends StatelessWidget {
           AnimationRowTabWrapper(
             isSelected: true,
             onPressed: () {
-              // GenerateSprite.exportSpriteMap();
-            },
-            withBackground: false,
-            child: const Text('Save file'),
-          ),
-          AnimationRowTabWrapper(
-            isSelected: true,
-            onPressed: () {
               GenerateSprite.exportSpriteMap();
             },
             withBackground: false,
