@@ -10,7 +10,7 @@ class SpriteMapHeaderWrapper extends StatelessWidget {
     return Column(
       children: [
         Expanded(child: child),
-        const ImageMapHeader(),
+        ImageMapHeader(),
       ],
     );
   }

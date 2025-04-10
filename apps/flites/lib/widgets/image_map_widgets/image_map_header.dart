@@ -4,20 +4,20 @@ import 'package:flites/states/selected_image_row_state.dart';
 import 'package:flites/states/source_files_state.dart';
 import 'package:flites/widgets/logo/logo_widget.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:signals/signals_flutter.dart';
 
 class ImageMapHeader extends StatelessWidget {
-  const ImageMapHeader({super.key});
+  ImageMapHeader({super.key});
+
+  final ScrollController scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: double.infinity,
       height: Sizes.p32,
-      decoration: BoxDecoration(
-        color: context.colors.primary,
-      ),
       child: Row(
         children: [
           const Padding(
@@ -27,54 +27,85 @@ class ImageMapHeader extends StatelessWidget {
             ),
             child: LogoWidget(),
           ),
+          Expanded(
+            child: Row(
+              children: [
+                // Row items
+                Flexible(
+                  child: Watch(
+                    (context) {
+                      final images = projectSourceFiles.value;
+                      final selectedAnimation = selectedImageRow.value;
 
-          // Row items
-          Watch(
-            (context) {
-              final images = projectSourceFiles.value;
-              final selectedAnimation = selectedImageRow.value;
+                      /// TODO: check if mouse wheel scrolling is possible without
+                      /// the [Listener]
+                      return Listener(
+                        onPointerSignal: (pointerSignal) {
+                          if (pointerSignal is PointerScrollEvent) {
+                            const scrollSpeedFactor = 0.5;
 
-              return ListView.builder(
-                shrinkWrap: true,
-                scrollDirection: Axis.horizontal,
-                itemCount: images.rows.length,
-                itemBuilder: (c, i) {
-                  final isSelected = selectedAnimation == i;
+                            final currentOffset = scrollController.offset;
 
-                  return AnimationRowTabWrapper(
-                    onPressed: () {
-                      // if (isSelected) {}
+                            final scrollOffset = pointerSignal.scrollDelta.dy;
 
-                      SelectedImageRowState.setSelectedImageRow(i);
+                            final newOffset = currentOffset +
+                                (scrollOffset * scrollSpeedFactor);
+
+                            final clampedOffset = newOffset.clamp(
+                              0.0,
+                              scrollController.position.maxScrollExtent,
+                            );
+
+                            scrollController.jumpTo(clampedOffset);
+                          }
+                        },
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          controller: scrollController,
+                          scrollDirection: Axis.horizontal,
+                          itemCount: images.rows.length,
+                          itemBuilder: (c, i) {
+                            final isSelected = selectedAnimation == i;
+
+                            return AnimationRowTabWrapper(
+                              onPressed: () {
+                                SelectedImageRowState.setSelectedImageRow(i);
+                              },
+                              isSelected: isSelected,
+                              child: AnimationRowTabName(
+                                isSelected: isSelected,
+                                name: images.rows[i].name,
+                                index: i,
+                                key: ValueKey(images.rows[i].hashCode),
+                              ),
+                            );
+                          },
+                        ),
+                      );
                     },
-                    isSelected: isSelected,
-                    child: AnimationRowTabName(
-                      isSelected: isSelected,
-                      name: images.rows[i].name,
-                      index: i,
-                    ),
-                  );
-                },
-              );
-            },
-          ),
+                  ),
+                ),
 
-          // Plus butotn
-          AnimationRowTabWrapper(
-            width: Sizes.p48,
-            isSelected: false,
-            onPressed: () {
-              SourceFilesState.addImageRow('New Row');
-            },
-            child: const Icon(
-              Icons.add,
-              size: Sizes.p16,
+                // Plus button
+                AnimationRowTabWrapper(
+                  width: Sizes.p48,
+                  isSelected: false,
+                  onPressed: () {
+                    SourceFilesState.addImageRow('New Row');
+                  },
+                  child: const Icon(
+                    Icons.add,
+                    size: Sizes.p16,
+                  ),
+                ),
+                // const Spacer(),
+              ],
             ),
           ),
-          // const Spacer(),
           AnimationRowTabWrapper(
             isSelected: true,
             onPressed: () {},
+            withBackground: false,
             child: const Text('Export'),
           ),
         ],
@@ -172,6 +203,7 @@ class AnimationRowTabWrapper extends StatelessWidget {
     required this.isSelected,
     this.width = Sizes.p64 * 3,
     required this.onPressed,
+    this.withBackground = true,
   });
 
   final Widget child;
@@ -179,6 +211,7 @@ class AnimationRowTabWrapper extends StatelessWidget {
 
   final bool isSelected;
   final double width;
+  final bool withBackground;
 
   @override
   Widget build(BuildContext context) {
@@ -188,13 +221,17 @@ class AnimationRowTabWrapper extends StatelessWidget {
         width: width,
         decoration: BoxDecoration(
           border: Border.symmetric(
-            vertical: BorderSide(
-              color: context.colors.primary,
-            ),
+            vertical: withBackground
+                ? BorderSide(
+                    color: context.colors.primary,
+                  )
+                : BorderSide.none,
           ),
-          color: isSelected
-              ? context.colors.primary
-              : const Color.fromRGBO(115, 73, 178, 1),
+          color: withBackground
+              ? isSelected
+                  ? context.colors.primary
+                  : const Color.fromRGBO(115, 73, 178, 1)
+              : null,
         ),
         alignment: Alignment.center,
         child: child,
