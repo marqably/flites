@@ -1,3 +1,4 @@
+import 'package:flites/states/open_project.dart';
 import 'package:flites/states/selected_image_state.dart';
 import 'package:flites/states/source_files_state.dart';
 import 'package:signals/signals_flutter.dart';
@@ -16,6 +17,8 @@ class SelectedImageRowState {
     } else {
       SelectedImageState.setSelectedImage(null);
     }
+
+    selectedReferenceImages.value = [];
 
     _selectedImageRow.value = index;
   }
