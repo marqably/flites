@@ -6,9 +6,17 @@ on:
       - 'v*' 
 
 jobs:
-  call_build_linux:
-    name: Call Linux Build 🐧
+  call_build_appimage:
+    name: Call Appimage Build 🐧
     uses: ./.github/workflows/appimage_build.yaml
+    with:
+      tag: ${{ github.ref_name }} 
+      
+    secrets: inherit 
+
+  call_build_debian:
+    name: Call Debian Build 🐧
+    uses: ./.github/workflows/debian_build.yaml
     with:
       tag: ${{ github.ref_name }} 
       
@@ -28,12 +36,12 @@ jobs:
   #     tag: ${{ github.ref_name }}
   #   secrets: inherit
 
-  # call_build_web:
-  #   name: Call Web Build 🌐
-  #   uses: ./.github/workflows/build_web.yaml # Assuming this filename
-  #   with:
-  #     tag: ${{ github.ref_name }}
-  #   secrets: inherit
+  call_build_web:
+    name: Call Web Build 🌐
+    uses: ./.github/workflows/web_build.yaml # Assuming this filename
+    with:
+      tag: ${{ github.ref_name }}
+    secrets: inherit
 
   # --- Publish Release Job ---
   publish_release:
@@ -41,10 +49,11 @@ jobs:
     runs-on: ubuntu-latest
     # This job runs only after all specified build jobs succeed
     needs:
-      - call_build_linux
+      - call_build_appimage
+      - call_build_debian
       - call_build_windows
       # - call_build_macos
-      # - call_build_web
+      - call_build_web
 
     permissions:
       contents: write 
@@ -79,9 +88,10 @@ jobs:
             # Paths to the files *inside* the directories created by download-artifact
             # The directory name matches the 'release_artifact_name' from your config
             artifacts/flites-linux-artifact/*.AppImage
+            artifacts/flites-linux-deb-artifact/*.deb
             artifacts/flites-windows-artifact/*.zip
             # artifacts/macos-artifact/*.zip
-            # artifacts/web-artifact/* # Might be a directory or zip
+            artifacts/flites-web-artifact/*.zip
         env:
           # The GITHUB_TOKEN is automatically available to the workflow
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
