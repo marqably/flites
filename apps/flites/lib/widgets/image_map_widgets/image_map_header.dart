@@ -2,6 +2,7 @@ import 'package:flites/constants/app_sizes.dart';
 import 'package:flites/main.dart';
 import 'package:flites/states/selected_image_row_state.dart';
 import 'package:flites/states/source_files_state.dart';
+import 'package:flites/utils/generate_sprite.dart';
 import 'package:flites/widgets/logo/logo_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
@@ -104,7 +105,17 @@ class ImageMapHeader extends StatelessWidget {
           ),
           AnimationRowTabWrapper(
             isSelected: true,
-            onPressed: () {},
+            onPressed: () {
+              // GenerateSprite.exportSpriteMap();
+            },
+            withBackground: false,
+            child: const Text('Save file'),
+          ),
+          AnimationRowTabWrapper(
+            isSelected: true,
+            onPressed: () {
+              GenerateSprite.exportSpriteMap();
+            },
             withBackground: false,
             child: const Text('Export'),
           ),
