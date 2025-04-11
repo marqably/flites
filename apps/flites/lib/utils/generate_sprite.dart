@@ -73,9 +73,6 @@ class GenerateSprite {
     ExportSettings settings, {
     required int spriteRowIndex,
   }) async {
-    _validateDimensions(settings.constraints);
-    _validatePadding(settings);
-
     final images = projectSourceFiles.value.rows[spriteRowIndex].images;
 
     final boundingBox = boundingBoxOfRow(spriteRowIndex);
@@ -85,8 +82,21 @@ class GenerateSprite {
       return null;
     }
 
+    /// Override settings if no height & width provided
+    if ((settings.widthPx == null || settings.widthPx == 0) &&
+        (settings.heightPx == null || settings.heightPx == 0)) {
+      settings = settings.copyWith(
+        widthPx: boundingBox.size.width.toInt(),
+        heightPx: boundingBox.size.height.toInt(),
+      );
+    }
+
+    _validateDimensions(settings.constraints);
+    _validatePadding(settings);
+
     // Process frames
     final spriteSize = settings.maxDimensionsAfterPadding;
+
     final frames = separateSpriteImages(
       images,
       boundingBox,
@@ -98,12 +108,14 @@ class GenerateSprite {
 
     // Calculate dimensions
     final frameSize = sizeOfFrame(boundingBox.size, settings);
+
     final spriteSheetWidth = _calculateSpriteSheetWidth(
       settings,
       frames.length,
       frameSize.width,
       settings.paddingLeftPx.toDouble(),
     );
+
     final spriteSheetHeight = _calculateSpriteSheetHeight(
       settings,
       frameSize.height,
@@ -303,6 +315,8 @@ class GenerateSprite {
       throw Exception('Cannot calculate scaling factor for empty image list');
     }
 
+    /// TODO: this gives a negative scaling factor for Axis.vertical
+
     // Check for zero width/height
     final hasZeroDimension = images.any((image) {
       final dimension =
@@ -367,14 +381,18 @@ class GenerateSprite {
     return frameWidth * frameCount + (paddingPerFrame * frameCount);
   }
 
-  static double _calculateSpriteSheetHeight(ExportSettings settings,
-      double frameHeight, double topPadding, double bottomPadding) {
+  static double _calculateSpriteSheetHeight(
+    ExportSettings settings,
+    double frameHeight,
+    double topPadding,
+    double bottomPadding,
+  ) {
     switch (settings.constraints.runtimeType) {
       // ignore: type_literal_in_constant_pattern
       case SpriteSizeConstrained:
-        return (settings.constraints as SpriteSizeConstrained)
-            .heightPx
-            .toDouble();
+        return (settings.constraints as SpriteSizeConstrained).heightPx +
+            topPadding +
+            bottomPadding;
       default:
         return frameHeight + topPadding + bottomPadding;
     }

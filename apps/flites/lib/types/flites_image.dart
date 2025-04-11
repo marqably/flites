@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:flites/states/canvas_controller.dart';
 import 'package:flites/states/source_files_state.dart';
 import 'package:flites/utils/image_processing_utils.dart';
 import 'package:flites/utils/image_utils.dart';
@@ -21,17 +20,19 @@ class FlitesImage {
 
   /// The scaling factor that was used when importing this image. Stored such
   /// that the user can reset to initial state.
-  double? originalScalingFactor;
+  // double? originalScalingFactor;
+
+  double scalingFactor = 1;
 
   double get heightOnCanvas => widthOnCanvas / aspectRatio;
   double get aspectRatio => ImageUtils.aspectRatioOfRawImage(image);
   Offset get center => Offset(positionOnCanvas.dx + widthOnCanvas / 2,
       positionOnCanvas.dy + heightOnCanvas / 2);
 
-  bool get isAtOriginalSize => originalScalingFactor == null
-      ? true
-      : widthOnCanvas ==
-          ImageUtils.sizeOfRawImage(image).width * originalScalingFactor!;
+  // bool get isAtOriginalSize => originalScalingFactor == null
+  //     ? true
+  //     : widthOnCanvas ==
+  //         ImageUtils.sizeOfRawImage(image).width * originalScalingFactor!;
 
   /// The position of the sprite on the canvas
   late Offset positionOnCanvas;
@@ -55,22 +56,25 @@ class FlitesImage {
     try {
       // Store the original image data
       image = rawImage;
-      originalScalingFactor = scalingFactor;
+      // originalScalingFactor = scalingFactor;
 
       // Get canvas dimensions and scaling factor
-      final currentCanvasSize = canvasController.canvasSizePixel;
-      final canvasScalingFactor = canvasController.canvasScalingFactor;
+
+      // final currentCanvasSize = canvasController.canvasSizePixel;
+      // final canvasScalingFactor = canvasController.canvasScalingFactor;
 
       // Calculate image dimensions on canvas
       final imageSize = ImageUtils.sizeOfRawImage(rawImage);
-      widthOnCanvas = imageSize.width *
-          scalingFactor *
-          (currentCanvasSize.width / canvasScalingFactor);
+
+      widthOnCanvas = imageSize.width;
+      // scalingFactor *
+      // (currentCanvasSize.width / canvasScalingFactor);
 
       // Calculate initial position (centered on canvas)
       final initialCoordinates = ImageUtils.getCenteredCoordinatesForPicture(
         Size(widthOnCanvas, heightOnCanvas),
       );
+
       positionOnCanvas = Offset(initialCoordinates.dx, initialCoordinates.dy);
 
       // Generate a unique ID for this image
