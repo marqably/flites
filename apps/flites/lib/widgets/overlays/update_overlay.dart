@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flites/constants/app_sizes.dart';
 import 'package:flites/main.dart';
 import 'package:flites/services/update_service.dart';
