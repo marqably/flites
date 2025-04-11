@@ -2,7 +2,9 @@ import 'package:flites/constants/app_sizes.dart';
 import 'package:flites/main.dart';
 import 'package:flites/states/canvas_controller.dart';
 import 'package:flites/states/key_events.dart';
-import 'package:flites/states/selected_images_controller.dart';
+import 'package:flites/states/selected_image_row_state.dart';
+import 'package:flites/states/selected_image_state.dart';
+import 'package:flites/states/source_files_state.dart';
 import 'package:flites/states/tool_controller.dart';
 import 'package:flites/utils/svg_utils.dart';
 import 'package:flites/widgets/tool_controls/tool_controls.dart';
@@ -134,7 +136,7 @@ class _ImageEditorState extends State<ImageEditor> {
               child: GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 onTap: () {
-                  SelectedImagesController().clearSelection();
+                  SelectedImageState.clearSelection();
                 },
                 onPanStart: (details) {
                   setState(() {
@@ -341,7 +343,11 @@ class _ImageEditorState extends State<ImageEditor> {
 }
 
 BoundingBox? get allImagesBoundingBox {
-  final allImages = projectSourceFiles.value;
+  return boundingBoxOfRow(selectedImageRow.value);
+}
+
+BoundingBox? boundingBoxOfRow(int rowIndex) {
+  final allImages = projectSourceFiles.value.rows[rowIndex].images;
 
   if (allImages.isEmpty) {
     return null;

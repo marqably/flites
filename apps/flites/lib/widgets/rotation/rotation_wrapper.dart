@@ -1,7 +1,8 @@
 import 'dart:math';
 import 'package:flites/constants/app_sizes.dart';
 import 'package:flites/main.dart';
-import 'package:flites/states/open_project.dart';
+import 'package:flites/states/selected_image_state.dart';
+import 'package:flites/states/source_files_state.dart';
 import 'package:flites/states/tool_controller.dart';
 import 'package:flites/utils/get_flite_image.dart';
 import 'package:flutter/material.dart';
@@ -200,8 +201,10 @@ class _RotationWrapperState extends State<RotationWrapper> {
                         // Store the original dimensions before applying rotation
                         final originalWidth = currentImage.widthOnCanvas;
                         final originalPosition = currentImage.positionOnCanvas;
-                        final originalScalingFactor =
-                            currentImage.originalScalingFactor;
+
+                        // final originalScalingFactor =
+                        //     currentImage.originalScalingFactor;
+
                         final originalAspectRatio = currentImage.aspectRatio;
 
                         // Apply the rotation value to the actual image rotation
@@ -243,9 +246,10 @@ class _RotationWrapperState extends State<RotationWrapper> {
                           }
 
                           currentImage.positionOnCanvas = originalPosition;
-                          currentImage.originalScalingFactor =
-                              originalScalingFactor;
-                          currentImage.saveChanges();
+                          // currentImage.originalScalingFactor =
+                          //     originalScalingFactor;
+
+                          SourceFilesState.saveImageChanges(currentImage);
                         }
 
                         // Switch back to canvas mode after rotation is applied

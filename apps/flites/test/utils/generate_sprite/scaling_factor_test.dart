@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:flites/types/flites_image.dart';
+import 'package:flites/types/sprite_constraints.dart';
 import 'package:flites/utils/generate_sprite.dart';
 import 'package:flites/widgets/image_editor/image_editor.dart';
 import 'package:flutter/material.dart';
