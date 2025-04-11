@@ -9,7 +9,7 @@ class CanvasController {
   final showBoundingBorderSignal = signal(false);
 
   /// Signal that controls the scaling factor of the canvas.
-  final _canvasScalingFactorSignal = signal(300.0);
+  final _canvasScalingFactorSignal = signal(1.0);
 
   /// Signal that controls the position of the canvas.
   final _canvasPositionSignal = signal(Offset.zero);
@@ -46,6 +46,8 @@ class CanvasController {
   ///
   /// [factor] The new scaling factor for the canvas.
   void updateCanvasScalingFactor(double factor) {
+    if (_canvasScalingFactorSignal.value + factor <= 0) return;
+
     _canvasScalingFactorSignal.value += factor;
   }
 

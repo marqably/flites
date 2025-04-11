@@ -2,8 +2,8 @@
 import 'sprite_constraints.dart';
 
 class ExportSettings {
-  final int widthPx;
-  final int heightPx;
+  final int? widthPx;
+  final int? heightPx;
 
   final int paddingTopPx;
   final int paddingRightPx;
@@ -25,8 +25,8 @@ class ExportSettings {
   // });
 
   ExportSettings({
-    this.widthPx = 300,
-    this.heightPx = 0,
+    this.widthPx,
+    this.heightPx,
     this.paddingTopPx = 0,
     this.paddingRightPx = 0,
     this.paddingBottomPx = 0,
@@ -36,12 +36,12 @@ class ExportSettings {
   });
 
   SpriteConstraints get constraints {
-    if (heightPx != 0 && widthPx != 0) {
-      return SpriteSizeConstrained(widthPx, heightPx);
-    } else if (heightPx != 0) {
-      return SpriteHeightConstrained(heightPx);
-    } else if (widthPx != 0) {
-      return SpriteWidthConstrained(widthPx);
+    if (heightPx != null && widthPx != null) {
+      return SpriteSizeConstrained(widthPx!, heightPx!);
+    } else if (heightPx != null) {
+      return SpriteHeightConstrained(heightPx!);
+    } else if (widthPx != null) {
+      return SpriteWidthConstrained(widthPx!);
     }
 
     throw Exception('No constraints provided');

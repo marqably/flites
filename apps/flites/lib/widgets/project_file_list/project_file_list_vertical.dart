@@ -28,6 +28,7 @@ class _ProjectFileListVerticalState extends State<ProjectFileListVertical> {
 
   @override
   Widget build(BuildContext context) {
+    // TODO: remove this unneeded watch
     return Watch(
       (context) {
         return GestureDetector(

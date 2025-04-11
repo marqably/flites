@@ -201,8 +201,10 @@ class _RotationWrapperState extends State<RotationWrapper> {
                         // Store the original dimensions before applying rotation
                         final originalWidth = currentImage.widthOnCanvas;
                         final originalPosition = currentImage.positionOnCanvas;
-                        final originalScalingFactor =
-                            currentImage.originalScalingFactor;
+
+                        // final originalScalingFactor =
+                        //     currentImage.originalScalingFactor;
+
                         final originalAspectRatio = currentImage.aspectRatio;
 
                         // Apply the rotation value to the actual image rotation
@@ -244,8 +246,8 @@ class _RotationWrapperState extends State<RotationWrapper> {
                           }
 
                           currentImage.positionOnCanvas = originalPosition;
-                          currentImage.originalScalingFactor =
-                              originalScalingFactor;
+                          // currentImage.originalScalingFactor =
+                          //     originalScalingFactor;
 
                           SourceFilesState.saveImageChanges(currentImage);
                         }

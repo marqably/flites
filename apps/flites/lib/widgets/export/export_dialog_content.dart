@@ -66,7 +66,7 @@ class ExportDialogContentState extends State<ExportDialogContent> {
                 gapW4,
                 Expanded(
                   child: NumericInputWithButtons(
-                    currentValue: selectedExportSettings.widthPx,
+                    currentValue: selectedExportSettings.widthPx ?? 0,
                     onChanged: (value) {
                       SourceFilesState.changeExportSettings(
                         selectedImageRow.value,
@@ -80,7 +80,7 @@ class ExportDialogContentState extends State<ExportDialogContent> {
                 gapW4,
                 Expanded(
                   child: NumericInputWithButtons(
-                    currentValue: selectedExportSettings.heightPx,
+                    currentValue: selectedExportSettings.heightPx ?? 0,
                     onChanged: (value) {
                       SourceFilesState.changeExportSettings(
                         selectedImageRow.value,
