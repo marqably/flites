@@ -183,5 +183,25 @@
     "heightLabel": "高",
     "@heightLabel": {
         "description": "Label for height input"
+    },
+    "updateAvailable": "更新可用",
+    "@updateAvailable": {
+        "description": "Title shown in update dialog when new version is available"
+    },
+    "newVersionAvailable": "Flites 有新版本可用。",
+    "@newVersionAvailable": {
+        "description": "Message shown in update dialog when new version is available"
+    },
+    "updateNow": "立即更新",
+    "@updateNow": {
+        "description": "Button text for updating the app"
+    },
+    "later": "稍后",
+    "@later": {
+        "description": "Button text to postpone the update"
+    },
+    "failedToOpenUpdateUrl": "无法打开更新URL。",
+    "@failedToOpenUpdateUrl": {
+        "description": "Error message shown when update URL could not be opened"
     }
 }

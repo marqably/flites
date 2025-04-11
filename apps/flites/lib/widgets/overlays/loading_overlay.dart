@@ -1,5 +1,6 @@
 import 'package:flites/constants/app_sizes.dart';
 import 'package:flites/main.dart';
+import 'package:flites/widgets/overlays/base_dialog_card.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:signals/signals_flutter.dart';
@@ -26,22 +27,7 @@ class LoadingOverlay extends StatelessWidget {
     return Material(
       color: Colors.black54,
       child: Center(
-        child: Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: Sizes.p24,
-            vertical: Sizes.p16,
-          ),
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surface,
-            borderRadius: BorderRadius.circular(Sizes.p16),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.1),
-                blurRadius: Sizes.p12,
-                offset: const Offset(0, Sizes.p4),
-              ),
-            ],
-          ),
+        child: BaseDialogCard(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [

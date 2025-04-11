@@ -3,7 +3,8 @@ import 'package:flites/states/app_settings.dart';
 import 'package:flites/theme/themes.dart';
 import 'package:flites/widgets/app_loader.dart';
 import 'package:flites/widgets/layout/gradient_border_widget.dart';
-import 'package:flites/widgets/loading_overlay/loading_overlay.dart';
+import 'package:flites/widgets/overlays/loading_overlay.dart';
+import 'package:flites/widgets/overlays/overlay_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -51,9 +52,11 @@ class FlitesApp extends StatelessWidget {
             themeMode: appSettings.themeMode.value,
             theme: lightTheme,
             darkTheme: darkTheme,
-            home: const Scaffold(
-              body: GradientBorderWidget(
-                child: Overview(),
+            home: const OverlayManager(
+              child: Scaffold(
+                body: GradientBorderWidget(
+                  child: Overview(),
+                ),
               ),
             ),
           ),
