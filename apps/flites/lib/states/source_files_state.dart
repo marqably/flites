@@ -61,7 +61,7 @@ class SourceFilesState {
 
     final row = imageMap.rows[rowIndex];
 
-    final imageIndex = row.images.indexWhere((image) => image.id == image.id);
+    final imageIndex = row.images.indexWhere((i) => i.id == image.id);
 
     final newRow = row.copyWith(images: [...row.images]);
 
