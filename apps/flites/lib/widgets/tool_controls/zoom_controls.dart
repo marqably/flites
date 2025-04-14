@@ -19,7 +19,10 @@ class ZoomControls extends StatelessWidget {
           IconButton(
             tooltip: context.l10n.zoomOut,
             onPressed: () {
-              canvasController.updateCanvasScalingFactor(-0.1);
+              canvasController.updateCanvasScale(
+                isIncreasingSize: false,
+                zoomingWithButtons: true,
+              );
             },
             icon: Icon(
               Icons.zoom_out,
@@ -30,7 +33,10 @@ class ZoomControls extends StatelessWidget {
           IconButton(
             tooltip: context.l10n.zoomIn,
             onPressed: () {
-              canvasController.updateCanvasScalingFactor(0.1);
+              canvasController.updateCanvasScale(
+                isIncreasingSize: true,
+                zoomingWithButtons: true,
+              );
             },
             icon: Icon(
               Icons.zoom_in,
