@@ -192,69 +192,20 @@ class _RotationWrapperState extends State<RotationWrapper> {
                       color: context.colors.surfaceContainer,
                     ),
                     onPressed: () async {
-                      final currentImage = getFliteImage(selectedImage.value);
+                      final currentImage = getFliteImage(selectedImageId.value);
 
                       if (currentImage != null) {
-                        // Store the current rotation before resetting UI
-                        final currentRotation = rotation;
-
-                        // Store the original dimensions before applying rotation
-                        final originalWidth = currentImage.widthOnCanvas;
-                        final originalPosition = currentImage.positionOnCanvas;
-
-                        // final originalScalingFactor =
-                        //     currentImage.originalScalingFactor;
-
-                        final originalAspectRatio = currentImage.aspectRatio;
-
-                        // Apply the rotation value to the actual image rotation
-                        currentImage.rotation = currentRotation;
-
-                        // Reset the rotation in the UI controls
-                        setState(() {
-                          rotation = 0;
-                          dragStartPoint = Offset(0, -circleRadius);
-                        });
-
-                        // Apply the rotation to the image by trimming
-                        await currentImage.trimImage();
-
-                        // Calculate the new aspect ratio
-                        final newAspectRatio = currentImage.aspectRatio;
-
-                        // Double-check that the dimensions are preserved
-                        if (currentImage.widthOnCanvas != originalWidth) {
-                          debugPrint(
-                              'Width changed from $originalWidth to ${currentImage.widthOnCanvas}, forcing original size');
-
-                          // If this is the first rotation, we might need to adjust the width
-                          // to account for aspect ratio changes
-                          if (originalAspectRatio != newAspectRatio) {
-                            // Calculate a scaling factor to maintain the original visual size
-                            final scaleFactor =
-                                sqrt(originalAspectRatio / newAspectRatio);
-                            if (scaleFactor.isFinite && scaleFactor > 0) {
-                              debugPrint(
-                                  'Applying aspect ratio correction: $scaleFactor');
-                              currentImage.widthOnCanvas =
-                                  originalWidth * scaleFactor;
-                            } else {
-                              currentImage.widthOnCanvas = originalWidth;
-                            }
-                          } else {
-                            currentImage.widthOnCanvas = originalWidth;
-                          }
-
-                          currentImage.positionOnCanvas = originalPosition;
-                          // currentImage.originalScalingFactor =
-                          //     originalScalingFactor;
-
-                          SourceFilesState.saveImageChanges(currentImage);
-                        }
-
-                        // Switch back to canvas mode after rotation is applied
-                        toolController.selectTool(Tool.canvas);
+                        await currentImage.rotateImage(rotation);
                       }
+
+                      // Reset the rotation in the UI controls
+                      setState(() {
+                        rotation = 0;
+                        dragStartPoint = Offset(0, -circleRadius);
+                      });
+
+                      // Switch back to canvas mode after rotation is applied
+                      toolController.selectTool(Tool.canvas);
                     },
                   ),
                 ],

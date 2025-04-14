@@ -92,14 +92,12 @@ class FlitesImage {
   /// and resets the rotation value to 0.
   ///
   /// The original size and position on canvas are preserved.
-  Future<void> trimImage() async {
+  Future<void> rotateImage(double rotationInRadians) async {
     // If rotation is close to 0, do nothing
-    if (rotation.abs() < 0.001) return;
+    if (rotationInRadians.abs() < 0.001) return;
 
     try {
-      // Store only what we need to preserve
-      final originalWidth = widthOnCanvas;
-      final originalPosition = positionOnCanvas;
+      rotation = rotationInRadians;
 
       // Apply rotation to the image data based on type
       if (SvgUtils.isSvg(image)) {
@@ -111,9 +109,7 @@ class FlitesImage {
       // Reset rotation after applying it to the image data
       rotation = 0;
 
-      // Preserve the original width and position
-      widthOnCanvas = originalWidth;
-      positionOnCanvas = originalPosition;
+      widthOnCanvas = ImageUtils.sizeOfRawImage(image).width;
 
       // Save the changes
       SourceFilesState.saveImageChanges(this);
