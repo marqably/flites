@@ -56,7 +56,7 @@ jobs:
         with:
           platform: 'web' # Specify platform as web
           event_name: ${{ github.event_name }}
-          ref_name: ${{ github.ref_name }} # Pass the branch/tag name
+          ref_name: ${{ github.run_id }} # Pass the branch/tag name
           tag_input: ${{ inputs.tag }}
           pr_number: ${{ github.event.number }}
           run_id: ${{ github.run_id }}
