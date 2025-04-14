@@ -288,7 +288,7 @@ class _ImageEditorState extends State<ImageEditor> {
                           return AngularHandle(
                             handle: handle,
                             length: 16,
-                            color: context.colors.surfaceContainerLow,
+                            color: context.colors.onSurface,
                             thickness: 3,
                           );
                         },
