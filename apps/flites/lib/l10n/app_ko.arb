@@ -183,5 +183,25 @@
     "heightLabel": "높이",
     "@heightLabel": {
         "description": "Label for height input"
+    },
+    "updateAvailable": "업데이트 가능",
+    "@updateAvailable": {
+        "description": "Title shown in update dialog when new version is available"
+    },
+    "newVersionAvailable": "Flites의 새 버전을 사용할 수 있습니다.",
+    "@newVersionAvailable": {
+        "description": "Message shown in update dialog when new version is available"
+    },
+    "updateNow": "지금 업데이트",
+    "@updateNow": {
+        "description": "Button text for updating the app"
+    },
+    "later": "나중에",
+    "@later": {
+        "description": "Button text to postpone the update"
+    },
+    "failedToOpenUpdateUrl": "업데이트 URL을 열지 못했습니다.",
+    "@failedToOpenUpdateUrl": {
+        "description": "Error message shown when update URL could not be opened"
     }
 }

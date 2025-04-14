@@ -180,5 +180,28 @@
     "@widthLabel": {
         "description": "Label for width input"
     },
-    "heightLabel": "高"
+    "heightLabel": "高さ",
+    "@heightLabel": {
+        "description": "Label for height input"
+    },
+    "updateAvailable": "アップデート可能",
+    "@updateAvailable": {
+        "description": "Title shown in update dialog when new version is available"
+    },
+    "newVersionAvailable": "Flitesの新しいバージョンが利用可能です。",
+    "@newVersionAvailable": {
+        "description": "Message shown in update dialog when new version is available"
+    },
+    "updateNow": "今すぐ更新",
+    "@updateNow": {
+        "description": "Button text for updating the app"
+    },
+    "later": "後で",
+    "@later": {
+        "description": "Button text to postpone the update"
+    },
+    "failedToOpenUpdateUrl": "更新URLを開けませんでした。",
+    "@failedToOpenUpdateUrl": {
+        "description": "Error message shown when update URL could not be opened"
+    }
 }

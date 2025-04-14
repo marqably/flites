@@ -183,5 +183,25 @@
     "heightLabel": "H",
     "@heightLabel": {
         "description": "Label for height input"
+    },
+    "updateAvailable": "Update Available",
+    "@updateAvailable": {
+        "description": "Title shown in update dialog when new version is available"
+    },
+    "newVersionAvailable": "A new version of Flites is available.",
+    "@newVersionAvailable": {
+        "description": "Message shown in update dialog when new version is available"
+    },
+    "updateNow": "Update Now",
+    "@updateNow": {
+        "description": "Button text for updating the app"
+    },
+    "later": "Later",
+    "@later": {
+        "description": "Button text to postpone the update"
+    },
+    "failedToOpenUpdateUrl": "Failed to open update URL.",
+    "@failedToOpenUpdateUrl": {
+        "description": "Error message shown when update URL could not be opened"
     }
 }
