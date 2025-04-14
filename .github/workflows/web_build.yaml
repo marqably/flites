@@ -87,40 +87,15 @@ jobs:
           flutter build web --release
         shell: bash
 
-      # Package Web output into Zip
-      - name: 📦 Package Web Build into Zip
-        shell: bash
-        run: |
-          # Adjust source directory relative to workspace root if needed
-          SOURCE_DIR="apps/flites/build/web"
-          # Get zip filename from composite action output
-          ZIP_FILE_NAME="${{ steps.vars.outputs.artifact_suffix }}"
-          # Get absolute path to workspace root
-          WORKSPACE_ROOT="${{ github.workspace }}"
-
-          # Check if source directory exists
-          if [ ! -d "${SOURCE_DIR}" ]; then
-            echo "Build output directory not found: ${SOURCE_DIR}"
-            ls -lR "apps/flites/build/" # List build output for debugging
-            exit 1
-          fi
-
-          echo "Zipping contents of ${SOURCE_DIR} into ${WORKSPACE_ROOT}/${ZIP_FILE_NAME}"
-          # Use a subshell: cd into source, zip contents to absolute path, subshell exits (no need to cd back)
-          (cd "${SOURCE_DIR}" && zip -r "${WORKSPACE_ROOT}/${ZIP_FILE_NAME}" .)
-
-          # Verify zip file was created at the workspace root
-          echo "Verifying zip file:"
-          ls -l "${WORKSPACE_ROOT}/${ZIP_FILE_NAME}"
-          echo "Created ${ZIP_FILE_NAME}"
-
-
-      # Upload the created zip artifact
-      - name: ⬆️ Upload Artifact
-        uses: actions/upload-artifact@v4
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
         with:
+          path: 'apps/flites/build/web'
           name: ${{ steps.vars.outputs.artifact_upload_name }}
-          path: ${{ steps.vars.outputs.artifact_suffix }}
+
+      - name: Setup Pages
+        if: github.event_name == 'workflow_call' && inputs.tag != ''
+        uses: actions/configure-pages@v4
 
       - name: 🧪 Test Web Build (Basic Check)
         shell: bash
@@ -137,6 +112,7 @@ jobs:
           
       - name: Deploy to GitHub Pages
         id: deployment
+        if: github.event_name == 'workflow_call' && inputs.tag != ''
         uses: actions/deploy-pages@v4 
         with:
           artifact_name: ${{ steps.vars.outputs.artifact_upload_name }}
