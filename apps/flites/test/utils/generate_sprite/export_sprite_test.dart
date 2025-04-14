@@ -245,7 +245,8 @@ void main() {
 
       // When/Then
       expect(
-        () => GenerateSprite.exportSpriteRow(settings, spriteRowIndex: 0),
+        () => GenerateSprite.exportSpriteRow(settings,
+            spriteRowIndex: 0, fileSaver: mockFileSaver),
         throwsException,
       );
     });
