@@ -28,7 +28,7 @@ class _FileItemState extends State<FileItem> {
     return Watch((context) {
       final isHovered = isHoveredState.value;
 
-      final isCurrentlySelected = selectedImage.value == widget.file.id;
+      final isCurrentlySelected = selectedImageId.value == widget.file.id;
       final isCurrentReferenceImage =
           selectedReferenceImages.value.contains(widget.file.id);
 

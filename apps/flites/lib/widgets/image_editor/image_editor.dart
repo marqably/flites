@@ -28,7 +28,6 @@ class ImageEditor extends StatefulWidget {
 }
 
 class _ImageEditorState extends State<ImageEditor> {
-  double scale = 1;
   Offset startingFocalPoint = const Offset(0, 0);
 
   bool isGrabbing = false;
@@ -46,7 +45,7 @@ class _ImageEditorState extends State<ImageEditor> {
             final canvasScalingFactor =
                 canvasController.canvasScalingFactor; // constraints.maxWidth;
 
-            final currentSelection = getFliteImage(selectedImage.value);
+            final currentSelection = getFliteImage(selectedImageId.value);
 
             final canvasPosition = canvasController.canvasPosition;
 
@@ -107,10 +106,6 @@ class _ImageEditorState extends State<ImageEditor> {
 
                 if (pointerSignal is PointerScrollEvent &&
                     isMainModifierPressed) {
-                  // TODO(jaco): decrease the amount of scaling
-
-                  scale = scale + pointerSignal.scrollDelta.dy / 1000;
-
                   final isIncreasingSize = pointerSignal.scrollDelta.dy < 0;
 
                   final canvasCenter = Offset(
@@ -118,8 +113,6 @@ class _ImageEditorState extends State<ImageEditor> {
                     constraints.maxHeight / 2,
                   );
 
-                  // TODO(jaco): put a square in here or so to make further
-                  // distance to the center more pronounced in the position
                   // offset
                   final offsetFromCenter =
                       canvasCenter - pointerSignal.localPosition;

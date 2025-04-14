@@ -22,7 +22,7 @@ class ProjectFileItem extends StatelessWidget {
       (context) {
         final isHovered = isHoveredState.value;
 
-        final isCurrentlySelected = selectedImage.value == file.id;
+        final isCurrentlySelected = selectedImageId.value == file.id;
 
         return Container(
           margin: const EdgeInsets.only(right: Sizes.p8),

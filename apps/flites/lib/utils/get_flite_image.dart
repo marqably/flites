@@ -48,7 +48,7 @@ String? getNextImageId() {
     return null;
   }
 
-  final imageId = selectedImage.value ?? row.first.id;
+  final imageId = selectedImageId.value ?? row.first.id;
 
   final index = row.map((e) => e.id).toList().indexOf(imageId);
 
