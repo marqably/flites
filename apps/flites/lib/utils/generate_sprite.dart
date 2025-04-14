@@ -69,6 +69,29 @@ class GenerateSprite {
     return spriteSheet;
   }
 
+  static Future<void> exportSpriteRow(
+    ExportSettings settings, {
+    required int spriteRowIndex,
+    FileSaver? fileSaver,
+  }) async {
+    final spriteRowImage = await createSpriteRowImage(
+      settings,
+      spriteRowIndex: spriteRowIndex,
+    );
+
+    if (spriteRowImage == null) {
+      return;
+    }
+
+    // Save the sprite
+    await _saveSpriteSheet(
+      spriteRowImage,
+      settings.fileName ?? 'sprite',
+      settings.path,
+      fileSaver ?? FileSaver.instance,
+    );
+  }
+
   static Future<img.Image?> createSpriteRowImage(
     ExportSettings settings, {
     required int spriteRowIndex,

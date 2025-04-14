@@ -157,4 +157,8 @@ class SourceFilesState {
     _projectSourceFiles.value =
         projectSourceFiles.value.copyWith(rows: currentRows);
   }
+
+  static void setStateForTests(List<FlitesImageRow> rows) {
+    _projectSourceFiles.value = FlitesImageMap(rows: rows);
+  }
 }
