@@ -18,6 +18,11 @@ on:
     branches:
       - main
 
+  # Triggers on push to the specific test branch
+  push:
+    branches:
+      - chore/siau/fix-web-app-deployment
+
   # Allows manual triggering
   workflow_dispatch:
 
@@ -51,6 +56,7 @@ jobs:
         with:
           platform: 'web' # Specify platform as web
           event_name: ${{ github.event_name }}
+          ref_name: ${{ github.ref_name }} # Pass the branch/tag name
           tag_input: ${{ inputs.tag }}
           pr_number: ${{ github.event.number }}
           run_id: ${{ github.run_id }}
