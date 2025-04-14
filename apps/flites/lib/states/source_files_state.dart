@@ -67,9 +67,11 @@ class SourceFilesState {
 
     newRow.images[imageIndex] = image;
 
-    final newImageMap = imageMap.copyWith(rows: [...imageMap.rows]);
+    final newRows = [...imageMap.rows];
 
-    newImageMap.rows[rowIndex] = newRow;
+    newRows[rowIndex] = newRow;
+
+    final newImageMap = imageMap.copyWith(rows: newRows);
 
     _projectSourceFiles.value = newImageMap;
   }
