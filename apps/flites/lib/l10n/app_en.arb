@@ -28,6 +28,10 @@
     "@rotateTool": {
         "description": "Tooltip for rotate tool button"
     },
+    "hitboxTool": "Hitbox Tool",
+    "@hitboxTool": {
+        "description": "Tooltip for rotate Hitbox tool button"
+    },
     "toggleVisibility": "Toggle visibility",
     "@toggleVisibility": {
         "description": "Tooltip for visibility toggle button"

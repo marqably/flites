@@ -5,6 +5,7 @@ enum Tool {
   canvas,
   move,
   rotate,
+  hitbox,
 }
 
 /// A controller for managing tool selection and hover states

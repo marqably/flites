@@ -77,6 +77,12 @@ class _ProjectFileListVerticalState extends State<ProjectFileListVertical> {
                             icon: CupertinoIcons.rotate_right,
                             tooltip: context.l10n.rotateTool,
                           ),
+                          gapW16,
+                          ToolButton(
+                            tool: Tool.hitbox,
+                            icon: CupertinoIcons.bus,
+                            tooltip: context.l10n.hitboxTool,
+                          ),
                         ],
                       ),
                     ],
