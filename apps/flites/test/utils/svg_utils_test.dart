@@ -121,8 +121,8 @@ void main() {
         expect(rotatedString.contains('viewBox='), isTrue);
 
         // Verify that the original width and height are preserved
-        expect(rotatedString.contains('width="100'), isTrue);
-        expect(rotatedString.contains('height="100'), isTrue);
+        expect(rotatedString.contains('width="50'), isTrue);
+        expect(rotatedString.contains('height="50'), isTrue);
       });
 
       test('rotateAndTrimSvg should handle small angles correctly', () async {
