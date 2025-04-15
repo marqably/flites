@@ -1,12 +1,16 @@
+import 'dart:convert';
+import 'dart:io' show Platform;
+
 import 'package:dio/dio.dart';
 import 'package:flites/types/update_info.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:pub_semver/pub_semver.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class UpdateService {
   static late final Dio _dio;
+  static final String? _baseUrl = dotenv.env['updateServiceBaseUrl'];
 
   static Future<void> initialize() async {
     if (!kDebugMode && !kIsWeb) {
@@ -33,84 +37,127 @@ class UpdateService {
   }
 
   static Future<UpdateInfo?> checkForUpdates() async {
-    // Get current app version info
-    final currentVersion = await _getCurrentAppVersion();
+    if (kDebugMode || kIsWeb || !_isDioInitialized()) return null;
 
-    // Get latest release from GitHub
-    final latestVersion = await _getLatestVersionFromGithub();
-
-    if (latestVersion == null) {
-      debugPrint('No latest version found');
-      return null;
-    }
-
-    final bool isUpdateAvailable = latestVersion > currentVersion;
-
-    if (isUpdateAvailable) {
-      return UpdateInfo(
-        currentVersion: currentVersion.toString(),
-        newVersion: latestVersion.toString(),
-      );
-    } else {
-      return null;
-    }
-  }
-
-  static Future<Version> _getCurrentAppVersion() async {
     final packageInfo = await PackageInfo.fromPlatform();
     final currentVersionString = packageInfo.version;
-    return Version.parse(currentVersionString);
-  }
+    final updateCheckUrl = await _getUpdateCheckUrl(currentVersionString);
 
-  static Future<Version?> _getLatestVersionFromGithub() async {
-    try {
-      final response = await _dio.get(
-        'https://api.github.com/repos/marqably/flites/releases/latest',
-      );
-
-      if (response.statusCode == 200 && response.data != null) {
-        final tagName = response.data['tag_name']?.toString();
-
-        if (tagName == null || tagName.isEmpty) {
-          debugPrint('Release found but no tag name');
-          return null;
-        }
-
-        final String newVersionString = tagName.replaceAll('v', '');
-        return Version.parse(newVersionString);
-      }
-
+    if (updateCheckUrl == null) {
+      debugPrint('Could not determine platform for update check.');
       return null;
+    }
+
+    try {
+      final response = await _dio.get(updateCheckUrl);
+      return _parseUpdateResponse(response.data, currentVersionString);
     } on DioException catch (e) {
       debugPrint('Error checking for updates (Dio): ${e.message}');
       return null;
     } catch (e) {
-      debugPrint('Error fetching latest version from GitHub: $e');
+      debugPrint('Error during update check: $e');
       return null;
     }
   }
 
-  static Future<bool> getReleaseAndLaunchUrl() async {
+  static Future<void> openUpdateLink(String? updateLink) async {
+    if (updateLink == null || updateLink.isEmpty) return;
+
     try {
-      final response = await _dio.get(
-        'https://api.github.com/repos/marqably/flites/releases/latest',
-      );
+      final uri = Uri.parse(updateLink);
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(uri, mode: LaunchMode.externalApplication);
+      } else {
+        debugPrint('Could not launch URL: $updateLink');
+      }
+    } catch (e) {
+      debugPrint('Error launching update link: $e');
+    }
+  }
 
-      if (response.statusCode == 200) {
-        // Get the HTML URL of the release
-        final String releaseUrl = response.data['html_url'];
+  static UpdateInfo? _parseUpdateResponse(
+    dynamic responseData,
+    String currentVersionString,
+  ) {
+    try {
+      if (responseData == null) return null;
 
-        // Open release page in browser
-        if (await canLaunchUrl(Uri.parse(releaseUrl))) {
-          await launchUrl(Uri.parse(releaseUrl));
-          return true;
-        }
+      final Map<String, dynamic> updateData;
+
+      if (responseData is String) {
+        updateData = jsonDecode(responseData) as Map<String, dynamic>;
+      } else if (responseData is Map) {
+        updateData = responseData as Map<String, dynamic>;
+      } else {
+        debugPrint('Unexpected update check response format.');
+        return null;
       }
 
-      return false;
+      final bool updateAvailable = updateData['updateAvailable'] ?? false;
+      final String? latestVersion = updateData['latestVersion']?.toString();
+      final String? updateLink = updateData['updateLink']?.toString();
+
+      if (updateAvailable && latestVersion != null) {
+        final cleanLatestVersion = latestVersion.startsWith('v')
+            ? latestVersion.substring(1)
+            : latestVersion;
+        final cleanCurrentVersion = currentVersionString.startsWith('v')
+            ? currentVersionString.substring(1)
+            : currentVersionString;
+
+        return UpdateInfo(
+          currentVersion: cleanCurrentVersion,
+          newVersion: cleanLatestVersion,
+          updateLink: updateLink,
+        );
+      } else {
+        debugPrint(
+            'No update available or missing latestVersion in parsed data.');
+        return null;
+      }
     } catch (e) {
-      debugPrint('Error performing update: $e');
+      debugPrint('Error processing update check response data: $e');
+      return null;
+    }
+  }
+
+  static bool _isDioInitialized() {
+    try {
+      _dio;
+      return true;
+    } catch (_) {
+      debugPrint('Dio not initialized, skipping update check.');
       return false;
+    }
+  }
+
+  static Future<String?> _getUpdateCheckUrl(String currentVersion) async {
+    String? platformPath;
+
+    final String apiVersion =
+        currentVersion.startsWith('v') ? currentVersion : 'v$currentVersion';
+
+    if (Platform.isWindows) {
+      platformPath = 'windows';
+    } else if (Platform.isMacOS) {
+      platformPath = 'macos';
+    } else if (Platform.isLinux) {
+      // Check for AppImage environment variable
+      final String? appImageEnv = Platform.environment['APPIMAGE'];
+      if (appImageEnv != null && appImageEnv.isNotEmpty) {
+        platformPath = 'linux-app-image';
+        debugPrint('Detected AppImage environment.');
+      } else {
+        // Assume system installation (e.g., .deb)
+        platformPath = 'linux-deb';
+        debugPrint('Assuming .deb installation (APPIMAGE env not found).');
+      }
+    }
+
+    if (platformPath != null) {
+      return '$_baseUrl/$platformPath?cv=$apiVersion';
+    } else {
+      return null;
     }
   }
 }

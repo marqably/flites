@@ -85,14 +85,12 @@ class UpdateOverlay extends StatelessWidget {
                       backgroundColor: context.colors.primary,
                     ),
                     onPressed: () async {
-                      final success =
-                          await UpdateService.getReleaseAndLaunchUrl();
-
-                      if (success) {
-                        showUpdateOverlay.value = false;
-                      } else {
+                      final updateLink = updateOverlayInfo.value?.updateLink;
+                      if (updateLink == null) {
                         showErrorSnackbar();
+                        return;
                       }
+                      await UpdateService.openUpdateLink(updateLink);
                     },
                     child: Text(
                       context.l10n.updateNow,
