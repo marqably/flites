@@ -18,13 +18,17 @@ on:
     branches:
       - main
 
+  push: 
+    branches:
+      - fix/beau/debian-runner
+
   # Allows manual triggering
   workflow_dispatch:
 
 jobs:
   build-debian:
     name: 🐧 Build and Deploy Debian
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     env: 
       APP_NAME: Flites
       APP_ID: com.marqably.flites
