@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:file_saver/file_saver.dart';
 import 'package:flites/services/obfuscation_service.dart';
-import 'package:flites/states/canvas_controller.dart';
 import 'package:flites/states/project_state.dart';
 import 'package:flites/states/source_files_state.dart';
 import 'package:flites/widgets/overlays/update_overlay.dart';
@@ -14,10 +13,7 @@ import 'package:flutter/foundation.dart';
 class ProjectSavingService {
   void setProjectState(ProjectState projectState) {
     SourceFilesState.setSourceFilesStateFromFile(projectState.imageMap);
-    // canvasController.updateCanvasScalingFactor(projectState.scalingFactor);
-    // canvasController.updateCanvasPosition(projectState.canvasOffset);
     playbackSpeed.value = projectState.playerSpeed;
-    // canvasController.updateCanvasSize(projectState.canvasSize);
   }
 
   Future<ProjectState?> loadProjectFile() async {
@@ -27,7 +23,10 @@ class ProjectSavingService {
     // final file = File(path.join(flitesDir.path, 'project.flites'));
     // final jsonData = await file.readAsString();
 
-    final res = await FilePicker.platform.pickFiles();
+    final res = await FilePicker.platform.pickFiles(
+      allowedExtensions: ['flites'],
+      type: FileType.custom,
+    );
 
     if (res != null) {
       final file = File(res.files.first.path!);
@@ -63,7 +62,6 @@ class ProjectSavingService {
       final result = await FilePicker.platform.saveFile(
         dialogTitle: 'Save Project',
         fileName: 'project.flites',
-        // allowedExtensions: ['flites'],
       );
 
       if (result != null) {
@@ -78,10 +76,7 @@ class ProjectSavingService {
 
     return ProjectState(
       imageMap: projectSourceFiles.value,
-      scalingFactor: canvasController.canvasScalingFactor,
-      canvasOffset: canvasController.canvasPosition,
       playerSpeed: playbackSpeed.value,
-      canvasSize: canvasController.canvasSizePixel,
       versionNumber: version,
     );
   }
