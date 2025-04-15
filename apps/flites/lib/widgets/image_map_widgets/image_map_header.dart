@@ -3,6 +3,8 @@ import 'package:flites/main.dart';
 import 'package:flites/states/selected_image_row_state.dart';
 import 'package:flites/states/source_files_state.dart';
 import 'package:flites/utils/generate_sprite.dart';
+import 'package:flites/utils/generate_svg_sprite.dart';
+import 'package:flites/utils/svg_utils.dart';
 import 'package:flites/widgets/logo/logo_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
@@ -106,7 +108,11 @@ class ImageMapHeader extends StatelessWidget {
           AnimationRowTabWrapper(
             isSelected: true,
             onPressed: () {
-              GenerateSprite.exportSpriteMap();
+              if (SvgUtils.allImagesInProjectAreSvg) {
+                GenerateSvgSprite.exportSpriteMap();
+              } else {
+                GenerateSprite.exportSpriteMap();
+              }
             },
             withBackground: false,
             child: const Text('Export'),
