@@ -152,7 +152,6 @@ class FlitesImage {
     flitesImage.displayName = json['displayName'] as String?;
     flitesImage.originalName = json['originalName'] as String?;
     flitesImage.widthOnCanvas = json['widthOnCanvas'] as double;
-    json['originalScalingFactor'] as double?;
 
     final positionMap = json['positionOnCanvas'] as Map<String, dynamic>;
     flitesImage.positionOnCanvas = Offset(
