@@ -2,7 +2,9 @@ import 'package:flites/constants/app_sizes.dart';
 import 'package:flites/main.dart';
 import 'package:flites/states/canvas_controller.dart';
 import 'package:flites/states/key_events.dart';
-import 'package:flites/states/selected_images_controller.dart';
+import 'package:flites/states/selected_image_row_state.dart';
+import 'package:flites/states/selected_image_state.dart';
+import 'package:flites/states/source_files_state.dart';
 import 'package:flites/states/tool_controller.dart';
 import 'package:flites/utils/svg_utils.dart';
 import 'package:flites/widgets/rotation/rotation_wrapper.dart';
@@ -26,7 +28,6 @@ class ImageEditor extends StatefulWidget {
 }
 
 class _ImageEditorState extends State<ImageEditor> {
-  double scale = 1;
   Offset startingFocalPoint = const Offset(0, 0);
 
   bool isGrabbing = false;
@@ -44,7 +45,7 @@ class _ImageEditorState extends State<ImageEditor> {
             final canvasScalingFactor =
                 canvasController.canvasScalingFactor; // constraints.maxWidth;
 
-            final currentSelection = getFliteImage(selectedImage.value);
+            final currentSelection = getFliteImage(selectedImageId.value);
 
             final canvasPosition = canvasController.canvasPosition;
 
@@ -105,10 +106,6 @@ class _ImageEditorState extends State<ImageEditor> {
 
                 if (pointerSignal is PointerScrollEvent &&
                     isMainModifierPressed) {
-                  // TODO(jaco): decrease the amount of scaling
-
-                  scale = scale + pointerSignal.scrollDelta.dy / 1000;
-
                   final isIncreasingSize = pointerSignal.scrollDelta.dy < 0;
 
                   final canvasCenter = Offset(
@@ -116,8 +113,6 @@ class _ImageEditorState extends State<ImageEditor> {
                     constraints.maxHeight / 2,
                   );
 
-                  // TODO(jaco): put a square in here or so to make further
-                  // distance to the center more pronounced in the position
                   // offset
                   final offsetFromCenter =
                       canvasCenter - pointerSignal.localPosition;
@@ -133,7 +128,7 @@ class _ImageEditorState extends State<ImageEditor> {
               child: GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 onTap: () {
-                  SelectedImagesController().clearSelection();
+                  SelectedImageState.clearSelection();
                 },
                 onPanStart: (details) {
                   setState(() {
@@ -338,7 +333,11 @@ class _ImageEditorState extends State<ImageEditor> {
 }
 
 BoundingBox? get allImagesBoundingBox {
-  final allImages = projectSourceFiles.value;
+  return boundingBoxOfRow(selectedImageRow.value);
+}
+
+BoundingBox? boundingBoxOfRow(int rowIndex) {
+  final allImages = projectSourceFiles.value.rows[rowIndex].images;
 
   if (allImages.isEmpty) {
     return null;

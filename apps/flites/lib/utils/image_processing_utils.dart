@@ -26,7 +26,7 @@ class ImageProcessingUtils {
     final angleRadians = args['angleRadians'] as double;
 
     // 1. Decode image
-    final originalImage = img.decodePng(pngBytes);
+    final originalImage = getImageFromBytes(pngBytes);
     if (originalImage == null) {
       throw Exception('Unable to decode PNG');
     }
@@ -55,6 +55,24 @@ class ImageProcessingUtils {
 
     // 6. Trim and encode
     final trimmedImage = img.trim(compositeImage);
+    return Uint8List.fromList(img.encodePng(trimmedImage));
+  }
+
+  static img.Image? getImageFromBytes(Uint8List bytes) {
+    final originalImage = img.decodePng(bytes);
+
+    return originalImage;
+  }
+
+  static Uint8List trimPngAsBytes(Uint8List bytes) {
+    final originalImage = getImageFromBytes(bytes);
+    if (originalImage == null) {
+      throw Exception('Unable to decode PNG');
+      // TODO: error handling
+    }
+
+    final trimmedImage = img.trim(originalImage);
+
     return Uint8List.fromList(img.encodePng(trimmedImage));
   }
 }

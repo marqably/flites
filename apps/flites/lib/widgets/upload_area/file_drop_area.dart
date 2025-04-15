@@ -1,10 +1,11 @@
 import 'package:flites/constants/image_constants.dart';
+import 'package:flites/states/selected_image_row_state.dart';
+import 'package:flites/states/source_files_state.dart';
 import 'package:flites/utils/image_utils.dart';
 import 'package:flites/utils/png_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:super_drag_and_drop/super_drag_and_drop.dart';
 
-import '../../states/open_project.dart';
 import '../../types/flites_image.dart';
 
 class FileDropArea extends StatefulWidget {
@@ -94,10 +95,14 @@ class _FileDropAreaState extends State<FileDropArea> {
             final flitesImage = FlitesImage.scaled(img.image!,
                 scalingFactor: scalingFactor, originalName: img.name);
 
-            projectSourceFiles.value = [
-              ...projectSourceFiles.value,
-              flitesImage,
-            ];
+            // TODO(jaco): this doesn't work whatsoever. Fix
+            projectSourceFiles.value.rows[selectedImageRow.value] =
+                projectSourceFiles.value.rows[selectedImageRow.value].copyWith(
+              images: [
+                ...projectSourceFiles.value.rows[selectedImageRow.value].images,
+                flitesImage,
+              ],
+            );
           }
         }
       },

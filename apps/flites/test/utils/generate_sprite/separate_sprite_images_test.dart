@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:flites/types/export_settings.dart';
 import 'package:flites/types/flites_image.dart';
 import 'package:flites/utils/generate_sprite.dart';
 import 'package:flites/widgets/image_editor/image_editor.dart';
@@ -38,7 +39,7 @@ void main() {
           size: const Size(100, 50),
         );
 
-        final settings = ExportSettings.heightConstrained(
+        final settings = ExportSettings(
           heightPx: 100,
           paddingTopPx: 10,
           paddingBottomPx: 10,
@@ -83,7 +84,7 @@ void main() {
           size: const Size(100, 60),
         );
 
-        final settings = ExportSettings.heightConstrained(
+        final settings = ExportSettings(
           heightPx: 120,
           paddingTopPx: 10,
           paddingBottomPx: 10,
@@ -122,7 +123,7 @@ void main() {
           size: const Size(100, 50),
         );
 
-        final settings = ExportSettings.widthConstrained(
+        final settings = ExportSettings(
           widthPx: 200,
           paddingLeftPx: 20,
           paddingRightPx: 20,
@@ -161,7 +162,7 @@ void main() {
           size: const Size(100, 50),
         );
 
-        final settings = ExportSettings.sizeConstrained(
+        final settings = ExportSettings(
           widthPx: 200,
           heightPx: 100,
           paddingLeftPx: 20,
@@ -196,7 +197,7 @@ void main() {
           size: const Size(100, 50),
         );
 
-        final settings = ExportSettings.sizeConstrained(
+        final settings = ExportSettings(
           widthPx: 200,
           heightPx: 100,
         );
@@ -240,7 +241,7 @@ void main() {
           size: const Size(100, 50),
         );
 
-        final settings = ExportSettings.sizeConstrained(
+        final settings = ExportSettings(
           widthPx: 200,
           heightPx: 100,
         );

@@ -2,8 +2,10 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:file_saver/file_saver.dart';
-import 'package:flites/states/open_project.dart';
+import 'package:flites/states/source_files_state.dart';
+import 'package:flites/types/export_settings.dart';
 import 'package:flites/types/flites_image.dart';
+import 'package:flites/types/flites_image_row.dart';
 import 'package:flites/utils/generate_sprite.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:image/image.dart' as img;
@@ -12,6 +14,8 @@ import 'package:mocktail/mocktail.dart';
 class MockFileSaver extends Mock implements FileSaver {}
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
   group('GenerateSprite.exportSprite', () {
     late Directory tempDir;
     late Uint8List testImageBytes;
@@ -42,7 +46,8 @@ void main() {
     tearDown(() {
       tempDir.deleteSync(recursive: true);
       // Clear project source files after each test
-      projectSourceFiles.value = [];
+
+      SourceFilesState.setStateForTests([]);
     });
 
     test('saves sprite to specified path', () async {
@@ -57,9 +62,14 @@ void main() {
           ..widthOnCanvas = 100,
       ];
 
-      projectSourceFiles.value = testImages;
+      SourceFilesState.setStateForTests([
+        FlitesImageRow(
+          images: testImages,
+          name: 'test_row',
+        ),
+      ]);
 
-      final settings = ExportSettings.sizeConstrained(
+      final settings = ExportSettings(
         widthPx: 200,
         heightPx: 200,
         fileName: 'test_sprite',
@@ -67,7 +77,7 @@ void main() {
       );
 
       // When
-      await GenerateSprite.exportSprite(settings);
+      await GenerateSprite.exportSpriteRow(settings, spriteRowIndex: 0);
 
       // Then
       final savedFile = File('${tempDir.path}/test_sprite.png');
@@ -77,8 +87,15 @@ void main() {
 
     test('handles empty source images', () async {
       // Given
-      projectSourceFiles.value = [];
-      final settings = ExportSettings.sizeConstrained(
+      SourceFilesState.setStateForTests(
+        [
+          FlitesImageRow(
+            images: [],
+            name: 'test_row',
+          ),
+        ],
+      );
+      final settings = ExportSettings(
         widthPx: 200,
         heightPx: 200,
         fileName: 'test_sprite',
@@ -86,7 +103,7 @@ void main() {
       );
 
       // When
-      await GenerateSprite.exportSprite(settings);
+      await GenerateSprite.exportSpriteRow(settings, spriteRowIndex: 0);
 
       // Then
       final savedFile = File('${tempDir.path}/test_sprite.png');
@@ -105,9 +122,14 @@ void main() {
           ..widthOnCanvas = 100,
       ];
 
-      projectSourceFiles.value = testImages;
+      SourceFilesState.setStateForTests([
+        FlitesImageRow(
+          images: testImages,
+          name: 'test_row',
+        ),
+      ]);
 
-      final settings = ExportSettings.sizeConstrained(
+      final settings = ExportSettings(
         widthPx: 200,
         heightPx: 200,
         fileName: 'test_sprite',
@@ -122,7 +144,11 @@ void main() {
           )).thenAnswer((_) => Future.value(''));
 
       // When
-      await GenerateSprite.exportSprite(settings, fileSaver: mockFileSaver);
+      await GenerateSprite.exportSpriteRow(
+        settings,
+        spriteRowIndex: 0,
+        fileSaver: mockFileSaver,
+      );
 
       // Then
       verify(() => mockFileSaver.saveFile(
@@ -153,9 +179,14 @@ void main() {
       ];
 
       // Set up images in project source files to create bounding box
-      projectSourceFiles.value = testImages;
+      SourceFilesState.setStateForTests([
+        FlitesImageRow(
+          images: testImages,
+          name: 'test_row',
+        ),
+      ]);
 
-      final settings = ExportSettings.sizeConstrained(
+      final settings = ExportSettings(
         widthPx: 300,
         heightPx: 150,
         fileName: 'test_sprite',
@@ -167,7 +198,7 @@ void main() {
       );
 
       // When
-      await GenerateSprite.exportSprite(settings);
+      await GenerateSprite.exportSpriteRow(settings, spriteRowIndex: 0);
 
       // Then
       final savedFile = File('${tempDir.path}/test_sprite.png');
@@ -176,7 +207,7 @@ void main() {
       // Verify the image dimensions - each frame gets full width plus padding
       final savedImage = img.decodePng(savedFile.readAsBytesSync());
       expect(savedImage!.width, equals(640)); // (300 + 20) * 2 frames = 640
-      expect(savedImage.height, equals(150));
+      expect(savedImage.height, equals(170)); // 150 + 10 + 10
     });
 
     test('handles file save errors', () async {
@@ -191,9 +222,14 @@ void main() {
           ..widthOnCanvas = 100,
       ];
 
-      projectSourceFiles.value = testImages;
+      SourceFilesState.setStateForTests([
+        FlitesImageRow(
+          images: testImages,
+          name: 'test_row',
+        ),
+      ]);
 
-      final settings = ExportSettings.sizeConstrained(
+      final settings = ExportSettings(
         widthPx: 200,
         heightPx: 200,
         fileName: 'test_sprite',
@@ -209,7 +245,8 @@ void main() {
 
       // When/Then
       expect(
-        () => GenerateSprite.exportSprite(settings, fileSaver: mockFileSaver),
+        () => GenerateSprite.exportSpriteRow(settings,
+            spriteRowIndex: 0, fileSaver: mockFileSaver),
         throwsException,
       );
     });
@@ -240,16 +277,21 @@ void main() {
           ..widthOnCanvas = 100,
       ];
 
-      projectSourceFiles.value = testImages;
+      SourceFilesState.setStateForTests([
+        FlitesImageRow(
+          images: testImages,
+          name: 'test_row',
+        ),
+      ]);
 
-      final settings = ExportSettings.widthConstrained(
+      final settings = ExportSettings(
         widthPx: 300,
         fileName: 'test_sprite',
         path: tempDir.path,
       );
 
       // When
-      await GenerateSprite.exportSprite(settings);
+      await GenerateSprite.exportSpriteRow(settings, spriteRowIndex: 0);
 
       // Then
       final savedFile = File('${tempDir.path}/test_sprite.png');
@@ -287,9 +329,14 @@ void main() {
           ..widthOnCanvas = 100,
       ];
 
-      projectSourceFiles.value = testImages;
+      SourceFilesState.setStateForTests([
+        FlitesImageRow(
+          images: testImages,
+          name: 'test_row',
+        ),
+      ]);
 
-      final settings = ExportSettings.sizeConstrained(
+      final settings = ExportSettings(
         widthPx: 100,
         heightPx: 100,
         fileName: 'test_sprite',
@@ -301,7 +348,7 @@ void main() {
       );
 
       // When
-      await GenerateSprite.exportSprite(settings);
+      await GenerateSprite.exportSpriteRow(settings, spriteRowIndex: 0);
 
       // Then
       final savedFile = File('${tempDir.path}/test_sprite.png');
@@ -394,9 +441,14 @@ void main() {
           ..widthOnCanvas = 100,
       ];
 
-      projectSourceFiles.value = testImages;
+      SourceFilesState.setStateForTests([
+        FlitesImageRow(
+          images: testImages,
+          name: 'test_row',
+        ),
+      ]);
 
-      final settings = ExportSettings.sizeConstrained(
+      final settings = ExportSettings(
         widthPx: 100,
         heightPx: 100,
         fileName: 'test_sprite',
@@ -405,7 +457,7 @@ void main() {
       );
 
       // When
-      await GenerateSprite.exportSprite(settings);
+      await GenerateSprite.exportSpriteRow(settings, spriteRowIndex: 0);
 
       // Then
       final savedFile = File('${tempDir.path}/test_sprite.png');
@@ -469,9 +521,14 @@ void main() {
           ..widthOnCanvas = 100,
       ];
 
-      projectSourceFiles.value = testImages;
+      SourceFilesState.setStateForTests([
+        FlitesImageRow(
+          images: testImages,
+          name: 'test_row',
+        ),
+      ]);
 
-      final settings = ExportSettings.sizeConstrained(
+      final settings = ExportSettings(
         widthPx: 100,
         heightPx: 100,
         fileName: 'test_sprite',
@@ -480,7 +537,7 @@ void main() {
       );
 
       // When
-      await GenerateSprite.exportSprite(settings);
+      await GenerateSprite.exportSpriteRow(settings, spriteRowIndex: 0);
 
       // Then
       final savedFile = File('${tempDir.path}/test_sprite.png');
@@ -544,9 +601,14 @@ void main() {
           ..widthOnCanvas = 100,
       ];
 
-      projectSourceFiles.value = testImages;
+      SourceFilesState.setStateForTests([
+        FlitesImageRow(
+          images: testImages,
+          name: 'test_row',
+        ),
+      ]);
 
-      final settings = ExportSettings.sizeConstrained(
+      final settings = ExportSettings(
         widthPx: 0, // Zero width constraint
         heightPx: 100,
         fileName: 'test_sprite',
@@ -555,7 +617,7 @@ void main() {
 
       // When/Then
       expect(
-        () => GenerateSprite.exportSprite(settings),
+        () => GenerateSprite.exportSpriteRow(settings, spriteRowIndex: 0),
         throwsException,
       );
     });
@@ -572,9 +634,14 @@ void main() {
           ..widthOnCanvas = 100,
       ];
 
-      projectSourceFiles.value = testImages;
+      SourceFilesState.setStateForTests([
+        FlitesImageRow(
+          images: testImages,
+          name: 'test_row',
+        ),
+      ]);
 
-      final settings = ExportSettings.sizeConstrained(
+      final settings = ExportSettings(
         widthPx: -100, // Negative width
         heightPx: 100,
         fileName: 'test_sprite',
@@ -583,7 +650,7 @@ void main() {
 
       // When/Then
       expect(
-        () => GenerateSprite.exportSprite(settings),
+        () => GenerateSprite.exportSpriteRow(settings, spriteRowIndex: 0),
         throwsException,
       );
     });
@@ -600,9 +667,14 @@ void main() {
           ..widthOnCanvas = 100,
       ];
 
-      projectSourceFiles.value = testImages;
+      SourceFilesState.setStateForTests([
+        FlitesImageRow(
+          images: testImages,
+          name: 'test_row',
+        ),
+      ]);
 
-      final settings = ExportSettings.sizeConstrained(
+      final settings = ExportSettings(
         widthPx: 100,
         heightPx: 100,
         fileName: 'test_sprite',
@@ -612,7 +684,7 @@ void main() {
 
       // When/Then
       expect(
-        () => GenerateSprite.exportSprite(settings),
+        () => GenerateSprite.exportSpriteRow(settings, spriteRowIndex: 0),
         throwsException,
       );
     });
@@ -636,9 +708,14 @@ void main() {
           ..widthOnCanvas = 150,
       ];
 
-      projectSourceFiles.value = testImages;
+      SourceFilesState.setStateForTests([
+        FlitesImageRow(
+          images: testImages,
+          name: 'test_row',
+        ),
+      ]);
 
-      final settings = ExportSettings.sizeConstrained(
+      final settings = ExportSettings(
         widthPx: 200,
         heightPx: 100,
         fileName: 'test_sprite',
@@ -646,7 +723,7 @@ void main() {
       );
 
       // When
-      await GenerateSprite.exportSprite(settings);
+      await GenerateSprite.exportSpriteRow(settings, spriteRowIndex: 0);
 
       // Then
       final savedFile = File('${tempDir.path}/test_sprite.png');
@@ -676,9 +753,14 @@ void main() {
           ..widthOnCanvas = 100,
       ];
 
-      projectSourceFiles.value = testImages;
+      SourceFilesState.setStateForTests([
+        FlitesImageRow(
+          images: testImages,
+          name: 'test_row',
+        ),
+      ]);
 
-      final settings = ExportSettings.sizeConstrained(
+      final settings = ExportSettings(
         widthPx: 100,
         heightPx: 150,
         fileName: 'test_sprite',
@@ -686,7 +768,7 @@ void main() {
       );
 
       // When
-      await GenerateSprite.exportSprite(settings);
+      await GenerateSprite.exportSpriteRow(settings, spriteRowIndex: 0);
 
       // Then
       final savedFile = File('${tempDir.path}/test_sprite.png');
@@ -721,9 +803,14 @@ void main() {
           ..widthOnCanvas = 100,
       ];
 
-      projectSourceFiles.value = testImages;
+      SourceFilesState.setStateForTests([
+        FlitesImageRow(
+          images: testImages,
+          name: 'test_row',
+        ),
+      ]);
 
-      final settings = ExportSettings.sizeConstrained(
+      final settings = ExportSettings(
         widthPx: 100,
         heightPx: 100,
         fileName: 'test_sprite',
@@ -731,7 +818,7 @@ void main() {
       );
 
       // When
-      await GenerateSprite.exportSprite(settings);
+      await GenerateSprite.exportSpriteRow(settings, spriteRowIndex: 0);
 
       // Then
       final savedFile = File('${tempDir.path}/test_sprite.png');
@@ -756,9 +843,14 @@ void main() {
           ..widthOnCanvas = 100,
       );
 
-      projectSourceFiles.value = testImages;
+      SourceFilesState.setStateForTests([
+        FlitesImageRow(
+          images: testImages,
+          name: 'test_row',
+        ),
+      ]);
 
-      final settings = ExportSettings.sizeConstrained(
+      final settings = ExportSettings(
         widthPx: 100,
         heightPx: 100,
         fileName: 'test_sprite',
@@ -767,7 +859,7 @@ void main() {
 
       // When
       final stopwatch = Stopwatch()..start();
-      await GenerateSprite.exportSprite(settings);
+      await GenerateSprite.exportSpriteRow(settings, spriteRowIndex: 0);
       stopwatch.stop();
 
       // Then
@@ -805,9 +897,14 @@ void main() {
           ..widthOnCanvas = 200,
       ];
 
-      projectSourceFiles.value = testImages;
+      SourceFilesState.setStateForTests([
+        FlitesImageRow(
+          images: testImages,
+          name: 'test_row',
+        ),
+      ]);
 
-      final settings = ExportSettings.sizeConstrained(
+      final settings = ExportSettings(
         widthPx: 150,
         heightPx: 150,
         fileName: 'test_sprite',
@@ -815,7 +912,7 @@ void main() {
       );
 
       // When
-      await GenerateSprite.exportSprite(settings);
+      await GenerateSprite.exportSpriteRow(settings, spriteRowIndex: 0);
 
       // Then
       final savedFile = File('${tempDir.path}/test_sprite.png');

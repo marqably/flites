@@ -1,13 +1,11 @@
 import 'package:flites/constants/app_sizes.dart';
 import 'package:flites/main.dart';
-import 'package:flites/states/selected_images_controller.dart';
+import 'package:flites/states/selected_image_state.dart';
 import 'package:flites/types/flites_image.dart';
 import 'package:flites/utils/svg_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:signals/signals_flutter.dart';
-
-import '../../states/open_project.dart';
 
 class ProjectFileItem extends StatelessWidget {
   ProjectFileItem(
@@ -24,7 +22,7 @@ class ProjectFileItem extends StatelessWidget {
       (context) {
         final isHovered = isHoveredState.value;
 
-        final isCurrentlySelected = selectedImage.value == file.id;
+        final isCurrentlySelected = selectedImageId.value == file.id;
 
         return Container(
           margin: const EdgeInsets.only(right: Sizes.p8),
@@ -50,7 +48,7 @@ class ProjectFileItem extends StatelessWidget {
             onExit: (event) => isHoveredState.value = false,
             child: GestureDetector(
               onTap: () {
-                SelectedImagesController().toggleSingle(file.id);
+                SelectedImageState.setSelectedImage(file.id);
               },
               child: Stack(
                 children: [

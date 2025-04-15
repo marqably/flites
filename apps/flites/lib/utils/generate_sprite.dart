@@ -1,140 +1,149 @@
 import 'dart:io';
 
 import 'package:file_saver/file_saver.dart';
-import 'package:flites/states/open_project.dart';
+import 'package:flites/states/source_files_state.dart';
+import 'package:flites/types/export_settings.dart';
 import 'package:flites/types/flites_image.dart';
+import 'package:flites/types/sprite_constraints.dart';
 import 'package:flites/widgets/image_editor/image_editor.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:image/image.dart' as img;
 
-sealed class SpriteConstraints {}
-
-class SpriteHeightConstrained extends SpriteConstraints {
-  final double heightPx;
-
-  SpriteHeightConstrained(this.heightPx);
-}
-
-class SpriteWidthConstrained extends SpriteConstraints {
-  final double widthPx;
-
-  SpriteWidthConstrained(this.widthPx);
-}
-
-class SpriteSizeConstrained extends SpriteConstraints {
-  final double widthPx;
-  final double heightPx;
-
-  SpriteSizeConstrained(this.widthPx, this.heightPx);
-}
-
-class ExportSettings {
-  final double? paddingTopPx;
-  final double? paddingRightPx;
-  final double? paddingBottomPx;
-  final double? paddingLeftPx;
-  final String? fileName;
-  final String? path;
-
-  final SpriteConstraints constraints;
-
-  ExportSettings.heightConstrained({
-    this.paddingTopPx,
-    this.paddingRightPx,
-    this.paddingBottomPx,
-    this.paddingLeftPx,
-    this.fileName,
-    this.path,
-    required double heightPx,
-  }) : constraints = SpriteHeightConstrained(heightPx);
-
-  ExportSettings.widthConstrained({
-    this.paddingTopPx,
-    this.paddingRightPx,
-    this.paddingBottomPx,
-    this.paddingLeftPx,
-    this.fileName,
-    this.path,
-    required double widthPx,
-  }) : constraints = SpriteWidthConstrained(widthPx);
-
-  ExportSettings.sizeConstrained({
-    this.paddingTopPx,
-    this.paddingRightPx,
-    this.paddingBottomPx,
-    this.paddingLeftPx,
-    this.fileName,
-    this.path,
-    required double widthPx,
-    required double heightPx,
-  }) : constraints = SpriteSizeConstrained(widthPx, heightPx);
-
-  double get horizontalMargin => (paddingLeftPx ?? 0) + (paddingRightPx ?? 0);
-  double get verticalMargin => (paddingTopPx ?? 0) + (paddingBottomPx ?? 0);
-
-  SpriteConstraints get maxDimensionsAfterPadding {
-    // Needed so that the switch can match the type
-    final constraintsV = constraints;
-
-    return switch (constraintsV) {
-      // If we have a height constraint, we can calculate the width
-      SpriteHeightConstrained() => SpriteHeightConstrained(
-          constraintsV.heightPx - (paddingTopPx ?? 0) - (paddingBottomPx ?? 0),
-        ),
-      // If we have a width constraint, we can calculate the height
-      SpriteWidthConstrained() => SpriteWidthConstrained(
-          constraintsV.widthPx,
-        ),
-      // If we have both, we can just use them
-      SpriteSizeConstrained() => SpriteSizeConstrained(
-          constraintsV.widthPx,
-          constraintsV.heightPx - (paddingTopPx ?? 0) - (paddingBottomPx ?? 0),
-        ),
-    };
-  }
-}
-
 class GenerateSprite {
-  static Future<void> exportSprite(
-    ExportSettings settings, {
+  static Future<img.Image?> exportSpriteMap({
     FileSaver? fileSaver,
   }) async {
-    _validateDimensions(settings.constraints);
-    _validatePadding(settings);
+    final sourceFiles = projectSourceFiles.value;
 
-    final sourceImages = projectSourceFiles.value;
-    final boundingBox = allImagesBoundingBox;
+    final spriteRowImages = <img.Image>[];
 
-    // Early return if no valid images or bounding box
-    if (boundingBox == null || sourceImages.isEmpty) {
+    for (int i = 0; i < sourceFiles.rows.length; i++) {
+      final spriteRowImage = await createSpriteRowImage(
+        sourceFiles.rows[i].exportSettings,
+        spriteRowIndex: i,
+      );
+
+      if (spriteRowImage != null) {
+        spriteRowImages.add(spriteRowImage);
+      }
+    }
+
+    // Find longest width
+    final longestWidth = spriteRowImages.map((e) => e.width).reduce(
+          (a, b) => a > b ? a : b,
+        );
+
+    // Find total height of all rows
+    final totalHeight = spriteRowImages.map((e) => e.height).reduce(
+          (a, b) => a + b,
+        );
+
+    // Create composite sprite sheet of a vertical list with all rows
+    final spriteSheet = img.Image(
+      width: longestWidth.toInt(),
+      height: totalHeight.toInt(),
+      numChannels: 4,
+      format: img.Format.uint8,
+    );
+
+    int offsetY = 0;
+    // Position each row in the sprite sheet
+    for (int i = 0; i < spriteRowImages.length; i++) {
+      img.compositeImage(
+        spriteSheet,
+        spriteRowImages[i],
+        dstX: 0,
+        dstY: offsetY,
+      );
+
+      offsetY += spriteRowImages[i].height;
+    }
+
+    _saveSpriteSheet(
+      spriteSheet,
+      'some',
+      null,
+      FileSaver.instance,
+    );
+
+    return spriteSheet;
+  }
+
+  static Future<void> exportSpriteRow(
+    ExportSettings settings, {
+    required int spriteRowIndex,
+    FileSaver? fileSaver,
+  }) async {
+    final spriteRowImage = await createSpriteRowImage(
+      settings,
+      spriteRowIndex: spriteRowIndex,
+    );
+
+    if (spriteRowImage == null) {
       return;
     }
 
+    // Save the sprite
+    await _saveSpriteSheet(
+      spriteRowImage,
+      settings.fileName ?? 'sprite',
+      settings.path,
+      fileSaver ?? FileSaver.instance,
+    );
+  }
+
+  static Future<img.Image?> createSpriteRowImage(
+    ExportSettings settings, {
+    required int spriteRowIndex,
+  }) async {
+    final images = projectSourceFiles.value.rows[spriteRowIndex].images;
+
+    final boundingBox = boundingBoxOfRow(spriteRowIndex);
+
+    // Early return if no valid images or bounding box
+    if (boundingBox == null || images.isEmpty) {
+      return null;
+    }
+
+    /// Override settings if no height & width provided
+    if ((settings.widthPx == null || settings.widthPx == 0) &&
+        (settings.heightPx == null || settings.heightPx == 0)) {
+      settings = settings.copyWith(
+        widthPx: boundingBox.size.width.toInt(),
+        heightPx: boundingBox.size.height.toInt(),
+      );
+    }
+
+    _validateDimensions(settings.constraints);
+    _validatePadding(settings);
+
     // Process frames
     final spriteSize = settings.maxDimensionsAfterPadding;
+
     final frames = separateSpriteImages(
-      sourceImages,
+      images,
       boundingBox,
       spriteSize,
       settings,
     );
 
-    if (frames.isEmpty) return;
+    if (frames.isEmpty) return null;
 
     // Calculate dimensions
     final frameSize = sizeOfFrame(boundingBox.size, settings);
+
     final spriteSheetWidth = _calculateSpriteSheetWidth(
       settings,
       frames.length,
       frameSize.width,
-      settings.paddingLeftPx ?? 0,
+      settings.paddingLeftPx.toDouble(),
     );
+
     final spriteSheetHeight = _calculateSpriteSheetHeight(
       settings,
       frameSize.height,
-      settings.paddingTopPx ?? 0,
-      settings.paddingBottomPx ?? 0,
+      settings.paddingTopPx.toDouble(),
+      settings.paddingBottomPx.toDouble(),
     );
 
     // Create and compose sprite
@@ -148,21 +157,19 @@ class GenerateSprite {
     // Position each frame with padding
     for (int i = 0; i < frames.length; i++) {
       final xPos = i * (frameSize.width + settings.horizontalMargin);
+      final dstX = (xPos + settings.paddingLeftPx).toInt();
+      final dstY = settings.paddingTopPx.toInt();
+
+      // Composite the actual frame image
       img.compositeImage(
         spriteSheet,
         frames[i],
-        dstX: (xPos + (settings.paddingLeftPx ?? 0)).toInt(),
-        dstY: (settings.paddingTopPx ?? 0).toInt(),
+        dstX: dstX,
+        dstY: dstY,
       );
     }
 
-    // Save the sprite
-    await _saveSpriteSheet(
-      spriteSheet,
-      settings.fileName ?? 'sprite',
-      settings.path,
-      fileSaver ?? FileSaver.instance,
-    );
+    return spriteSheet;
   }
 
   static Future<void> _saveSpriteSheet(
@@ -203,11 +210,15 @@ class GenerateSprite {
       SpriteSizeConstrained() =>
         scalingWithBoundingBox(constraints, boundingBox, images: fliteImages),
       SpriteHeightConstrained() => scalingFactorForSizeAlongAxis(
-          constraints.heightPx, Axis.vertical,
-          images: fliteImages),
+          constraints.heightPx.toDouble(),
+          Axis.vertical,
+          images: fliteImages,
+        ),
       SpriteWidthConstrained() => scalingFactorForSizeAlongAxis(
-          constraints.widthPx, Axis.horizontal,
-          images: fliteImages),
+          constraints.widthPx.toDouble(),
+          Axis.horizontal,
+          images: fliteImages,
+        ),
     };
 
     final List<img.Image> images = [];
@@ -268,15 +279,15 @@ class GenerateSprite {
       SpriteHeightConstrained() => Size(
           (constraints.heightPx - settings.verticalMargin) *
               aspectRatioOfAllSprites,
-          constraints.heightPx,
+          constraints.heightPx.toDouble(),
         ),
       SpriteWidthConstrained() => Size(
-          constraints.widthPx,
+          constraints.widthPx.toDouble(),
           constraints.widthPx / aspectRatioOfAllSprites,
         ),
       SpriteSizeConstrained() => Size(
-          constraints.widthPx,
-          constraints.heightPx,
+          constraints.widthPx.toDouble(),
+          constraints.heightPx.toDouble(),
         ),
     };
   }
@@ -292,13 +303,13 @@ class GenerateSprite {
 
     if (longestAxis == Axis.horizontal) {
       return scalingFactorForSizeAlongAxis(
-        maxSpriteSize.widthPx,
+        maxSpriteSize.widthPx.toDouble(),
         longestAxis,
         images: images,
       );
     } else {
       return scalingFactorForSizeAlongAxis(
-        maxSpriteSize.heightPx,
+        maxSpriteSize.heightPx.toDouble(),
         longestAxis,
         images: images,
       );
@@ -326,6 +337,8 @@ class GenerateSprite {
     if (images.isEmpty) {
       throw Exception('Cannot calculate scaling factor for empty image list');
     }
+
+    /// TODO: this gives a negative scaling factor for Axis.vertical
 
     // Check for zero width/height
     final hasZeroDimension = images.any((image) {
@@ -375,10 +388,10 @@ class GenerateSprite {
   }
 
   static void _validatePadding(ExportSettings settings) {
-    if ((settings.paddingLeftPx ?? 0) < 0 ||
-        (settings.paddingRightPx ?? 0) < 0 ||
-        (settings.paddingTopPx ?? 0) < 0 ||
-        (settings.paddingBottomPx ?? 0) < 0) {
+    if (settings.paddingLeftPx < 0 ||
+        settings.paddingRightPx < 0 ||
+        settings.paddingTopPx < 0 ||
+        settings.paddingBottomPx < 0) {
       throw Exception('Padding values must be non-negative');
     }
   }
@@ -386,17 +399,23 @@ class GenerateSprite {
   static double _calculateSpriteSheetWidth(ExportSettings settings,
       int frameCount, double frameWidth, double leftPadding) {
     // Each frame gets its own padding
-    final paddingPerFrame =
-        (settings.paddingLeftPx ?? 0) + (settings.paddingRightPx ?? 0);
+    final paddingPerFrame = settings.horizontalMargin;
+
     return frameWidth * frameCount + (paddingPerFrame * frameCount);
   }
 
-  static double _calculateSpriteSheetHeight(ExportSettings settings,
-      double frameHeight, double topPadding, double bottomPadding) {
+  static double _calculateSpriteSheetHeight(
+    ExportSettings settings,
+    double frameHeight,
+    double topPadding,
+    double bottomPadding,
+  ) {
     switch (settings.constraints.runtimeType) {
       // ignore: type_literal_in_constant_pattern
       case SpriteSizeConstrained:
-        return (settings.constraints as SpriteSizeConstrained).heightPx;
+        return (settings.constraints as SpriteSizeConstrained).heightPx +
+            topPadding +
+            bottomPadding;
       default:
         return frameHeight + topPadding + bottomPadding;
     }

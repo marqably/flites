@@ -2,9 +2,10 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'dart:convert';
 
-import 'package:flites/states/open_project.dart';
+import 'package:flites/states/source_files_state.dart';
+import 'package:flites/types/export_settings.dart';
 import 'package:flites/types/flites_image.dart';
-import 'package:flites/utils/generate_sprite.dart';
+import 'package:flites/types/flites_image_row.dart';
 import 'package:flites/utils/generate_svg_sprite.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -20,7 +21,7 @@ void main() {
     tearDown(() {
       tempDir.deleteSync(recursive: true);
       // Clear project source files after each test
-      projectSourceFiles.value = [];
+      SourceFilesState.setStateForTests([]);
     });
 
     test('exports SVG files as SVG sprite with proper positioning', () async {
@@ -57,9 +58,14 @@ void main() {
           ..widthOnCanvas = 50, // Half the original size
       ];
 
-      projectSourceFiles.value = testImages;
+      SourceFilesState.setStateForTests([
+        FlitesImageRow(
+          images: testImages,
+          name: 'test_row',
+        ),
+      ]);
 
-      final settings = ExportSettings.sizeConstrained(
+      final settings = ExportSettings(
         widthPx: 300,
         heightPx: 200,
         fileName: 'test_svg_sprite',
@@ -67,7 +73,7 @@ void main() {
       );
 
       // When
-      await GenerateSvgSprite.exportSprite(settings);
+      await GenerateSvgSprite.exportSpriteRow(settings, spriteRowIndex: 0);
 
       // Then
       final savedFile = File('${tempDir.path}/test_svg_sprite.svg');
@@ -122,9 +128,14 @@ void main() {
           ..widthOnCanvas = 100,
       ];
 
-      projectSourceFiles.value = testImages;
+      SourceFilesState.setStateForTests([
+        FlitesImageRow(
+          images: testImages,
+          name: 'test_row',
+        ),
+      ]);
 
-      final settings = ExportSettings.sizeConstrained(
+      final settings = ExportSettings(
         widthPx: 200,
         heightPx: 200,
         fileName: 'viewbox_test',
@@ -132,7 +143,7 @@ void main() {
       );
 
       // When
-      await GenerateSvgSprite.exportSprite(settings);
+      await GenerateSvgSprite.exportSpriteRow(settings, spriteRowIndex: 0);
 
       // Then
       final savedFile = File('${tempDir.path}/viewbox_test.svg');
@@ -195,20 +206,25 @@ void main() {
           ..widthOnCanvas = 50, // Quarter its normal size
       ];
 
-      projectSourceFiles.value = testImages;
+      SourceFilesState.setStateForTests([
+        FlitesImageRow(
+          images: testImages,
+          name: 'test_row',
+        ),
+      ]);
 
       // Use different constraint type (width-constrained)
-      final settings = ExportSettings.widthConstrained(
+      final settings = ExportSettings(
         widthPx: 400,
         fileName: 'complex_svg_test',
         path: tempDir.path,
-        paddingTopPx: 10.0,
-        paddingBottomPx: 15.0,
-        paddingLeftPx: 20.0,
-        paddingRightPx: 5.0,
+        paddingTopPx: 10,
+        paddingBottomPx: 15,
+        paddingLeftPx: 20,
+        paddingRightPx: 5,
       );
 
-      await GenerateSvgSprite.exportSprite(settings);
+      await GenerateSvgSprite.exportSpriteRow(settings, spriteRowIndex: 0);
 
       final savedFile = File('${tempDir.path}/complex_svg_test.svg');
       expect(savedFile.existsSync(), isTrue);
@@ -299,16 +315,21 @@ void main() {
           ..widthOnCanvas = 100,
       ];
 
-      projectSourceFiles.value = testImages;
+      SourceFilesState.setStateForTests([
+        FlitesImageRow(
+          images: testImages,
+          name: 'test_row',
+        ),
+      ]);
 
       // Use height-constrained settings
-      final settings = ExportSettings.heightConstrained(
+      final settings = ExportSettings(
         heightPx: 250,
         fileName: 'aspect_ratio_test',
         path: tempDir.path,
       );
 
-      await GenerateSvgSprite.exportSprite(settings);
+      await GenerateSvgSprite.exportSpriteRow(settings, spriteRowIndex: 0);
 
       final savedFile = File('${tempDir.path}/aspect_ratio_test.svg');
       expect(savedFile.existsSync(), isTrue);
@@ -364,19 +385,24 @@ void main() {
           ..widthOnCanvas = 100,
       ];
 
-      projectSourceFiles.value = testImages;
+      SourceFilesState.setStateForTests([
+        FlitesImageRow(
+          images: testImages,
+          name: 'test_row',
+        ),
+      ]);
 
       // Use fixed size constraints with known padding
-      final settings = ExportSettings.sizeConstrained(
+      final settings = ExportSettings(
         widthPx: 100,
         heightPx: 100,
         fileName: 'positioning_test',
         path: tempDir.path,
-        paddingLeftPx: 10.0,
-        paddingRightPx: 10.0,
+        paddingLeftPx: 10,
+        paddingRightPx: 10,
       );
 
-      await GenerateSvgSprite.exportSprite(settings);
+      await GenerateSvgSprite.exportSpriteRow(settings, spriteRowIndex: 0);
 
       final savedFile = File('${tempDir.path}/positioning_test.svg');
       expect(savedFile.existsSync(), isTrue);

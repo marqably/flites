@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:signals/signals_flutter.dart';
+import 'package:flutter/gestures.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,6 +32,7 @@ class FlitesApp extends StatelessWidget {
         child: AbsorbPointer(
           absorbing: isLoading,
           child: MaterialApp(
+            debugShowCheckedModeBanner: false,
             localizationsDelegates: const [
               AppLocalizations.delegate,
               GlobalMaterialLocalizations.delegate,
@@ -59,6 +61,7 @@ class FlitesApp extends StatelessWidget {
                 ),
               ),
             ),
+            scrollBehavior: AppScrollBehavior(),
           ),
         ),
       );
@@ -72,4 +75,13 @@ extension ThemeExtension on BuildContext {
 
 extension LocalizationExt on BuildContext {
   AppLocalizations get l10n => AppLocalizations.of(this)!;
+}
+
+class AppScrollBehavior extends MaterialScrollBehavior {
+  @override
+  Set<PointerDeviceKind> get dragDevices => {
+        PointerDeviceKind.touch,
+        PointerDeviceKind.mouse,
+        PointerDeviceKind.trackpad,
+      };
 }

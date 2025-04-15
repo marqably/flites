@@ -3,6 +3,9 @@ import 'dart:async';
 import 'package:flites/constants/app_sizes.dart';
 import 'package:flites/main.dart';
 import 'package:flites/states/open_project.dart';
+import 'package:flites/states/selected_image_row_state.dart';
+import 'package:flites/states/selected_image_state.dart';
+import 'package:flites/states/source_files_state.dart';
 import 'package:flites/utils/get_flite_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -51,14 +54,14 @@ class _PlayerControlsState extends State<PlayerControls> {
     return Timer.periodic(
       Duration(milliseconds: playbackSpeed.value.toInt()),
       (timer) {
-        final nextImage = getNexImageId();
+        final nextImage = getNextImageId();
 
         if (nextImage == null) {
           timer.cancel();
           return;
         }
 
-        selectedImage.value = nextImage;
+        SelectedImageState.setSelectedImage(nextImage);
       },
     );
   }
@@ -77,7 +80,9 @@ class _PlayerControlsState extends State<PlayerControls> {
       height: Sizes.p64,
       child: Watch(
         (context) {
-          final hasMultipleImages = projectSourceFiles.value.length > 1;
+          final selectedRowIndex = selectedImageRow.value;
+          final hasMultipleImages =
+              projectSourceFiles.value.rows[selectedRowIndex].images.length > 1;
           final currentlyPlaying = isPlayingSignal.value;
 
           return Row(
