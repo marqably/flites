@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
+import 'dart:ui';
 
 import 'package:flites/types/export_settings.dart';
 
@@ -8,12 +9,14 @@ import 'flites_image.dart';
 class FlitesImageRow {
   final String name;
   final List<FlitesImage> images;
+  List<Offset>? hitboxPoints;
   // final int order;
   final ExportSettings exportSettings;
 
   FlitesImageRow({
     required this.name,
     required this.images,
+    this.hitboxPoints,
     // required this.order,
     ExportSettings? exportSettings,
   }) : exportSettings = exportSettings ?? ExportSettings();
@@ -21,10 +24,12 @@ class FlitesImageRow {
   FlitesImageRow copyWith({
     String? name,
     List<FlitesImage>? images,
+    List<Offset>? hitboxPoints,
     int? order,
     ExportSettings? exportSettings,
   }) {
     return FlitesImageRow(
+      hitboxPoints: hitboxPoints ?? this.hitboxPoints,
       name: name ?? this.name,
       images: images ?? this.images,
       // order: order ?? this.order,

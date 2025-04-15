@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flites/types/export_settings.dart';
 import 'package:flites/types/flites_image.dart';
 import 'package:flites/types/flites_image_map.dart';
@@ -56,24 +58,28 @@ class SourceFilesState {
   }
 
   static void saveImageChanges(FlitesImage image) {
-    final imageMap = _projectSourceFiles.value;
-    final rowIndex = selectedImageRow.value;
+    final currentRow = _getCurrentRow();
 
-    final row = imageMap.rows[rowIndex];
+    // replace the current image with the new image
+    final newRow = currentRow.copyWith(
+        images: currentRow.images
+            .map(
+              // if image id matches, replace it with the new image, otherwise keep the old image
+              (img) => img.id == image.id ? image : img,
+            )
+            .toList());
+    _changeRow(newRow);
+  }
 
-    final imageIndex = row.images.indexWhere((i) => i.id == image.id);
+  /// Saves hitbox points for a row
+  static void saveHitboxPoints(List<Offset> hitboxPoints) {
+    final currentRow = _getCurrentRow();
 
-    final newRow = row.copyWith(images: [...row.images]);
-
-    newRow.images[imageIndex] = image;
-
-    final newRows = [...imageMap.rows];
-
-    newRows[rowIndex] = newRow;
-
-    final newImageMap = imageMap.copyWith(rows: newRows);
-
-    _projectSourceFiles.value = newImageMap;
+    _changeRow(
+      currentRow.copyWith(
+        hitboxPoints: hitboxPoints,
+      ),
+    );
   }
 
   static void renameImageRow(String name) {
@@ -193,5 +199,25 @@ class SourceFilesState {
 
   static void setSourceFilesStateFromFile(FlitesImageMap imageMap) {
     _projectSourceFiles.value = imageMap;
+  }
+
+  /// Applies a change to a row specific imageRow, while keeping the rest of the row intact
+  static FlitesImageRow _getCurrentRow() {
+    return projectSourceFiles.value.rows[selectedImageRow.value];
+  }
+
+  /// Applies a change to a row specific imageRow, while keeping the rest of the row intact
+  static void _changeRow(
+    FlitesImageRow newRow, {
+    int? rowIndex,
+  }) {
+    // if we did not get a row Index -> use current one
+    rowIndex ??= selectedImageRow.value;
+
+    final currentRows = [..._projectSourceFiles.value.rows];
+    currentRows[rowIndex] = newRow;
+
+    _projectSourceFiles.value =
+        _projectSourceFiles.value.copyWith(rows: currentRows);
   }
 }

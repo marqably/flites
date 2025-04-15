@@ -1,4 +1,5 @@
 import 'package:flites/types/flites_image.dart';
+import 'package:flites/ui/sidebar_controls/sidebar_positioning_controls.dart';
 import 'package:flites/utils/svg_utils.dart';
 import 'package:flites/widgets/image_editor/edit_modes/hitbox_editor/hitbox_editor_overlay.dart';
 import 'package:flites/widgets/tool_controls/tool_controls.dart';
@@ -26,6 +27,8 @@ class HitboxEditor extends StatefulWidget {
 class _HitboxEditorState extends State<HitboxEditor> {
   List<Offset> hitboxPoints = [];
 
+
+
   void _onHitboxPointsChanged(List<Offset> points) {
     setState(() {
       hitboxPoints = points;
@@ -35,13 +38,9 @@ class _HitboxEditorState extends State<HitboxEditor> {
   @override
   Widget build(BuildContext context) {
     Widget imageWidget = SvgUtils.isSvg(widget.currentSelection.image)
-        ? SizedBox(
-            width: widget.selectedImageRect.width,
-            height: widget.selectedImageRect.height,
-            child: SvgPicture.memory(
+        ? SvgPicture.memory(
               widget.currentSelection.image,
-              fit: BoxFit.contain,
-            ),
+            fit: BoxFit.contain,
           )
         : Image.memory(
             widget.currentSelection.image,
@@ -54,17 +53,25 @@ class _HitboxEditorState extends State<HitboxEditor> {
       children: [
         // Editor
         Expanded(
-          child: Positioned.fromRect(
-            rect: widget.selectedImageRect,
-            child: HitboxEditorOverlay(
-              onHitboxPointsChanged: _onHitboxPointsChanged,
-              child: imageWidget,
+          child: Center(
+            child: SizedBox(
+              width: widget.selectedImageRect.width,
+              height: widget.selectedImageRect.height,
+              child: Positioned.fromRect(
+                rect: widget.selectedImageRect,
+                child: HitboxEditorOverlay(
+                  onHitboxPointsChanged: _onHitboxPointsChanged,
+                  child: imageWidget,
+                ),
+              ),
             ),
           ),
         ),
 
         // Tools
-        const ToolControls(),
+        const ToolControls(
+          child: SidebarPositioningControls(),
+        ),
       ],
     );
   }

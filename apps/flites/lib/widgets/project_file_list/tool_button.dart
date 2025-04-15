@@ -1,6 +1,7 @@
 import 'package:flites/constants/app_sizes.dart';
 import 'package:flites/main.dart';
 import 'package:flites/states/tool_controller.dart';
+import 'package:flites/ui/sidebar_controls/sidebar_control.dart';
 import 'package:flutter/material.dart';
 import 'package:signals/signals_flutter.dart';
 
@@ -21,41 +22,16 @@ class ToolButton extends StatelessWidget {
     return Watch(
       (context) {
         final selectedTool = toolController.selectedTool;
-        final hoveredTool = toolController.hoveredTool;
 
         final isSelected = selectedTool == tool;
-        final isHovered = hoveredTool == tool;
 
-        return Tooltip(
-          message: tooltip ?? tool.toString(),
-          child: InkWell(
-            onHover: (value) {
-              if (value) {
-                toolController.setHoveredTool(tool);
-              } else {
-                toolController.setHoveredTool(null);
-              }
-            },
-            onTap: () {
-              toolController.selectTool(tool);
-            },
-            child: Container(
-              padding: const EdgeInsets.all(5),
-              decoration: BoxDecoration(
-                color: isSelected
-                    ? context.colors.surfaceContainer
-                    : isHovered
-                        ? context.colors.surfaceContainer
-                        : context.colors.surface,
-                borderRadius: BorderRadius.circular(Sizes.p4),
-              ),
-              child: Icon(
-                icon,
-                size: Sizes.p24,
-                color: context.colors.onSurface,
-              ),
-            ),
-          ),
+        return SidebarControl(
+          icon: icon,
+          tooltip: tooltip ?? tool.toString(),
+          isSelected: isSelected,
+          onPressed: () {
+            toolController.selectTool(tool);
+          },
         );
       },
     );
