@@ -1,5 +1,6 @@
 import 'package:flites/constants/app_sizes.dart';
 import 'package:flites/main.dart';
+import 'package:flites/services/project_saving_service.dart';
 import 'package:flites/states/selected_image_row_state.dart';
 import 'package:flites/states/source_files_state.dart';
 import 'package:flites/utils/generate_sprite.dart';
@@ -104,6 +105,27 @@ class ImageMapHeader extends StatelessWidget {
                 // const Spacer(),
               ],
             ),
+          ),
+          AnimationRowTabWrapper(
+            isSelected: true,
+            onPressed: () async {
+              final projectState =
+                  await ProjectSavingService().loadProjectFile();
+
+              if (projectState != null) {
+                ProjectSavingService().setProjectState(projectState);
+              }
+            },
+            withBackground: false,
+            child: const Text('Load'),
+          ),
+          AnimationRowTabWrapper(
+            isSelected: true,
+            onPressed: () {
+              ProjectSavingService().saveProject();
+            },
+            withBackground: false,
+            child: const Text('Save'),
           ),
           AnimationRowTabWrapper(
             isSelected: true,

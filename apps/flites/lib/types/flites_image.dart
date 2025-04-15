@@ -152,6 +152,7 @@ class FlitesImage {
     flitesImage.displayName = json['displayName'] as String?;
     flitesImage.originalName = json['originalName'] as String?;
     flitesImage.widthOnCanvas = json['widthOnCanvas'] as double;
+    json['originalScalingFactor'] as double?;
 
     final positionMap = json['positionOnCanvas'] as Map<String, dynamic>;
     flitesImage.positionOnCanvas = Offset(
@@ -166,16 +167,5 @@ class FlitesImage {
     flitesImage.image = base64Decode(imageBase64);
 
     return flitesImage;
-  }
-
-  /// Helper method to convert the object to a JSON string
-  String toJsonString() {
-    return jsonEncode(toJson());
-  }
-
-  /// Helper method to create a FlitesImage from a JSON string
-  static FlitesImage fromJsonString(String jsonString) {
-    final Map<String, dynamic> json = jsonDecode(jsonString);
-    return FlitesImage.fromJson(json);
   }
 }

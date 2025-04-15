@@ -11,8 +11,9 @@ class LoadProjectButton extends StatelessWidget {
       text: 'Load Project',
       onPressed: () async {
         final projectState = await ProjectSavingService().loadProjectFile();
-
-        ProjectSavingService().setProjectState(projectState);
+        if (projectState != null) {
+          ProjectSavingService().setProjectState(projectState);
+        }
       },
     );
   }
