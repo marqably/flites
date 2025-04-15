@@ -139,74 +139,7 @@ class ExportDialogContentState extends State<ExportDialogContent> {
             ],
             StadiumButton(
               text: context.l10n.export,
-              onPressed: () {
-                // double? width = selectedExportSettings.widthPx > 0
-                //     ? selectedExportSettings.widthPx.toDouble()
-                //     : null;
-                // double? height = selectedExportSettings.heightPx > 0
-                //     ? selectedExportSettings.heightPx.toDouble()
-                //     : null;
-
-                // // Prepare export settings based on the provided dimensions
-                // ExportSettings? settings;
-                // if (width != null && height != null) {
-                //   // Both width and height are provided
-                //   settings = ExportSettings.sizeConstrained(
-                //     fileName: fileNameController.text,
-                //     path: exportPath,
-                //     widthPx: width,
-                //     heightPx: height,
-                //     paddingTopPx: currentPaddingTop.toDouble(),
-                //     paddingBottomPx: currentPaddingBottom.toDouble(),
-                //     paddingLeftPx: currentPaddingLeft.toDouble(),
-                //     paddingRightPx: currentPaddingRight.toDouble(),
-                //   );
-                // } else if (width != null) {
-                //   // Only width is provided
-                //   settings = ExportSettings.widthConstrained(
-                //     fileName: fileNameController.text,
-                //     path: exportPath,
-                //     widthPx: width,
-                //     paddingTopPx: currentPaddingTop.toDouble(),
-                //     paddingBottomPx: currentPaddingBottom.toDouble(),
-                //     paddingLeftPx: currentPaddingLeft.toDouble(),
-                //     paddingRightPx: currentPaddingRight.toDouble(),
-                //   );
-                // } else if (height != null) {
-                //   // Only height is provided
-                //   settings = ExportSettings.heightConstrained(
-                //     fileName: fileNameController.text,
-                //     path: exportPath,
-                //     heightPx: height,
-                //     paddingTopPx: currentPaddingTop.toDouble(),
-                //     paddingBottomPx: currentPaddingBottom.toDouble(),
-                //     paddingLeftPx: currentPaddingLeft.toDouble(),
-                //     paddingRightPx: currentPaddingRight.toDouble(),
-                //   );
-                // }
-
-                // if (settings != null) {
-                //   // Use the appropriate generator based on image types
-                //   if (_allImagesAreSvg) {
-                //     GenerateSvgSprite.exportSpriteRow(
-                //       settings,
-                //       spriteRowIndex: selectedImageRow.value,
-                //     );
-                //   } else {
-                //     GenerateSprite.exportSpriteRow(
-                //       settings,
-                //       spriteRowIndex: selectedImageRow.value,
-                //     );
-                //   }
-                // } else {
-                //   // Handle the case where neither width nor height is provided
-                //   ScaffoldMessenger.of(context).showSnackBar(
-                //     SnackBar(
-                //       content: Text(context.l10n.provideDimensionError),
-                //     ),
-                //   );
-                // }
-              },
+              onPressed: () {},
             ),
           ],
         ),

@@ -13,17 +13,6 @@ class ExportSettings {
   final String? fileName;
   final String? path;
 
-  // ExportSettings({
-  //   this.widthPx,
-  //   this.heightPx,
-  //   this.paddingTopPx,
-  //   this.paddingRightPx,
-  //   this.paddingBottomPx,
-  //   this.paddingLeftPx,
-  //   this.fileName,
-  //   this.path,
-  // });
-
   ExportSettings({
     this.widthPx,
     this.heightPx,
@@ -46,37 +35,6 @@ class ExportSettings {
 
     throw Exception('No constraints provided');
   }
-
-  // ExportSettings.heightConstrained({
-  //   this.paddingTopPx,
-  //   this.paddingRightPx,
-  //   this.paddingBottomPx,
-  //   this.paddingLeftPx,
-  //   this.fileName,
-  //   this.path,
-  //   required double heightPx,
-  // }) : constraints = SpriteHeightConstrained(heightPx);
-
-  // ExportSettings.widthConstrained({
-  //   this.paddingTopPx,
-  //   this.paddingRightPx,
-  //   this.paddingBottomPx,
-  //   this.paddingLeftPx,
-  //   this.fileName,
-  //   this.path,
-  //   required double widthPx,
-  // }) : constraints = SpriteWidthConstrained(widthPx);
-
-  // ExportSettings.sizeConstrained({
-  //   this.paddingTopPx,
-  //   this.paddingRightPx,
-  //   this.paddingBottomPx,
-  //   this.paddingLeftPx,
-  //   this.fileName,
-  //   this.path,
-  //   required double widthPx,
-  //   required double heightPx,
-  // }) : constraints = SpriteSizeConstrained(widthPx, heightPx);
 
   int get horizontalMargin => paddingLeftPx + paddingRightPx;
   int get verticalMargin => paddingTopPx + paddingBottomPx;
