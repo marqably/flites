@@ -42,7 +42,7 @@ class FileService {
       final outputFile = await FilePicker.platform.saveFile(
         dialogTitle: 'Save Sprite Map',
         fileName: 'sprite-map.$fileExtension',
-        initialDirectory: kIsWeb ? null : downloadsDir?.path,
+        initialDirectory: downloadsDir?.path,
         type: fileType,
         lockParentWindow: true,
         allowedExtensions: [
