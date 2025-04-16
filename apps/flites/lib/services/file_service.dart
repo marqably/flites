@@ -1,7 +1,9 @@
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
-import 'dart:typed_data';
+import 'package:file_saver/file_saver.dart';
+import 'package:flites/widgets/overlays/file_save_confirm_dialog.dart';
+import 'package:flutter/foundation.dart';
 
 import 'package:path_provider/path_provider.dart';
 
@@ -25,26 +27,38 @@ class FileService {
     required FileType fileType,
     required String fileExtension,
   }) async {
-    final downloadsDir = await getDownloadsDirectory();
+    if (kIsWeb) {
+      await FileSaver.instance.saveFile(
+        bytes: bytes,
+        name: 'sprite-map.$fileExtension',
+        ext: fileExtension,
+        mimeType: MimeType.other,
+      );
 
-    final outputFile = await FilePicker.platform.saveFile(
-      dialogTitle: 'Save Sprite Map',
-      fileName: 'sprite-map.$fileExtension',
-      initialDirectory: downloadsDir?.path,
-      type: fileType,
-      lockParentWindow: true,
-      allowedExtensions: [
-        'png',
-        'svg',
-        // 'flites',
-      ],
-    );
+      return true;
+    } else {
+      final downloadsDir = await getDownloadsDirectory();
 
-    if (outputFile == null) return false;
+      final outputFile = await FilePicker.platform.saveFile(
+        dialogTitle: 'Save Sprite Map',
+        fileName: 'sprite-map.$fileExtension',
+        initialDirectory: kIsWeb ? null : downloadsDir?.path,
+        type: fileType,
+        lockParentWindow: true,
+        allowedExtensions: [
+          'png',
+          'svg',
+          // 'flites',
+        ],
+      );
 
-    final savedFile = File(outputFile);
-    await savedFile.writeAsBytes(bytes);
+      if (outputFile == null) return false;
 
-    return true;
+      final savedFile = File(outputFile);
+      await savedFile.writeAsBytes(bytes);
+      showFileSaveConfirmDialog.value = savedFile.path;
+
+      return true;
+    }
   }
 }
