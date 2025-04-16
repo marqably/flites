@@ -2,7 +2,6 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:file_picker/file_picker.dart';
-import 'package:file_saver/file_saver.dart';
 import 'package:flites/services/file_service.dart';
 import 'package:flites/states/source_files_state.dart';
 import 'package:flites/types/export_settings.dart';
@@ -42,7 +41,6 @@ void main() {
       registerFallbackValue(Uint8List(0));
       registerFallbackValue(FileType.image);
       registerFallbackValue('png');
-      registerFallbackValue(MimeType.other);
 
       mockFileService = MockFileService();
       when(() => mockFileService.saveFile(
