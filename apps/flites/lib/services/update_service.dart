@@ -154,7 +154,7 @@ class UpdateService {
       }
     }
 
-    if (platformPath != null) {
+    if (platformPath != null && _baseUrl != null && _baseUrl!.isNotEmpty) {
       return '$_baseUrl/$platformPath?cv=$apiVersion';
     } else {
       return null;
