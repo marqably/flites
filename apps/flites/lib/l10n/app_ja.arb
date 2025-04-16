@@ -203,5 +203,13 @@
     "failedToOpenUpdateUrl": "更新URLを開けませんでした。",
     "@failedToOpenUpdateUrl": {
         "description": "Error message shown when update URL could not be opened"
+    },
+    "imageSaved": "画像を保存しました！",
+    "@imageSaved": {
+        "description": "Confirmation message shown when an image has been saved"
+    },
+    "showContainingFolder": "保存フォルダを開く",
+    "@showContainingFolder": {
+        "description": "Button text to open the folder containing a saved file"
     }
 }

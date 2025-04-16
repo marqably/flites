@@ -203,5 +203,13 @@
     "failedToOpenUpdateUrl": "Impossibile aprire l'URL di aggiornamento.",
     "@failedToOpenUpdateUrl": {
         "description": "Error message shown when update URL could not be opened"
+    },
+    "imageSaved": "Immagine salvata!",
+    "@imageSaved": {
+        "description": "Confirmation message shown when an image has been saved"
+    },
+    "showContainingFolder": "Mostra cartella contenente",
+    "@showContainingFolder": {
+        "description": "Button text to open the folder containing a saved file"
     }
 }

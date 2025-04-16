@@ -1,11 +1,11 @@
 import 'package:flites/constants/app_sizes.dart';
-import 'package:flites/main.dart';
-import 'package:flites/widgets/overlays/base_dialog_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flites/widgets/overlays/base_dialog_card.dart';
 import 'package:path/path.dart' as path;
 import 'package:signals/signals.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 final showFileSaveConfirmDialog = signal<String?>(null);
 
@@ -30,6 +30,8 @@ class FileSaveConfirmDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Material(
       color: Colors.transparent,
       child: BaseDialogCard(
@@ -39,12 +41,12 @@ class FileSaveConfirmDialog extends StatelessWidget {
             Icon(
               CupertinoIcons.check_mark_circled,
               size: Sizes.p32,
-              color: context.colors.primary,
+              color: Theme.of(context).primaryColor,
             ),
-            gapH8,
-            const Text(
-              'Image saved!',
-              style: TextStyle(
+            const SizedBox(height: 8),
+            Text(
+              l10n.imageSaved,
+              style: const TextStyle(
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -56,7 +58,7 @@ class FileSaveConfirmDialog extends StatelessWidget {
                 }
                 showFileSaveConfirmDialog.value = null;
               },
-              child: const Text('Show Containing Folder'),
+              child: Text(l10n.showContainingFolder),
             )
           ],
         ),
