@@ -203,5 +203,13 @@
     "failedToOpenUpdateUrl": "无法打开更新URL。",
     "@failedToOpenUpdateUrl": {
         "description": "Error message shown when update URL could not be opened"
+    },
+    "imageSaved": "图片已保存！",
+    "@imageSaved": {
+        "description": "Confirmation message shown when an image has been saved"
+    },
+    "showContainingFolder": "打开所在文件夹",
+    "@showContainingFolder": {
+        "description": "Button text to open the folder containing a saved file"
     }
 }

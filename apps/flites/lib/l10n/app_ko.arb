@@ -203,5 +203,13 @@
     "failedToOpenUpdateUrl": "업데이트 URL을 열지 못했습니다.",
     "@failedToOpenUpdateUrl": {
         "description": "Error message shown when update URL could not be opened"
+    },
+    "imageSaved": "이미지가 저장되었습니다!",
+    "@imageSaved": {
+        "description": "Confirmation message shown when an image has been saved"
+    },
+    "showContainingFolder": "저장 폴더 열기",
+    "@showContainingFolder": {
+        "description": "Button text to open the folder containing a saved file"
     }
 }

@@ -2,7 +2,7 @@ import 'package:flites/types/export_settings.dart';
 import 'package:flites/types/flites_image.dart';
 import 'package:flites/types/flites_image_map.dart';
 import 'package:flites/types/flites_image_row.dart';
-import 'package:flites/utils/image_picker.dart';
+import 'package:flites/utils/flites_image_factory.dart';
 import 'package:signals/signals.dart';
 
 import 'selected_image_row_state.dart';

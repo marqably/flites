@@ -31,6 +31,7 @@ class UpdateOverlay extends StatelessWidget {
       color: Colors.transparent,
       child: SizedBox(
         child: BaseDialogCard(
+          backgroundColor: context.colors.surface,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
