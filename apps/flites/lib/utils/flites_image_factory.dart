@@ -1,5 +1,6 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flites/constants/image_constants.dart';
+import 'package:flites/services/file_service.dart';
 import 'package:flites/types/flites_image.dart';
 import 'package:flites/utils/image_utils.dart';
 import 'package:flites/utils/png_utils.dart';
@@ -8,22 +9,15 @@ import 'package:image/image.dart' as img;
 
 /// Service for picking and processing images from the file system.
 /// Supports PNG, GIF, and SVG file formats.
-class ImagePickerService {
+class FlitesImageFactory {
   /// Picks images from the file system and processes them into FlitesImage objects.
   ///
   /// Returns a list of processed FlitesImage objects, or an empty list if no images were selected or processed.
   Future<List<FlitesImage>> pickAndProcessImages() async {
-    // Open file picker dialog
-    final result = await FilePicker.platform.pickFiles(
-      allowMultiple: true,
-      withData: true,
-      type: FileType.custom,
-      allowedExtensions: [
-        'png',
-        'gif',
-        'svg',
-      ],
-    );
+    const fileService = FileService();
+    // Open the file picker dialog to select files
+    // via FileService
+    final result = await fileService.pickFiles();
 
     // Return empty list if no files were selected
     if (result == null) return [];
@@ -169,4 +163,4 @@ class ImagePickerService {
 }
 
 /// Singleton instance of ImagePickerService
-final imagePickerService = ImagePickerService();
+final imagePickerService = FlitesImageFactory();

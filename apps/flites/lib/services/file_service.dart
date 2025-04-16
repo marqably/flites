@@ -8,6 +8,18 @@ import 'package:path_provider/path_provider.dart';
 class FileService {
   const FileService();
 
+  Future<FilePickerResult?> pickFiles() async =>
+      await FilePicker.platform.pickFiles(
+        allowMultiple: true,
+        withData: true,
+        type: FileType.custom,
+        allowedExtensions: [
+          'png',
+          'gif',
+          'svg',
+        ],
+      );
+
   Future<bool> saveFile({
     required Uint8List bytes,
     required FileType fileType,
