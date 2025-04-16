@@ -57,6 +57,7 @@ dependencies:
   flutter_launcher_icons: ^0.14.3
   path: ^1.9.0
   file_saver: ^0.2.14
+  flutter_dotenv: ^5.2.1
 
 dev_dependencies:
   flutter_test:
@@ -84,7 +85,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/images/
-      #   - images/a_dot_ham.jpeg
+    # - .env
 
 flutter_launcher_icons:
   web:

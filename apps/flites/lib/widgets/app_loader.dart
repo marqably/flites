@@ -4,6 +4,7 @@ import 'package:flites/states/app_settings.dart';
 import 'package:flites/widgets/layout/splash_screen.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 /// A widget that loads the app and initializes services.
 /// It shows a splash screen while loading and transitions to the main app
@@ -27,6 +28,7 @@ class AppLoader extends StatelessWidget {
       await Future.wait([
         UpdateService.initialize(),
         appSettings.loadSettings(),
+        dotenv.load(fileName: ".env"),
 
         // Ensure splash shows for at least 1 second total
         Future.delayed(const Duration(seconds: 1)),
