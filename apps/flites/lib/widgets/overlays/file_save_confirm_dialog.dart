@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flites/constants/app_sizes.dart';
 import 'package:flites/main.dart';
 import 'package:flites/widgets/overlays/base_dialog_card.dart';
@@ -18,11 +16,7 @@ class FileSaveConfirmDialog extends StatelessWidget {
     String directoryPath = path.dirname(filePath);
     Uri uri;
 
-    if (Platform.isWindows) {
-      uri = Uri.file(directoryPath);
-    } else {
-      uri = Uri.file(directoryPath);
-    }
+    uri = Uri.file(directoryPath);
 
     if (await canLaunchUrl(uri)) {
       await launchUrl(
@@ -56,7 +50,10 @@ class FileSaveConfirmDialog extends StatelessWidget {
             ),
             TextButton(
               onPressed: () async {
-                _openContainingFolder(showFileSaveConfirmDialog.value!);
+                final filePath = showFileSaveConfirmDialog.value;
+                if (filePath != null) {
+                  _openContainingFolder(filePath);
+                }
                 showFileSaveConfirmDialog.value = null;
               },
               child: const Text('Show Containing Folder'),
