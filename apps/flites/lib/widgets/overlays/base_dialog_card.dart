@@ -1,4 +1,5 @@
 import 'package:flites/constants/app_sizes.dart';
+import 'package:flites/main.dart';
 import 'package:flutter/material.dart';
 
 /// A reusable widget that serves as a base for dialog cards.
@@ -6,12 +7,14 @@ class BaseDialogCard extends StatelessWidget {
   final double? width;
   final double? height;
   final Widget child;
+  final Color? backgroundColor;
 
   const BaseDialogCard({
     super.key,
     required this.child,
     this.width,
     this.height,
+    this.backgroundColor,
   });
 
   @override
@@ -25,7 +28,7 @@ class BaseDialogCard extends StatelessWidget {
         vertical: Sizes.p16,
       ),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
+        color: backgroundColor ?? context.colors.surfaceContainerLowest,
         borderRadius: BorderRadius.circular(Sizes.p16),
         boxShadow: [
           BoxShadow(
