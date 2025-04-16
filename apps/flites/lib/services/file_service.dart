@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:file_saver/file_saver.dart';
-import 'package:flites/widgets/overlays/file_save_confirm_dialog.dart';
+import 'package:flites/widgets/overlays/file_save_confirm_overlay.dart';
 import 'package:flutter/foundation.dart';
 
 import 'package:path_provider/path_provider.dart';

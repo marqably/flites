@@ -1,5 +1,5 @@
 import 'package:flites/constants/app_sizes.dart';
-import 'package:flites/widgets/overlays/file_save_confirm_dialog.dart';
+import 'package:flites/widgets/overlays/file_save_confirm_overlay.dart';
 import 'package:flites/widgets/overlays/loading_overlay.dart';
 import 'package:flites/widgets/overlays/update_overlay.dart';
 import 'package:flutter/material.dart';
