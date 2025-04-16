@@ -1,9 +1,9 @@
-import 'dart:io';
 import 'dart:convert';
 import 'dart:math';
 import 'dart:typed_data';
 
-import 'package:file_saver/file_saver.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:flites/services/file_service.dart';
 import 'package:flites/states/source_files_state.dart';
 import 'package:flites/types/export_settings.dart';
 import 'package:flites/types/sprite_constraints.dart';
@@ -15,7 +15,7 @@ import 'package:flutter/material.dart';
 /// Handles the generation of SVG sprite sheets from multiple SVG images.
 class GenerateSvgSprite {
   static Future<void> exportSpriteMap({
-    FileSaver? fileSaver,
+    FileService? fileService,
   }) async {
     final sourceFiles = projectSourceFiles.value;
 
@@ -140,16 +140,14 @@ class GenerateSvgSprite {
 
     _saveSpriteSheet(
       svgData,
-      'svg_sprite',
-      '/Users/jacob/Downloads',
-      FileSaver.instance,
+      fileService ?? const FileService(),
     );
   }
 
   static Future<void> exportSpriteRow(
     ExportSettings settings, {
     required int spriteRowIndex,
-    FileSaver? fileSaver,
+    FileService? fileService,
   }) async {
     final spriteRowImage = await createSpriteRowImage(
       settings,
@@ -163,9 +161,7 @@ class GenerateSvgSprite {
     // Save the sprite
     await _saveSpriteSheet(
       spriteRowImage,
-      settings.fileName ?? 'sprite',
-      settings.path,
-      fileSaver ?? FileSaver.instance,
+      fileService ?? const FileService(),
     );
   }
 
@@ -292,21 +288,14 @@ class GenerateSvgSprite {
 
   static Future<void> _saveSpriteSheet(
     Uint8List svgData,
-    String fileName,
-    String? path,
-    FileSaver saver,
+    FileService fileService,
   ) async {
     try {
-      if (path != null) {
-        await File('$path/$fileName.svg').writeAsBytes(svgData);
-      } else {
-        await saver.saveFile(
-          name: fileName,
-          bytes: svgData,
-          ext: 'svg',
-          mimeType: MimeType.other,
-        );
-      }
+      await fileService.saveFile(
+        bytes: svgData,
+        fileType: FileType.image,
+        fileExtension: 'svg',
+      );
     } catch (e) {
       debugPrint('Error saving file: $e');
       rethrow;

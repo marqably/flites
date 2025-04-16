@@ -2,20 +2,43 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'dart:convert';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:flites/states/source_files_state.dart';
 import 'package:flites/types/export_settings.dart';
 import 'package:flites/types/flites_image.dart';
 import 'package:flites/types/flites_image_row.dart';
 import 'package:flites/utils/generate_svg_sprite.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
+
+import 'export_sprite_test.dart';
 
 void main() {
   group('GenerateSvgSprite', () {
     late Directory tempDir;
+    late MockFileService mockFileService;
 
     setUp(() {
       // Create temp directory for file tests
       tempDir = Directory.systemTemp.createTempSync();
+      registerFallbackValue(Uint8List(0));
+      registerFallbackValue(FileType.image);
+      registerFallbackValue('svg');
+
+      mockFileService = MockFileService();
+      // Mock the saveFile method to write to the temp directory
+      when(() => mockFileService.saveFile(
+            bytes: any(named: 'bytes'),
+            fileType: any(named: 'fileType'),
+            fileExtension: any(named: 'fileExtension'),
+          )).thenAnswer((invocation) async {
+        final bytes = invocation.namedArguments[#bytes] as Uint8List;
+        final filePath =
+            '${tempDir.path}/test_svg_sprite.svg'; // Use correct file name
+        final file = File(filePath);
+        await file.writeAsBytes(bytes);
+        return true;
+      });
     });
 
     tearDown(() {
@@ -73,7 +96,11 @@ void main() {
       );
 
       // When
-      await GenerateSvgSprite.exportSpriteRow(settings, spriteRowIndex: 0);
+      await GenerateSvgSprite.exportSpriteRow(
+        settings,
+        spriteRowIndex: 0,
+        fileService: mockFileService,
+      );
 
       // Then
       final savedFile = File('${tempDir.path}/test_svg_sprite.svg');
@@ -138,15 +165,19 @@ void main() {
       final settings = ExportSettings(
         widthPx: 200,
         heightPx: 200,
-        fileName: 'viewbox_test',
+        fileName: 'test_svg_sprite',
         path: tempDir.path,
       );
 
       // When
-      await GenerateSvgSprite.exportSpriteRow(settings, spriteRowIndex: 0);
+      await GenerateSvgSprite.exportSpriteRow(
+        settings,
+        spriteRowIndex: 0,
+        fileService: mockFileService,
+      );
 
       // Then
-      final savedFile = File('${tempDir.path}/viewbox_test.svg');
+      final savedFile = File('${tempDir.path}/test_svg_sprite.svg');
       expect(savedFile.existsSync(), isTrue);
 
       final svgContent = await savedFile.readAsString();
@@ -216,7 +247,7 @@ void main() {
       // Use different constraint type (width-constrained)
       final settings = ExportSettings(
         widthPx: 400,
-        fileName: 'complex_svg_test',
+        fileName: 'test_svg_sprite',
         path: tempDir.path,
         paddingTopPx: 10,
         paddingBottomPx: 15,
@@ -224,9 +255,13 @@ void main() {
         paddingRightPx: 5,
       );
 
-      await GenerateSvgSprite.exportSpriteRow(settings, spriteRowIndex: 0);
+      await GenerateSvgSprite.exportSpriteRow(
+        settings,
+        spriteRowIndex: 0,
+        fileService: mockFileService,
+      );
 
-      final savedFile = File('${tempDir.path}/complex_svg_test.svg');
+      final savedFile = File('${tempDir.path}/test_svg_sprite.svg');
       expect(savedFile.existsSync(), isTrue);
 
       final svgContent = await savedFile.readAsString();
@@ -329,9 +364,13 @@ void main() {
         path: tempDir.path,
       );
 
-      await GenerateSvgSprite.exportSpriteRow(settings, spriteRowIndex: 0);
+      await GenerateSvgSprite.exportSpriteRow(
+        settings,
+        spriteRowIndex: 0,
+        fileService: mockFileService,
+      );
 
-      final savedFile = File('${tempDir.path}/aspect_ratio_test.svg');
+      final savedFile = File('${tempDir.path}/test_svg_sprite.svg');
       expect(savedFile.existsSync(), isTrue);
 
       final svgContent = await savedFile.readAsString();
@@ -396,15 +435,19 @@ void main() {
       final settings = ExportSettings(
         widthPx: 100,
         heightPx: 100,
-        fileName: 'positioning_test',
+        fileName: 'test_svg_sprite',
         path: tempDir.path,
         paddingLeftPx: 10,
         paddingRightPx: 10,
       );
 
-      await GenerateSvgSprite.exportSpriteRow(settings, spriteRowIndex: 0);
+      await GenerateSvgSprite.exportSpriteRow(
+        settings,
+        spriteRowIndex: 0,
+        fileService: mockFileService,
+      );
 
-      final savedFile = File('${tempDir.path}/positioning_test.svg');
+      final savedFile = File('${tempDir.path}/test_svg_sprite.svg');
       expect(savedFile.existsSync(), isTrue);
 
       final svgContent = await savedFile.readAsString();

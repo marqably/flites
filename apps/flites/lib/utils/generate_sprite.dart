@@ -1,6 +1,5 @@
-import 'dart:io';
-
-import 'package:file_saver/file_saver.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:flites/services/file_service.dart';
 import 'package:flites/states/source_files_state.dart';
 import 'package:flites/types/export_settings.dart';
 import 'package:flites/types/flites_image.dart';
@@ -11,7 +10,7 @@ import 'package:image/image.dart' as img;
 
 class GenerateSprite {
   static Future<img.Image?> exportSpriteMap({
-    FileSaver? fileSaver,
+    FileService? fileService,
   }) async {
     final sourceFiles = projectSourceFiles.value;
 
@@ -61,9 +60,7 @@ class GenerateSprite {
 
     _saveSpriteSheet(
       spriteSheet,
-      'some',
-      null,
-      FileSaver.instance,
+      fileService ?? const FileService(),
     );
 
     return spriteSheet;
@@ -72,7 +69,7 @@ class GenerateSprite {
   static Future<void> exportSpriteRow(
     ExportSettings settings, {
     required int spriteRowIndex,
-    FileSaver? fileSaver,
+    FileService? fileService,
   }) async {
     final spriteRowImage = await createSpriteRowImage(
       settings,
@@ -86,9 +83,7 @@ class GenerateSprite {
     // Save the sprite
     await _saveSpriteSheet(
       spriteRowImage,
-      settings.fileName ?? 'sprite',
-      settings.path,
-      fileSaver ?? FileSaver.instance,
+      fileService ?? const FileService(),
     );
   }
 
@@ -170,30 +165,6 @@ class GenerateSprite {
     }
 
     return spriteSheet;
-  }
-
-  static Future<void> _saveSpriteSheet(
-    img.Image spriteSheet,
-    String fileName,
-    String? path,
-    FileSaver saver,
-  ) async {
-    final spriteData = img.encodePng(spriteSheet);
-    try {
-      if (path != null) {
-        await File('$path/$fileName.png').writeAsBytes(spriteData);
-      } else {
-        await saver.saveFile(
-          name: fileName,
-          bytes: spriteData,
-          ext: 'png',
-          mimeType: MimeType.png,
-        );
-      }
-    } catch (e) {
-      debugPrint('Error saving file: $e');
-      rethrow;
-    }
   }
 
   static List<img.Image> separateSpriteImages(
@@ -368,6 +339,23 @@ class GenerateSprite {
 
     final totalRange = maxPoint - minPoint;
     return length / totalRange;
+  }
+
+  static Future<void> _saveSpriteSheet(
+    img.Image spriteSheet,
+    FileService fileService,
+  ) async {
+    final spriteData = img.encodePng(spriteSheet);
+    try {
+      await fileService.saveFile(
+        bytes: spriteData,
+        fileType: FileType.image,
+        fileExtension: 'png',
+      );
+    } catch (e) {
+      debugPrint('Error saving file: $e');
+      rethrow;
+    }
   }
 
   static void _validateDimensions(SpriteConstraints constraints) {

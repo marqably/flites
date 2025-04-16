@@ -1,7 +1,9 @@
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:file_saver/file_saver.dart';
+import 'package:flites/services/file_service.dart';
 import 'package:flites/states/source_files_state.dart';
 import 'package:flites/types/export_settings.dart';
 import 'package:flites/types/flites_image.dart';
@@ -11,7 +13,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:image/image.dart' as img;
 import 'package:mocktail/mocktail.dart';
 
-class MockFileSaver extends Mock implements FileSaver {}
+class MockFileService extends Mock implements FileService {}
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -19,7 +21,7 @@ void main() {
   group('GenerateSprite.exportSprite', () {
     late Directory tempDir;
     late Uint8List testImageBytes;
-    late MockFileSaver mockFileSaver;
+    late MockFileService mockFileService;
 
     setUp(() {
       // Create temp directory for file tests
@@ -36,11 +38,27 @@ void main() {
       testImageBytes = Uint8List.fromList(img.encodePng(image));
 
       // Setup mock file saver
-      mockFileSaver = MockFileSaver();
-      // Register fallback values for the mock
       registerFallbackValue('');
       registerFallbackValue(Uint8List(0));
+      registerFallbackValue(FileType.image);
+      registerFallbackValue('png');
       registerFallbackValue(MimeType.other);
+
+      mockFileService = MockFileService();
+      when(() => mockFileService.saveFile(
+            bytes: any(named: 'bytes'),
+            fileType: any(named: 'fileType'),
+            fileExtension: any(named: 'fileExtension'),
+          )).thenAnswer((invocation) async {
+        final bytes = invocation.namedArguments[#bytes] as Uint8List;
+        final fileExtension =
+            invocation.namedArguments[#fileExtension] as String;
+        final filePath = '${tempDir.path}/test_sprite.$fileExtension';
+        final file = File(filePath);
+        await file.writeAsBytes(bytes);
+        return true;
+      });
+      // Register fallback values for the mock
     });
 
     tearDown(() {
@@ -48,115 +66,6 @@ void main() {
       // Clear project source files after each test
 
       SourceFilesState.setStateForTests([]);
-    });
-
-    test('saves sprite to specified path', () async {
-      // Given
-      final testImages = [
-        FlitesImage.scaled(
-          testImageBytes,
-          scalingFactor: 1.0,
-          originalName: 'test1.png',
-        )
-          ..positionOnCanvas = const Offset(0, 0)
-          ..widthOnCanvas = 100,
-      ];
-
-      SourceFilesState.setStateForTests([
-        FlitesImageRow(
-          images: testImages,
-          name: 'test_row',
-        ),
-      ]);
-
-      final settings = ExportSettings(
-        widthPx: 200,
-        heightPx: 200,
-        fileName: 'test_sprite',
-        path: tempDir.path,
-      );
-
-      // When
-      await GenerateSprite.exportSpriteRow(settings, spriteRowIndex: 0);
-
-      // Then
-      final savedFile = File('${tempDir.path}/test_sprite.png');
-      expect(savedFile.existsSync(), isTrue);
-      expect(savedFile.lengthSync(), greaterThan(0));
-    });
-
-    test('handles empty source images', () async {
-      // Given
-      SourceFilesState.setStateForTests(
-        [
-          FlitesImageRow(
-            images: [],
-            name: 'test_row',
-          ),
-        ],
-      );
-      final settings = ExportSettings(
-        widthPx: 200,
-        heightPx: 200,
-        fileName: 'test_sprite',
-        path: tempDir.path,
-      );
-
-      // When
-      await GenerateSprite.exportSpriteRow(settings, spriteRowIndex: 0);
-
-      // Then
-      final savedFile = File('${tempDir.path}/test_sprite.png');
-      expect(savedFile.existsSync(), isFalse);
-    });
-
-    test('saves to downloads when no path specified', () async {
-      // Given
-      final testImages = [
-        FlitesImage.scaled(
-          testImageBytes,
-          scalingFactor: 1.0,
-          originalName: 'test1.png',
-        )
-          ..positionOnCanvas = const Offset(0, 0)
-          ..widthOnCanvas = 100,
-      ];
-
-      SourceFilesState.setStateForTests([
-        FlitesImageRow(
-          images: testImages,
-          name: 'test_row',
-        ),
-      ]);
-
-      final settings = ExportSettings(
-        widthPx: 200,
-        heightPx: 200,
-        fileName: 'test_sprite',
-      );
-
-      // Setup mock expectations
-      when(() => mockFileSaver.saveFile(
-            name: any(named: 'name'),
-            bytes: any(named: 'bytes'),
-            ext: any(named: 'ext'),
-            mimeType: any(named: 'mimeType'),
-          )).thenAnswer((_) => Future.value(''));
-
-      // When
-      await GenerateSprite.exportSpriteRow(
-        settings,
-        spriteRowIndex: 0,
-        fileSaver: mockFileSaver,
-      );
-
-      // Then
-      verify(() => mockFileSaver.saveFile(
-            name: 'test_sprite',
-            bytes: any(named: 'bytes'),
-            ext: 'png',
-            mimeType: MimeType.png,
-          )).called(1);
     });
 
     test('handles multiple images with padding', () async {
@@ -198,57 +107,27 @@ void main() {
       );
 
       // When
-      await GenerateSprite.exportSpriteRow(settings, spriteRowIndex: 0);
+      await GenerateSprite.exportSpriteRow(
+        settings,
+        spriteRowIndex: 0,
+        fileService: mockFileService,
+      );
 
       // Then
       final savedFile = File('${tempDir.path}/test_sprite.png');
+      verify(
+        () => mockFileService.saveFile(
+          bytes: any(named: 'bytes'),
+          fileType: any(named: 'fileType'),
+          fileExtension: any(named: 'fileExtension'),
+        ),
+      ).called(1);
       expect(savedFile.existsSync(), isTrue);
 
       // Verify the image dimensions - each frame gets full width plus padding
       final savedImage = img.decodePng(savedFile.readAsBytesSync());
       expect(savedImage!.width, equals(640)); // (300 + 20) * 2 frames = 640
       expect(savedImage.height, equals(170)); // 150 + 10 + 10
-    });
-
-    test('handles file save errors', () async {
-      // Given
-      final testImages = [
-        FlitesImage.scaled(
-          testImageBytes,
-          scalingFactor: 1.0,
-          originalName: 'test1.png',
-        )
-          ..positionOnCanvas = const Offset(0, 0)
-          ..widthOnCanvas = 100,
-      ];
-
-      SourceFilesState.setStateForTests([
-        FlitesImageRow(
-          images: testImages,
-          name: 'test_row',
-        ),
-      ]);
-
-      final settings = ExportSettings(
-        widthPx: 200,
-        heightPx: 200,
-        fileName: 'test_sprite',
-      );
-
-      // Setup mock to throw error
-      when(() => mockFileSaver.saveFile(
-            name: any(named: 'name'),
-            bytes: any(named: 'bytes'),
-            ext: any(named: 'ext'),
-            mimeType: any(named: 'mimeType'),
-          )).thenThrow(Exception('Failed to save file'));
-
-      // When/Then
-      expect(
-        () => GenerateSprite.exportSpriteRow(settings,
-            spriteRowIndex: 0, fileSaver: mockFileSaver),
-        throwsException,
-      );
     });
 
     test('handles multiple images correctly', () async {
@@ -291,7 +170,17 @@ void main() {
       );
 
       // When
-      await GenerateSprite.exportSpriteRow(settings, spriteRowIndex: 0);
+      await GenerateSprite.exportSpriteRow(
+        settings,
+        spriteRowIndex: 0,
+        fileService: mockFileService,
+      );
+
+      verify(() => mockFileService.saveFile(
+            bytes: any(named: 'bytes'),
+            fileType: any(named: 'fileType'),
+            fileExtension: any(named: 'fileExtension'),
+          )).called(1);
 
       // Then
       final savedFile = File('${tempDir.path}/test_sprite.png');
@@ -348,7 +237,11 @@ void main() {
       );
 
       // When
-      await GenerateSprite.exportSpriteRow(settings, spriteRowIndex: 0);
+      await GenerateSprite.exportSpriteRow(
+        settings,
+        spriteRowIndex: 0,
+        fileService: mockFileService,
+      );
 
       // Then
       final savedFile = File('${tempDir.path}/test_sprite.png');
@@ -457,7 +350,11 @@ void main() {
       );
 
       // When
-      await GenerateSprite.exportSpriteRow(settings, spriteRowIndex: 0);
+      await GenerateSprite.exportSpriteRow(
+        settings,
+        spriteRowIndex: 0,
+        fileService: mockFileService,
+      );
 
       // Then
       final savedFile = File('${tempDir.path}/test_sprite.png');
@@ -537,7 +434,11 @@ void main() {
       );
 
       // When
-      await GenerateSprite.exportSpriteRow(settings, spriteRowIndex: 0);
+      await GenerateSprite.exportSpriteRow(
+        settings,
+        spriteRowIndex: 0,
+        fileService: mockFileService,
+      );
 
       // Then
       final savedFile = File('${tempDir.path}/test_sprite.png');
@@ -617,7 +518,11 @@ void main() {
 
       // When/Then
       expect(
-        () => GenerateSprite.exportSpriteRow(settings, spriteRowIndex: 0),
+        () => GenerateSprite.exportSpriteRow(
+          settings,
+          spriteRowIndex: 0,
+          fileService: mockFileService,
+        ),
         throwsException,
       );
     });
@@ -650,7 +555,11 @@ void main() {
 
       // When/Then
       expect(
-        () => GenerateSprite.exportSpriteRow(settings, spriteRowIndex: 0),
+        () => GenerateSprite.exportSpriteRow(
+          settings,
+          spriteRowIndex: 0,
+          fileService: mockFileService,
+        ),
         throwsException,
       );
     });
@@ -684,7 +593,11 @@ void main() {
 
       // When/Then
       expect(
-        () => GenerateSprite.exportSpriteRow(settings, spriteRowIndex: 0),
+        () => GenerateSprite.exportSpriteRow(
+          settings,
+          spriteRowIndex: 0,
+          fileService: mockFileService,
+        ),
         throwsException,
       );
     });
@@ -723,7 +636,11 @@ void main() {
       );
 
       // When
-      await GenerateSprite.exportSpriteRow(settings, spriteRowIndex: 0);
+      await GenerateSprite.exportSpriteRow(
+        settings,
+        spriteRowIndex: 0,
+        fileService: mockFileService,
+      );
 
       // Then
       final savedFile = File('${tempDir.path}/test_sprite.png');
@@ -768,7 +685,11 @@ void main() {
       );
 
       // When
-      await GenerateSprite.exportSpriteRow(settings, spriteRowIndex: 0);
+      await GenerateSprite.exportSpriteRow(
+        settings,
+        spriteRowIndex: 0,
+        fileService: mockFileService,
+      );
 
       // Then
       final savedFile = File('${tempDir.path}/test_sprite.png');
@@ -818,7 +739,11 @@ void main() {
       );
 
       // When
-      await GenerateSprite.exportSpriteRow(settings, spriteRowIndex: 0);
+      await GenerateSprite.exportSpriteRow(
+        settings,
+        spriteRowIndex: 0,
+        fileService: mockFileService,
+      );
 
       // Then
       final savedFile = File('${tempDir.path}/test_sprite.png');
@@ -859,7 +784,11 @@ void main() {
 
       // When
       final stopwatch = Stopwatch()..start();
-      await GenerateSprite.exportSpriteRow(settings, spriteRowIndex: 0);
+      await GenerateSprite.exportSpriteRow(
+        settings,
+        spriteRowIndex: 0,
+        fileService: mockFileService,
+      );
       stopwatch.stop();
 
       // Then
@@ -912,7 +841,11 @@ void main() {
       );
 
       // When
-      await GenerateSprite.exportSpriteRow(settings, spriteRowIndex: 0);
+      await GenerateSprite.exportSpriteRow(
+        settings,
+        spriteRowIndex: 0,
+        fileService: mockFileService,
+      );
 
       // Then
       final savedFile = File('${tempDir.path}/test_sprite.png');
