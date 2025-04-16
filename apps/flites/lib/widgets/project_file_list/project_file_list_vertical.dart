@@ -242,7 +242,7 @@ class _ProjectFileListVerticalState extends State<ProjectFileListVertical> {
                                   Text(
                                     context.l10n.addImage,
                                     style: const TextStyle(
-                                      fontSize: 12,
+                                      fontSize: fontSizeBase,
                                     ),
                                   ),
                                 ],

@@ -12,7 +12,7 @@ class ControlHeader extends StatelessWidget {
       child: Text(
         text,
         style: TextStyle(
-          fontSize: 12,
+          fontSize: fontSizeBase,
           color: context.colors.onSurface,
           fontWeight: FontWeight.w500,
         ),

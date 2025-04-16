@@ -1,5 +1,5 @@
 import 'package:flites/types/flites_image.dart';
-import 'package:flites/ui/sidebar_controls/sidebar_positioning_controls.dart';
+import 'package:flites/ui/sidebar/sidebar_positioning_controls.dart';
 import 'package:flites/utils/svg_utils.dart';
 import 'package:flites/widgets/image_editor/edit_modes/hitbox_editor/hitbox_editor_overlay.dart';
 import 'package:flites/widgets/tool_controls/tool_controls.dart';

@@ -3,14 +3,14 @@ import 'package:flites/main.dart';
 import 'package:flutter/material.dart';
 
 /// A single control button for actions like flip, rotate, etc.
-class SidebarControl extends StatefulWidget {
+class IconBtn extends StatefulWidget {
   final IconData icon;
   final String tooltip;
   final bool isSelected;
   final VoidCallback? onPressed;
   final String? value;
 
-  const SidebarControl({
+  const IconBtn({
     super.key,
     required this.icon,
     required this.tooltip,
@@ -21,10 +21,10 @@ class SidebarControl extends StatefulWidget {
             'Either value or onPressed must be provided');
 
   @override
-  State<SidebarControl> createState() => _SidebarControlState();
+  State<IconBtn> createState() => _IconBtnState();
 }
 
-class _SidebarControlState extends State<SidebarControl> {
+class _IconBtnState extends State<IconBtn> {
   bool isHovered = false;
 
   @override
