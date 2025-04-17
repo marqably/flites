@@ -88,7 +88,7 @@ class SourceFilesState {
   }
 
   static Future<void> addImages() async {
-    final newImages = await imagePickerService.pickAndProcessImages();
+    final newImages = await flitesImageFactory.pickAndProcessImages();
 
     final selectedRowIndex = selectedImageRow.value;
     if (newImages.isNotEmpty) {
@@ -107,6 +107,25 @@ class SourceFilesState {
       _projectSourceFiles.value =
           projectSourceFiles.value.copyWith(rows: updatedRows);
     }
+  }
+
+  static Future<void> pasteExistingImages(List<FlitesImage> images) async {
+    final selectedRowIndex = selectedImageRow.value;
+
+    final currentRow = projectSourceFiles.value.rows[selectedRowIndex];
+
+    final updatedRow = currentRow.copyWith(
+      images: [
+        ...currentRow.images,
+        ...images,
+      ],
+    );
+
+    final updatedRows = [...projectSourceFiles.value.rows];
+    updatedRows[selectedRowIndex] = updatedRow;
+
+    _projectSourceFiles.value =
+        projectSourceFiles.value.copyWith(rows: updatedRows);
   }
 
   static void reorderImages(int oldIndex, int newIndex) {

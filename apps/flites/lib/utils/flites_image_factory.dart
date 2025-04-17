@@ -160,7 +160,22 @@ class FlitesImageFactory {
       return [];
     }
   }
+
+  /// Duplicates a list of FlitesImage objects for copy and paste operations.
+  List<FlitesImage> duplicateFlitesImages(List<FlitesImage> images) {
+    if (images.isEmpty) return [];
+
+    return images
+        .map(
+          (FlitesImage image) => FlitesImage.scaled(
+            image.image,
+            scalingFactor: image.scalingFactor,
+            originalName: 'copy_${image.originalName}',
+          ),
+        )
+        .toList();
+  }
 }
 
 /// Singleton instance of ImagePickerService
-final imagePickerService = FlitesImageFactory();
+final flitesImageFactory = FlitesImageFactory();
