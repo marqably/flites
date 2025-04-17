@@ -133,18 +133,28 @@ class SourceFilesState {
       newIndex -= 1;
     }
 
-    final currentImages = List<FlitesImage>.from(
-        projectSourceFiles.value.rows[selectedImageRow.value].images);
+    final currentState = projectSourceFiles.value;
+    final currentRowIndex = selectedImageRow.value;
 
+    // Create a mutable copy of the current row's images
+    final currentImages =
+        List<FlitesImage>.from(currentState.rows[currentRowIndex].images);
+
+    // Perform the reordering on the copied list
     final item = currentImages.removeAt(oldIndex);
-
     currentImages.insert(newIndex, item);
 
-    // TODO(jaco): this doesn't work
-    projectSourceFiles.value.rows[selectedImageRow.value] =
-        projectSourceFiles.value.rows[selectedImageRow.value].copyWith(
+    // Create a new copy of the current row with the updated images
+    final updatedRow = currentState.rows[currentRowIndex].copyWith(
       images: currentImages,
     );
+
+    // Create a new copy of the entire rows list
+    final updatedRows = List<FlitesImageRow>.from(currentState.rows);
+    updatedRows[currentRowIndex] = updatedRow;
+
+    // Update the projectSourceFiles signal with a new state containing the new rows list
+    _projectSourceFiles.value = currentState.copyWith(rows: updatedRows);
   }
 
   static void deleteImage(String id) {
