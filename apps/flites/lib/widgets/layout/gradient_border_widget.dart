@@ -21,7 +21,7 @@ class GradientBorderWidget extends StatelessWidget {
             context.colors.primary,
             context.colors.surface,
           ],
-          stops: const [0.0, 0.2],
+          stops: const [0.0, 0.4],
         ),
       ),
       child: Container(
