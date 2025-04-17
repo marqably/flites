@@ -8,6 +8,7 @@ import 'package:flites/widgets/buttons/icon_text_button.dart';
 import 'package:flites/widgets/controls/checkbox_button.dart';
 import 'package:flites/widgets/project_file_list/overlay_button.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:signals/signals_flutter.dart';
 
 class CanvasControlsButton extends StatelessWidget {
   const CanvasControlsButton({super.key});
@@ -45,10 +46,12 @@ class CanvasControlsButton extends StatelessWidget {
                 text: context.l10n.usePreviousFrameAsReference,
                 value: usePreviousImageAsReference,
               ),
-              CheckboxButton(
-                text: context.l10n.showBoundingBorder,
-                value: canvasController.showBoundingBorderSignal,
-              ),
+              Watch((context) {
+                return CheckboxButton(
+                  text: context.l10n.showBoundingBorder,
+                  value: showBoundingBorderSignal,
+                );
+              }),
               gapH16,
               IconTextButton(
                 onPressed: () {

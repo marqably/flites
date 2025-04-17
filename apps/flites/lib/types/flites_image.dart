@@ -123,6 +123,17 @@ class FlitesImage {
     }
   }
 
+  void updatePositionAndSize(
+    Rect newRect,
+    double scalingFactor,
+    Offset canvasPosition,
+  ) {
+    positionOnCanvas =
+        (newRect.topLeft / scalingFactor) - (canvasPosition / scalingFactor);
+
+    widthOnCanvas = newRect.width / scalingFactor;
+  }
+
   /// Converts a FlitesImage to a JSON Map.
   ///
   /// Binary image data is encoded to base64 for JSON compatibility.

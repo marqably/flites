@@ -2,43 +2,45 @@ import 'dart:ui';
 
 import 'package:signals/signals_flutter.dart';
 
+/// Signal that controls whether the bounding border is visible.
+final showBoundingBorderSignal = signal(false);
+
+/// Signal that controls the scaling factor of the canvas.
+final _canvasScalingFactorSignal = signal(1.0);
+
+/// Signal that controls the position of the canvas.
+final _canvasPositionSignal = signal(Offset.zero);
+
+/// Signal that controls the size of the canvas in pixels.
+final _canvasSizePixelSignal = signal(const Size(1000, 1000));
+
+ReadonlySignal<bool> get showBoundingBorder =>
+    showBoundingBorderSignal.readonly();
+ReadonlySignal<double> get canvasScalingFactor =>
+    _canvasScalingFactorSignal.readonly();
+ReadonlySignal<Offset> get canvasPosition => _canvasPositionSignal.readonly();
+ReadonlySignal<Size> get canvasSizePixel => _canvasSizePixelSignal.readonly();
+
 /// A controller for managing the canvas state, including the scaling factor,
 /// position, size, and visibility of the bounding border.
 class CanvasController {
-  /// Signal that controls whether the bounding border is visible.
-  final showBoundingBorderSignal = signal(false);
-
-  /// Signal that controls the scaling factor of the canvas.
-  final _canvasScalingFactorSignal = signal(1.0);
-
-  /// Signal that controls the position of the canvas.
-  final _canvasPositionSignal = signal(Offset.zero);
-
-  /// Signal that controls the size of the canvas in pixels.
-  final _canvasSizePixelSignal = signal(const Size(1000, 1000));
-
-  // Getters for accessing signal values
-  bool get showBoundingBorder => showBoundingBorderSignal.value;
-  double get canvasScalingFactor => _canvasScalingFactorSignal.value;
-  Offset get canvasPosition => _canvasPositionSignal.value;
-  Size get canvasSizePixel => _canvasSizePixelSignal.value;
-
   /// Toggles the visibility of the bounding border.
-  void toggleBoundingBorder() {
+  static void toggleBoundingBorder() {
     showBoundingBorderSignal.value = !showBoundingBorderSignal.value;
   }
 
   /// Updates the canvas position by the given offset.
   ///
   /// [offset] The offset to add to the current canvas position.
-  void updateCanvasPosition(Offset offset) {
+  static void updateCanvasPosition(Offset offset) {
     _canvasPositionSignal.value += offset;
   }
 
   /// Updates the canvas size to the given size.
   ///
   /// [size] The new size of the canvas.
-  void updateCanvasSize(Size size) {
+  static void updateCanvasSize(Size size) {
+    if (size == _canvasSizePixelSignal.value) return;
     _canvasSizePixelSignal.value = size;
   }
 
@@ -46,7 +48,7 @@ class CanvasController {
   ///
   /// [offsetFromCenter] The offset from the center of the canvas that affects the scaling.
   /// [isIncreasingSize] Whether the canvas size is increasing (true) or decreasing (false).
-  void updateCanvasScale({
+  static void updateCanvasScale({
     Offset offsetFromCenter = const Offset(0, 0),
     required bool isIncreasingSize,
     bool zoomingWithButtons = false,
@@ -65,6 +67,3 @@ class CanvasController {
     _canvasScalingFactorSignal.value *= scaleFactor;
   }
 }
-
-/// The global canvas controller instance.
-final canvasController = CanvasController();

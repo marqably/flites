@@ -75,12 +75,12 @@ class ImageUtils {
   }
 
   static Offset getCenteredCoordinatesForPicture(Size size) {
-    final currentCanvasSize = canvasController.canvasSizePixel;
-    final canvasScalingFactor = canvasController.canvasScalingFactor;
+    final currentCanvasSize = canvasSizePixel.value;
+    final scalingFactor = canvasScalingFactor.value;
 
     return Offset(
-      (((currentCanvasSize.width / canvasScalingFactor) - size.width) / 2),
-      (((currentCanvasSize.height / canvasScalingFactor) - size.height) / 2),
+      (((currentCanvasSize.width / scalingFactor) - size.width) / 2),
+      (((currentCanvasSize.height / scalingFactor) - size.height) / 2),
     );
   }
 

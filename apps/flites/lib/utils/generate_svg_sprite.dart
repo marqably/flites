@@ -7,9 +7,9 @@ import 'package:flites/services/file_service.dart';
 import 'package:flites/states/source_files_state.dart';
 import 'package:flites/types/export_settings.dart';
 import 'package:flites/types/sprite_constraints.dart';
+import 'package:flites/utils/bounding_box_utils.dart';
 import 'package:flites/utils/generate_sprite.dart';
 import 'package:flites/utils/svg_utils.dart';
-import 'package:flites/widgets/image_editor/image_editor.dart';
 import 'package:flutter/material.dart';
 
 /// Handles the generation of SVG sprite sheets from multiple SVG images.
