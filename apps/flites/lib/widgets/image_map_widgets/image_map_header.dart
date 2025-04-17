@@ -3,10 +3,12 @@ import 'package:flites/main.dart';
 import 'package:flites/services/project_saving_service.dart';
 import 'package:flites/states/selected_image_row_state.dart';
 import 'package:flites/states/source_files_state.dart';
+import 'package:flites/types/secondary_click_context_data.dart';
 import 'package:flites/utils/generate_sprite.dart';
 import 'package:flites/utils/generate_svg_sprite.dart';
 import 'package:flites/utils/svg_utils.dart';
 import 'package:flites/widgets/logo/logo_widget.dart';
+import 'package:flites/widgets/right_click_menu/right_clickable_item_wrapper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -71,16 +73,23 @@ class ImageMapHeader extends StatelessWidget {
                           itemBuilder: (c, i) {
                             final isSelected = selectedAnimation == i;
 
-                            return AnimationRowTabWrapper(
-                              onPressed: () {
-                                SelectedImageRowState.setSelectedImageRow(i);
-                              },
-                              isSelected: isSelected,
-                              child: AnimationRowTabName(
+                            return RightClickableItemWrapper(
+                              contextData: SecondaryClickContextData(
+                                onDelete: () {
+                                  SourceFilesState.deleteImageRow(i);
+                                },
+                              ),
+                              child: AnimationRowTabWrapper(
+                                onPressed: () {
+                                  SelectedImageRowState.setSelectedImageRow(i);
+                                },
                                 isSelected: isSelected,
-                                name: images.rows[i].name,
-                                index: i,
-                                key: ValueKey(images.rows[i].hashCode),
+                                child: AnimationRowTabName(
+                                  isSelected: isSelected,
+                                  name: images.rows[i].name,
+                                  index: i,
+                                  key: ValueKey(images.rows[i].hashCode),
+                                ),
                               ),
                             );
                           },
