@@ -211,5 +211,13 @@
     "showContainingFolder": "打开所在文件夹",
     "@showContainingFolder": {
         "description": "Button text to open the folder containing a saved file"
+    },
+    "saveFile": "保存文件",
+    "@saveFile": {
+        "description": "Button text for saving the current project/file"
+    },
+    "importFile": "导入文件",
+    "@importFile": {
+        "description": "Button text for importing a project/file"
     }
 }

@@ -211,5 +211,13 @@
     "showContainingFolder": "Mostrar pasta contendo",
     "@showContainingFolder": {
         "description": "Button text to open the folder containing a saved file"
+    },
+    "saveFile": "Salvar arquivo",
+    "@saveFile": {
+        "description": "Button text for saving the current project/file"
+    },
+    "importFile": "Importar arquivo",
+    "@importFile": {
+        "description": "Button text for importing a project/file"
     }
 }

@@ -211,5 +211,13 @@
     "showContainingFolder": "保存フォルダを開く",
     "@showContainingFolder": {
         "description": "Button text to open the folder containing a saved file"
+    },
+    "saveFile": "ファイルを保存",
+    "@saveFile": {
+        "description": "Button text for saving the current project/file"
+    },
+    "importFile": "ファイルをインポート",
+    "@importFile": {
+        "description": "Button text for importing a project/file"
     }
 }
