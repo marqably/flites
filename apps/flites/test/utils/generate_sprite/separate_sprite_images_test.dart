@@ -3,8 +3,8 @@ import 'dart:typed_data';
 
 import 'package:flites/types/export_settings.dart';
 import 'package:flites/types/flites_image.dart';
+import 'package:flites/utils/bounding_box_utils.dart';
 import 'package:flites/utils/generate_sprite.dart';
-import 'package:flites/widgets/image_editor/image_editor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:image/image.dart' as img;
