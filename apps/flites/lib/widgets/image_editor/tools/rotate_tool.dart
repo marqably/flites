@@ -25,10 +25,7 @@ class _RotateTool extends StatelessWidget {
           top: rotatedImageOffset.dy,
           left: rotatedImageOffset.dx,
           child: RotationWrapper(
-            key: ValueKey(currentSelection.id +
-                canvasScalingFactor.toString() +
-                Tool.rotate.toString() +
-                DateTime.now().millisecondsSinceEpoch.toString()),
+            key: ValueKey(currentSelection.id + canvasScalingFactor.toString()),
             rect: selectedImageRect,
             onRotate: (newAngle) {
               currentSelection.rotation = newAngle;

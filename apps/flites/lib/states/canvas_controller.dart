@@ -40,6 +40,7 @@ class CanvasController {
   ///
   /// [size] The new size of the canvas.
   static void updateCanvasSize(Size size) {
+    if (size == _canvasSizePixelSignal.value) return;
     _canvasSizePixelSignal.value = size;
   }
 

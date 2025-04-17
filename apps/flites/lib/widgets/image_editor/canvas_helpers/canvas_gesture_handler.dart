@@ -17,13 +17,6 @@ class _CanvasGestureHandler extends StatelessWidget {
         return Listener(
           behavior: HitTestBehavior.opaque,
           onPointerSignal: (pointerSignal) {
-            if (pointerSignal is PointerMoveEvent &&
-                getFliteImage(selectedImageId.value) == null) {
-              final offset =
-                  pointerSignal.localDelta / canvasScalingFactor.value;
-              CanvasController.updateCanvasPosition(offset);
-            }
-
             if (pointerSignal is PointerScrollEvent &&
                 modifierSignal.value.isMainPressed) {
               final isIncreasingSize = pointerSignal.scrollDelta.dy < 0;
