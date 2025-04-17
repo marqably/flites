@@ -1,5 +1,6 @@
 import 'package:flites/constants/app_sizes.dart';
 import 'package:flites/main.dart';
+import 'package:flites/services/project_saving_service.dart';
 import 'package:flites/states/app_settings.dart';
 import 'package:flites/widgets/project_file_list/overlay_button.dart';
 import 'package:flutter/cupertino.dart';
@@ -58,6 +59,24 @@ class SettingsOverlayButton extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              ListTile(
+                dense: true,
+                title: Text(context.l10n.saveFile),
+                onTap: () {
+                  ProjectSavingService().saveProject();
+                },
+              ),
+              ListTile(
+                dense: true,
+                title: Text(context.l10n.importFile),
+                onTap: () async {
+                  final projectState =
+                      await ProjectSavingService().loadProjectFile();
+                  if (projectState != null) {
+                    ProjectSavingService().setProjectState(projectState);
+                  }
+                },
+              ),
               ExpansionTile(
                 dense: true,
                 title: Text(context.l10n.themeMode),

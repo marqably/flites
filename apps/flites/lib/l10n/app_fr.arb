@@ -211,5 +211,13 @@
     "showContainingFolder": "Afficher le dossier contenant",
     "@showContainingFolder": {
         "description": "Button text to open the folder containing a saved file"
+    },
+    "saveFile": "Enregistrer le fichier",
+    "@saveFile": {
+        "description": "Button text for saving the current project/file"
+    },
+    "importFile": "Importer le fichier",
+    "@importFile": {
+        "description": "Button text for importing a project/file"
     }
 }

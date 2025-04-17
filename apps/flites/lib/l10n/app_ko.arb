@@ -211,5 +211,13 @@
     "showContainingFolder": "저장 폴더 열기",
     "@showContainingFolder": {
         "description": "Button text to open the folder containing a saved file"
+    },
+    "saveFile": "파일 저장",
+    "@saveFile": {
+        "description": "Button text for saving the current project/file"
+    },
+    "importFile": "파일 가져오기",
+    "@importFile": {
+        "description": "Button text for importing a project/file"
     }
 }
