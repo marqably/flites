@@ -362,7 +362,7 @@ class GenerateSprite {
     try {
       await fileService.saveFile(
         bytes: spriteData,
-        fileType: FileType.image,
+        fileType: FileType.custom,
         fileExtension: 'png',
       );
     } catch (e) {
