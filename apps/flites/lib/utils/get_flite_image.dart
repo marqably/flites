@@ -53,7 +53,8 @@ String? getNextImageId() {
   final index = row.map((e) => e.id).toList().indexOf(imageId);
 
   if (index >= row.length - 1) {
-    return null;
+    // If it's the last image, loop back to the first one.
+    return row.first.id;
   }
 
   return row[index + 1].id;

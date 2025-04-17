@@ -161,4 +161,8 @@ class SourceFilesState {
   static void setStateForTests(List<FlitesImageRow> rows) {
     _projectSourceFiles.value = FlitesImageMap(rows: rows);
   }
+
+  static void setSourceFilesStateFromFile(FlitesImageMap imageMap) {
+    _projectSourceFiles.value = imageMap;
+  }
 }
