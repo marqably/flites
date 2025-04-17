@@ -95,6 +95,10 @@ class ImageMapHeader extends StatelessWidget {
                   isSelected: false,
                   onPressed: () {
                     SourceFilesState.addImageRow('New Row');
+
+                    SelectedImageRowState.setSelectedImageRow(
+                      projectSourceFiles.value.rows.length - 1,
+                    );
                   },
                   child: const Icon(
                     Icons.add,
