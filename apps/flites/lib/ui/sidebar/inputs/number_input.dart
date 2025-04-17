@@ -2,28 +2,40 @@ import 'package:flites/constants/app_sizes.dart';
 import 'package:flites/main.dart';
 import 'package:flites/ui/utils/hover_btn.dart';
 import 'package:flutter/material.dart';
+import 'input_field.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/gestures.dart';
+
+enum LabelPosition {
+  top,
+  left,
+  none,
+}
 
 /// A number input field with increment/decrement buttons
 class NumberInput extends StatefulWidget {
-  final String label;
   final double value;
   final double min;
   final double max;
   final double step;
+  final String? label;
   final String? prefix;
+  final String? suffix;
+  final LabelPosition labelPosition;
 
   final Function(double) onChanged;
 
   const NumberInput({
     super.key,
-    required this.label,
     required this.value,
+    required this.onChanged,
+    this.label,
     this.min = 0,
     this.max = double.infinity,
     this.step = 1,
     this.prefix,
-    required this.onChanged,
+    this.suffix,
+    this.labelPosition = LabelPosition.left,
   });
 
   @override
@@ -85,6 +97,7 @@ class _NumberInputState extends State<NumberInput> {
         (widget.value + widget.step).clamp(widget.min, widget.max);
     _controller.text = newValue.toString();
     widget.onChanged(newValue);
+    _focusNode.requestFocus();
   }
 
   void _decrement() {
@@ -92,102 +105,101 @@ class _NumberInputState extends State<NumberInput> {
         (widget.value - widget.step).clamp(widget.min, widget.max);
     _controller.text = newValue.toString();
     widget.onChanged(newValue);
+    _focusNode.requestFocus();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Label
-        Text(
-          widget.label,
-          style: TextStyle(
-            fontSize: fontSizeBase,
-            color: context.colors.onSecondary,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        const SizedBox(height: 4),
-        // Input container
-        Container(
-          decoration: BoxDecoration(
-            color: context.colors.surface,
-            borderRadius: BorderRadius.circular(4.0),
-          ),
-          child: Row(
-            children: [
-              // Text input
-              Expanded(
-                child: TextField(
-                  controller: _controller,
-                  focusNode: _focusNode,
+    return Focus(
+      onKeyEvent: (FocusNode node, KeyEvent event) {
+        if (event is KeyDownEvent) {
+          if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
+            _increment();
+            return KeyEventResult.handled;
+          } else if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
+            _decrement();
+            return KeyEventResult.handled;
+          }
+        }
+        return KeyEventResult.ignored;
+      },
+      child: Listener(
+        onPointerSignal: (pointerSignal) {
+          if (_focusNode.hasFocus && pointerSignal is PointerScrollEvent) {
+            if (pointerSignal.scrollDelta.dy < 0) {
+              _increment();
+            } else if (pointerSignal.scrollDelta.dy > 0) {
+              _decrement();
+            }
+          }
+        },
+        child: Flex(
+          direction: widget.labelPosition == LabelPosition.top
+              ? Axis.vertical
+              : Axis.horizontal,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          spacing: Sizes.p8,
+          children: [
+            // Label
+            if (widget.label != null &&
+                widget.labelPosition != LabelPosition.none)
+              Flexible(
+                flex: 0,
+                child: Text(
+                  widget.label!.toUpperCase(),
                   style: TextStyle(
-                    color: context.colors.onSurface,
                     fontSize: fontSizeBase,
+                    color: context.colors.onSurface,
                   ),
-                  textAlign: TextAlign.left,
-                  keyboardType: TextInputType.number,
-                  inputFormatters: [
-                    FilteringTextInputFormatter.digitsOnly,
-                  ],
-                  decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    border: InputBorder.none,
-                    prefix: widget.prefix != null
-                        ? Text(
-                            widget.prefix!,
-                            style: TextStyle(
-                              color: context.colors.onSurface,
-                              fontSize: fontSizeBase,
-                            ),
-                          )
-                        : null,
-                  ),
-                  onSubmitted: (_) => _validateAndSubmit(),
                 ),
               ),
-
-              // Plus/minus buttons
-              SizedBox(
-                width: 24,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  mainAxisSize: MainAxisSize.max,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    HoverBtn(
-                      tooltip: 'Increment',
-                      hoverColor: context.colors.primary,
-                      onTap: _increment,
-                      child: Icon(
-                        Icons.keyboard_arrow_up,
-                        size: 16,
-                        color: context.colors.onSurface,
+            // Input container
+            Flexible(
+              flex: 1,
+              child: InputField(
+                controller: _controller,
+                focusNode: _focusNode,
+                onSubmitted: (_) => _validateAndSubmit(),
+                postfixWidget: SizedBox(
+                  width: 24,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisSize: MainAxisSize.max,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      HoverBtn(
+                        tooltip: 'Increment',
+                        hoverColor: context.colors.primary,
+                        onTap: _increment,
+                        child: Icon(
+                          Icons.keyboard_arrow_up,
+                          size: 16,
+                          color: context.colors.onSurface,
+                        ),
                       ),
-                    ),
-                    Container(
-                      height: 1,
-                      color: context.colors.surface,
-                    ),
-                    HoverBtn(
-                      tooltip: 'Decrement',
-                      hoverColor: context.colors.primary,
-                      onTap: _decrement,
-                      onHover: (val) {},
-                      child: Icon(
-                        Icons.keyboard_arrow_down,
-                        size: 16,
-                        color: context.colors.onSurface,
+                      Container(
+                        height: 1,
+                        color: context.colors.surface,
                       ),
-                    ),
-                  ],
+                      HoverBtn(
+                        tooltip: 'Decrement',
+                        hoverColor: context.colors.primary,
+                        onTap: _decrement,
+                        onHover: (val) {},
+                        child: Icon(
+                          Icons.keyboard_arrow_down,
+                          size: 16,
+                          color: context.colors.onSurface,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 }

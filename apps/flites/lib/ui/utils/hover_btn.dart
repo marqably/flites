@@ -21,6 +21,7 @@ class HoverBtn extends StatefulWidget {
   final ShapeBorder? customBorder;
   final bool enableFeedback;
   final bool excludeFromSemantics;
+  final bool disableHoverEffect;
 
   const HoverBtn({
     super.key,
@@ -44,6 +45,7 @@ class HoverBtn extends StatefulWidget {
     this.customBorder,
     this.enableFeedback = true,
     this.excludeFromSemantics = false,
+    this.disableHoverEffect = false,
   });
 
   @override
@@ -82,7 +84,9 @@ class _HoverBtnState extends State<HoverBtn> {
         excludeFromSemantics: widget.excludeFromSemantics,
         child: Container(
           decoration: BoxDecoration(
-            color: _isHovering ? widget.hoverColor : widget.color,
+            color: _isHovering && !widget.disableHoverEffect
+                ? widget.hoverColor
+                : widget.color,
           ),
           child: widget.child,
         ),

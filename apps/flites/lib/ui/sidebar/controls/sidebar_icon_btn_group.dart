@@ -8,6 +8,7 @@ enum SidebarIconBtnSpacing {
   compact,
   normal,
   large,
+  xl,
   evenly;
 
   convertToSize() {
@@ -15,11 +16,13 @@ enum SidebarIconBtnSpacing {
       case SidebarIconBtnSpacing.none:
         return 0;
       case SidebarIconBtnSpacing.compact:
-        return Sizes.p2;
-      case SidebarIconBtnSpacing.normal:
         return Sizes.p4;
+      case SidebarIconBtnSpacing.normal:
+        return Sizes.p12;
       case SidebarIconBtnSpacing.large:
-        return Sizes.p8;
+        return Sizes.p24;
+      case SidebarIconBtnSpacing.xl:
+        return Sizes.p36;
       case SidebarIconBtnSpacing.evenly:
         return 0;
     }
@@ -48,45 +51,41 @@ class SidebarIconBtnGroup extends StatelessWidget {
   Widget build(BuildContext context) {
     return SidebarControlWrapper(
       label: label,
-      alignment: spacing == SidebarIconBtnSpacing.evenly
-          ? MainAxisAlignment.spaceBetween
-          : MainAxisAlignment.start,
+      alignment: MainAxisAlignment.spaceBetween,
       children: [
-        ..._buildControls(context, controls),
+        // main controls
+        _buildControls(context, controls),
+
+        // additional controls
         if (additionalControls.isNotEmpty)
-          const Expanded(child: SizedBox(height: 2)),
-        if (additionalControls.isNotEmpty)
-          ..._buildControls(context, additionalControls),
+          _buildControls(context, additionalControls),
       ],
     );
   }
 
-  List<Widget> _buildControls(BuildContext context, List<IconBtn> controlList) {
-    var resultWidgets = controlList
-        .map((control) => _buildControlButton(
+  Widget _buildControls(BuildContext context, List<IconBtn> controlList) {
+    return Wrap(
+      spacing:
+          spacing == SidebarIconBtnSpacing.evenly ? 0 : spacing.convertToSize(),
+      runSpacing: spacing == SidebarIconBtnSpacing.evenly
+          ? Sizes.p8
+          : spacing.convertToSize(),
+      alignment: spacing == SidebarIconBtnSpacing.evenly
+          ? WrapAlignment.spaceBetween
+          : WrapAlignment.start,
+      children: [
+        ...controlList.map(
+          (control) => _buildControlButton(
               context: context,
               icon: control.icon,
               tooltip: control.tooltip,
               value: control.value ?? '',
               isSelected:
                   selectedValues?.contains(control.value ?? '') ?? false,
-            ))
-        .toList();
-
-    // add spacing between controls
-    final spacingNumeric = spacing.convertToSize();
-    if (spacingNumeric > 0) {
-      final newWidgetList = <Widget>[];
-      for (var i = 0; i < resultWidgets.length; i++) {
-        newWidgetList.add(resultWidgets[i]);
-        if (i < resultWidgets.length - 1) {
-          newWidgetList.add(SizedBox(width: spacingNumeric));
-        }
-      }
-      resultWidgets = newWidgetList;
-    }
-
-    return resultWidgets.toList();
+          ),
+        ),
+      ],
+    );
   }
 
   Widget _buildControlButton({

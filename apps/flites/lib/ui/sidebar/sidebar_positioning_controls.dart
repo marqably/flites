@@ -5,7 +5,6 @@ import 'package:flites/ui/sidebar/structure/sidebar_control_wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:flites/ui/sidebar/structure/sidebar_section.dart';
 import 'package:flites/ui/sidebar/controls/sidebar_icon_btn_group.dart';
-import 'package:flites/ui/sidebar/controls/sidebar_number_input.dart';
 import 'package:flites/ui/sidebar/controls/sidebar_slider_input.dart';
 import 'package:flites/ui/sidebar/controls/sidebar_button.dart';
 
@@ -36,11 +35,12 @@ class _SidebarPositioningControlsState
 
         // Alignment controls
         SidebarSection(
-          title: 'Positioning',
+          label: 'Positioning',
           children: [
             SidebarIconBtnGroup(
               label: 'Alignment',
               selectedValues: [_selectedHAlignment],
+              spacing: SidebarIconBtnSpacing.compact,
               controls: const [
                 IconBtn(
                   icon: Icons.format_align_left,
@@ -86,46 +86,46 @@ class _SidebarPositioningControlsState
 
         // Position controls
         SidebarSection(
-          title: 'Move & Resize',
+          label: 'Move & Resize',
           children: [
-            // SidebarControlWrapper(
-            //   label: 'Position',
-            //   children: [
-            //     SidebarNumberInput(
-            //       label: 'X',
-            //       value: _xPosition,
-            //       onChanged: (value) {
-            //         setState(() {
-            //           _xPosition = value;
-            //         });
-            //       },
-            //     ),
-            //     SidebarNumberInput(
-            //       label: 'Y',
-            //       value: _yPosition,
-            //       onChanged: (value) {
-            //         setState(() {
-            //           _yPosition = value;
-            //         });
-            //       },
-            //     ),
-            //   ],
-            // ),
+            SidebarControlWrapper(
+              label: 'Position',
+              children: [
+                NumberInput(
+                  label: 'X',
+                  value: _xPosition,
+                  onChanged: (value) {
+                    setState(() {
+                      _xPosition = value;
+                    });
+                  },
+                ),
+                NumberInput(
+                  label: 'Y',
+                  value: _yPosition,
+                  onChanged: (value) {
+                    setState(() {
+                      _yPosition = value;
+                    });
+                  },
+                ),
+              ],
+            ),
             SidebarControlWrapper(
               label: 'Size',
               children: [
-                // NumberInput(
-                //   label: 'Width',
-                //   value: _width,
-                //   min: 1,
-                //   onChanged: (value) {
-                //     setState(() {
-                //       _width = value;
-                //     });
-                //   },
-                // ),
                 NumberInput(
-                  label: 'Height',
+                  label: 'W',
+                  value: _width,
+                  min: 1,
+                  onChanged: (value) {
+                    setState(() {
+                      _width = value;
+                    });
+                  },
+                ),
+                NumberInput(
+                  label: 'H',
                   value: _height,
                   min: 1,
                   onChanged: (value) {
@@ -139,73 +139,75 @@ class _SidebarPositioningControlsState
           ],
         ),
 
-        // // Opacity control
-        // SidebarSection(
-        //   title: 'Rotate',
-        //   children: [
-        //     // Opacity control
-        //     SidebarSliderInput(
-        //       label: 'Opacity',
-        //       value: _opacity,
-        //       min: 0,
-        //       max: 100,
-        //       suffix: '%',
-        //       onChanged: (value) {
-        //         setState(() {
-        //           _opacity = value;
-        //         });
-        //       },
-        //     ),
+        // Opacity control
+        SidebarSection(
+          label: 'Rotate',
+          children: [
+            // Opacity control
+            SidebarSliderInput(
+              label: 'Opacity',
+              value: _opacity,
+              min: 0,
+              max: 100,
+              suffix: '%',
+              onChanged: (value) {
+                setState(() {
+                  _opacity = value;
+                });
+              },
+            ),
 
-        //     // Flip controls
-        //     SidebarIconBtnGroup(
-        //       label: 'Flip',
-        //       controls: [
-        //         IconBtn(
-        //           icon: Icons.flip,
-        //           tooltip: 'Flip Horizontal',
-        //           isSelected: _flipHorizontal,
-        //           onPressed: () {
-        //             setState(() {
-        //               _flipHorizontal = !_flipHorizontal;
-        //             });
-        //           },
-        //         ),
-        //         IconBtn(
-        //           icon: Icons.flip,
-        //           tooltip: 'Flip Vertical',
-        //           isSelected: _flipVertical,
-        //           onPressed: () {
-        //             setState(() {
-        //               _flipVertical = !_flipVertical;
-        //             });
-        //           },
-        //         ),
-        //       ],
-        //     ),
-        //   ],
-        // ),
+            // Flip controls
+            SidebarIconBtnGroup(
+              label: 'Flip',
+              spacing: SidebarIconBtnSpacing.large,
+              controls: [
+                IconBtn(
+                  icon: Icons.flip,
+                  tooltip: 'Flip Horizontal',
+                  isSelected: _flipHorizontal,
+                  onPressed: () {
+                    setState(() {
+                      _flipHorizontal = !_flipHorizontal;
+                    });
+                  },
+                ),
+                IconBtn(
+                  icon: Icons.flip_to_back,
+                  tooltip: 'Flip Vertical',
+                  isSelected: _flipVertical,
+                  onPressed: () {
+                    setState(() {
+                      _flipVertical = !_flipVertical;
+                    });
+                  },
+                ),
+              ],
+            ),
+          ],
+        ),
 
-        // // Action button - keep outside any section
-        // Padding(
-        //   padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-        //   child: SidebarButton(
-        //     label: 'Reset Position',
-        //     icon: Icons.refresh,
-        //     style: SidebarButtonStyle.tertiary,
-        //     onPressed: () {
-        //       setState(() {
-        //         _xPosition = 0;
-        //         _yPosition = 0;
-        //         _width = 100;
-        //         _height = 100;
-        //         _opacity = 100;
-        //         _flipHorizontal = false;
-        //         _flipVertical = false;
-        //       });
-        //     },
-        //   ),
-        // ),
+        // Action button - keep outside any section
+        SidebarSection(
+          label: 'Export',
+          children: [
+            SidebarButton(
+              label: 'Reset Position',
+              icon: Icons.refresh,
+              onPressed: () {
+                setState(() {
+                  _xPosition = 0;
+                  _yPosition = 0;
+                  _width = 100;
+                  _height = 100;
+                  _opacity = 100;
+                  _flipHorizontal = false;
+                  _flipVertical = false;
+                });
+              },
+            ),
+          ],
+        ),
       ],
     );
   }

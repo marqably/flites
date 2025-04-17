@@ -1,6 +1,5 @@
 import 'package:flites/constants/app_sizes.dart';
 import 'package:flites/main.dart';
-import 'package:flites/ui/sidebar/inputs/number_input.dart';
 import 'package:flutter/material.dart';
 
 /// A slider with a number input for precise control
@@ -26,47 +25,27 @@ class SliderInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        // Slider
-        Expanded(
-          flex: 3,
-          child: SliderTheme(
-            data: SliderThemeData(
-              activeTrackColor: context.colors.onSurface,
-              inactiveTrackColor: context.colors.onSurface,
-              thumbColor: context.colors.onSurface,
-              trackHeight: 3,
-              thumbShape: const RoundSliderThumbShape(
-                enabledThumbRadius: 11,
-                elevation: 0,
-              ),
-              overlayShape: const RoundSliderOverlayShape(
-                overlayRadius: 16,
-              ),
-            ),
-            child: Slider(
-              value: value,
-              min: min,
-              max: max,
-              divisions: ((max - min) / step).round(),
-              onChanged: onChanged,
-            ),
-          ),
+    return SliderTheme(
+      data: SliderThemeData(
+        activeTrackColor: context.colors.onSurface,
+        inactiveTrackColor: context.colors.onSurface,
+        thumbColor: context.colors.onSurface,
+        trackHeight: 3,
+        thumbShape: const RoundSliderThumbShape(
+          enabledThumbRadius: 11,
+          elevation: 0,
         ),
-
-        gapW16,
-
-        // Number input
-        NumberInput(
-          label: label,
-          value: value,
-          onChanged: onChanged,
-          min: min,
-          max: max,
-          step: step,
+        overlayShape: const RoundSliderOverlayShape(
+          overlayRadius: Sizes.p16,
         ),
-      ],
+      ),
+      child: Slider(
+        value: value,
+        min: min,
+        max: max,
+        divisions: ((max - min) / step).round(),
+        onChanged: onChanged,
+      ),
     );
   }
 }

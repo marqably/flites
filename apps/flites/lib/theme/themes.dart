@@ -7,6 +7,7 @@ final lightTheme = ThemeData(
   colorScheme: ColorScheme.fromSeed(
     seedColor: AppColors.accent,
     primary: AppColors.accent,
+    onPrimary: AppColors.surfaceLight,
     // Main surfaces
     surface: AppColors.surfaceLight,
     surfaceContainerLowest: AppColors.secondarySurfaceLight,
@@ -26,6 +27,7 @@ final darkTheme = ThemeData(
     brightness: Brightness.dark,
     seedColor: AppColors.accent,
     primary: AppColors.accent,
+    onPrimary: AppColors.surfaceLight,
     // Main surfaces
     surface: AppColors.surfaceDark,
     surfaceContainerLowest: AppColors.secondarySurfaceDark,

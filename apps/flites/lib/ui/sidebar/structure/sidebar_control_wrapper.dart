@@ -1,49 +1,138 @@
 import 'package:flites/constants/app_sizes.dart';
 import 'package:flites/main.dart';
+import 'package:flites/ui/sidebar/inputs/icon_btn.dart';
 import 'package:flutter/material.dart';
+
+/// The layout configuration for the control wrapper
+/// Defines how the children are laid out
+enum SidebarControlWrapperLayout {
+  /// All children are of equal size
+  equal,
+
+  /// The first child is big, the second is small
+  bigSmall,
+
+  /// The first child is small, the second is big
+  smallBig,
+}
 
 /// A subsection within a sidebar section (like "ALIGNMENT")
 class SidebarControlWrapper extends StatelessWidget {
+  /// The label of the control wrapper
   final String label;
+
+  /// The children of the control wrapper
   final List<Widget> children;
+
+  /// The alignment of the control wrapper
   final MainAxisAlignment alignment;
+
+  /// The layout of the control wrapper. How much space each child takes up
+  final SidebarControlWrapperLayout layout;
+
+  /// The controls to display at the top of the control wrapper
+  final List<IconBtn>? controls;
+
   const SidebarControlWrapper({
     super.key,
     required this.label,
     required this.children,
     this.alignment = MainAxisAlignment.start,
+    this.layout = SidebarControlWrapperLayout.equal,
+    this.controls,
   }) : assert(children.length > 0,
             'You need to pass at least one item to children!');
 
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisAlignment: alignment,
+      mainAxisSize: MainAxisSize.min,
       children: [
         gapH16,
 
-        Text(
-          label.toUpperCase(),
-          style: TextStyle(
-            fontSize: fontSizeBase,
-            fontWeight: FontWeight.w500,
-            color: context.colors.onSurface,
-            letterSpacing: 1.0,
+        Flexible(
+          flex: 0,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              // Label
+              Text(
+                label.toUpperCase(),
+                style: TextStyle(
+                  fontSize: fontSizeBase,
+                  fontWeight: FontWeight.w500,
+                  color: context.colors.onSurface,
+                  letterSpacing: 1.0,
+                ),
+              ),
+          
+              // Controls
+              if (controls != null)
+                Row(
+                  spacing: Sizes.p8,
+                  children: _getControls(),
+                ),
+            ],
           ),
         ),
 
         gapH24,
 
-        // if we have multiple children, we need to wrap them in a row
+        // Use a Container with constraints
         (children.length > 1)
-            ? Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                mainAxisSize: MainAxisSize.min,
-                children: children,
+            ? SizedBox(
+                width: double.infinity,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisSize: MainAxisSize.max,
+                  spacing: Sizes.p16,
+                  children: _getChildrenInLayout(),
+                ),
               )
-            : children.first,
+            : Flexible(flex: 1, child: children.first),
+        gapH16,
       ],
     );
+  }
+
+  List<Widget> _getChildrenInLayout() {
+    final isBigSmallLayout = layout == SidebarControlWrapperLayout.bigSmall;
+    final isSmallBigLayout = layout == SidebarControlWrapperLayout.smallBig;
+
+    final totalChildren = children.length;
+
+    int index = -1;
+    return children.map<Widget>((child) {
+      index++;
+
+      // If the layout is big small, make the first child flexible and the second one fixed
+      if (isBigSmallLayout) {
+        if (index == 0) {
+          return Flexible(flex: 2, child: child);
+        }
+      }
+
+      // If the layout is small big, make the first child fixed and the second one flexible
+      if (isSmallBigLayout) {
+        if (index == totalChildren - 1) {
+          return Flexible(flex: 2, child: child);
+        }
+      }
+
+      // For all the other items or layouts use flex 1 to distribute the space evenly
+      return Flexible(flex: 1, child: child);
+    }).toList();
+  }
+
+  List<Widget> _getControls() {
+    return controls!
+        .map((control) => control.copyWith(
+              color: Colors.transparent,
+              size: IconBtnSize.xs,
+            ))
+        .toList();
   }
 }

@@ -1,18 +1,21 @@
 import 'package:flites/constants/app_sizes.dart';
 import 'package:flites/main.dart';
+import 'package:flites/ui/utils/hover_btn.dart';
 import 'package:flutter/material.dart';
 
 /// A collapsible section for the sidebar
 class SidebarSection extends StatefulWidget {
-  final String title;
   final List<Widget> children;
+  final String? label;
   final bool initiallyExpanded;
+  final double? horizontalPadding;
 
   const SidebarSection({
     super.key,
-    required this.title,
+    this.label,
     required this.children,
     this.initiallyExpanded = true,
+    this.horizontalPadding,
   });
 
   @override
@@ -30,56 +33,76 @@ class _SidebarSectionState extends State<SidebarSection> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: Sizes.p16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Header with expand/collapse button
-          InkWell(
-            onTap: () {
-              setState(() {
-                _isExpanded = !_isExpanded;
-              });
-            },
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  widget.title,
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                    color: context.colors.onSurface,
-                  ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // Header with expand/collapse button
+        if (widget.label != null)
+          Flexible(
+            flex: 0,
+            child: HoverBtn(
+              onTap: () {
+                setState(() {
+                  _isExpanded = !_isExpanded;
+                });
+              },
+              hoverColor: context.colors.surfaceBright,
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: Sizes.p16,
+                  vertical: (_isExpanded) ? Sizes.p20 : Sizes.p12,
                 ),
-                Icon(
-                  _isExpanded
-                      ? Icons.keyboard_arrow_up
-                      : Icons.keyboard_arrow_down,
-                  color: context.colors.onSurface,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      widget.label!,
+                      style: TextStyle(
+                        fontSize: fontSizeLg,
+                        fontWeight: FontWeight.w500,
+                        color: context.colors.onSurface,
+                      ),
+                    ),
+                    Icon(
+                      _isExpanded
+                          ? Icons.keyboard_arrow_up
+                          : Icons.keyboard_arrow_down,
+                      color: context.colors.onSurface,
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
 
-          // Expandable content
-          if (_isExpanded)
-            Padding(
-              padding: const EdgeInsets.only(top: Sizes.p16, bottom: Sizes.p16),
+        // Expandable content
+        if (_isExpanded)
+          Flexible(
+            flex: 1,
+            child: Padding(
+              padding: EdgeInsets.only(
+                top: Sizes.p12,
+                bottom: Sizes.p20,
+                left: widget.horizontalPadding ?? Sizes.p16,
+                right: widget.horizontalPadding ?? Sizes.p16,
+              ),
               child: Column(children: widget.children),
             ),
+          ),
 
-          // Divider
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: Sizes.p20),
+        // Divider
+        Flexible(
+          flex: 0,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: Sizes.p16),
             child: Divider(
               color: context.colors.surface,
               height: 1,
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
