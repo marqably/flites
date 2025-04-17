@@ -9,16 +9,33 @@ import 'package:flutter/material.dart';
 import 'package:image/image.dart' as img;
 
 class GenerateSprite {
+  static Future<img.Image?> exportTiledSpriteMap({
+    required Size tileSize,
+  }) async {
+    return exportSpriteMap(tileSize: tileSize);
+  }
+
   static Future<img.Image?> exportSpriteMap({
     FileService? fileService,
+    Size? tileSize,
   }) async {
     final sourceFiles = projectSourceFiles.value;
 
     final spriteRowImages = <img.Image>[];
 
     for (int i = 0; i < sourceFiles.rows.length; i++) {
+      // If [tileSize] is provided, override the export settings of each row
+      // to use a size constrained setting with the tile size as height and
+      // width.
       final spriteRowImage = await createSpriteRowImage(
-        sourceFiles.rows[i].exportSettings,
+        sourceFiles.rows[i].exportSettings.copyWith(
+          heightPx: tileSize?.height.toInt(),
+          widthPx: tileSize?.width.toInt(),
+          paddingBottomPx: tileSize != null ? 0 : null,
+          paddingTopPx: tileSize != null ? 0 : null,
+          paddingLeftPx: tileSize != null ? 0 : null,
+          paddingRightPx: tileSize != null ? 0 : null,
+        ),
         spriteRowIndex: i,
       );
 
@@ -349,7 +366,7 @@ class GenerateSprite {
     try {
       await fileService.saveFile(
         bytes: spriteData,
-        fileType: FileType.image,
+        fileType: FileType.custom,
         fileExtension: 'png',
       );
     } catch (e) {

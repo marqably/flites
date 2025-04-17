@@ -14,8 +14,15 @@ import 'package:flutter/material.dart';
 
 /// Handles the generation of SVG sprite sheets from multiple SVG images.
 class GenerateSvgSprite {
+  static Future<void> exportTiledSpriteMap({
+    required Size tileSize,
+  }) async {
+    return exportSpriteMap(tileSize: tileSize);
+  }
+
   static Future<void> exportSpriteMap({
     FileService? fileService,
+    Size? tileSize,
   }) async {
     final sourceFiles = projectSourceFiles.value;
 
@@ -23,7 +30,14 @@ class GenerateSvgSprite {
 
     for (int i = 0; i < sourceFiles.rows.length; i++) {
       final spriteRowImage = await createSpriteRowImage(
-        sourceFiles.rows[i].exportSettings,
+        sourceFiles.rows[i].exportSettings.copyWith(
+          heightPx: tileSize?.height.toInt(),
+          widthPx: tileSize?.width.toInt(),
+          paddingBottomPx: tileSize != null ? 0 : null,
+          paddingTopPx: tileSize != null ? 0 : null,
+          paddingLeftPx: tileSize != null ? 0 : null,
+          paddingRightPx: tileSize != null ? 0 : null,
+        ),
         spriteRowIndex: i,
       );
 
