@@ -2,7 +2,6 @@ import 'package:flites/constants/app_sizes.dart';
 import 'package:flites/main.dart';
 import 'package:flites/states/selected_image_state.dart';
 import 'package:flites/widgets/project_file_list/canvas_controls_overlay_button.dart';
-import 'package:flites/widgets/project_file_list/hoverable_widget.dart';
 import 'package:flites/widgets/project_file_list/settings_overlay_button.dart';
 import 'package:flites/widgets/project_file_list/widgets/main_frame_list.dart';
 import 'package:flites/widgets/project_file_list/widgets/main_tool_box.dart';

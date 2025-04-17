@@ -1,6 +1,7 @@
 import 'package:flites/constants/app_sizes.dart';
 import 'package:flites/services/update_service.dart';
 import 'package:flites/types/update_info.dart';
+import 'package:flites/ui/sidebar/sidebar_positioning_controls.dart';
 import 'package:flites/widgets/blocking_widget/blocking_container.dart';
 import 'package:flites/widgets/image_editor/image_editor.dart';
 import 'package:flites/widgets/image_map_widgets/sprite_map_header_wrapper.dart';
@@ -67,7 +68,7 @@ class _OverviewState extends State<Overview> {
                       ],
                     ),
                   ),
-                  ToolControls()
+                  ToolControls(child: SidebarPositioningControls())
                 ],
               ),
               BlockingContainer(),
