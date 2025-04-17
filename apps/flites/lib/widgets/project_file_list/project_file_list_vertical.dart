@@ -184,7 +184,23 @@ class _ProjectFileListVerticalState extends State<ProjectFileListVertical> {
                         builder: (isHovered) {
                           return GestureDetector(
                             onTap: () {
-                              SourceFilesState.addImages();
+                              final selectedImageBeforeImport =
+                                  selectedImageId.value;
+
+                              SourceFilesState.addImages().then((_) {
+                                final imagesInRow = projectSourceFiles
+                                    .value.rows[selectedImageRow.value].images;
+
+                                if (imagesInRow.isEmpty) return;
+
+                                SelectedImageState.setSelectedImage(
+                                  imagesInRow.last.id,
+                                );
+                              });
+
+                              SelectedImageRowState.setSelectedImageRow(
+                                selectedImageBeforeImport,
+                              );
                             },
                             child: Container(
                               width: double.infinity,
