@@ -5,8 +5,8 @@ import 'package:flites/widgets/right_click_menu/right_click_menu_handler.dart';
 /// A widget that wraps around a ListItem and provides it's
 /// data to the [RightClickMenuHandler] to show a context menu
 /// when the item is right-clicked.
-class CopyableItemWrapper<T> extends StatelessWidget {
-  final T itemData;
+class CopyableItemWrapper extends StatelessWidget {
+  final FlitesImage itemData;
   final Widget child;
 
   const CopyableItemWrapper({
@@ -24,7 +24,7 @@ class CopyableItemWrapper<T> extends StatelessWidget {
 
         handlerState?.showContextMenu(
           details,
-          [itemData] as List<FlitesImage?>,
+          [itemData],
         );
       },
       child: child,

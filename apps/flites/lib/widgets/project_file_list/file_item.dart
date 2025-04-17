@@ -33,7 +33,7 @@ class _FileItemState extends State<FileItem> {
       final isCurrentReferenceImage =
           selectedReferenceImages.value.contains(widget.file.id);
 
-      return CopyableItemWrapper<FlitesImage>(
+      return CopyableItemWrapper(
         itemData: widget.file,
         child: MouseRegion(
           onEnter: (event) => isHoveredState.value = true,

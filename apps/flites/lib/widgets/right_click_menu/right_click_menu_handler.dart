@@ -28,19 +28,20 @@ class RightClickMenuHandler extends StatefulWidget {
 /// show the context menu and pass the item data to it.
 class RightClickMenuHandlerState extends State<RightClickMenuHandler> {
   OverlayEntry? _overlayEntry;
-  bool isPasteEnabled = false;
-  bool isCopyEnabled = false;
 
   void showContextMenu(
     TapDownDetails details, [
     List<FlitesImage?> contextData = const [],
   ]) {
+    bool isCopyEnabled = false;
+    bool isPasteEnabled = false;
+
     if (_overlayEntry != null && _overlayEntry!.mounted) {
       _overlayEntry!.remove();
       _overlayEntry = null;
     }
 
-    bool isPasteEnabled = clipboardService.hasData;
+    isPasteEnabled = clipboardService.hasData;
 
     if (contextData.isNotEmpty) {
       isCopyEnabled = true;
