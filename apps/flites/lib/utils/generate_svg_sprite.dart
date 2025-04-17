@@ -6,6 +6,8 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flites/services/file_service.dart';
 import 'package:flites/states/source_files_state.dart';
 import 'package:flites/types/export_settings.dart';
+import 'package:flites/types/exported_sprite_image.dart';
+import 'package:flites/types/exported_sprite_row_info.dart';
 import 'package:flites/types/sprite_constraints.dart';
 import 'package:flites/utils/generate_sprite.dart';
 import 'package:flites/utils/svg_utils.dart';
@@ -14,19 +16,29 @@ import 'package:flutter/material.dart';
 
 /// Handles the generation of SVG sprite sheets from multiple SVG images.
 class GenerateSvgSprite {
-  static Future<void> exportTiledSpriteMap({
+  static Future<ExportedSprilteSheetTiled?> exportTiledSpriteMap({
     required Size tileSize,
   }) async {
-    return exportSpriteMap(tileSize: tileSize);
+    final spriteSheet = await exportSpriteMap(tileSize: tileSize);
+
+    if (spriteSheet == null) {
+      return null;
+    }
+
+    return ExportedSprilteSheetTiled(
+      image: spriteSheet.image,
+      tileSize: tileSize,
+    );
   }
 
-  static Future<void> exportSpriteMap({
+  static Future<ExportedSpriteSheet?> exportSpriteMap({
     FileService? fileService,
     Size? tileSize,
   }) async {
     final sourceFiles = projectSourceFiles.value;
 
     final spriteRowImages = <Uint8List>[];
+    final spriteRowInfos = <ExportedSpriteRowInfo>[];
 
     for (int i = 0; i < sourceFiles.rows.length; i++) {
       final spriteRowImage = await createSpriteRowImage(
@@ -42,7 +54,8 @@ class GenerateSvgSprite {
       );
 
       if (spriteRowImage != null) {
-        spriteRowImages.add(spriteRowImage);
+        spriteRowImages.add(spriteRowImage.image);
+        spriteRowInfos.add(spriteRowImage.rowInfo);
       }
     }
 
@@ -156,9 +169,14 @@ class GenerateSvgSprite {
       svgData,
       fileService ?? const FileService(),
     );
+
+    return ExportedSpriteSheet(
+      image: svgData,
+      rowInformations: spriteRowInfos,
+    );
   }
 
-  static Future<void> exportSpriteRow(
+  static Future<ExportedSpriteRow?> exportSpriteRow(
     ExportSettings settings, {
     required int spriteRowIndex,
     FileService? fileService,
@@ -169,14 +187,16 @@ class GenerateSvgSprite {
     );
 
     if (spriteRowImage == null) {
-      return;
+      return null;
     }
 
     // Save the sprite
     await _saveSpriteSheet(
-      spriteRowImage,
+      spriteRowImage.image,
       fileService ?? const FileService(),
     );
+
+    return spriteRowImage;
   }
 
   /// Exports a collection of SVG images as a single SVG sprite sheet.
@@ -184,7 +204,7 @@ class GenerateSvgSprite {
   /// This creates a combined SVG that includes all individual SVG images
   /// in a horizontal sprite sheet format while maintaining the vector format
   /// for high-quality scaling.
-  static Future<Uint8List?> createSpriteRowImage(
+  static Future<ExportedSpriteRow?> createSpriteRowImage(
     ExportSettings settings, {
     required int spriteRowIndex,
   }) async {
@@ -297,7 +317,15 @@ class GenerateSvgSprite {
     // Save the SVG sprite
     final svgData = Uint8List.fromList(utf8.encode(svgBuffer.toString()));
 
-    return svgData;
+    return ExportedSpriteRow(
+      image: svgData,
+      rowInfo: ExportedSpriteRowInfo.asSingleRow(
+        name: projectSourceFiles.value.rows[spriteRowIndex].name,
+        totalWidth: frameSize.width.toInt(),
+        totalHeight: frameSize.height.toInt(),
+        numberOfFrames: images.length,
+      ),
+    );
   }
 
   static Future<void> _saveSpriteSheet(

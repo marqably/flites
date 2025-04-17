@@ -2,6 +2,8 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flites/services/file_service.dart';
 import 'package:flites/states/source_files_state.dart';
 import 'package:flites/types/export_settings.dart';
+import 'package:flites/types/exported_sprite_image.dart';
+import 'package:flites/types/exported_sprite_row_info.dart';
 import 'package:flites/types/flites_image.dart';
 import 'package:flites/types/sprite_constraints.dart';
 import 'package:flites/widgets/image_editor/image_editor.dart';
@@ -9,17 +11,28 @@ import 'package:flutter/material.dart';
 import 'package:image/image.dart' as img;
 
 class GenerateSprite {
-  static Future<img.Image?> exportTiledSpriteMap({
+  static Future<ExportedSprilteSheetTiled?> exportTiledSpriteMap({
     required Size tileSize,
   }) async {
-    return exportSpriteMap(tileSize: tileSize);
+    final spriteSheet = await exportSpriteMap(tileSize: tileSize);
+
+    if (spriteSheet == null) {
+      return null;
+    }
+
+    return ExportedSprilteSheetTiled(
+      image: spriteSheet.image,
+      tileSize: tileSize,
+    );
   }
 
-  static Future<img.Image?> exportSpriteMap({
+  static Future<ExportedSpriteSheet?> exportSpriteMap({
     FileService? fileService,
     Size? tileSize,
   }) async {
     final sourceFiles = projectSourceFiles.value;
+
+    final List<ExportedSpriteRowInfo> rowInformations = [];
 
     final spriteRowImages = <img.Image>[];
 
@@ -72,6 +85,16 @@ class GenerateSprite {
         dstY: offsetY,
       );
 
+      rowInformations.add(
+        ExportedSpriteRowInfo.inSpriteSheet(
+          name: sourceFiles.rows[i].name,
+          totalWidth: spriteRowImages[i].width,
+          totalHeight: spriteRowImages[i].height,
+          numberOfFrames: sourceFiles.rows[i].images.length,
+          offsetFromTop: offsetY,
+        ),
+      );
+
       offsetY += spriteRowImages[i].height;
     }
 
@@ -80,10 +103,13 @@ class GenerateSprite {
       fileService ?? const FileService(),
     );
 
-    return spriteSheet;
+    return ExportedSpriteSheet(
+      image: spriteSheet.toUint8List(),
+      rowInformations: rowInformations,
+    );
   }
 
-  static Future<void> exportSpriteRow(
+  static Future<ExportedSpriteRow?> exportSpriteRow(
     ExportSettings settings, {
     required int spriteRowIndex,
     FileService? fileService,
@@ -94,13 +120,24 @@ class GenerateSprite {
     );
 
     if (spriteRowImage == null) {
-      return;
+      return null;
     }
 
     // Save the sprite
     await _saveSpriteSheet(
       spriteRowImage,
       fileService ?? const FileService(),
+    );
+
+    return ExportedSpriteRow(
+      image: spriteRowImage.toUint8List(),
+      rowInfo: ExportedSpriteRowInfo.asSingleRow(
+        name: projectSourceFiles.value.rows[spriteRowIndex].name,
+        totalWidth: spriteRowImage.width,
+        totalHeight: spriteRowImage.height,
+        numberOfFrames:
+            projectSourceFiles.value.rows[spriteRowIndex].images.length,
+      ),
     );
   }
 
