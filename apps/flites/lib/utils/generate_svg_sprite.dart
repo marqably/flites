@@ -33,6 +33,10 @@ class GenerateSvgSprite {
         sourceFiles.rows[i].exportSettings.copyWith(
           heightPx: tileSize?.height.toInt(),
           widthPx: tileSize?.width.toInt(),
+          paddingBottomPx: tileSize != null ? 0 : null,
+          paddingTopPx: tileSize != null ? 0 : null,
+          paddingLeftPx: tileSize != null ? 0 : null,
+          paddingRightPx: tileSize != null ? 0 : null,
         ),
         spriteRowIndex: i,
       );
