@@ -4,8 +4,9 @@ import 'package:flites/states/open_project.dart';
 import 'package:flites/states/selected_image_state.dart';
 import 'package:flites/states/source_files_state.dart';
 import 'package:flites/types/flites_image.dart';
+import 'package:flites/types/secondary_click_context_data.dart';
 import 'package:flites/utils/svg_utils.dart';
-import 'package:flites/widgets/right_click_menu/copyable_item_wrapper.dart';
+import 'package:flites/widgets/right_click_menu/right_clickable_item_wrapper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -33,8 +34,13 @@ class _FileItemState extends State<FileItem> {
       final isCurrentReferenceImage =
           selectedReferenceImages.value.contains(widget.file.id);
 
-      return CopyableItemWrapper(
-        itemData: widget.file,
+      return RightClickableItemWrapper(
+        contextData: SecondaryClickContextData(
+          copyableData: [widget.file],
+          onDelete: () {
+            SourceFilesState.deleteImage(widget.file.id);
+          },
+        ),
         child: MouseRegion(
           onEnter: (event) => isHoveredState.value = true,
           onExit: (event) => isHoveredState.value = false,

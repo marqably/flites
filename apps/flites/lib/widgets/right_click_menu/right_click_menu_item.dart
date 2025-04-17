@@ -3,6 +3,8 @@ import 'package:flites/constants/app_sizes.dart';
 import 'package:flites/main.dart';
 import 'package:flutter/material.dart';
 
+const rightClickMenuItemHeight = Sizes.p32;
+
 class RightClickMenuItem extends StatefulWidget {
   final String title;
   final VoidCallback onTap;
@@ -30,12 +32,14 @@ class RightClickMenuItemState extends State<RightClickMenuItem> {
       child: GestureDetector(
         onTap: widget.enabled ? widget.onTap : null,
         child: Container(
+          alignment: Alignment.centerLeft,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(Sizes.p8),
             color: _isHovering ? context.colors.primary : Colors.transparent,
           ),
           width: double.infinity,
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+          height: rightClickMenuItemHeight,
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Text(
             widget.title,
             style: TextStyle(

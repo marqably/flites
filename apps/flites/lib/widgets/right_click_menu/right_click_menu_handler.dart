@@ -1,6 +1,8 @@
 import 'package:flites/main.dart';
 import 'package:flites/services/clipboard_service.dart';
 import 'package:flites/types/flites_image.dart';
+import 'package:flites/types/secondary_click_context_data.dart';
+import 'package:flites/utils/positioning_utils.dart';
 import 'package:flites/widgets/right_click_menu/right_click_menu_item.dart';
 import 'package:flutter/material.dart';
 
@@ -30,9 +32,9 @@ class RightClickMenuHandlerState extends State<RightClickMenuHandler> {
   OverlayEntry? _overlayEntry;
 
   void showContextMenu(
-    TapDownDetails details, [
-    List<FlitesImage?> contextData = const [],
-  ]) {
+    TapDownDetails details, {
+    SecondaryClickContextData contextData = const SecondaryClickContextData(),
+  }) {
     bool isCopyEnabled = false;
     bool isPasteEnabled = false;
 
@@ -43,11 +45,17 @@ class RightClickMenuHandlerState extends State<RightClickMenuHandler> {
 
     isPasteEnabled = clipboardService.hasData;
 
-    if (contextData.isNotEmpty) {
+    if (contextData.copyableData.isNotEmpty) {
       isCopyEnabled = true;
     } else {
       isCopyEnabled = false;
     }
+
+    final overlayOffet = PositioningUtils.adjustOverlayOffsetToBeVisible(
+      clickedPosition: details.globalPosition,
+      overlaySize: const Size(150, rightClickMenuItemHeight * 3),
+      screenSize: MediaQuery.of(context).size,
+    );
 
     _overlayEntry = OverlayEntry(
       builder: (context) => Stack(
@@ -66,8 +74,8 @@ class RightClickMenuHandlerState extends State<RightClickMenuHandler> {
           // Positioned at the location of the right-click event
           // with a small offset to avoid being directly under the cursor
           Positioned(
-            left: details.globalPosition.dx,
-            top: details.globalPosition.dy,
+            left: overlayOffet.dx,
+            top: overlayOffet.dy,
             child: Material(
               color: Colors.transparent,
               child: Container(
@@ -90,9 +98,12 @@ class RightClickMenuHandlerState extends State<RightClickMenuHandler> {
                       title: 'Copy',
                       enabled: isCopyEnabled,
                       onTap: () {
-                        if (contextData.isNotEmpty) {
+                        if (contextData.copyableData.isNotEmpty) {
                           clipboardService.copyImage(
-                              contextData.whereType<FlitesImage>().toList());
+                            contextData.copyableData
+                                .whereType<FlitesImage>()
+                                .toList(),
+                          );
                         }
                         isCopyEnabled = false;
                         _removeOverlay();
@@ -103,6 +114,14 @@ class RightClickMenuHandlerState extends State<RightClickMenuHandler> {
                       enabled: isPasteEnabled,
                       onTap: () {
                         clipboardService.pasteImage();
+                        _removeOverlay();
+                      },
+                    ),
+                    RightClickMenuItem(
+                      title: 'Delete',
+                      enabled: contextData.onDelete != null,
+                      onTap: () {
+                        contextData.onDelete!();
                         _removeOverlay();
                       },
                     ),
