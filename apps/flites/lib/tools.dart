@@ -1,14 +1,16 @@
 import 'package:flites/tools/canvas_mode_tool.dart';
+import 'package:flites/tools/export_tool/export_tool.dart';
 import 'package:flites/tools/move_resize_tool.dart';
 import 'package:flites/tools/rotate_tool.dart';
 
-const defaultTool = Tool.canvas;
+const defaultTool = Tool.export;
 
 /// Defines the available tools in the editor
 enum Tool {
   canvas,
   move,
-  rotate;
+  rotate,
+  export;
 }
 
 class Tools {
@@ -20,6 +22,8 @@ class Tools {
         return const MoveResizeTool();
       case Tool.rotate:
         return const RotateTool();
+      case Tool.export:
+        return const ExportTool();
     }
   }
 

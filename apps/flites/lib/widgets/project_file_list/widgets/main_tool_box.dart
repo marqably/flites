@@ -39,6 +39,11 @@ class MainToolBox extends StatelessWidget {
                 icon: CupertinoIcons.rotate_right,
                 tooltip: context.l10n.rotateTool,
               ),
+              IconBtn(
+                value: Tool.export.name,
+                icon: CupertinoIcons.bus,
+                tooltip: context.l10n.hitboxTool,
+              ),
             ],
           ),
         ],
