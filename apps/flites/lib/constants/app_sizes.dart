@@ -46,10 +46,10 @@ const gapH48 = SizedBox(height: Sizes.p48);
 const gapH64 = SizedBox(height: Sizes.p64);
 
 /// font sizes
-const fontSize2Xs = 8.0;
-const fontSizeXs = 10.0;
-const fontSizeBase = 12.0;
+const fontSize2Xs = 6.0;
+const fontSizeXs = 8.0;
 const fontSizeSm = 10.0;
+const fontSizeBase = 12.0;
 const fontSizeMd = 14.0;
 const fontSizeLg = 16.0;
 const fontSizeXl = 18.0;

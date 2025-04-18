@@ -254,6 +254,34 @@ These specialized controls are designed to be used within panels.
     )
 ```
 
+### PanelNumberInput
+
+`PanelNumberInput` provides a numeric input field with a label, useful for entering numeric values like dimensions or coordinates.
+
+![image](./assets/ui-layouting/panel_number_input.png)
+
+#### Properties
+
+- `label`: The input field label
+- `value`: Current numeric value
+- `min`: Optional minimum value
+- `max`: Optional maximum value
+- `onChanged`: Callback for when the value changes
+
+#### Usage
+
+```dart
+    PanelNumberInput(
+      label: 'Width',
+      value: width,
+      min: 0,
+      max: 500,
+      onChanged: (value) {
+        // Handle value change
+      },
+    )
+```
+
 ### PanelButton
 
 `PanelButton` is a styled button for panel actions with an optional icon.

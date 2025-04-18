@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/foundation.dart';
 
 class HitboxEditorOverlay extends StatefulWidget {
   final Widget child;
@@ -19,6 +20,19 @@ class _HitboxEditorOverlayState extends State<HitboxEditorOverlay> {
   List<Offset> hitboxPoints = [];
   int? selectedPointIndex;
   bool isDragging = false;
+  late final FocusNode _focusNode;
+
+  @override
+  void initState() {
+    super.initState();
+    _focusNode = FocusNode()..requestFocus();
+  }
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
+  }
 
   // Add a point when tapping on empty space
   void _addPoint(Offset position) {
@@ -133,7 +147,7 @@ class _HitboxEditorOverlayState extends State<HitboxEditorOverlay> {
   @override
   Widget build(BuildContext context) {
     return KeyboardListener(
-      focusNode: FocusNode()..requestFocus(),
+      focusNode: _focusNode,
       onKeyEvent: _handleKeyEvent,
       child: Stack(
         clipBehavior: Clip.none,
@@ -262,7 +276,31 @@ class HitboxPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant HitboxPainter oldDelegate) {
-    return oldDelegate.points != points ||
+    return !listEquals(oldDelegate.points, points) ||
         oldDelegate.selectedPointIndex != selectedPointIndex;
   }
 }
+
+## PanelList
+
+The `PanelList` widget is used to display a list of panels, each of which can contain custom content.
+
+### Properties
+
+- **`items`**: A list of data items that will be displayed in the panel list.
+- **`itemBuilder`**: A widget builder function that is called for each item in the list. It takes the context and the item as parameters and returns a widget.
+- **`isScrollable`**: A boolean that enables or disables scrolling for the panel list. This property is optional.
+
+### Usage
+
+Here's an example of how to use the `PanelList` widget:
+
+```dart
+PanelList(
+  items: myItems,
+  itemBuilder: (context, item) => Text(item.title),
+  isScrollable: true,
+)
+```
+
+In this example, `myItems` is a list of data items, and each item is displayed using a `Text` widget that shows the item's title. The `isScrollable` property is set to `true`, allowing the list to be scrolled.

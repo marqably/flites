@@ -160,7 +160,7 @@ class _PanelListItemState extends State<PanelListItem> {
                         widget.subtitle!,
                         style: theme.textTheme.bodySmall?.copyWith(
                           color: theme.colorScheme.onSurface,
-                          fontSize: fontSizeXs,
+                          fontSize: fontSizeSm,
                         ),
                         overflow: TextOverflow.ellipsis,
                       ),
