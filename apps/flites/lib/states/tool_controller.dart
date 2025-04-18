@@ -4,7 +4,7 @@ import 'package:signals/signals_flutter.dart';
 /// A controller for managing tool selection and hover states
 class ToolController {
   /// Signal for the currently selected tool
-  final _selectedToolSignal = signal(Tool.canvas);
+  final _selectedToolSignal = signal(defaultTool);
 
   /// Signal for the currently hovered tool
   final _toolSettings = signal<Map<String, Map<String, dynamic>>?>({});
