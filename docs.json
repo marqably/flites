@@ -2,7 +2,7 @@
   "name": "Flites",
   "description": "Documentation",
   "favicon": "/assets/flites_logo.png",
-  "sidebar": [
+  "panel": [
     {
       "group": "General",
       "pages": [

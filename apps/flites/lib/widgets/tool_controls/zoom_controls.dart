@@ -17,20 +17,6 @@ class ZoomControls extends StatelessWidget {
       child: Column(
         children: [
           IconButton(
-            tooltip: context.l10n.zoomOut,
-            onPressed: () {
-              CanvasController.updateCanvasScale(
-                isIncreasingSize: false,
-                zoomingWithButtons: true,
-              );
-            },
-            icon: Icon(
-              Icons.zoom_out,
-              size: Sizes.p24,
-              color: context.colors.onSurface,
-            ),
-          ),
-          IconButton(
             tooltip: context.l10n.zoomIn,
             onPressed: () {
               CanvasController.updateCanvasScale(
@@ -40,6 +26,20 @@ class ZoomControls extends StatelessWidget {
             },
             icon: Icon(
               Icons.zoom_in,
+              size: Sizes.p24,
+              color: context.colors.onSurface,
+            ),
+          ),
+          IconButton(
+            tooltip: context.l10n.zoomOut,
+            onPressed: () {
+              CanvasController.updateCanvasScale(
+                isIncreasingSize: false,
+                zoomingWithButtons: true,
+              );
+            },
+            icon: Icon(
+              Icons.zoom_out,
               size: Sizes.p24,
               color: context.colors.onSurface,
             ),

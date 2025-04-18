@@ -212,12 +212,28 @@
     "@showContainingFolder": {
         "description": "Button text to open the folder containing a saved file"
     },
-    "saveFile": "파일 저장",
-    "@saveFile": {
+    "saveProject": "프로젝트 저장",
+    "@saveProject": {
         "description": "Button text for saving the current project/file"
+    },
+    "openProject": "프로젝트 열기",
+    "@openProject": {
+        "description": "Button text for opening a project/file"
     },
     "importFile": "파일 가져오기",
     "@importFile": {
         "description": "Button text for importing a project/file"
+    },
+    "menuAboutFlites": "Flites 정보",
+    "@menuAboutFlites": {
+        "description": "About Flites menu label"
+    },
+    "hitboxTool": "히트박스 도구",
+    "@hitboxTool": {
+        "description": "Tooltip for rotate Hitbox tool button"
+    },
+    "exportSpritemap": "스프라이트맵 내보내기",
+    "@exportSpritemap": {
+        "description": "Button text for exporting a spritemap"
     }
 }

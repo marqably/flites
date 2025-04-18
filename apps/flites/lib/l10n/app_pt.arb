@@ -212,12 +212,28 @@
     "@showContainingFolder": {
         "description": "Button text to open the folder containing a saved file"
     },
-    "saveFile": "Salvar arquivo",
-    "@saveFile": {
+    "saveProject": "Salvar projeto",
+    "@saveProject": {
         "description": "Button text for saving the current project/file"
+    },
+    "openProject": "Abrir projeto",
+    "@openProject": {
+        "description": "Button text for opening a project/file"
     },
     "importFile": "Importar arquivo",
     "@importFile": {
         "description": "Button text for importing a project/file"
+    },
+    "menuAboutFlites": "Sobre o Flites",
+    "@menuAboutFlites": {
+        "description": "About Flites menu label"
+    },
+    "hitboxTool": "Ferramenta de Hitbox",
+    "@hitboxTool": {
+        "description": "Tooltip for rotate Hitbox tool button"
+    },
+    "exportSpritemap": "Exportar Spritemap",
+    "@exportSpritemap": {
+        "description": "Button text for exporting a spritemap"
     }
 }

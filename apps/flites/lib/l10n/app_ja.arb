@@ -212,12 +212,28 @@
     "@showContainingFolder": {
         "description": "Button text to open the folder containing a saved file"
     },
-    "saveFile": "ファイルを保存",
-    "@saveFile": {
+    "saveProject": "プロジェクトを保存",
+    "@saveProject": {
         "description": "Button text for saving the current project/file"
+    },
+    "openProject": "プロジェクトを開く",
+    "@openProject": {
+        "description": "Button text for opening a project/file"
     },
     "importFile": "ファイルをインポート",
     "@importFile": {
         "description": "Button text for importing a project/file"
+    },
+    "menuAboutFlites": "Flitesについて",
+    "@menuAboutFlites": {
+        "description": "About Flites menu label"
+    },
+    "hitboxTool": "ヒットボックスツール",
+    "@hitboxTool": {
+        "description": "Tooltip for rotate Hitbox tool button"
+    },
+    "exportSpritemap": "スプライトマップを出力",
+    "@exportSpritemap": {
+        "description": "Button text for exporting a spritemap"
     }
 }

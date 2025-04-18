@@ -1,3 +1,4 @@
+import 'package:flites/constants/app_sizes.dart';
 import 'package:flites/main.dart';
 import 'package:flutter/material.dart';
 
@@ -12,7 +13,7 @@ class ControlHeader extends StatelessWidget {
       child: Text(
         text,
         style: TextStyle(
-          fontSize: 12,
+          fontSize: fontSizeBase,
           color: context.colors.onSurface,
           fontWeight: FontWeight.w500,
         ),

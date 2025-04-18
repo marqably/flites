@@ -3,10 +3,10 @@ import 'package:flites/main.dart';
 import 'package:flites/states/selected_image_row_state.dart';
 import 'package:flites/states/source_files_state.dart';
 import 'package:flites/types/secondary_click_context_data.dart';
+import 'package:flites/ui/utils/hover_btn.dart';
 import 'package:flites/utils/generate_sprite.dart';
 import 'package:flites/utils/generate_svg_sprite.dart';
 import 'package:flites/utils/svg_utils.dart';
-import 'package:flites/widgets/logo/logo_widget.dart';
 import 'package:flites/widgets/right_click_menu/right_clickable_item_wrapper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
@@ -24,13 +24,26 @@ class ImageMapHeader extends StatelessWidget {
       width: double.infinity,
       height: Sizes.p32,
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: Sizes.p16,
-              vertical: Sizes.p4,
+          Container(
+            decoration: BoxDecoration(
+              color: context.colors.primaryFixed,
+              borderRadius: const BorderRadius.only(
+                bottomLeft: Radius.circular(Sizes.p8),
+              ),
             ),
-            child: LogoWidget(),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: Sizes.p16,
+                vertical: Sizes.p4,
+              ),
+              child: Icon(
+                CupertinoIcons.rectangle_grid_3x2_fill,
+                size: Sizes.p16,
+                color: context.colors.onPrimary.withValues(alpha: 0.4),
+              ),
+            ),
           ),
           Expanded(
             child: Row(
@@ -79,6 +92,9 @@ class ImageMapHeader extends StatelessWidget {
                                 },
                               ),
                               child: AnimationRowTabWrapper(
+                                tooltip: isSelected
+                                    ? null
+                                    : 'Work on ${images.rows[i].name}',
                                 onPressed: () {
                                   SelectedImageRowState.setSelectedImageRow(i);
                                 },
@@ -103,12 +119,13 @@ class ImageMapHeader extends StatelessWidget {
                   width: Sizes.p48,
                   isSelected: false,
                   onPressed: () {
-                    SourceFilesState.addImageRow('New Row');
+                    SourceFilesState.addImageRow('New Sprite');
 
                     SelectedImageRowState.setSelectedImageRow(
                       projectSourceFiles.value.rows.length - 1,
                     );
                   },
+                  tooltip: 'New Sprite',
                   child: const Icon(
                     Icons.add,
                     size: Sizes.p16,
@@ -119,7 +136,9 @@ class ImageMapHeader extends StatelessWidget {
             ),
           ),
           AnimationRowTabWrapper(
-            isSelected: true,
+            isSelected: false,
+            color: context.colors.primaryFixed,
+            hoverColor: context.colors.primaryFixedDim,
             onPressed: () {
               if (SvgUtils.allImagesInProjectAreSvg) {
                 GenerateSvgSprite.exportSpriteMap();
@@ -127,8 +146,12 @@ class ImageMapHeader extends StatelessWidget {
                 GenerateSprite.exportSpriteMap();
               }
             },
-            withBackground: false,
-            child: const Text('Export'),
+            withBackground: true,
+            borderRadius: const BorderRadius.only(
+              bottomRight: Radius.circular(Sizes.p8),
+            ),
+            tooltip: context.l10n.exportSprite,
+            child: Text(context.l10n.exportSprite),
           ),
         ],
       ),
@@ -184,8 +207,9 @@ class _AnimationRowTabNameState extends State<AnimationRowTabName> {
               textAlign: TextAlign.center,
               textAlignVertical: TextAlignVertical.center,
               maxLines: 1,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 14,
+                color: context.colors.onSurface,
               ),
               onSubmitted: (value) {
                 SourceFilesState.renameImageRow(value);
@@ -211,7 +235,8 @@ class _AnimationRowTabNameState extends State<AnimationRowTabName> {
                     )
                   : gapW24;
             },
-          )
+          ),
+          gapW12,
         ],
       ),
     );
@@ -226,6 +251,10 @@ class AnimationRowTabWrapper extends StatelessWidget {
     this.width = Sizes.p64 * 3,
     required this.onPressed,
     this.withBackground = true,
+    this.borderRadius,
+    this.hoverColor,
+    this.color,
+    this.tooltip,
   });
 
   final Widget child;
@@ -234,10 +263,23 @@ class AnimationRowTabWrapper extends StatelessWidget {
   final bool isSelected;
   final double width;
   final bool withBackground;
-
+  final Color? hoverColor;
+  final Color? color;
+  final BorderRadius? borderRadius;
+  final String? tooltip;
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    return HoverBtn(
+      tooltip: tooltip,
+      color: withBackground
+          ? isSelected
+              ? color ?? context.colors.primaryFixed
+              : color ?? context.colors.primary
+          : null,
+      hoverColor: isSelected
+          ? context.colors.primaryFixed
+          : hoverColor ?? context.colors.primaryFixed.withValues(alpha: 0.7),
+      borderRadius: borderRadius,
       onTap: onPressed,
       child: Container(
         width: width,
@@ -249,11 +291,6 @@ class AnimationRowTabWrapper extends StatelessWidget {
                   )
                 : BorderSide.none,
           ),
-          color: withBackground
-              ? isSelected
-                  ? context.colors.primary
-                  : const Color.fromRGBO(115, 73, 178, 1)
-              : null,
         ),
         alignment: Alignment.center,
         child: child,

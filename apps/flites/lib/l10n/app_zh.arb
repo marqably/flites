@@ -212,12 +212,28 @@
     "@showContainingFolder": {
         "description": "Button text to open the folder containing a saved file"
     },
-    "saveFile": "保存文件",
-    "@saveFile": {
+    "saveProject": "保存项目",
+    "@saveProject": {
         "description": "Button text for saving the current project/file"
+    },
+    "openProject": "打开项目",
+    "@openProject": {
+        "description": "Button text for opening a project/file"
     },
     "importFile": "导入文件",
     "@importFile": {
         "description": "Button text for importing a project/file"
+    },
+    "menuAboutFlites": "关于 Flites",
+    "@menuAboutFlites": {
+        "description": "About Flites menu label"
+    },
+    "hitboxTool": "碰撞箱工具",
+    "@hitboxTool": {
+        "description": "Tooltip for rotate Hitbox tool button"
+    },
+    "exportSpritemap": "导出精灵图集",
+    "@exportSpritemap": {
+        "description": "Button text for exporting a spritemap"
     }
 }
