@@ -10,7 +10,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 class UpdateService {
   static late final Dio _dio;
-  static final String? _baseUrl = dotenv.env['updateServiceBaseUrl'];
+  static final String? _baseUrl = dotenv.env['UPDATE_SERVICE_BASE_URL'];
 
   static Future<void> initialize() async {
     if (!kDebugMode && !kIsWeb) {

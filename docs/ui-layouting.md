@@ -312,6 +312,26 @@ These specialized controls are designed to be used within panels.
 
 ![image](./assets/ui-layouting/panel_list.png)
 
+#### Properties
+
+- **`items`**: A list of data items that will be displayed in the panel list.
+- **`itemBuilder`**: A widget builder function that is called for each item in the list. It takes the context and the item as parameters and returns a widget.
+- **`isScrollable`**: A boolean that enables or disables scrolling for the panel list. This property is optional.
+
+#### Usage
+
+Here's an example of how to use the `PanelList` widget:
+
+```dart
+PanelList(
+  items: myItems,
+  itemBuilder: (context, item) => Text(item.title),
+  isScrollable: true,
+)
+```
+
+In this example, `myItems` is a list of data items, and each item is displayed using a `Text` widget that shows the item's title. The `isScrollable` property is set to `true`, allowing the list to be scrolled.
+
 ## Base Inputs
 
 These are the foundational input components that can be used either directly or as building blocks for more complex panel controls.
