@@ -5,9 +5,9 @@ import 'package:flites/states/selected_image_state.dart';
 import 'package:flites/states/source_files_state.dart';
 import 'package:flites/types/flites_image.dart';
 import 'package:flites/types/flites_image_map.dart';
-import 'package:flites/ui/sidebar/controls/sidebar_list.dart';
-import 'package:flites/ui/sidebar/controls/sidebar_list_item.dart';
-import 'package:flites/ui/sidebar/inputs/icon_btn.dart';
+import 'package:flites/ui/panel/controls/panel_list.dart';
+import 'package:flites/ui/panel/controls/panel_list_item.dart';
+import 'package:flites/ui/inputs/icon_btn.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:signals/signals_flutter.dart';
 
@@ -44,14 +44,14 @@ class _MainFrameListState extends State<MainFrameList> {
   @override
   Widget build(BuildContext context) {
     return Watch((context) {
-      return SidebarList(
+      return PanelList(
         label: context.l10n.frames,
         items: _getItems(
             context, selectedReferenceImages.value, projectSourceFiles.value),
         onItemTap: (id) {
           SelectedImageState.setSelectedImage(id);
         },
-        trailingWidget: SidebarListItem(
+        trailingWidget: PanelListItem(
           title: context.l10n.addImage,
           icon: CupertinoIcons.add,
           onTap: () {
@@ -95,14 +95,14 @@ class _MainFrameListState extends State<MainFrameList> {
     });
   }
 
-  List<SidebarListItem> _getItems(
+  List<PanelListItem> _getItems(
     BuildContext context,
     List<String> selectedReferenceImages,
     FlitesImageMap projectSourceFiles,
   ) {
     return projectSourceFiles.rows[selectedImageRow.value].images
         .map((frameItem) {
-      return SidebarListItem(
+      return PanelListItem(
         key: Key('file-${frameItem.id}'),
         title: frameItem.displayName ?? frameItem.originalName ?? '',
         image: frameItem.image,

@@ -1,5 +1,5 @@
 import 'package:flites/constants/app_sizes.dart';
-import 'package:flites/ui/sidebar/inputs/icon_btn.dart';
+import 'package:flites/ui/inputs/icon_btn.dart';
 import 'package:flites/ui/utils/hover_btn.dart';
 import 'package:flites/utils/svg_utils.dart';
 import 'package:flutter/material.dart';
@@ -7,8 +7,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 
 /// A list item widget for displaying content with thumbnail, title, and action buttons.
-/// Used for showing files, frames, layers, or other elements in a sidebar list.
-class SidebarListItem extends StatefulWidget {
+/// Used for showing files, frames, layers, or other elements in a panel list.
+class PanelListItem extends StatefulWidget {
   final String title;
   final String? subtitle;
   final String? value;
@@ -20,7 +20,7 @@ class SidebarListItem extends StatefulWidget {
   final VoidCallback? onTap;
   final bool hoverSelected;
 
-  const SidebarListItem({
+  const PanelListItem({
     super.key,
     required this.title,
     this.subtitle,
@@ -34,9 +34,9 @@ class SidebarListItem extends StatefulWidget {
   });
 
   @override
-  State<SidebarListItem> createState() => _SidebarListItemState();
+  State<PanelListItem> createState() => _PanelListItemState();
 
-  SidebarListItem copyWith({
+  PanelListItem copyWith({
     bool? hoverSelected,
     bool? isSelected,
     VoidCallback? onTap,
@@ -47,7 +47,7 @@ class SidebarListItem extends StatefulWidget {
     String? value,
     IconData? icon,
   }) {
-    return SidebarListItem(
+    return PanelListItem(
       title: title ?? this.title,
       subtitle: subtitle ?? this.subtitle,
       image: image ?? this.image,
@@ -61,7 +61,7 @@ class SidebarListItem extends StatefulWidget {
   }
 }
 
-class _SidebarListItemState extends State<SidebarListItem> {
+class _PanelListItemState extends State<PanelListItem> {
   bool isHovered = false;
 
   @override

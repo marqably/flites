@@ -1,9 +1,9 @@
 import 'package:flites/main.dart';
 import 'package:flites/states/tool_controller.dart';
 import 'package:flites/tools.dart';
-import 'package:flites/ui/sidebar/controls/sidebar_icon_btn_group.dart';
-import 'package:flites/ui/sidebar/inputs/icon_btn.dart';
-import 'package:flites/ui/sidebar/structure/sidebar_section.dart';
+import 'package:flites/ui/panel/controls/panel_icon_btn_group.dart';
+import 'package:flites/ui/inputs/icon_btn.dart';
+import 'package:flites/ui/panel/structure/panel_section.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:signals/signals_flutter.dart';
 
@@ -13,13 +13,13 @@ class MainToolBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Watch((context) {
-      return SidebarSection(
+      return PanelSection(
         showDivider: false,
         children: [
-          SidebarIconBtnGroup(
+          PanelIconBtnGroup(
             label: context.l10n.tools,
             selectedValues: [toolController.selectedTool.name],
-            spacing: SidebarIconBtnSpacing.normal,
+            spacing: PanelIconBtnSpacing.normal,
             onControlSelected: (value) {
               toolController.selectTool(Tools.enumFromString(value));
             },

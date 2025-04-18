@@ -44,13 +44,13 @@ class _FileDropAreaState extends State<FileDropArea> {
       onDropEnter: (event) {
         // This is called when region first accepts a drag. You can use this
         // to display a visual indicator that the drop is allowed.
-        print('onDropEnter');
+        debugPrint('onDropEnter');
       },
       onDropLeave: (event) {
         // Called when drag leaves the region. Will also be called after
         // drag completion.
         // This is a good place to remove any visual indicators.
-        print('onDropLeave');
+        debugPrint('onDropLeave');
       },
       onDropOver: (event) {
         // TODO(beau): refactor

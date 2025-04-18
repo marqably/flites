@@ -1,6 +1,6 @@
 import 'package:flites/constants/app_sizes.dart';
 import 'package:flites/main.dart';
-import 'package:flites/ui/sidebar/structure/sidebar_section.dart';
+import 'package:flites/ui/panel/structure/panel_section.dart';
 import 'package:flites/widgets/project_file_list/settings_overlay_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +25,7 @@ class _MainBrandState extends State<MainBrand> {
             : Colors.transparent,
       ),
       padding: const EdgeInsets.symmetric(vertical: Sizes.p20),
-      child: SidebarSection(
+      child: PanelSection(
         verticalPadding: 0,
         showDivider: false,
         children: [

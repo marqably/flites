@@ -25,16 +25,10 @@ class CanvasModeTool extends StatelessWidget {
             return Positioned.fromRect(
               rect: selectedImageRect,
               child: FileDropArea(
-                child: Container(
-                  width: 600,
-                  height: 600,
-                  color: Colors.red,
-                ),
-                // Positioned.fromRect(
-                //     rect: selectedImageRect,
-                //     child: FlitesImageRenderer(flitesImage: currentSelection),
-                //   )
-              ),
+                  child: Positioned.fromRect(
+                rect: selectedImageRect,
+                child: FlitesImageRenderer(flitesImage: currentSelection),
+              )),
             );
           },
         ),

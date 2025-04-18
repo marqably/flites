@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:signals/signals_flutter.dart';
 
 import '../states/key_events.dart';
-import '../widgets/upload_area/file_drop_area.dart';
 
 class Overview extends StatefulWidget {
   const Overview({super.key});
@@ -41,14 +40,12 @@ class _OverviewState extends State<Overview> {
 
   @override
   Widget build(BuildContext context) {
-
     return Watch((context) {
       final selectedTool = toolController.selectedTool;
 
       return RightClickMenuHandler(
         child: Tools.getToolWidget(selectedTool),
       );
-    }
-    );
+    });
   }
 }

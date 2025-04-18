@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-import '../inputs/number_input.dart';
-import '../inputs/slider_input.dart';
-import '../structure/sidebar_control_wrapper.dart';
+import '../../inputs/number_input.dart';
+import '../../inputs/slider_input.dart';
+import '../structure/panel_control_wrapper.dart';
 
 /// A slider with a number input for precise control
-class SidebarSliderInput extends StatelessWidget {
+class PanelSliderInput extends StatelessWidget {
   final String label;
   final double value;
   final double min;
@@ -14,7 +14,7 @@ class SidebarSliderInput extends StatelessWidget {
   final String? suffix;
   final Function(double) onChanged;
 
-  const SidebarSliderInput({
+  const PanelSliderInput({
     super.key,
     required this.label,
     required this.value,
@@ -27,9 +27,9 @@ class SidebarSliderInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SidebarControlWrapper(
+    return PanelControlWrapper(
       label: label,
-      layout: SidebarControlWrapperLayout.bigSmall,
+      layout: PanelControlWrapperLayout.bigSmall,
       children: [
         // Slider
         SliderInput(

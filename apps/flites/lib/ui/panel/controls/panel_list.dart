@@ -1,15 +1,15 @@
 import 'package:flites/constants/app_sizes.dart';
-import 'package:flites/ui/sidebar/controls/sidebar_list_item.dart';
-import 'package:flites/ui/sidebar/inputs/icon_btn.dart';
-import 'package:flites/ui/sidebar/structure/sidebar_control_wrapper.dart';
-import 'package:flites/ui/sidebar/structure/sidebar_section.dart';
+import 'package:flites/ui/panel/controls/panel_list_item.dart';
+import 'package:flites/ui/inputs/icon_btn.dart';
+import 'package:flites/ui/panel/structure/panel_control_wrapper.dart';
+import 'package:flites/ui/panel/structure/panel_section.dart';
 import 'package:flutter/material.dart';
 import 'package:signals/signals_flutter.dart';
 
-/// A vertical list of sidebar items with consistent spacing
-class SidebarList extends StatelessWidget {
+/// A vertical list of panel items with consistent spacing
+class PanelList extends StatelessWidget {
   final String label;
-  final List<SidebarListItem> items;
+  final List<PanelListItem> items;
   final Function(String?)? onItemTap;
   final List<String>? selectedValues;
   final bool multiSelect;
@@ -19,8 +19,8 @@ class SidebarList extends StatelessWidget {
   final ScrollController? scrollController;
   final List<IconBtn>? sectionLabelControls;
 
-  /// A vertical list of sidebar items with consistent spacing
-  const SidebarList({
+  /// A vertical list of panel items with consistent spacing
+  const PanelList({
     super.key,
     required this.label,
     required this.items,
@@ -37,7 +37,7 @@ class SidebarList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Watch((context) {
-      return SidebarSection(
+      return PanelSection(
         children: [
           // leading
           if (leadingWidget != null) Flexible(flex: 0, child: leadingWidget!),
@@ -45,7 +45,7 @@ class SidebarList extends StatelessWidget {
           // the list
           Flexible(
             flex: 1,
-            child: SidebarControlWrapper(
+            child: PanelControlWrapper(
               label: label,
               alignment: MainAxisAlignment.start,
               controls: sectionLabelControls,
@@ -121,12 +121,12 @@ class SidebarList extends StatelessWidget {
     );
   }
 
-  Widget _getItem(SidebarListItem item) {
+  Widget _getItem(PanelListItem item) {
     final isSelected = selectedValues?.contains(item.value) ?? false;
 
     // Clone the item with selection state and callback
     return Padding(
-      key: Key('sidebar-list-${item.key}'),
+      key: Key('panel-list-${item.key}'),
       padding: EdgeInsets.only(bottom: items.last == item ? 0 : Sizes.p8),
       child: item.copyWith(
         isSelected: isSelected,

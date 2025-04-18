@@ -3,8 +3,8 @@ import 'package:flites/main.dart';
 import 'package:flites/ui/utils/hover_btn.dart';
 import 'package:flutter/material.dart';
 
-/// A collapsible section for the sidebar
-class SidebarSection extends StatefulWidget {
+/// A collapsible section for the panel
+class PanelSection extends StatefulWidget {
   final List<Widget> children;
   final String? label;
   final bool initiallyExpanded;
@@ -12,7 +12,7 @@ class SidebarSection extends StatefulWidget {
   final double? verticalPadding;
   final bool showDivider;
 
-  const SidebarSection({
+  const PanelSection({
     super.key,
     this.label,
     required this.children,
@@ -23,10 +23,10 @@ class SidebarSection extends StatefulWidget {
   });
 
   @override
-  State<SidebarSection> createState() => _SidebarSectionState();
+  State<PanelSection> createState() => _PanelSectionState();
 }
 
-class _SidebarSectionState extends State<SidebarSection> {
+class _PanelSectionState extends State<PanelSection> {
   late bool _isExpanded;
 
   @override
@@ -103,13 +103,13 @@ class _SidebarSectionState extends State<SidebarSection> {
           Flexible(
             flex: 0,
             child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: Sizes.p16),
-            child: Divider(
-              color: context.colors.surface,
-              height: 1,
+              padding: const EdgeInsets.symmetric(horizontal: Sizes.p16),
+              child: Divider(
+                color: context.colors.surface,
+                height: 1,
+              ),
             ),
           ),
-        ),
       ],
     );
   }

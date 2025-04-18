@@ -1,11 +1,11 @@
 import 'package:flites/constants/app_sizes.dart';
 import 'package:flites/main.dart';
-import 'package:flites/ui/sidebar/inputs/icon_btn.dart';
+import 'package:flites/ui/inputs/icon_btn.dart';
 import 'package:flutter/material.dart';
 
 /// The layout configuration for the control wrapper
 /// Defines how the children are laid out
-enum SidebarControlWrapperLayout {
+enum PanelControlWrapperLayout {
   /// All children are of equal size
   equal,
 
@@ -16,8 +16,8 @@ enum SidebarControlWrapperLayout {
   smallBig,
 }
 
-/// A subsection within a sidebar section (like "ALIGNMENT")
-class SidebarControlWrapper extends StatelessWidget {
+/// A subsection within a panel section (like "ALIGNMENT")
+class PanelControlWrapper extends StatelessWidget {
   /// The label of the control wrapper
   final String label;
 
@@ -28,17 +28,17 @@ class SidebarControlWrapper extends StatelessWidget {
   final MainAxisAlignment alignment;
 
   /// The layout of the control wrapper. How much space each child takes up
-  final SidebarControlWrapperLayout layout;
+  final PanelControlWrapperLayout layout;
 
   /// The controls to display at the top of the control wrapper
   final List<IconBtn>? controls;
 
-  const SidebarControlWrapper({
+  const PanelControlWrapper({
     super.key,
     required this.label,
     required this.children,
     this.alignment = MainAxisAlignment.start,
-    this.layout = SidebarControlWrapperLayout.equal,
+    this.layout = PanelControlWrapperLayout.equal,
     this.controls,
   }) : assert(children.length > 0,
             'You need to pass at least one item to children!');
@@ -68,7 +68,7 @@ class SidebarControlWrapper extends StatelessWidget {
                   letterSpacing: 1.0,
                 ),
               ),
-          
+
               // Controls
               if (controls != null)
                 Row(
@@ -99,8 +99,8 @@ class SidebarControlWrapper extends StatelessWidget {
   }
 
   List<Widget> _getChildrenInLayout() {
-    final isBigSmallLayout = layout == SidebarControlWrapperLayout.bigSmall;
-    final isSmallBigLayout = layout == SidebarControlWrapperLayout.smallBig;
+    final isBigSmallLayout = layout == PanelControlWrapperLayout.bigSmall;
+    final isSmallBigLayout = layout == PanelControlWrapperLayout.smallBig;
 
     final totalChildren = children.length;
 

@@ -1,8 +1,8 @@
-import 'package:flites/ui/sidebar/inputs/number_input.dart';
-import 'package:flites/ui/sidebar/structure/sidebar_control_wrapper.dart';
+import 'package:flites/ui/inputs/number_input.dart';
+import 'package:flites/ui/panel/structure/panel_control_wrapper.dart';
 import 'package:flutter/material.dart';
 
-class SidebarNumberInput extends StatelessWidget {
+class PanelNumberInput extends StatelessWidget {
   final String label;
   final double value;
   final double min;
@@ -10,7 +10,7 @@ class SidebarNumberInput extends StatelessWidget {
   final double step;
   final Function(double) onChanged;
 
-  const SidebarNumberInput({
+  const PanelNumberInput({
     super.key,
     required this.label,
     required this.value,
@@ -22,7 +22,7 @@ class SidebarNumberInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SidebarControlWrapper(
+    return PanelControlWrapper(
       label: label,
       children: [
         NumberInput(
