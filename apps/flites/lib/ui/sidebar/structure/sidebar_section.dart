@@ -9,6 +9,8 @@ class SidebarSection extends StatefulWidget {
   final String? label;
   final bool initiallyExpanded;
   final double? horizontalPadding;
+  final double? verticalPadding;
+  final bool showDivider;
 
   const SidebarSection({
     super.key,
@@ -16,6 +18,8 @@ class SidebarSection extends StatefulWidget {
     required this.children,
     this.initiallyExpanded = true,
     this.horizontalPadding,
+    this.verticalPadding,
+    this.showDivider = true,
   });
 
   @override
@@ -51,7 +55,8 @@ class _SidebarSectionState extends State<SidebarSection> {
               child: Padding(
                 padding: EdgeInsets.symmetric(
                   horizontal: Sizes.p16,
-                  vertical: (_isExpanded) ? Sizes.p20 : Sizes.p12,
+                  vertical: widget.verticalPadding ??
+                      ((_isExpanded) ? Sizes.p20 : Sizes.p12),
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -82,8 +87,10 @@ class _SidebarSectionState extends State<SidebarSection> {
             flex: 1,
             child: Padding(
               padding: EdgeInsets.only(
-                top: Sizes.p12,
-                bottom: Sizes.p20,
+                top: (widget.label != null)
+                    ? widget.verticalPadding ?? Sizes.p12
+                    : 0,
+                bottom: widget.verticalPadding ?? Sizes.p20,
                 left: widget.horizontalPadding ?? Sizes.p16,
                 right: widget.horizontalPadding ?? Sizes.p16,
               ),
@@ -92,9 +99,10 @@ class _SidebarSectionState extends State<SidebarSection> {
           ),
 
         // Divider
-        Flexible(
-          flex: 0,
-          child: Padding(
+        if (widget.showDivider)
+          Flexible(
+            flex: 0,
+            child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: Sizes.p16),
             child: Divider(
               color: context.colors.surface,

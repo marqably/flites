@@ -5,34 +5,35 @@ import 'package:flites/states/canvas_controller.dart';
 import 'package:flites/states/key_events.dart';
 import 'package:flites/states/open_project.dart';
 import 'package:flites/states/selected_image_state.dart';
-import 'package:flites/states/tool_controller.dart';
 import 'package:flites/types/flites_image.dart';
 import 'package:flites/utils/bounding_box_utils.dart';
-import 'package:flites/utils/flites_image_extensions.dart';
 import 'package:flites/utils/get_flite_image.dart';
 import 'package:flites/widgets/flites_image_renderer/flites_image_renderer.dart';
-import 'package:flites/widgets/rotation/rotation_wrapper.dart';
-import 'package:flites/widgets/tool_controls/tool_controls.dart';
+import 'package:flites/widgets/tool_controls/zoom_controls.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_box_transform/flutter_box_transform.dart';
 import 'package:signals/signals_flutter.dart';
 
-part 'canvas_helpers/canvas_gesture_handler.dart';
+part 'canvas_gesture_handler.dart';
 part 'canvas_bounding_box.dart';
 part 'canvas_reference_image.dart';
-part 'canvas_helpers/canvas_positioned.dart';
-part 'canvas_helpers/selected_image_rect_wrapper.dart';
-part 'tools/canvas_mode_tool.dart';
-part 'tools/move_resize_tool.dart';
-part 'tools/rotate_tool.dart';
+part 'canvas_positioned.dart';
 
 /// A widget that provides a canvas for editing images.
 /// It allows users to [move], [resize], and [rotate] images on the canvas.
 /// The canvas is responsive and adjusts its size based on the available space.
 /// The canvas also supports zooming and panning using gestures.
 class ImageEditor extends StatelessWidget {
-  const ImageEditor({super.key});
+  final Widget child;
+  final bool showZoomControls;
+  final List<Widget> stackChildren;
+
+  const ImageEditor({
+    super.key,
+    required this.child,
+    this.showZoomControls = true,
+    this.stackChildren = const [],
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -44,8 +45,6 @@ class ImageEditor extends StatelessWidget {
           (context) {
             final referenceImages =
                 getFliteImages(selectedReferenceImages.value);
-
-            final selectedTool = toolController.selectedTool;
 
             return _CanvasGestureHandler(
               child: Stack(
@@ -65,10 +64,18 @@ class ImageEditor extends StatelessWidget {
                   ),
 
                   // Tool-specific canvases
+                  child,
 
-                  if (selectedTool == Tool.canvas) const _CanvasModeTool(),
-                  if (selectedTool == Tool.move) const _MoveResizeTool(),
-                  if (selectedTool == Tool.rotate) const _RotateTool(),
+                  // Zoom Controls
+                  if (showZoomControls)
+                    const Positioned(
+                      right: Sizes.p32,
+                      bottom: Sizes.p32,
+                      child: ZoomControls(),
+                    ),
+
+                  // Additional widgets to be displayed on top of the canvas
+                  ...stackChildren,
                 ],
               ),
             );

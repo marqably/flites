@@ -30,7 +30,7 @@
     },
     "hitboxTool": "Hitbox-Werkzeug",
     "@hitboxTool": {
-        "description": "Tooltip for hitbox tool button"
+        "description": "Tooltip for rotate Hitbox tool button"
     },
     "toggleVisibility": "Sichtbarkeit umschalten",
     "@toggleVisibility": {
@@ -141,6 +141,10 @@
     "@menuLanguage": {
         "description": "Language menu label"
     },
+    "menuAboutFlites": "Über Flites",
+    "@menuAboutFlites": {
+        "description": "About Flites menu label"
+    },
     "@processingMightTakeAMoment": {
         "description": "Message shown during processing on web platform"
     },
@@ -216,12 +220,16 @@
     "@showContainingFolder": {
         "description": "Button text to open the folder containing a saved file"
     },
-    "saveFile": "Datei speichern",
-    "@saveFile": {
+    "saveProject": "Projekt speichern",
+    "@saveProject": {
         "description": "Button text for saving the current project/file"
     },
-    "importFile": "Datei importieren",
-    "@importFile": {
-        "description": "Button text for importing a project/file"
+    "openProject": "Projekt öffnen",
+    "@openProject": {
+        "description": "Button text for opening a project/file"
+    },
+    "exportSpritemap": "Spritemap exportieren",
+    "@exportSpritemap": {
+        "description": "Button text for exporting a spritemap"
     }
 }

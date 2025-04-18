@@ -6,10 +6,10 @@ class HitboxEditorOverlay extends StatefulWidget {
   final Function(List<Offset>) onHitboxPointsChanged;
 
   const HitboxEditorOverlay({
-    Key? key,
+    super.key,
     required this.child,
     required this.onHitboxPointsChanged,
-  }) : super(key: key);
+  });
 
   @override
   State<HitboxEditorOverlay> createState() => _HitboxEditorOverlayState();
@@ -220,7 +220,7 @@ class HitboxPainter extends CustomPainter {
     if (points.length >= 3) {
       final Path path = Path()..addPolygon(points, true);
       final Paint fillPaint = Paint()
-        ..color = Colors.red.withOpacity(0.1)
+        ..color = Colors.red.withValues(alpha: 0.1)
         ..style = PaintingStyle.fill;
       canvas.drawPath(path, fillPaint);
     }

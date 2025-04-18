@@ -1,4 +1,4 @@
-part of '../image_editor.dart';
+part of 'image_editor.dart';
 
 final _isGrabbing = Signal<bool>(false);
 

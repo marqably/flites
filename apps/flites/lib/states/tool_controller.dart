@@ -1,21 +1,5 @@
+import 'package:flites/tools.dart';
 import 'package:signals/signals_flutter.dart';
-
-/// Defines the available tools in the editor
-enum Tool {
-  canvas,
-  move,
-  rotate,
-  hitbox;
-
-  static fromString(String value) {
-    for (var tool in Tool.values) {
-      if (tool.name == value) {
-        return tool;
-      }
-    }
-    return null;
-  }
-}
 
 /// A controller for managing tool selection and hover states
 class ToolController {

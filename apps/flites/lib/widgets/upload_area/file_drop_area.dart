@@ -39,7 +39,19 @@ class _FileDropAreaState extends State<FileDropArea> {
     return DropRegion(
       // Formats this region can accept.
       formats: supportedFormats,
-      hitTestBehavior: HitTestBehavior.deferToChild,
+      hitTestBehavior: HitTestBehavior.opaque,
+
+      onDropEnter: (event) {
+        // This is called when region first accepts a drag. You can use this
+        // to display a visual indicator that the drop is allowed.
+        print('onDropEnter');
+      },
+      onDropLeave: (event) {
+        // Called when drag leaves the region. Will also be called after
+        // drag completion.
+        // This is a good place to remove any visual indicators.
+        print('onDropLeave');
+      },
       onDropOver: (event) {
         // TODO(beau): refactor
         // Move to service class

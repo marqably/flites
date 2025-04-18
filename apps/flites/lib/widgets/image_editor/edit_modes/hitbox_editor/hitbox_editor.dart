@@ -2,7 +2,6 @@ import 'package:flites/types/flites_image.dart';
 import 'package:flites/ui/sidebar/sidebar_positioning_controls.dart';
 import 'package:flites/utils/svg_utils.dart';
 import 'package:flites/widgets/image_editor/edit_modes/hitbox_editor/hitbox_editor_overlay.dart';
-import 'package:flites/widgets/tool_controls/tool_controls.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -69,9 +68,7 @@ class _HitboxEditorState extends State<HitboxEditor> {
         ),
 
         // Tools
-        const ToolControls(
-          child: SidebarPositioningControls(),
-        ),
+        const SidebarPositioningControls(),
       ],
     );
   }

@@ -1,8 +1,14 @@
-part of '../image_editor.dart';
+import 'package:flites/states/canvas_controller.dart';
+import 'package:flites/states/selected_image_state.dart';
+import 'package:flites/types/flites_image.dart';
+import 'package:flites/utils/flites_image_extensions.dart';
+import 'package:flites/utils/get_flite_image.dart';
+import 'package:flutter/material.dart';
+import 'package:signals/signals_flutter.dart';
 
 /// Displays the current selection in canvas mode
-class _SelectedImageRectWrapper extends StatelessWidget {
-  const _SelectedImageRectWrapper({required this.builder});
+class SelectedImageRectWrapper extends StatelessWidget {
+  const SelectedImageRectWrapper({super.key, required this.builder});
 
   final Widget Function(FlitesImage currentSelection, Rect selectedImageRect)
       builder;

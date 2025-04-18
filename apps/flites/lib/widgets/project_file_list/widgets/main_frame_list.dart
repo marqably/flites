@@ -55,8 +55,6 @@ class _MainFrameListState extends State<MainFrameList> {
           title: context.l10n.addImage,
           icon: CupertinoIcons.add,
           onTap: () {
-            final selectedImageBeforeImport = selectedImageId.value;
-
             SourceFilesState.addImages().then((_) {
               final imagesInRow =
                   projectSourceFiles.value.rows[selectedImageRow.value].images;
@@ -67,10 +65,6 @@ class _MainFrameListState extends State<MainFrameList> {
                 imagesInRow.last.id,
               );
             });
-
-            SelectedImageRowState.setSelectedImageRow(
-              selectedImageBeforeImport,
-            );
           },
         ),
         selectedValues:

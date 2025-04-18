@@ -55,8 +55,8 @@ class SidebarButton extends StatelessWidget {
 
     // Apply opacity if disabled
     if (disabled) {
-      backgroundColor = backgroundColor.withOpacity(0.5);
-      textColor = textColor.withOpacity(0.5);
+      backgroundColor = backgroundColor.withValues(alpha: 0.5);
+      textColor = textColor.withValues(alpha: 0.5);
     }
 
     return Padding(

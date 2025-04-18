@@ -71,107 +71,115 @@ class _PlayerControlsState extends State<PlayerControls> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: context.colors.primary,
-        borderRadius: BorderRadius.circular(32),
-      ),
-      width: 260,
-      height: Sizes.p64,
-      child: Watch(
-        (context) {
-          final selectedRowIndex = selectedImageRow.value;
-          final hasMultipleImages =
-              projectSourceFiles.value.rows[selectedRowIndex].images.length > 1;
-          final currentlyPlaying = isPlayingSignal.value;
+    return Positioned(
+      left: 0,
+      right: 0,
+      bottom: Sizes.p64,
+      child: Center(
+        child: Container(
+          decoration: BoxDecoration(
+            color: context.colors.primary,
+            borderRadius: BorderRadius.circular(32),
+          ),
+          width: 260,
+          height: Sizes.p64,
+          child: Watch(
+            (context) {
+              final selectedRowIndex = selectedImageRow.value;
+              final hasMultipleImages = projectSourceFiles
+                      .value.rows[selectedRowIndex].images.length >
+                  1;
+              final currentlyPlaying = isPlayingSignal.value;
 
-          return Row(
-            children: [
-              gapW24,
-              const SizedBox(
-                // This has to be 44 to not break during widget tests
-                width: 44,
-                child: Text(
-                  'PLAYER\nSPEED',
-                  style: TextStyle(
-                    fontSize: Sizes.p12,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-              Container(
-                margin: const EdgeInsets.only(bottom: Sizes.p20),
-                width: 120,
-                child: TextField(
-                  inputFormatters: [
-                    FilteringTextInputFormatter.digitsOnly,
-                  ],
-                  maxLength: 3,
-                  textAlign: TextAlign.end,
-                  style: const TextStyle(
-                    fontSize: Sizes.p32,
-                    fontWeight: FontWeight.w300,
-                    color: Colors.white,
-                  ),
-                  decoration: const InputDecoration(
-                    counterText: '',
-                    suffix: Text(
-                      ' ms',
+              return Row(
+                children: [
+                  gapW24,
+                  const SizedBox(
+                    // This has to be 44 to not break during widget tests
+                    width: 44,
+                    child: Text(
+                      'PLAYER\nSPEED',
                       style: TextStyle(
                         fontSize: Sizes.p12,
-                        fontWeight: FontWeight.w300,
                         color: Colors.white,
                       ),
                     ),
-                    border: OutlineInputBorder(borderSide: BorderSide.none),
                   ),
-                  controller: playbackSpeedController,
-                ),
-              ),
-              gapW8,
-              IconButton(
-                tooltip: hasMultipleImages
-                    ? context.l10n.playPause
-                    : context.l10n.addMoreImagesToPlay,
-                onPressed: hasMultipleImages
-                    ? () {
-                        isPlayingSignal.value = !currentlyPlaying;
-
-                        if (currentlyPlaying) {
-                          stopPlayback();
-                        } else {
-                          startPlayback();
-                        }
-                      }
-                    : null,
-                icon: Container(
-                  width: Sizes.p48,
-                  height: Sizes.p48,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    color: context.colors.primary,
-                    borderRadius: BorderRadius.circular(Sizes.p48),
-                    border: Border.all(
-                      color: hasMultipleImages
-                          ? Colors.white
-                          : Colors.white.withValues(alpha: 0.38),
-                      width: 2,
+                  Container(
+                    margin: const EdgeInsets.only(bottom: Sizes.p20),
+                    width: 120,
+                    child: TextField(
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                      ],
+                      maxLength: 3,
+                      textAlign: TextAlign.end,
+                      style: const TextStyle(
+                        fontSize: Sizes.p32,
+                        fontWeight: FontWeight.w300,
+                        color: Colors.white,
+                      ),
+                      decoration: const InputDecoration(
+                        counterText: '',
+                        suffix: Text(
+                          ' ms',
+                          style: TextStyle(
+                            fontSize: Sizes.p12,
+                            fontWeight: FontWeight.w300,
+                            color: Colors.white,
+                          ),
+                        ),
+                        border: OutlineInputBorder(borderSide: BorderSide.none),
+                      ),
+                      controller: playbackSpeedController,
                     ),
                   ),
-                  child: Icon(
-                    currentlyPlaying
-                        ? CupertinoIcons.pause
-                        : CupertinoIcons.play_arrow,
-                    color: hasMultipleImages
-                        ? Colors.white
-                        : Colors.white.withValues(alpha: 0.38),
-                    size: Sizes.p24,
+                  gapW8,
+                  IconButton(
+                    tooltip: hasMultipleImages
+                        ? context.l10n.playPause
+                        : context.l10n.addMoreImagesToPlay,
+                    onPressed: hasMultipleImages
+                        ? () {
+                            isPlayingSignal.value = !currentlyPlaying;
+
+                            if (currentlyPlaying) {
+                              stopPlayback();
+                            } else {
+                              startPlayback();
+                            }
+                          }
+                        : null,
+                    icon: Container(
+                      width: Sizes.p48,
+                      height: Sizes.p48,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: context.colors.primary,
+                        borderRadius: BorderRadius.circular(Sizes.p48),
+                        border: Border.all(
+                          color: hasMultipleImages
+                              ? Colors.white
+                              : Colors.white.withValues(alpha: 0.38),
+                          width: 2,
+                        ),
+                      ),
+                      child: Icon(
+                        currentlyPlaying
+                            ? CupertinoIcons.pause
+                            : CupertinoIcons.play_arrow,
+                        color: hasMultipleImages
+                            ? Colors.white
+                            : Colors.white.withValues(alpha: 0.38),
+                        size: Sizes.p24,
+                      ),
+                    ),
                   ),
-                ),
-              ),
-            ],
-          );
-        },
+                ],
+              );
+            },
+          ),
+        ),
       ),
     );
   }

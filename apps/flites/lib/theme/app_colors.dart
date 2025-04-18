@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 class AppColors {
   // Shared
   static const accent = Color.fromRGBO(150, 78, 255, 1);
+  static const accentDimmed = Color.fromARGB(255, 116, 50, 214);
+  static const accentDimmest = Color.fromARGB(255, 87, 31, 172);
 
   // Light Theme
   static const surfaceLight =

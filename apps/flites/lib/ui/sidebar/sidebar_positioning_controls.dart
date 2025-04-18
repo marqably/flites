@@ -1,6 +1,7 @@
 import 'package:flites/constants/app_sizes.dart';
 import 'package:flites/ui/sidebar/inputs/icon_btn.dart';
 import 'package:flites/ui/sidebar/inputs/number_input.dart';
+import 'package:flites/ui/sidebar/sidebar.dart';
 import 'package:flites/ui/sidebar/structure/sidebar_control_wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:flites/ui/sidebar/structure/sidebar_section.dart';
@@ -9,7 +10,7 @@ import 'package:flites/ui/sidebar/controls/sidebar_slider_input.dart';
 import 'package:flites/ui/sidebar/controls/sidebar_button.dart';
 
 class SidebarPositioningControls extends StatefulWidget {
-  const SidebarPositioningControls({Key? key}) : super(key: key);
+  const SidebarPositioningControls({super.key});
 
   @override
   State<SidebarPositioningControls> createState() =>
@@ -29,7 +30,7 @@ class _SidebarPositioningControlsState
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Sidebar(
       children: [
         gapH32,
 

@@ -87,6 +87,7 @@ class _HoverBtnState extends State<HoverBtn> {
             color: _isHovering && !widget.disableHoverEffect
                 ? widget.hoverColor
                 : widget.color,
+            borderRadius: widget.borderRadius,
           ),
           child: widget.child,
         ),

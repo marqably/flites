@@ -1,4 +1,4 @@
-part of '../image_editor.dart';
+part of 'image_editor.dart';
 
 /// A widget that positions its child based on the canvas position and scaling factor.
 class _CanvasPositioned extends StatelessWidget {
