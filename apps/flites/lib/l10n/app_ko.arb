@@ -235,5 +235,9 @@
     "exportSpritemap": "스프라이트맵 내보내기",
     "@exportSpritemap": {
         "description": "Button text for exporting a spritemap"
-    }
+    },
+    "selectOptionsTitle": "옵션 선택",
+    "cancel": "취소",
+    "ok": "확인",
+    "selectOptionsPlaceholder": "옵션 선택"
 }

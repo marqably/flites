@@ -231,5 +231,21 @@
     "exportSpritemap": "Export Spritemap",
     "@exportSpritemap": {
         "description": "Button text for exporting a spritemap"
+    },
+    "selectOptionsTitle": "Select Options",
+    "@selectOptionsTitle": {
+        "description": "Title for the select options dialog"
+    },
+    "cancel": "Cancel",
+    "@cancel": {
+        "description": "Cancel button text"
+    },
+    "ok": "OK",
+    "@ok": {
+        "description": "OK button text"
+    },
+    "selectOptionsPlaceholder": "Select options",
+    "@selectOptionsPlaceholder": {
+        "description": "Placeholder text when no options are selected"
     }
 }

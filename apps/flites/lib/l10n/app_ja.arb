@@ -235,5 +235,9 @@
     "exportSpritemap": "スプライトマップを出力",
     "@exportSpritemap": {
         "description": "Button text for exporting a spritemap"
-    }
+    },
+    "selectOptionsTitle": "オプションを選択",
+    "cancel": "キャンセル",
+    "ok": "OK",
+    "selectOptionsPlaceholder": "オプションを選択"
 }

@@ -2,6 +2,8 @@ import 'package:flites/tools/canvas_mode_tool.dart';
 import 'package:flites/tools/move_resize_tool.dart';
 import 'package:flites/tools/rotate_tool.dart';
 
+const defaultTool = Tool.canvas;
+
 /// Defines the available tools in the editor
 enum Tool {
   canvas,

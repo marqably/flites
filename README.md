@@ -79,3 +79,8 @@ Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduc
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Documentation
+
+- [UI Layouting](docs/ui-layouting.md) - Documentation for panels, controls, and inputs
+- [Panel Forms](docs/panel-forms.md) - Guide to creating and managing forms within panels

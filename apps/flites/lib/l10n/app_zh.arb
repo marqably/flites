@@ -235,5 +235,16 @@
     "exportSpritemap": "导出精灵图集",
     "@exportSpritemap": {
         "description": "Button text for exporting a spritemap"
+    },
+    "selectOptionsTitle": "选择选项",
+    "cancel": "取消",
+    "ok": "确定",
+    "selectOptions": "选择选项",
+    "@selectOptions": {
+        "description": "Label for select options dialog"
+    },
+    "selectOptionsPlaceholder": "选择选项",
+    "@selectOptionsPlaceholder": {
+        "description": "Placeholder text for select options dialog"
     }
 }

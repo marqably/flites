@@ -235,5 +235,9 @@
     "exportSpritemap": "Exporter le Spritemap",
     "@exportSpritemap": {
         "description": "Button text for exporting a spritemap"
-    }
+    },
+    "selectOptionsTitle": "Sélectionner les options",
+    "cancel": "Annuler",
+    "ok": "OK",
+    "selectOptionsPlaceholder": "Sélectionner des options"
 }

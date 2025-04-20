@@ -260,10 +260,10 @@
       "languageVersion": "3.0"
     }
   ],
-  "generated": "2025-04-18T16:50:45.460859Z",
+  "generated": "2025-04-20T08:21:34.018264Z",
   "generator": "pub",
   "generatorVersion": "3.7.2",
-  "flutterRoot": "file:///home/simonerich/.asdf/installs/flutter/3.29.2",
-  "flutterVersion": "3.29.2",
+  "flutterRoot": "file:///home/simonerich/.asdf/installs/flutter/3.29.3",
+  "flutterVersion": "3.29.3",
   "pubCache": "file:///home/simonerich/.pub-cache"
 }
