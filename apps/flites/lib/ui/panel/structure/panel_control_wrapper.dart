@@ -33,6 +33,9 @@ class PanelControlWrapper extends StatelessWidget {
   /// The controls to display at the top of the control wrapper
   final List<IconBtn>? controls;
 
+  /// The help text to display as a tooltip
+  final String? helpText;
+
   const PanelControlWrapper({
     super.key,
     required this.label,
@@ -40,6 +43,7 @@ class PanelControlWrapper extends StatelessWidget {
     this.alignment = MainAxisAlignment.start,
     this.layout = PanelControlWrapperLayout.equal,
     this.controls,
+    this.helpText,
   }) : assert(children.length > 0,
             'You need to pass at least one item to children!');
 
@@ -55,10 +59,9 @@ class PanelControlWrapper extends StatelessWidget {
         Flexible(
           flex: 0,
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             mainAxisSize: MainAxisSize.max,
             children: [
-              // Label
+              // label
               Text(
                 label.toUpperCase(),
                 style: TextStyle(
@@ -68,6 +71,23 @@ class PanelControlWrapper extends StatelessWidget {
                   letterSpacing: 1.0,
                 ),
               ),
+
+              // help text icon
+              if (helpText != null)
+                Padding(
+                  padding: const EdgeInsets.only(left: Sizes.p8),
+                  child: Tooltip(
+                    message: helpText!,
+                    child: Icon(
+                      Icons.help_outline,
+                      size: fontSizeMd,
+                      color: context.colors.onSurface.withValues(alpha: 0.5),
+                    ),
+                  ),
+                ),
+
+              // spacer
+              const Spacer(),
 
               // Controls
               if (controls != null)

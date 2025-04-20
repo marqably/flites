@@ -120,6 +120,7 @@ class _PanelSelectInputState<T> extends State<PanelSelectInput<T>> {
 
     return PanelControlWrapper(
       label: widget.label,
+      helpText: widget.helpText,
       children: [
         widget.multiple
             ? _buildMultiSelect(multiValues)

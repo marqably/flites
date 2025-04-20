@@ -20,14 +20,18 @@ class PanelIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PanelControlWrapper(label: tooltip, children: [
-      IconBtn(
-        icon: icon,
-        tooltip: tooltip,
-        isSelected: isSelected,
-        onPressed: onPressed,
-        value: value,
-      ),
-    ]);
+    return PanelControlWrapper(
+      label: tooltip,
+      helpText: tooltip,
+      children: [
+        IconBtn(
+          icon: icon,
+          tooltip: tooltip,
+          isSelected: isSelected,
+          onPressed: onPressed,
+          value: value,
+        ),
+      ],
+    );
   }
 }

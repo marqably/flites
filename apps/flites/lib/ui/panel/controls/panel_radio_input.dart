@@ -24,6 +24,9 @@ class PanelRadioInput<T> extends StatefulWidget {
   /// Form key to identify this field in a PanelForm
   final String? formKey;
 
+  /// Help text to display below the control
+  final String? helpText;
+
   const PanelRadioInput({
     super.key,
     this.selectedValue,
@@ -32,6 +35,7 @@ class PanelRadioInput<T> extends StatefulWidget {
     required this.label,
     this.direction = Axis.vertical,
     this.formKey,
+    this.helpText,
   }) : assert(
           formKey != null || onChanged != null,
           'Either formKey must be provided for form integration, or onChanged callback',
@@ -75,6 +79,7 @@ class _PanelRadioInputState<T> extends State<PanelRadioInput<T>> {
 
     return PanelControlWrapper(
       label: widget.label,
+      helpText: widget.helpText,
       children: [
         RadioInput<T>(
           selectedValue: selectedValue,

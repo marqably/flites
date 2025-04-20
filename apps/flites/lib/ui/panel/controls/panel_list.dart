@@ -18,6 +18,7 @@ class PanelList extends StatelessWidget {
   final ReorderCallback? onReorder;
   final ScrollController? scrollController;
   final List<IconBtn>? sectionLabelControls;
+  final String? helpText;
 
   /// A vertical list of panel items with consistent spacing
   const PanelList({
@@ -32,6 +33,7 @@ class PanelList extends StatelessWidget {
     this.onReorder,
     this.scrollController,
     this.sectionLabelControls,
+    this.helpText,
   });
 
   @override
@@ -47,6 +49,7 @@ class PanelList extends StatelessWidget {
             flex: 1,
             child: PanelControlWrapper(
               label: label,
+              helpText: helpText,
               alignment: MainAxisAlignment.start,
               controls: sectionLabelControls,
               children: [

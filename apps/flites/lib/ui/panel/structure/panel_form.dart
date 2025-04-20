@@ -54,7 +54,7 @@ class PanelFormState extends State<PanelForm> {
       _formValues[formKey] = value;
       _version++; // Increment version
       // Pass an immutable copy to the callback
-      widget.onChanged?.call(Map.unmodifiable(_formValues)); 
+      widget.onChanged?.call(Map.unmodifiable(_formValues));
     });
   }
 
@@ -67,7 +67,6 @@ class PanelFormState extends State<PanelForm> {
     // Return null if key doesn't exist or type doesn't match
     return null;
   }
-
 
   /// Gets all form values
   Map<String, dynamic> getValues() {
@@ -90,7 +89,7 @@ class PanelFormState extends State<PanelForm> {
       }
       _version++; // Increment version
       // Pass an immutable copy
-      widget.onChanged?.call(Map.unmodifiable(_formValues)); 
+      widget.onChanged?.call(Map.unmodifiable(_formValues));
     });
   }
 

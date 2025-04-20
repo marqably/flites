@@ -17,12 +17,16 @@ class PanelCheckboxInput extends StatefulWidget {
   /// Form key to identify this field in a PanelForm
   final String? formKey;
 
+  /// Help text to display below the control
+  final String? helpText;
+
   const PanelCheckboxInput({
     super.key,
     this.onChanged,
     this.checkboxLabel,
     required this.label,
     this.formKey,
+    this.helpText,
   }) : assert(
           formKey != null || onChanged != null,
           'Either formKey must be provided for form integration, or onChanged callback',
@@ -62,6 +66,7 @@ class _PanelCheckboxInputState extends State<PanelCheckboxInput> {
 
     return PanelControlWrapper(
       label: widget.label,
+      helpText: widget.helpText,
       children: [
         CheckboxInput(
           isChecked: value,

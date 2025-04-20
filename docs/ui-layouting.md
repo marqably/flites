@@ -81,7 +81,7 @@ The `Panel` component is a container that appears on either the left or right si
 - `position`: The position of the panel (`PanelPosition.left` or `PanelPosition.right`)
 - `isScrollable`: Whether the panel content should be scrollable
 
-### Usage
+### Usage of AppShell
 
 ```dart
     Panel(
@@ -151,18 +151,18 @@ The `Panel` component is a container that appears on either the left or right si
 
 These components help organize content within a panel into logical sections.
 
-### PanelSection
+### PanelSection Overview
 
 `PanelSection` groups related controls together under a common heading.
 
 ![image](./assets/ui-layouting/panel_section.png)
 
-#### Properties
+#### PanelSection Properties
 
 - `label`: The section heading text
 - `children`: Widgets to display in the section
 
-#### Usage
+#### PanelSection Usage
 
 ```dart
     PanelSection(
@@ -173,70 +173,136 @@ These components help organize content within a panel into logical sections.
     )
 ```
 
-### PanelControlWrapper
+### PanelControlWrapper Overview
 
 `PanelControlWrapper` organizes controls in a row layout with a label, useful for related inputs like 2-3 inputs next to each other.
 
 ![image](./assets/ui-layouting/panel_control_wrapper.png)
 
-#### Properties
+**PanelControlWrapper Properties:**
 
-- `label`: The wrapper label text
-- `children`: Controls to display in the wrapper
+- `label`: The wrapper label text.
+- `children`: Controls to display in the wrapper.
+- `alignment`: The alignment of the controls within the wrapper.
+- `layout`: Defines how much space each child takes up.
+- `controls`: Optional controls to display at the top of the control wrapper.
+- `helpText`: A string that provides additional information about the control. This is displayed as a tooltip when hovering over a small question mark icon next to the label.
 
-#### Usage
-
-```dart
-    PanelControlWrapper(
-      label: 'Position',
-      children: [
-        NumberInput(label: 'X', value: xValue, onChanged: onXChanged),
-        NumberInput(label: 'Y', value: yValue, onChanged: onYChanged),
-      ],
-    )
-```
-
-#### Example from Positioning Controls
+**PanelControlWrapper Usage:**
 
 ```dart
-    PanelControlWrapper(
-      label: 'Size',
-      children: [
-        NumberInput(
-          label: 'W',
-          value: _width,
-          min: 1,
-          onChanged: (value) {
-            setState(() {
-              _width = value;
-            });
-          },
-        ),
-        NumberInput(
-          label: 'H',
-          value: _height,
-          min: 1,
-          onChanged: (value) {
-            setState(() {
-              _height = value;
-            });
-          },
-        ),
-      ],
-    )
+PanelControlWrapper(
+  label: 'Position',
+  helpText: 'Adjust the position of the element',
+  children: [
+    NumberInput(label: 'X', value: xValue, onChanged: onXChanged),
+    NumberInput(label: 'Y', value: yValue, onChanged: onYChanged),
+  ],
+)
 ```
 
-## Panel Controls
+**HelpText Explanation:**
+
+The `helpText` property allows you to provide additional context or guidance for the controls within the `PanelControlWrapper`. When specified, a small question mark icon appears next to the label. Hovering over this icon displays the help text as a tooltip.
+
+### Panel Components Overview
+
+1. **PanelSelectInput Details**
+
+   - `options`: List of `SelectInputOption<T>` objects that define the available choices.
+   - `value`: The currently selected value for single selection mode.
+   - `selectedValues`: List of currently selected values for multiple selection mode.
+   - `onChanged`: Optional callback function for single selection mode.
+   - `onMultiChanged`: Optional callback function for multiple selection mode.
+   - `label`: The label text for the control.
+   - `helpText`: Optional help text to display below the control.
+   - `multiple`: Boolean flag that determines whether to use single or multiple selection mode.
+   - `formKey`: Optional identifier for use with `PanelForm`.
+   - `prefix`, `suffix`, `prefixWidget`, `postfixWidget`: Optional properties passed to the underlying input component.
+
+2. **PanelCheckboxInput Details**
+
+   - `value`: Boolean indicating whether the checkbox is checked.
+   - `onChanged`: Callback function that's called when the checkbox is toggled.
+   - `label`: The label text for the control.
+   - `checkboxLabel`: Optional text to display next to the checkbox itself.
+   - `helpText`: Optional help text to display below the control.
+   - `formKey`: Optional identifier for use with `PanelForm`.
+
+3. **PanelRadioInput Details**
+
+   - `options`: List of `RadioInputOption<T>` objects that define the available choices.
+   - `selectedValue`: The currently selected value.
+   - `onChanged`: Callback function that's called when the user selects a different option.
+   - `label`: The label text for the control.
+   - `helpText`: Optional help text to display below the control.
+   - `direction`: The layout direction of the radio buttons (`Axis.horizontal` or `Axis.vertical`).
+   - `formKey`: Optional identifier for use with `PanelForm`.
+
+4. **PanelIconButton Details**
+
+   - `icon`: The icon to display.
+   - `tooltip`: Tooltip text.
+   - `isSelected`: Whether the button is in selected state.
+   - `onPressed`: Callback for when the button is pressed.
+   - `value`: Optional value for the button.
+
+5. **PanelIconBtnGroup Details**
+
+   - `label`: The group label text.
+   - `controls`: Primary list of icon buttons.
+   - `additionalControls`: Optional secondary list of icon buttons.
+   - `selectedValues`: List of currently selected values.
+   - `spacing`: Spacing between buttons (`PanelIconBtnSpacing.compact` or `PanelIconBtnSpacing.large`).
+   - `onControlSelected`: Callback for when a button is selected.
+   - `helpText`: Optional help text to display below the control.
+
+6. **PanelList Details**
+
+   - `label`: The label text for the list.
+   - `items`: List of `PanelListItem` objects to display.
+   - `onItemTap`: Callback for when an item is tapped.
+   - `selectedValues`: List of currently selected values.
+   - `multiSelect`: Whether multiple selections are allowed.
+   - `leadingWidget`: Optional widget to display at the start of the list.
+   - `trailingWidget`: Optional widget to display at the end of the list.
+   - `onReorder`: Callback for when items are reordered.
+   - `scrollController`: Controller for the list's scrollable content.
+   - `sectionLabelControls`: Optional controls to display in the section label.
+   - `helpText`: Optional help text to display below the control.
+
+7. **PanelNumberInput Details**
+
+   - `label`: The input field label.
+   - `value`: Current numeric value.
+   - `min`: Optional minimum value.
+   - `max`: Optional maximum value.
+   - `step`: Increment step for the value.
+   - `onChanged`: Callback for when the value changes.
+   - `helpText`: Optional help text to display below the control.
+
+8. **PanelSliderInput Details**
+
+   - `label`: The slider label text.
+   - `value`: Current slider value.
+   - `min`: Minimum slider value.
+   - `max`: Maximum slider value.
+   - `step`: Increment step for the slider.
+   - `suffix`: Optional suffix for the value (e.g., '%').
+   - `onChanged`: Callback for when the slider value changes.
+   - `helpText`: Optional help text to display below the control.
+
+## Specialized Panel Controls
 
 These specialized controls are designed to be used within panels.
 
-### PanelIconBtnGroup
+### PanelIconBtnGroup Usage Details
 
 `PanelIconBtnGroup` displays a group of icon buttons, useful for togglable options like alignment controls.
 
 ![image](./assets/ui-layouting/panel_btn_group.png)
 
-#### Properties
+#### PanelIconBtnGroup Properties
 
 - `label`: The group label text
 - `controls`: Primary list of icon buttons
@@ -245,7 +311,7 @@ These specialized controls are designed to be used within panels.
 - `spacing`: Spacing between buttons (`PanelIconBtnSpacing.compact` or `PanelIconBtnSpacing.large`)
 - `onControlSelected`: Callback for when a button is selected
 
-#### Usage
+#### PanelIconBtnGroup Usage
 
 ```dart
     PanelIconBtnGroup(
@@ -263,13 +329,13 @@ These specialized controls are designed to be used within panels.
     )
 ```
 
-### PanelSliderInput
+### PanelSliderInput Usage Details
 
 `PanelSliderInput` provides a slider control with a label and optional suffix, useful for values like opacity or scale.
 
 ![image](./assets/ui-layouting/panel_slider.png)
 
-#### Properties
+#### PanelSliderInput Properties
 
 - `label`: The slider label text
 - `value`: Current slider value
@@ -278,7 +344,7 @@ These specialized controls are designed to be used within panels.
 - `suffix`: Optional suffix for the value (e.g., '%')
 - `onChanged`: Callback for when the slider value changes
 
-#### Usage
+#### PanelSliderInput Usage
 
 ```dart
     PanelSliderInput(
@@ -293,13 +359,13 @@ These specialized controls are designed to be used within panels.
     )
 ```
 
-### PanelNumberInput
+### PanelNumberInput Details
 
 `PanelNumberInput` provides a numeric input field with a label, useful for entering numeric values like dimensions or coordinates.
 
 ![image](./assets/ui-layouting/panel_number_input.png)
 
-#### Properties
+#### PanelNumberInput Properties
 
 - `label`: The input field label
 - `value`: Current numeric value
@@ -307,7 +373,7 @@ These specialized controls are designed to be used within panels.
 - `max`: Optional maximum value
 - `onChanged`: Callback for when the value changes
 
-#### Usage
+#### PanelNumberInput Usage
 
 ```dart
     PanelNumberInput(
@@ -321,19 +387,19 @@ These specialized controls are designed to be used within panels.
     )
 ```
 
-### PanelButton
+### PanelButton Details
 
 `PanelButton` is a styled button for panel actions with an optional icon.
 
 ![image](./assets/ui-layouting/panel_button.png)
 
-#### Properties
+#### PanelButton Properties
 
 - `label`: Button text
 - `icon`: Optional button icon
 - `onPressed`: Callback for when the button is pressed
 
-#### Usage
+#### PanelButton Usage
 
 ```dart
     PanelButton(
@@ -345,19 +411,19 @@ These specialized controls are designed to be used within panels.
     )
 ```
 
-### PanelList
+### PanelList Details
 
 `PanelList` displays a scrollable list of items within a panel.
 
 ![image](./assets/ui-layouting/panel_list.png)
 
-#### Properties
+#### PanelList Properties
 
 - **`items`**: A list of data items that will be displayed in the panel list.
 - **`itemBuilder`**: A widget builder function that is called for each item in the list. It takes the context and the item as parameters and returns a widget.
 - **`isScrollable`**: A boolean that enables or disables scrolling for the panel list. This property is optional.
 
-#### Usage
+#### PanelList Usage
 
 Here's an example of how to use the `PanelList` widget:
 
@@ -375,11 +441,11 @@ In this example, `myItems` is a list of data items, and each item is displayed u
 
 These are the foundational input components that can be used either directly or as building blocks for more complex panel controls.
 
-### IconBtn
+### IconBtn Details
 
 `IconBtn` is a customizable icon button with optional selection state.
 
-#### Properties
+#### IconBtn Properties
 
 - `icon`: The icon to display
 - `tooltip`: Tooltip text
@@ -387,7 +453,7 @@ These are the foundational input components that can be used either directly or 
 - `isSelected`: Whether the button is in selected state
 - `onPressed`: Callback for when the button is pressed
 
-#### Usage
+#### IconBtn Usage
 
 ```dart
     IconBtn(
@@ -400,11 +466,11 @@ These are the foundational input components that can be used either directly or 
     )
 ```
 
-### NumberInput
+### NumberInput Details
 
 `NumberInput` provides a field for numeric input with optional constraints.
 
-#### Properties
+#### NumberInput Properties
 
 - `label`: Input field label
 - `value`: Current numeric value
@@ -412,7 +478,7 @@ These are the foundational input components that can be used either directly or 
 - `max`: Optional maximum value
 - `onChanged`: Callback for when the value changes
 
-#### Usage
+#### NumberInput Usage
 
 ```dart
     NumberInput(
@@ -425,11 +491,11 @@ These are the foundational input components that can be used either directly or 
     )
 ```
 
-### SelectInput
+### SelectInput Details
 
 `SelectInput` provides a dropdown field that allows users to select a single item from a list of options.
 
-#### Properties
+#### SelectInput Properties
 
 - **`options`**: List of `SelectInputOption<T>` objects that define the available choices in the dropdown.
 - **`value`**: The currently selected value (of type T).
@@ -440,7 +506,7 @@ These are the foundational input components that can be used either directly or 
 - **`postfixWidget`**: Optional widget to display after the select field (inside the container).
 - **`label`**: Optional label text to display above the select field.
 
-#### Usage
+#### SelectInput Usage
 
 ```dart
 SelectInput<String>(
@@ -459,11 +525,11 @@ SelectInput<String>(
 )
 ```
 
-### SelectInputMulti
+### SelectInputMulti Details
 
 `SelectInputMulti` provides a field that opens a dialog allowing users to select multiple items from a list of options using checkboxes.
 
-#### Properties
+#### SelectInputMulti Properties
 
 - **`options`**: List of `SelectInputOption<T>` objects that define the available choices.
 - **`selectedValues`**: List of currently selected values (of type T).
@@ -474,7 +540,7 @@ SelectInput<String>(
 - **`postfixWidget`**: Optional widget to display after the select field (inside the container).
 - **`label`**: Optional label text to display above the select field.
 
-#### Usage
+#### SelectInputMulti Usage
 
 ```dart
 SelectInputMulti<String>(
@@ -493,11 +559,11 @@ SelectInputMulti<String>(
 )
 ```
 
-### RadioInput
+### RadioInput Details
 
 `RadioInput` provides a group of radio buttons allowing users to select one option from a list.
 
-#### Properties
+#### RadioInput Properties
 
 - **`options`**: List of `RadioInputOption<T>` objects that define the available choices.
 - **`selectedValue`**: The currently selected value (of type T).
@@ -505,7 +571,7 @@ SelectInputMulti<String>(
 - **`label`**: Optional label text to display above the radio buttons.
 - **`direction`**: The layout direction of the radio buttons (`Axis.horizontal` or `Axis.vertical`).
 
-#### Usage
+#### RadioInput Usage
 
 ```dart
 RadioInput<String>(
@@ -525,18 +591,18 @@ RadioInput<String>(
 )
 ```
 
-### CheckboxInput
+### CheckboxInput Details
 
 `CheckboxInput` provides a checkbox with a label for boolean selection.
 
-#### Properties
+#### CheckboxInput Properties
 
 - **`value`**: Boolean indicating whether the checkbox is checked.
 - **`onChanged`**: Callback function that's called when the checkbox is toggled.
 - **`label`**: Optional text to display next to the checkbox.
 - **`postfixWidget`**: Optional widget to display after the checkbox.
 
-#### Usage
+#### CheckboxInput Usage
 
 ```dart
 CheckboxInput(
@@ -554,11 +620,11 @@ CheckboxInput(
 
 These specialized controls are designed to be used within panels.
 
-### PanelSelectInput
+### PanelSelectInput Component
 
 `PanelSelectInput` integrates `SelectInput` and `SelectInputMulti` into the panel structure, automatically choosing between single and multiple selection modes based on the `multiple` flag.
 
-#### Properties
+#### PanelSelectInput Properties
 
 - **`options`**: List of `SelectInputOption<T>` objects that define the available choices.
 - **`value`**: The currently selected value for single selection mode (of type T).
@@ -571,7 +637,7 @@ These specialized controls are designed to be used within panels.
 - **`formKey`**: Optional identifier for use with PanelForm. When provided, the onChange callbacks become optional.
 - **`prefix`**, **`suffix`**, **`prefixWidget`**, **`postfixWidget`**: Optional properties passed to the underlying input component.
 
-#### Usage
+#### Usage of PanelSelectInput
 
 ```dart
 // Single Selection
@@ -610,11 +676,11 @@ PanelSelectInput<String>(
 )
 ```
 
-### PanelRadioInput
+### PanelRadioInput Component
 
 `PanelRadioInput` integrates `RadioInput` into the panel structure.
 
-#### Properties
+#### PanelRadioInput Properties
 
 - **`options`**: List of `RadioInputOption<T>` objects that define the available choices.
 - **`selectedValue`**: The currently selected value (of type T).
@@ -623,7 +689,7 @@ PanelSelectInput<String>(
 - **`helpText`**: Optional help text to display below the control.
 - **`direction`**: The layout direction of the radio buttons (`Axis.horizontal` or `Axis.vertical`).
 
-#### Usage
+#### PanelRadioInput Usage
 
 ```dart
 PanelRadioInput<String>(
@@ -643,20 +709,20 @@ PanelRadioInput<String>(
 )
 ```
 
-### PanelCheckboxInput
+### PanelCheckboxInput Component
 
 `PanelCheckboxInput` integrates `CheckboxInput` into the panel structure.
 
-#### Properties
+#### PanelCheckboxInput Properties
 
 - **`value`**: Boolean indicating whether the checkbox is checked.
 - **`onChanged`**: Callback function that's called when the checkbox is toggled.
 - **`label`**: The label text for the control.
 - **`checkboxLabel`**: Optional text to display next to the checkbox itself.
 - **`helpText`**: Optional help text to display below the control.
-- **`postfixWidget`**: Optional widget to display after the checkbox.
+- `postfixWidget`: Optional widget to display after the checkbox.
 
-#### Usage
+#### PanelCheckboxInput Usage
 
 ```dart
 PanelCheckboxInput(
@@ -676,7 +742,7 @@ PanelCheckboxInput(
 
 The select and radio inputs use option classes to represent their choices.
 
-### SelectInputOption and RadioInputOption
+### InputOption Components
 
 Both of these classes follow the same pattern and have the same properties:
 
@@ -685,7 +751,7 @@ Both of these classes follow the same pattern and have the same properties:
 
 This separation allows you to display user-friendly text while using appropriate values in your code.
 
-#### Usage
+#### InputOption Usage
 
 ```dart
 // String values
@@ -842,7 +908,7 @@ Here's an example of a complete panel implementation that demonstrates various p
 
 The PanelForm system provides a centralized way to manage form state across multiple panel controls. It eliminates the need to manually track the state of individual form fields and simplifies data collection and submission.
 
-### Key Benefits of PanelForm
+### PanelForm Benefits
 
 - **Centralized State Management**: All form values are stored in a single location
 - **Simplified Data Collection**: Access all form values with a single method call
@@ -850,7 +916,7 @@ The PanelForm system provides a centralized way to manage form state across mult
 - **Streamlined Validation**: Validate all form fields at once before submission
 - **Consistent APIs**: All panel controls work seamlessly with the form system
 
-### Creating a Form
+### PanelForm Creation
 
 To create a form, wrap your panel controls in a `PanelForm` widget and provide a unique `formKey` to each control:
 
@@ -875,9 +941,9 @@ PanelForm(
 )
 ```
 
-### Working with Form Data
+### PanelForm Data Management
 
-#### Accessing Form State
+#### PanelForm State Access
 
 To access the form state from within the form, use a `Builder` widget and the `PanelForm.of(context)` method:
 
@@ -891,7 +957,7 @@ Builder(
 )
 ```
 
-#### Reading and Writing Values
+#### PanelForm Value Operations
 
 The form state provides methods for reading and writing individual values:
 
@@ -906,7 +972,7 @@ formState.setValue('width', 1920);
 final allValues = formState.getValues();
 ```
 
-#### Form Actions
+#### PanelForm Control Actions
 
 PanelForm provides methods for common form actions:
 
@@ -918,7 +984,7 @@ formState.submit();
 formState.reset();
 ```
 
-### Integrating Panel Controls
+### PanelForm Component Integration
 
 All panel controls support form integration through the `formKey` property:
 
@@ -936,7 +1002,7 @@ PanelSelectInput<String>(
 
 When using a `formKey`, the `onChanged` callback becomes optional, as the form will automatically track changes to the control's value.
 
-### Complete Form Example
+### PanelForm Complete Example
 
 Here's a comprehensive example of a project settings form:
 
@@ -1078,7 +1144,7 @@ This example demonstrates:
 3. Conditional display of form fields based on other field values
 4. Form submission and reset functionality
 
-### Form Validation
+### PanelForm Validation
 
 While PanelForm doesn't include built-in validation, you can easily implement validation in the `onSubmit` callback:
 

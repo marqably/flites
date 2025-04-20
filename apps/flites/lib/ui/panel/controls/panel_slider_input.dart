@@ -13,6 +13,7 @@ class PanelSliderInput extends StatelessWidget {
   final double step;
   final String? suffix;
   final Function(double) onChanged;
+  final String? helpText;
 
   const PanelSliderInput({
     super.key,
@@ -23,12 +24,14 @@ class PanelSliderInput extends StatelessWidget {
     this.step = 1,
     this.suffix,
     required this.onChanged,
+    this.helpText,
   });
 
   @override
   Widget build(BuildContext context) {
     return PanelControlWrapper(
       label: label,
+      helpText: helpText,
       layout: PanelControlWrapperLayout.bigSmall,
       children: [
         // Slider

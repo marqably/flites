@@ -9,6 +9,7 @@ class PanelNumberInput extends StatelessWidget {
   final double max;
   final double step;
   final Function(double) onChanged;
+  final String? helpText;
 
   const PanelNumberInput({
     super.key,
@@ -18,12 +19,14 @@ class PanelNumberInput extends StatelessWidget {
     this.max = double.infinity,
     this.step = 1,
     required this.onChanged,
+    this.helpText,
   });
 
   @override
   Widget build(BuildContext context) {
     return PanelControlWrapper(
       label: label,
+      helpText: helpText,
       children: [
         NumberInput(
           label: label,

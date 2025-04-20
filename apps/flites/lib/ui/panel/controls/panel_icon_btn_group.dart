@@ -37,6 +37,7 @@ class PanelIconBtnGroup extends StatelessWidget {
   final Function(String)? onControlSelected;
   final List<String>? selectedValues;
   final PanelIconBtnSpacing spacing;
+  final String? helpText;
   const PanelIconBtnGroup({
     super.key,
     required this.label,
@@ -45,12 +46,14 @@ class PanelIconBtnGroup extends StatelessWidget {
     this.onControlSelected,
     this.selectedValues,
     this.spacing = PanelIconBtnSpacing.normal,
+    this.helpText,
   });
 
   @override
   Widget build(BuildContext context) {
     return PanelControlWrapper(
       label: label,
+      helpText: helpText,
       alignment: MainAxisAlignment.spaceBetween,
       children: [
         // main controls
