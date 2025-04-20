@@ -259,8 +259,7 @@ The `helpText` property allows you to provide additional context or guidance for
 
 6. **PanelList Details**
 
-   - `label`: The label text for the list.
-   - `items`: List of `PanelListItem` objects to display.
+   - `items`: A list of data items that will be displayed in the panel list.
    - `onItemTap`: Callback for when an item is tapped.
    - `selectedValues`: List of currently selected values.
    - `multiSelect`: Whether multiple selections are allowed.
@@ -420,8 +419,15 @@ These specialized controls are designed to be used within panels.
 #### PanelList Properties
 
 - **`items`**: A list of data items that will be displayed in the panel list.
-- **`itemBuilder`**: A widget builder function that is called for each item in the list. It takes the context and the item as parameters and returns a widget.
-- **`isScrollable`**: A boolean that enables or disables scrolling for the panel list. This property is optional.
+- **`onItemTap`**: Callback for when an item is tapped.
+- **`selectedValues`**: List of currently selected values.
+- **`multiSelect`**: Whether multiple selections are allowed.
+- **`leadingWidget`**: Optional widget to display at the start of the list.
+- **`trailingWidget`**: Optional widget to display at the end of the list.
+- **`onReorder`**: Callback for when items are reordered.
+- **`scrollController`**: Controller for the list's scrollable content.
+- **`sectionLabelControls`**: Optional controls to display in the section label.
+- **`helpText`**: Optional help text to display below the control.
 
 #### PanelList Usage
 
@@ -430,12 +436,27 @@ Here's an example of how to use the `PanelList` widget:
 ```dart
 PanelList(
   items: myItems,
-  itemBuilder: (context, item) => Text(item.title),
-  isScrollable: true,
+  onItemTap: (item) => print('Item tapped: $item'),
+  multiSelect: true,
+  leadingWidget: Icon(Icons.list),
+  trailingWidget: Icon(Icons.more_vert),
+  onReorder: (oldIndex, newIndex) {
+    // Handle reorder logic
+  },
+  scrollController: ScrollController(),
+  sectionLabelControls: [
+    IconButton(
+      icon: Icon(Icons.add),
+      onPressed: () {
+        // Add new item
+      },
+    ),
+  ],
+  helpText: 'Select items from the list',
 )
 ```
 
-In this example, `myItems` is a list of data items, and each item is displayed using a `Text` widget that shows the item's title. The `isScrollable` property is set to `true`, allowing the list to be scrolled.
+In this example, `myItems` is a list of data items, and each item is displayed using a `Text` widget that shows the item's title. The `multiSelect` property is set to `true`, allowing multiple selections.
 
 ## Base Inputs
 
