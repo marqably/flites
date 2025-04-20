@@ -512,11 +512,19 @@ These are the foundational input components that can be used either directly or 
     )
 ```
 
+<<<<<<< HEAD
 ### SelectInput Details
 
 `SelectInput` provides a dropdown field that allows users to select a single item from a list of options.
 
 #### SelectInput Properties
+=======
+### SelectInput
+
+`SelectInput` provides a dropdown field that allows users to select a single item from a list of options.
+
+#### Properties
+>>>>>>> c5f0396 (feature(forms): added more panel inputs and panel form)
 
 - **`options`**: List of `SelectInputOption<T>` objects that define the available choices in the dropdown.
 - **`value`**: The currently selected value (of type T).
@@ -527,7 +535,11 @@ These are the foundational input components that can be used either directly or 
 - **`postfixWidget`**: Optional widget to display after the select field (inside the container).
 - **`label`**: Optional label text to display above the select field.
 
+<<<<<<< HEAD
 #### SelectInput Usage
+=======
+#### Usage
+>>>>>>> c5f0396 (feature(forms): added more panel inputs and panel form)
 
 ```dart
 SelectInput<String>(
@@ -546,11 +558,19 @@ SelectInput<String>(
 )
 ```
 
+<<<<<<< HEAD
 ### SelectInputMulti Details
 
 `SelectInputMulti` provides a field that opens a dialog allowing users to select multiple items from a list of options using checkboxes.
 
 #### SelectInputMulti Properties
+=======
+### SelectInputMulti
+
+`SelectInputMulti` provides a field that opens a dialog allowing users to select multiple items from a list of options using checkboxes.
+
+#### Properties
+>>>>>>> c5f0396 (feature(forms): added more panel inputs and panel form)
 
 - **`options`**: List of `SelectInputOption<T>` objects that define the available choices.
 - **`selectedValues`**: List of currently selected values (of type T).
@@ -561,7 +581,11 @@ SelectInput<String>(
 - **`postfixWidget`**: Optional widget to display after the select field (inside the container).
 - **`label`**: Optional label text to display above the select field.
 
+<<<<<<< HEAD
 #### SelectInputMulti Usage
+=======
+#### Usage
+>>>>>>> c5f0396 (feature(forms): added more panel inputs and panel form)
 
 ```dart
 SelectInputMulti<String>(
@@ -580,11 +604,19 @@ SelectInputMulti<String>(
 )
 ```
 
+<<<<<<< HEAD
 ### RadioInput Details
 
 `RadioInput` provides a group of radio buttons allowing users to select one option from a list.
 
 #### RadioInput Properties
+=======
+### RadioInput
+
+`RadioInput` provides a group of radio buttons allowing users to select one option from a list.
+
+#### Properties
+>>>>>>> c5f0396 (feature(forms): added more panel inputs and panel form)
 
 - **`options`**: List of `RadioInputOption<T>` objects that define the available choices.
 - **`selectedValue`**: The currently selected value (of type T).
@@ -592,7 +624,11 @@ SelectInputMulti<String>(
 - **`label`**: Optional label text to display above the radio buttons.
 - **`direction`**: The layout direction of the radio buttons (`Axis.horizontal` or `Axis.vertical`).
 
+<<<<<<< HEAD
 #### RadioInput Usage
+=======
+#### Usage
+>>>>>>> c5f0396 (feature(forms): added more panel inputs and panel form)
 
 ```dart
 RadioInput<String>(
@@ -612,18 +648,30 @@ RadioInput<String>(
 )
 ```
 
+<<<<<<< HEAD
 ### CheckboxInput Details
 
 `CheckboxInput` provides a checkbox with a label for boolean selection.
 
 #### CheckboxInput Properties
+=======
+### CheckboxInput
+
+`CheckboxInput` provides a checkbox with a label for boolean selection.
+
+#### Properties
+>>>>>>> c5f0396 (feature(forms): added more panel inputs and panel form)
 
 - **`value`**: Boolean indicating whether the checkbox is checked.
 - **`onChanged`**: Callback function that's called when the checkbox is toggled.
 - **`label`**: Optional text to display next to the checkbox.
 - **`postfixWidget`**: Optional widget to display after the checkbox.
 
+<<<<<<< HEAD
 #### CheckboxInput Usage
+=======
+#### Usage
+>>>>>>> c5f0396 (feature(forms): added more panel inputs and panel form)
 
 ```dart
 CheckboxInput(
@@ -641,11 +689,19 @@ CheckboxInput(
 
 These specialized controls are designed to be used within panels.
 
+<<<<<<< HEAD
 ### PanelSelectInput Component
 
 `PanelSelectInput` integrates `SelectInput` and `SelectInputMulti` into the panel structure, automatically choosing between single and multiple selection modes based on the `multiple` flag.
 
 #### PanelSelectInput Properties
+=======
+### PanelSelectInput
+
+`PanelSelectInput` integrates `SelectInput` and `SelectInputMulti` into the panel structure, automatically choosing between single and multiple selection modes based on the `multiple` flag.
+
+#### Properties
+>>>>>>> c5f0396 (feature(forms): added more panel inputs and panel form)
 
 - **`options`**: List of `SelectInputOption<T>` objects that define the available choices.
 - **`value`**: The currently selected value for single selection mode (of type T).
@@ -658,7 +714,11 @@ These specialized controls are designed to be used within panels.
 - **`formKey`**: Optional identifier for use with PanelForm. When provided, the onChange callbacks become optional.
 - **`prefix`**, **`suffix`**, **`prefixWidget`**, **`postfixWidget`**: Optional properties passed to the underlying input component.
 
+<<<<<<< HEAD
 #### Usage of PanelSelectInput
+=======
+#### Usage
+>>>>>>> c5f0396 (feature(forms): added more panel inputs and panel form)
 
 ```dart
 // Single Selection
@@ -697,11 +757,19 @@ PanelSelectInput<String>(
 )
 ```
 
+<<<<<<< HEAD
 ### PanelRadioInput Component
 
 `PanelRadioInput` integrates `RadioInput` into the panel structure.
 
 #### PanelRadioInput Properties
+=======
+### PanelRadioInput
+
+`PanelRadioInput` integrates `RadioInput` into the panel structure.
+
+#### Properties
+>>>>>>> c5f0396 (feature(forms): added more panel inputs and panel form)
 
 - **`options`**: List of `RadioInputOption<T>` objects that define the available choices.
 - **`selectedValue`**: The currently selected value (of type T).
@@ -710,7 +778,11 @@ PanelSelectInput<String>(
 - **`helpText`**: Optional help text to display below the control.
 - **`direction`**: The layout direction of the radio buttons (`Axis.horizontal` or `Axis.vertical`).
 
+<<<<<<< HEAD
 #### PanelRadioInput Usage
+=======
+#### Usage
+>>>>>>> c5f0396 (feature(forms): added more panel inputs and panel form)
 
 ```dart
 PanelRadioInput<String>(
@@ -730,20 +802,34 @@ PanelRadioInput<String>(
 )
 ```
 
+<<<<<<< HEAD
 ### PanelCheckboxInput Component
 
 `PanelCheckboxInput` integrates `CheckboxInput` into the panel structure.
 
 #### PanelCheckboxInput Properties
+=======
+### PanelCheckboxInput
+
+`PanelCheckboxInput` integrates `CheckboxInput` into the panel structure.
+
+#### Properties
+>>>>>>> c5f0396 (feature(forms): added more panel inputs and panel form)
 
 - **`value`**: Boolean indicating whether the checkbox is checked.
 - **`onChanged`**: Callback function that's called when the checkbox is toggled.
 - **`label`**: The label text for the control.
 - **`checkboxLabel`**: Optional text to display next to the checkbox itself.
 - **`helpText`**: Optional help text to display below the control.
+<<<<<<< HEAD
 - `postfixWidget`: Optional widget to display after the checkbox.
 
 #### PanelCheckboxInput Usage
+=======
+- **`postfixWidget`**: Optional widget to display after the checkbox.
+
+#### Usage
+>>>>>>> c5f0396 (feature(forms): added more panel inputs and panel form)
 
 ```dart
 PanelCheckboxInput(
@@ -763,7 +849,11 @@ PanelCheckboxInput(
 
 The select and radio inputs use option classes to represent their choices.
 
+<<<<<<< HEAD
 ### InputOption Components
+=======
+### SelectInputOption and RadioInputOption
+>>>>>>> c5f0396 (feature(forms): added more panel inputs and panel form)
 
 Both of these classes follow the same pattern and have the same properties:
 
@@ -772,7 +862,11 @@ Both of these classes follow the same pattern and have the same properties:
 
 This separation allows you to display user-friendly text while using appropriate values in your code.
 
+<<<<<<< HEAD
 #### InputOption Usage
+=======
+#### Usage
+>>>>>>> c5f0396 (feature(forms): added more panel inputs and panel form)
 
 ```dart
 // String values
@@ -929,7 +1023,11 @@ Here's an example of a complete panel implementation that demonstrates various p
 
 The PanelForm system provides a centralized way to manage form state across multiple panel controls. It eliminates the need to manually track the state of individual form fields and simplifies data collection and submission.
 
+<<<<<<< HEAD
 ### PanelForm Benefits
+=======
+### Key Benefits of PanelForm
+>>>>>>> c5f0396 (feature(forms): added more panel inputs and panel form)
 
 - **Centralized State Management**: All form values are stored in a single location
 - **Simplified Data Collection**: Access all form values with a single method call
@@ -937,7 +1035,11 @@ The PanelForm system provides a centralized way to manage form state across mult
 - **Streamlined Validation**: Validate all form fields at once before submission
 - **Consistent APIs**: All panel controls work seamlessly with the form system
 
+<<<<<<< HEAD
 ### PanelForm Creation
+=======
+### Creating a Form
+>>>>>>> c5f0396 (feature(forms): added more panel inputs and panel form)
 
 To create a form, wrap your panel controls in a `PanelForm` widget and provide a unique `formKey` to each control:
 
@@ -962,9 +1064,15 @@ PanelForm(
 )
 ```
 
+<<<<<<< HEAD
 ### PanelForm Data Management
 
 #### PanelForm State Access
+=======
+### Working with Form Data
+
+#### Accessing Form State
+>>>>>>> c5f0396 (feature(forms): added more panel inputs and panel form)
 
 To access the form state from within the form, use a `Builder` widget and the `PanelForm.of(context)` method:
 
@@ -978,7 +1086,11 @@ Builder(
 )
 ```
 
+<<<<<<< HEAD
 #### PanelForm Value Operations
+=======
+#### Reading and Writing Values
+>>>>>>> c5f0396 (feature(forms): added more panel inputs and panel form)
 
 The form state provides methods for reading and writing individual values:
 
@@ -993,7 +1105,11 @@ formState.setValue('width', 1920);
 final allValues = formState.getValues();
 ```
 
+<<<<<<< HEAD
 #### PanelForm Control Actions
+=======
+#### Form Actions
+>>>>>>> c5f0396 (feature(forms): added more panel inputs and panel form)
 
 PanelForm provides methods for common form actions:
 
@@ -1005,7 +1121,11 @@ formState.submit();
 formState.reset();
 ```
 
+<<<<<<< HEAD
 ### PanelForm Component Integration
+=======
+### Integrating Panel Controls
+>>>>>>> c5f0396 (feature(forms): added more panel inputs and panel form)
 
 All panel controls support form integration through the `formKey` property:
 
@@ -1023,7 +1143,11 @@ PanelSelectInput<String>(
 
 When using a `formKey`, the `onChanged` callback becomes optional, as the form will automatically track changes to the control's value.
 
+<<<<<<< HEAD
 ### PanelForm Complete Example
+=======
+### Complete Form Example
+>>>>>>> c5f0396 (feature(forms): added more panel inputs and panel form)
 
 Here's a comprehensive example of a project settings form:
 
@@ -1165,7 +1289,11 @@ This example demonstrates:
 3. Conditional display of form fields based on other field values
 4. Form submission and reset functionality
 
+<<<<<<< HEAD
 ### PanelForm Validation
+=======
+### Form Validation
+>>>>>>> c5f0396 (feature(forms): added more panel inputs and panel form)
 
 While PanelForm doesn't include built-in validation, you can easily implement validation in the `onSubmit` callback:
 

@@ -11,7 +11,11 @@ class ExportTool extends StatelessWidget {
     return AppShell(
       panelLeft: null,
       spriteMapBar: false,
-      panelRight: const ExportToolPanel(),
+      panelRight: ExportToolPanel(
+          // onExport: (options) {
+          //   print(options);
+          // },
+          ),
       child: Container(
           height: double.infinity,
           color: Colors.red,
