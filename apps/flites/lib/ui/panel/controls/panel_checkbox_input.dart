@@ -5,9 +5,6 @@ import 'package:flutter/material.dart';
 
 /// A checkbox input control for use within panels
 class PanelCheckboxInput extends StatefulWidget {
-  /// Whether the checkbox is checked
-  final bool value;
-
   /// Callback when the checkbox value changes
   final Function(bool)? onChanged;
 
@@ -17,23 +14,14 @@ class PanelCheckboxInput extends StatefulWidget {
   /// Label to display for the control
   final String label;
 
-  /// Help text to display below the control
-  final String? helpText;
-
-  /// Additional widget to display after the checkbox
-  final Widget? postfixWidget;
-
   /// Form key to identify this field in a PanelForm
   final String? formKey;
 
   const PanelCheckboxInput({
     super.key,
-    required this.value,
     this.onChanged,
     this.checkboxLabel,
     required this.label,
-    this.helpText,
-    this.postfixWidget,
     this.formKey,
   }) : assert(
           formKey != null || onChanged != null,
@@ -68,12 +56,9 @@ class _PanelCheckboxInputState extends State<PanelCheckboxInput> {
 
   @override
   Widget build(BuildContext context) {
-    // Get value from form if available
-    bool value = widget.value;
-
-    if (widget.formKey != null && _formState != null) {
-      value = _formState!.getValue<bool>(widget.formKey!) ?? widget.value;
-    }
+    bool value = (widget.formKey != null && _formState != null)
+        ? _formState!.getValue<bool>(widget.formKey!) ?? false
+        : false;
 
     return PanelControlWrapper(
       label: widget.label,
