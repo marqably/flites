@@ -12,15 +12,27 @@ import 'package:flutter_svg/svg.dart';
 /// A utility class for working with SVG images.
 /// Provides methods for validating SVG data and extracting dimensions.
 class SvgUtils {
+  /// Loops through all images in the project and returns the percentage of
+  /// SVG images in the project. This can then be used to determine if we
+  /// should show the SVG export option.
+  ///
+  /// Returns a double between 0 and 100.
+  static double get percentageOfSvgImagesInProject {
+    final totalImages = projectSourceFiles.value.rows
+        .fold(0, (sum, row) => sum + row.images.length);
+    final svgImages = projectSourceFiles.value.rows.fold(
+        0,
+        (sum, row) =>
+            sum + row.images.where((image) => isSvg(image.image)).length);
+
+    return (svgImages / totalImages) * 100;
+  }
+
   /// Checks if all images in the project are SVGs.
   ///
   /// Returns true if all images in the project are SVGs.
   static bool get allImagesInProjectAreSvg {
-    return projectSourceFiles.value.rows.every(
-      (row) => row.images.every(
-        (flitesImage) => SvgUtils.isSvg(flitesImage.image),
-      ),
-    );
+    return percentageOfSvgImagesInProject == 100;
   }
 
   /// Checks if the provided data is a valid SVG file

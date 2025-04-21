@@ -1,12 +1,11 @@
+import 'package:flites/config/tools.dart';
 import 'package:flites/constants/app_sizes.dart';
 import 'package:flites/main.dart';
 import 'package:flites/states/selected_image_row_state.dart';
 import 'package:flites/states/source_files_state.dart';
+import 'package:flites/states/tool_controller.dart';
 import 'package:flites/types/secondary_click_context_data.dart';
 import 'package:flites/ui/utils/hover_btn.dart';
-import 'package:flites/utils/generate_sprite.dart';
-import 'package:flites/utils/generate_svg_sprite.dart';
-import 'package:flites/utils/svg_utils.dart';
 import 'package:flites/widgets/right_click_menu/right_clickable_item_wrapper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
@@ -135,16 +134,13 @@ class ImageMapHeader extends StatelessWidget {
               ],
             ),
           ),
+          // TODO: don't show or disable this button if no rows or images yet!
           AnimationRowTabWrapper(
             isSelected: false,
             color: context.colors.primaryFixed,
             hoverColor: context.colors.primaryFixedDim,
             onPressed: () {
-              if (SvgUtils.allImagesInProjectAreSvg) {
-                GenerateSvgSprite.exportSpriteMap();
-              } else {
-                GenerateSprite.exportSpriteMap();
-              }
+              toolController.selectTool(Tool.export);
             },
             withBackground: true,
             borderRadius: const BorderRadius.only(

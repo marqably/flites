@@ -1,3 +1,4 @@
+import 'package:flites/constants/app_sizes.dart';
 import 'package:flites/main.dart';
 import 'package:flutter/material.dart';
 
@@ -7,6 +8,7 @@ enum PanelButtonStyle {
   secondary,
   tertiary,
   danger,
+  info,
 }
 
 /// A customizable button for panel actions
@@ -33,23 +35,33 @@ class PanelButton extends StatelessWidget {
     // Get colors based on style
     Color backgroundColor;
     Color textColor;
+    Color borderColor;
 
     switch (style) {
       case PanelButtonStyle.primary:
         backgroundColor = context.colors.primary;
         textColor = context.colors.onPrimary;
+        borderColor = context.colors.primary;
         break;
       case PanelButtonStyle.secondary:
         backgroundColor = context.colors.secondary;
         textColor = context.colors.onSecondary;
+        borderColor = context.colors.secondary;
         break;
       case PanelButtonStyle.tertiary:
         backgroundColor = context.colors.tertiary;
         textColor = context.colors.onTertiary;
+        borderColor = context.colors.tertiary;
         break;
       case PanelButtonStyle.danger:
         backgroundColor = context.colors.error;
         textColor = context.colors.onError;
+        borderColor = context.colors.error;
+        break;
+      case PanelButtonStyle.info:
+        backgroundColor = context.colors.surface;
+        textColor = context.colors.onSurface;
+        borderColor = context.colors.outline.withValues(alpha: 0.3);
         break;
     }
 
@@ -57,10 +69,14 @@ class PanelButton extends StatelessWidget {
     if (disabled) {
       backgroundColor = backgroundColor.withValues(alpha: 0.5);
       textColor = textColor.withValues(alpha: 0.5);
+      borderColor = borderColor.withValues(alpha: 0.5);
     }
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      padding: const EdgeInsets.symmetric(
+        horizontal: Sizes.p16,
+        vertical: Sizes.p8,
+      ),
       child: SizedBox(
         width: fullWidth ? double.infinity : null,
         height: 36.0,
@@ -69,27 +85,25 @@ class PanelButton extends StatelessWidget {
           style: ElevatedButton.styleFrom(
             backgroundColor: backgroundColor,
             foregroundColor: textColor,
-            elevation: style == PanelButtonStyle.tertiary ? 0 : 1,
+            elevation: 1,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(4.0),
-              side: style == PanelButtonStyle.tertiary
-                  ? BorderSide(color: context.colors.surfaceContainerHigh)
-                  : BorderSide.none,
+              borderRadius: BorderRadius.circular(Sizes.p4),
+              side: BorderSide(color: borderColor),
             ),
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            padding: const EdgeInsets.symmetric(horizontal: Sizes.p16),
           ),
           child: Row(
             mainAxisSize: fullWidth ? MainAxisSize.max : MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               if (icon != null) ...[
-                Icon(icon, size: 16),
-                const SizedBox(width: 8),
+                Icon(icon, size: fontSizeBase),
+                const SizedBox(width: Sizes.p8),
               ],
               Text(
                 label,
                 style: const TextStyle(
-                  fontSize: 14,
+                  fontSize: fontSizeBase,
                   fontWeight: FontWeight.w500,
                 ),
               ),

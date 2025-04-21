@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:image/image.dart' as img;
 
 class GenerateSprite {
-  static Future<ExportedSprilteSheetTiled?> exportTiledSpriteMap({
+  static Future<ExportedSpriteSheetTiled?> exportTiledSpriteMap({
     required Size tileSize,
   }) async {
     final spriteSheet = await exportSpriteMap(tileSize: tileSize);
@@ -20,9 +20,10 @@ class GenerateSprite {
       return null;
     }
 
-    return ExportedSprilteSheetTiled(
+    return ExportedSpriteSheetTiled(
       image: spriteSheet.image,
       tileSize: tileSize,
+      rowInformations: spriteSheet.rowInformations,
     );
   }
 
@@ -55,6 +56,11 @@ class GenerateSprite {
       if (spriteRowImage != null) {
         spriteRowImages.add(spriteRowImage);
       }
+    }
+
+    // if no sprite row images, return null
+    if (spriteRowImages.isEmpty) {
+      return null;
     }
 
     // Find longest width

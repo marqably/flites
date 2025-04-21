@@ -105,6 +105,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.8"
+  dart_casing:
+    dependency: "direct main"
+    description:
+      name: dart_casing
+      sha256: "653573035e25d8dd414056bee16a7d10bedc32dbb8f519199450f552218881a0"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.1"
   device_info_plus:
     dependency: transitive
     description:
@@ -206,6 +214,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.2.1"
+  flutter_highlight:
+    dependency: transitive
+    description:
+      name: flutter_highlight
+      sha256: "7b96333867aa07e122e245c033b8ad622e4e3a42a1a2372cbb098a2541d8782c"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.7.0"
   flutter_isolate:
     dependency: "direct main"
     description:
@@ -269,6 +285,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  highlight:
+    dependency: transitive
+    description:
+      name: highlight
+      sha256: "5353a83ffe3e3eca7df0abfb72dcf3fa66cc56b953728e7113ad4ad88497cf21"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.7.0"
   http:
     dependency: transitive
     description:
@@ -357,6 +381,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.0.0"
+  markdown:
+    dependency: transitive
+    description:
+      name: markdown
+      sha256: "935e23e1ff3bc02d390bad4d4be001208ee92cc217cb5b5a6c19bc14aaa318c1"
+      url: "https://pub.dev"
+    source: hosted
+    version: "7.3.0"
+  markdown_widget:
+    dependency: "direct main"
+    description:
+      name: markdown_widget
+      sha256: d424b4e606380f8dae86daa4cfc2cc27b87d03f13f4f6d1d6dca1488a54cd884
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.3.2+7"
   matcher:
     dependency: transitive
     description:
@@ -525,6 +565,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.2.0"
+  scroll_to_index:
+    dependency: transitive
+    description:
+      name: scroll_to_index
+      sha256: b707546e7500d9f070d63e5acf74fd437ec7eeeb68d3412ef7b0afada0b4f176
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.1"
   shared_preferences:
     dependency: "direct main"
     description:
@@ -674,6 +722,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.8.24"
+  syntax_highlight:
+    dependency: "direct main"
+    description:
+      name: syntax_highlight
+      sha256: ee33b6aa82cc722bb9b40152a792181dee222353b486c0255fde666a3e3a4997
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.4.0"
   term_glyph:
     dependency: transitive
     description:
@@ -802,6 +858,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.4"
+  visibility_detector:
+    dependency: transitive
+    description:
+      name: visibility_detector
+      sha256: dd5cc11e13494f432d15939c3aa8ae76844c42b723398643ce9addb88a5ed420
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.4.0+2"
   vm_service:
     dependency: transitive
     description:

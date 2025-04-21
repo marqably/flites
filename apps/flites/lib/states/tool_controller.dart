@@ -1,4 +1,4 @@
-import 'package:flites/tools.dart';
+import 'package:flites/config/tools.dart';
 import 'package:signals/signals_flutter.dart';
 
 /// A controller for managing tool selection and hover states

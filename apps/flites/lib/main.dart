@@ -71,6 +71,7 @@ class FlitesApp extends StatelessWidget {
 
 extension ThemeExtension on BuildContext {
   ColorScheme get colors => Theme.of(this).colorScheme;
+  TextTheme get textTheme => Theme.of(this).textTheme;
 }
 
 extension LocalizationExt on BuildContext {

@@ -6,7 +6,7 @@
   Please look at the following checklist to ensure that your PR can be accepted quickly:
 -->
 
-## Description
+# Description
 
 <!--- Describe your changes in detail -->
 

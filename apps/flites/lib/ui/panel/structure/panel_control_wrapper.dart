@@ -19,7 +19,7 @@ enum PanelControlWrapperLayout {
 /// A subsection within a panel section (like "ALIGNMENT")
 class PanelControlWrapper extends StatelessWidget {
   /// The label of the control wrapper
-  final String label;
+  final String? label;
 
   /// The children of the control wrapper
   final List<Widget> children;
@@ -38,8 +38,8 @@ class PanelControlWrapper extends StatelessWidget {
 
   const PanelControlWrapper({
     super.key,
-    required this.label,
     required this.children,
+    this.label,
     this.alignment = MainAxisAlignment.start,
     this.layout = PanelControlWrapperLayout.equal,
     this.controls,
@@ -56,50 +56,54 @@ class PanelControlWrapper extends StatelessWidget {
       children: [
         gapH16,
 
-        Flexible(
-          flex: 0,
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              // label
-              Text(
-                label.toUpperCase(),
-                style: TextStyle(
-                  fontSize: fontSizeBase,
-                  fontWeight: FontWeight.w500,
-                  color: context.colors.onSurface,
-                  letterSpacing: 1.0,
-                ),
-              ),
-
-              // help text icon
-              if (helpText != null)
-                Padding(
-                  padding: const EdgeInsets.only(left: Sizes.p8),
-                  child: Tooltip(
-                    message: helpText!,
-                    child: Icon(
-                      Icons.help_outline,
-                      size: fontSizeMd,
-                      color: context.colors.onSurface.withValues(alpha: 0.5),
+        // Label and controls
+        if (label != null || controls != null)
+          Flexible(
+            flex: 0,
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                // label
+                if (label != null)
+                  Text(
+                    label!.toUpperCase(),
+                    style: TextStyle(
+                      fontSize: fontSizeBase,
+                      fontWeight: FontWeight.w500,
+                      color: context.colors.onSurface,
+                      letterSpacing: 1.0,
                     ),
                   ),
-                ),
 
-              // spacer
-              const Spacer(),
+                // help text icon
+                if (helpText != null)
+                  Padding(
+                    padding: const EdgeInsets.only(left: Sizes.p8),
+                    child: Tooltip(
+                      message: helpText!,
+                      child: Icon(
+                        Icons.help_outline,
+                        size: fontSizeMd,
+                        color: context.colors.onSurface.withValues(alpha: 0.5),
+                      ),
+                    ),
+                  ),
 
-              // Controls
-              if (controls != null)
-                Row(
-                  spacing: Sizes.p8,
-                  children: _getControls(),
-                ),
-            ],
+                // spacer
+                const Spacer(),
+
+                // Controls
+                if (controls != null)
+                  Row(
+                    spacing: Sizes.p8,
+                    children: _getControls(),
+                  ),
+              ],
+            ),
           ),
-        ),
 
-        gapH24,
+        // Label and controls
+        if (label != null || controls != null) gapH24,
 
         // Use a Container with constraints
         (children.length > 1)

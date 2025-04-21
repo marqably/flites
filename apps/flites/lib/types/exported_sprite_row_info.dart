@@ -21,6 +21,9 @@ class ExportedSpriteRowInfo {
   // The number of frames inside this animation
   final int numberOfFrames;
 
+  // The hitbox points of this row
+  final List<Offset> hitboxPoints;
+
   // The calculated size of each frame in this animation
   Size get frameSize =>
       Size(totalWidth / numberOfFrames, totalHeight.toDouble());
@@ -31,6 +34,7 @@ class ExportedSpriteRowInfo {
     required this.totalHeight,
     required this.offsetFromTop,
     required this.numberOfFrames,
+    this.hitboxPoints = const [],
   });
 
   ExportedSpriteRowInfo.asSingleRow({
@@ -38,5 +42,6 @@ class ExportedSpriteRowInfo {
     required this.totalWidth,
     required this.totalHeight,
     required this.numberOfFrames,
+    this.hitboxPoints = const [],
   }) : offsetFromTop = 0;
 }

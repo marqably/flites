@@ -10,10 +10,18 @@ class SelectInputOption<T> {
   /// The underlying value for the option
   final T value;
 
+  /// Whether the option is disabled
+  final bool disabled;
+
+  /// An optional comment to display below the option
+  final String? comment;
+
   /// Creates a select input option
   const SelectInputOption({
     required this.label,
     required this.value,
+    this.disabled = false,
+    this.comment,
   });
 }
 
@@ -63,7 +71,7 @@ class SelectInput<T> extends StatelessWidget {
         // Label if provided
         if (label != null)
           Padding(
-            padding: const EdgeInsets.only(bottom: 8.0),
+            padding: const EdgeInsets.only(bottom: Sizes.p8),
             child: Text(
               label!,
               style: Theme.of(context).textTheme.bodyMedium,
@@ -120,12 +128,10 @@ class SelectInput<T> extends StatelessWidget {
                 height: 1.0,
               ),
               onChanged: onChanged,
-              items: options.map<DropdownMenuItem<T>>((option) {
-                return DropdownMenuItem<T>(
-                  value: option.value,
-                  child: Text(option.label),
-                );
-              }).toList(),
+              items: options
+                  .map<DropdownMenuItem<T>>(
+                      (option) => _buildDropdownMenuItem(context, option))
+                  .toList(),
             ),
           ),
         ),
@@ -146,6 +152,45 @@ class SelectInput<T> extends StatelessWidget {
         // postfix widget
         if (postfixWidget != null) Flexible(flex: 0, child: postfixWidget!),
       ],
+    );
+  }
+
+  DropdownMenuItem<T> _buildDropdownMenuItem(
+      BuildContext context, SelectInputOption<T> option) {
+    return DropdownMenuItem<T>(
+      value: option.disabled ? null : option.value,
+      enabled: !option.disabled,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // label
+          Text(
+            option.label,
+            style: TextStyle(
+              color: context.colors.onSurface
+                  .withValues(alpha: option.disabled ? 0.5 : 1),
+              fontSize: fontSizeBase,
+            ),
+          ),
+
+          // disabled comment
+          if (option.comment != null)
+            Padding(
+              padding: const EdgeInsets.only(top: Sizes.p4),
+              child: Text(
+                option.comment!,
+                style: TextStyle(
+                  color: context.colors.error
+                      .withValues(alpha: option.disabled ? 0.5 : 1),
+                  fontSize: fontSizeSm,
+                  height: 1,
+                ),
+              ),
+            ),
+        ],
+      ),
     );
   }
 }
