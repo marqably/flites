@@ -42,6 +42,9 @@ class FlitesImageRow {
       'name': name,
       'images': images.map((x) => x.toJson()).toList(),
       'exportSettings': exportSettings.toMap(),
+      'hitboxPoints': hitboxPoints
+          ?.map((point) => {'dx': point.dx, 'dy': point.dy})
+          .toList(),
     };
   }
 
@@ -53,6 +56,10 @@ class FlitesImageRow {
           (x) => FlitesImage.fromJson(x as Map<String, dynamic>),
         ),
       ),
+      hitboxPoints: map['hitboxPoints'] != null
+          ? List<Offset>.from((map['hitboxPoints'] as List<dynamic>)
+              .map((x) => Offset(x['dx'] as double, x['dy'] as double)))
+          : null,
       exportSettings:
           ExportSettings.fromMap(map['exportSettings'] as Map<String, dynamic>),
     );

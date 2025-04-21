@@ -216,13 +216,13 @@ class _SelectInputMultiState<T> extends State<SelectInputMulti<T>> {
               TextButton(
                 child: Text(context.l10n.ok),
                 onPressed: () {
-                  // Apply changes and notify parent
-                  widget.onChanged(tempSelectedValues);
-
                   // Update local state
                   setState(() {
                     _selectedValues = tempSelectedValues;
                   });
+
+                  // Apply changes and notify parent
+                  widget.onChanged(tempSelectedValues);
 
                   Navigator.pop(context);
                 },

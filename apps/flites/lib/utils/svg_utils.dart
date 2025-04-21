@@ -25,6 +25,8 @@ class SvgUtils {
         (sum, row) =>
             sum + row.images.where((image) => isSvg(image.image)).length);
 
+    if (totalImages == 0) return 0;
+
     return (svgImages / totalImages) * 100;
   }
 

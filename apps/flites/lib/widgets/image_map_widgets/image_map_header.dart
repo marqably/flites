@@ -6,6 +6,7 @@ import 'package:flites/states/source_files_state.dart';
 import 'package:flites/states/tool_controller.dart';
 import 'package:flites/types/secondary_click_context_data.dart';
 import 'package:flites/ui/utils/hover_btn.dart';
+import 'package:flites/widgets/overlays/generic_overlay.dart';
 import 'package:flites/widgets/right_click_menu/right_clickable_item_wrapper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
@@ -134,12 +135,31 @@ class ImageMapHeader extends StatelessWidget {
               ],
             ),
           ),
-          // TODO: don't show or disable this button if no rows or images yet!
+          // Export button - only shown when there are rows with images
           AnimationRowTabWrapper(
             isSelected: false,
             color: context.colors.primaryFixed,
             hoverColor: context.colors.primaryFixedDim,
             onPressed: () {
+              // check if there are rows with images
+              final hasRows = projectSourceFiles.value.rows.isNotEmpty;
+              final hasImages = hasRows &&
+                  projectSourceFiles.value.rows
+                      .any((row) => row.images.isNotEmpty);
+
+              // if we don't have any rows or images, show a dialog
+              if (!hasRows || !hasImages) {
+                showDialog(
+                  context: context,
+                  builder: (context) => const GenericOverlay(
+                    icon: Icons.error_rounded,
+                    title: 'No images to export',
+                    body: 'Please add some images to the sprite sheet first.',
+                  ),
+                );
+                return;
+              }
+
               toolController.selectTool(Tool.export);
             },
             withBackground: true,

@@ -1,5 +1,6 @@
 import 'package:flites/config/code_wizards.dart';
 import 'package:flites/config/tools.dart';
+import 'package:flites/constants/app_sizes.dart';
 import 'package:flites/states/tool_controller.dart';
 import 'package:flites/types/exported_sprite_image.dart';
 import 'package:flites/ui/inputs/select_input.dart';
@@ -14,6 +15,7 @@ import 'package:flites/ui/panel/structure/panel_section.dart';
 import 'package:flites/utils/generate_sprite.dart';
 import 'package:flites/utils/generate_svg_sprite.dart';
 import 'package:flites/utils/svg_utils.dart';
+import 'package:flites/widgets/overlays/generic_overlay.dart';
 import 'package:flutter/material.dart';
 
 class ExportToolFormData {
@@ -82,7 +84,7 @@ class ExportToolPanel extends StatelessWidget {
       initialValues: initialValues,
       onSubmit: (values) {
         final formData = ExportToolFormData.fromMap(values);
-        _export(formData);
+        _export(context, formData);
       },
       child: Builder(
         builder: (context) {
@@ -149,6 +151,7 @@ class ExportToolPanel extends StatelessWidget {
               // Code generation settings
               PanelSection(
                 label: 'Code Generation',
+                initiallyExpanded: false,
                 children: [
                   // Framework
                   PanelSelectInput<CodeWizards>(
@@ -165,7 +168,7 @@ class ExportToolPanel extends StatelessWidget {
                 ],
               ),
 
-              const SizedBox(height: 24),
+              gapH64,
 
               // Submit button triggers the form submission
               PanelButton(
@@ -193,23 +196,43 @@ class ExportToolPanel extends StatelessWidget {
   }
 
   /// Exports the sprite map based on the form data
-  void _export(ExportToolFormData formData) async {
-    // TODO: normalize the tiled and untiled sprite export to the same type and pass it to onExport
-    final tileSize = Size(formData.tileWidth, formData.tileHeight);
-    ExportedSpriteSheetTiled? spriteSheet;
+  void _export(BuildContext context, ExportToolFormData formData) async {
+    showDialog(
+      context: context,
+      builder: (context) => const GenericOverlay(
+        title: 'Generating sprite sheet...',
+        body: 'This might take a moment...',
+        child: CircularProgressIndicator(),
+      ),
+    );
 
-    // TODO: use the Casing.snakeCase(formData.spriteSheetName).{EXTENSION} as filename
+    await Future.delayed(const Duration(seconds: 1));
 
-    if (formData.format == 'png') {
-      spriteSheet = await GenerateSprite.exportTiledSpriteMap(
-        tileSize: tileSize,
-      );
-    } else {
-      spriteSheet = await GenerateSvgSprite.exportTiledSpriteMap(
-        tileSize: tileSize,
-      );
+    // perform the export
+    try {
+      // TODO: normalize the tiled and untiled sprite export to the same type and pass it to onExport
+      final tileSize = Size(formData.tileWidth, formData.tileHeight);
+      ExportedSpriteSheetTiled? spriteSheet;
+
+      // TODO: use the Casing.snakeCase(formData.spriteSheetName).{EXTENSION} as filename
+
+      if (formData.format == 'png') {
+        spriteSheet = await GenerateSprite.exportTiledSpriteMap(
+          tileSize: tileSize,
+        );
+      } else {
+        spriteSheet = await GenerateSvgSprite.exportTiledSpriteMap(
+          tileSize: tileSize,
+        );
+      }
+
+      // pass the sprite sheet and form data to the parent
+      onExport(spriteSheet, formData);
+    } finally {
+      // Remove loading indicator
+      if (context.mounted) {
+        Navigator.pop(context);
+      }
     }
-
-    onExport(spriteSheet, formData);
   }
 }

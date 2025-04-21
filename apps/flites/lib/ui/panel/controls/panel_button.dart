@@ -97,7 +97,11 @@ class PanelButton extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               if (icon != null) ...[
-                Icon(icon, size: fontSizeBase),
+                Icon(
+                  icon,
+                  size: fontSizeBase,
+                  color: textColor,
+                ),
                 const SizedBox(width: Sizes.p8),
               ],
               Text(

@@ -75,6 +75,11 @@ class FlutterFlameCodeGenerator {
     String stub,
     ExportedSpriteSheetTiled spriteSheet,
   ) {
+    if (spriteSheet.rowInformations.isEmpty) {
+      return stub.replaceAll(
+          '{{firstAnimationState}}', '/* No animation states available */');
+    }
+
     final state = spriteSheet.rowInformations[0];
 
     return stub.replaceAll(
@@ -86,6 +91,11 @@ class FlutterFlameCodeGenerator {
     String stub,
     ExportedSpriteSheetTiled spriteSheet,
   ) {
+    if (spriteSheet.rowInformations.isEmpty) {
+      return stub.replaceAll('{{alternativeAnimationState}}',
+          '/* No animation states available */');
+    }
+
     final state = spriteSheet.rowInformations.length > 1
         ? spriteSheet.rowInformations[1]
         : spriteSheet.rowInformations[0];
