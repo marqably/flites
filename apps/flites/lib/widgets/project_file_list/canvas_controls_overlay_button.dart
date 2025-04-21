@@ -29,7 +29,7 @@ class CanvasControlsButton extends StatelessWidget {
           color: context.colors.onSurface,
         ),
       ),
-      overlayContent: Padding(
+      overlayContent: (close) => Padding(
         padding: const EdgeInsets.all(Sizes.p16),
         child: SizedBox(
           width: 280,
