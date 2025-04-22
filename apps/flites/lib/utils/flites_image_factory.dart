@@ -1,3 +1,4 @@
+import 'package:desktop_drop/desktop_drop.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flites/constants/image_constants.dart';
 import 'package:flites/services/file_service.dart';
@@ -33,6 +34,31 @@ class FlitesImageFactory {
     if (imagesAndNames.isEmpty) return [];
 
     // Scale and convert raw images to FlitesImage objects
+    return _processAndScaleImages(imagesAndNames);
+  }
+
+  Future<List<FlitesImage>> processDroppedFiles(List<DropItem> files) async {
+    List<RawImageAndName> imagesAndNames = [];
+
+    for (final file in files) {
+      final size = await file.length();
+      final bytes = await file.readAsBytes();
+
+      if (bytes.isEmpty) {
+        continue;
+      }
+
+      final platformFile = PlatformFile(
+        name: file.name,
+        path: file.path,
+        bytes: bytes,
+        size: size,
+      );
+
+      final image = await _processFile(platformFile);
+      imagesAndNames.addAll(image);
+    }
+
     return _processAndScaleImages(imagesAndNames);
   }
 

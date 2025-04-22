@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:flites/states/selected_image_state.dart';
 import 'package:flites/types/export_settings.dart';
 import 'package:flites/types/flites_image.dart';
 import 'package:flites/types/flites_image_map.dart';
@@ -93,8 +94,9 @@ class SourceFilesState {
         _projectSourceFiles.value.copyWith(rows: currentRows);
   }
 
-  static Future<void> addImages() async {
-    final newImages = await flitesImageFactory.pickAndProcessImages();
+  static Future<void> addImages({List<FlitesImage>? droppedImages}) async {
+    final newImages =
+        droppedImages ?? await flitesImageFactory.pickAndProcessImages();
 
     final selectedRowIndex = selectedImageRow.value;
     if (newImages.isNotEmpty) {
@@ -112,6 +114,8 @@ class SourceFilesState {
 
       _projectSourceFiles.value =
           projectSourceFiles.value.copyWith(rows: updatedRows);
+
+      SelectedImageState.setSelectedImage(newImages.first.id);
     }
   }
 

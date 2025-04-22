@@ -6,7 +6,6 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flites/states/canvas_controller.dart';
 import 'package:flites/utils/svg_utils.dart';
 import 'package:flutter/foundation.dart';
-import 'package:super_drag_and_drop/super_drag_and_drop.dart';
 
 /// A utility class for working with images.
 /// Holds methods for scaling images, getting image sizes, and more.
@@ -112,37 +111,6 @@ class ImageUtils {
     } catch (e) {
       return const Size(100, 100); // Default size for unrecognized formats
     }
-  }
-
-  static Future<RawImageAndName?> rawImageFromDropData(DropItem item) async {
-    Uint8List? rawImage;
-    String? name;
-
-    final reader = item.dataReader;
-
-    if (reader == null) {
-      return null;
-    }
-
-    if (reader.canProvide(Formats.png)) {
-      final completer = Completer<void>();
-
-      reader.getFile(Formats.png, (file) async {
-        final stream = file.getStream();
-
-        final data = await stream.last;
-
-        rawImage = data;
-
-        name = file.fileName;
-
-        completer.complete();
-      });
-
-      await completer.future;
-    }
-
-    return RawImageAndName(image: rawImage, name: name);
   }
 
   static Future<RawImageAndName?> rawImageFroMPlatformFile(
