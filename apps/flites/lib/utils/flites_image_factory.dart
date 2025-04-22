@@ -6,6 +6,7 @@ import 'package:flites/types/flites_image.dart';
 import 'package:flites/utils/image_utils.dart';
 import 'package:flites/utils/png_utils.dart';
 import 'package:flites/utils/svg_utils.dart';
+import 'package:flutter/material.dart';
 import 'package:image/image.dart' as img;
 
 /// Service for picking and processing images from the file system.
@@ -41,22 +42,27 @@ class FlitesImageFactory {
     List<RawImageAndName> imagesAndNames = [];
 
     for (final file in files) {
-      final size = await file.length();
-      final bytes = await file.readAsBytes();
+      try {
+        final size = await file.length();
+        final bytes = await file.readAsBytes();
 
-      if (bytes.isEmpty) {
-        continue;
+        if (bytes.isEmpty) {
+          continue;
+        }
+
+        final platformFile = PlatformFile(
+          name: file.name,
+          path: file.path,
+          bytes: bytes,
+          size: size,
+        );
+
+        final image = await _processFile(platformFile);
+        imagesAndNames.addAll(image);
+      } catch (e) {
+        // Handle any errors that occur during file processing
+        debugPrint('Error processing dropped file ${file.name}: $e');
       }
-
-      final platformFile = PlatformFile(
-        name: file.name,
-        path: file.path,
-        bytes: bytes,
-        size: size,
-      );
-
-      final image = await _processFile(platformFile);
-      imagesAndNames.addAll(image);
     }
 
     return _processAndScaleImages(imagesAndNames);
