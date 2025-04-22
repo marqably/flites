@@ -6,7 +6,6 @@ import 'package:flites/ui/utils/hover_btn.dart';
 import 'package:flites/utils/svg_utils.dart';
 import 'package:flites/widgets/right_click_menu/right_clickable_item_wrapper.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 
 /// A list item widget for displaying content with thumbnail, title, and action buttons.
