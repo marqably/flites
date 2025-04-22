@@ -1,7 +1,10 @@
 import 'package:flites/constants/app_sizes.dart';
+import 'package:flites/types/flites_image.dart';
+import 'package:flites/types/secondary_click_context_data.dart';
 import 'package:flites/ui/inputs/icon_btn.dart';
 import 'package:flites/ui/utils/hover_btn.dart';
 import 'package:flites/utils/svg_utils.dart';
+import 'package:flites/widgets/right_click_menu/right_clickable_item_wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
@@ -12,8 +15,7 @@ class PanelListItem extends StatefulWidget {
   final String title;
   final String? subtitle;
   final String? value;
-  // TODO: work with images instead of Uint8List here!
-  final Uint8List? image;
+  final FlitesImage? image;
   final IconData? icon;
   final List<IconBtn> Function(bool isHovered, bool isActive)? actionButtons;
   final bool isSelected;
@@ -43,7 +45,7 @@ class PanelListItem extends StatefulWidget {
     List<IconBtn> Function(bool isHovered, bool isActive)? actionButtons,
     String? title,
     String? subtitle,
-    Uint8List? image,
+    FlitesImage? image,
     String? value,
     IconData? icon,
   }) {
@@ -71,115 +73,118 @@ class _PanelListItemState extends State<PanelListItem> {
     final actionButtonList =
         widget.actionButtons?.call(isHovered, widget.isSelected) ?? [];
 
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(borderRadiusMd),
-      child: HoverBtn(
-        hoverColor: theme.colorScheme.surfaceContainerLow,
-        customBorder: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
-        color: widget.isSelected
-            ? theme.colorScheme.surfaceContainerLow
-            : Colors.transparent,
-        disableHoverEffect: widget.isSelected || widget.hoverSelected,
-        onTap: widget.onTap,
-        onHover: (val) {
-          setState(() {
-            isHovered = val;
-          });
-        },
-        child: Padding(
-          padding: const EdgeInsets.only(
-            left: Sizes.p8,
-            right: Sizes.p4,
-            top: Sizes.p8,
-            bottom: Sizes.p8,
+    return RightClickableItemWrapper(
+      contextData: SecondaryClickContextData(copyableData: [widget.image]),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(borderRadiusMd),
+        child: HoverBtn(
+          hoverColor: theme.colorScheme.surfaceContainerLow,
+          customBorder: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
           ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              // Image/thumbnail
-              if (widget.image != null)
-                SizedBox(
-                  width: Sizes.p28, // Set the desired square dimension
-                  height: Sizes.p28,
-                  child: SvgUtils.isSvg(widget.image!)
-                      ? SvgPicture.memory(
-                          widget.image!,
-                          fit: BoxFit.contain,
-                          width: Sizes.p28,
-                          height: Sizes.p28,
-                          alignment: Alignment.center,
-                        )
-                      : Image.memory(
-                          widget.image!,
-                          fit: BoxFit.contain,
-                          width: Sizes.p28,
-                          height: Sizes.p28,
-                          alignment: Alignment.center,
-                        ),
-                ),
-
-              // icon
-              if (widget.icon != null)
-                Container(
-                  width: Sizes.p24,
-                  height: Sizes.p24,
-                  decoration: BoxDecoration(
-                    color: theme.colorScheme.surfaceContainerLow,
-                    borderRadius: const BorderRadius.all(
-                      Radius.circular(borderRadiusSm),
-                    ),
+          color: widget.isSelected
+              ? theme.colorScheme.surfaceContainerLow
+              : Colors.transparent,
+          disableHoverEffect: widget.isSelected || widget.hoverSelected,
+          onTap: widget.onTap,
+          onHover: (val) {
+            setState(() {
+              isHovered = val;
+            });
+          },
+          child: Padding(
+            padding: const EdgeInsets.only(
+              left: Sizes.p8,
+              right: Sizes.p4,
+              top: Sizes.p8,
+              bottom: Sizes.p8,
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                // Image/thumbnail
+                if (widget.image != null)
+                  SizedBox(
+                    width: Sizes.p28, // Set the desired square dimension
+                    height: Sizes.p28,
+                    child: SvgUtils.isSvg(widget.image!.image)
+                        ? SvgPicture.memory(
+                            widget.image!.image,
+                            fit: BoxFit.contain,
+                            width: Sizes.p28,
+                            height: Sizes.p28,
+                            alignment: Alignment.center,
+                          )
+                        : Image.memory(
+                            widget.image!.image,
+                            fit: BoxFit.contain,
+                            width: Sizes.p28,
+                            height: Sizes.p28,
+                            alignment: Alignment.center,
+                          ),
                   ),
-                  alignment: Alignment.center,
-                  child: Icon(
-                    widget.icon!,
-                    size: Sizes.p16,
-                    color: theme.colorScheme.onSurface,
-                  ),
-                ),
 
-              // spacing
-              const SizedBox(width: 12),
-
-              // Title and subtitle
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      widget.title,
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: theme.colorScheme.onSurface,
+                // icon
+                if (widget.icon != null)
+                  Container(
+                    width: Sizes.p24,
+                    height: Sizes.p24,
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.surfaceContainerLow,
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(borderRadiusSm),
                       ),
-                      overflow: TextOverflow.ellipsis,
                     ),
-                    if (widget.subtitle != null)
+                    alignment: Alignment.center,
+                    child: Icon(
+                      widget.icon!,
+                      size: Sizes.p16,
+                      color: theme.colorScheme.onSurface,
+                    ),
+                  ),
+
+                // spacing
+                const SizedBox(width: 12),
+
+                // Title and subtitle
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
                       Text(
-                        widget.subtitle!,
-                        style: theme.textTheme.bodySmall?.copyWith(
+                        widget.title,
+                        style: theme.textTheme.bodyMedium?.copyWith(
                           color: theme.colorScheme.onSurface,
-                          fontSize: fontSizeSm,
                         ),
                         overflow: TextOverflow.ellipsis,
                       ),
-                  ],
+                      if (widget.subtitle != null)
+                        Text(
+                          widget.subtitle!,
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: theme.colorScheme.onSurface,
+                            fontSize: fontSizeSm,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                    ],
+                  ),
                 ),
-              ),
 
-              // Action buttons
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                spacing: Sizes.p4,
-                children: actionButtonList.map((btn) {
-                  return btn.copyWith(
-                    color: Colors.transparent,
-                    size: IconBtnSize.xs,
-                  );
-                }).toList(),
-              ),
-            ],
+                // Action buttons
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  spacing: Sizes.p4,
+                  children: actionButtonList.map((btn) {
+                    return btn.copyWith(
+                      color: Colors.transparent,
+                      size: IconBtnSize.xs,
+                    );
+                  }).toList(),
+                ),
+              ],
+            ),
           ),
         ),
       ),
