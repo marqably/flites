@@ -1,6 +1,7 @@
 import 'package:flites/config/code_wizards.dart';
 import 'package:flites/config/tools.dart';
 import 'package:flites/constants/app_sizes.dart';
+import 'package:flites/states/source_files_state.dart';
 import 'package:flites/states/tool_controller.dart';
 import 'package:flites/types/exported_sprite_image.dart';
 import 'package:flites/ui/inputs/select_input.dart';
@@ -70,8 +71,7 @@ class ExportToolPanel extends StatelessWidget {
 
     // Initial values for the form
     final initialValues = ExportToolFormData(
-      /// TODO: retrieve & save this in the project settings
-      spriteSheetName: 'Character',
+      spriteSheetName: projectSourceFiles.value.projectName ?? 'Character',
       format: (percentageOfSvgImagesInProject == 100) ? 'svg' : 'png',
       // TODO add the current tile size to the initial values
       tileWidth: 100,
@@ -97,9 +97,12 @@ class ExportToolPanel extends StatelessWidget {
                 label: 'Format Settings',
                 children: [
                   // sprite sheet name
-                  const PanelTextInput(
+                  PanelTextInput(
                     label: 'Sprite Sheet Name',
                     formKey: 'spriteSheetName',
+                    onChanged: (newValue) {
+                      SourceFilesState.renameProject(newValue);
+                    },
                   ),
 
                   // file format

@@ -28,6 +28,12 @@ final selectedAnimation = computed(
 );
 
 class SourceFilesState {
+  static void renameProject(String name) {
+    final newProject = _projectSourceFiles.value.copyWith(projectName: name);
+
+    _projectSourceFiles.value = newProject;
+  }
+
   static void addImageRow(String name) {
     final currentRows = _projectSourceFiles.value.rows;
 
