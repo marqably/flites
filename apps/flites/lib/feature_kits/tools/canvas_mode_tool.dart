@@ -3,7 +3,6 @@ import 'package:flites/feature_kits/tools/canvas_helpers/selected_image_rect_wra
 import 'package:flites/widgets/flites_image_renderer/flites_image_renderer.dart';
 import 'package:flites/widgets/layout/app_shell.dart';
 import 'package:flites/widgets/player/player.dart';
-import 'package:flites/widgets/upload_area/file_drop_area.dart';
 import 'package:flutter/material.dart';
 
 /// Displays the current selection in canvas mode
@@ -24,11 +23,7 @@ class CanvasModeTool extends StatelessWidget {
           ) {
             return Positioned.fromRect(
               rect: selectedImageRect,
-              child: FileDropArea(
-                  child: Positioned.fromRect(
-                rect: selectedImageRect,
-                child: FlitesImageRenderer(flitesImage: currentSelection),
-              )),
+              child: FlitesImageRenderer(flitesImage: currentSelection),
             );
           },
         ),
