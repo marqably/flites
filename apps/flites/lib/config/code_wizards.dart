@@ -3,7 +3,8 @@ import 'package:flites/feature_kits/code_wizards/flutter_flame/flutter_flame_cod
 
 enum CodeWizards {
   none,
-  flutterFlame;
+  flutterFlame,
+  ;
 
   BaseCodeWizard? getCodeWizard() {
     switch (this) {
