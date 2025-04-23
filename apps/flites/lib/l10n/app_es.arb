@@ -286,5 +286,13 @@
     "generatingSpriteSheet": "Generando hoja de sprites...",
     "@generatingSpriteSheet": {
         "description": "Message shown while generating a sprite sheet"
+    },
+    "generateHitboxCode": "Generar código de hitbox",
+    "@generateHitboxCode": {
+        "description": "Checkbox label for generating hitbox code"
+    },
+    "close": "Cerrar",
+    "@close": {
+        "description": "Button text for closing panels or dialogs"
     }
 }

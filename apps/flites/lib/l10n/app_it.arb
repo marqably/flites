@@ -283,8 +283,16 @@
     "@targetFramework": {
         "description": "Label for target framework selection"
     },
-    "generatingSpriteSheet": "Generazione foglio sprite in corso...",
+    "generatingSpriteSheet": "Generazione del foglio di sprite...",
     "@generatingSpriteSheet": {
         "description": "Message shown while generating a sprite sheet"
+    },
+    "generateHitboxCode": "Genera codice hitbox",
+    "@generateHitboxCode": {
+        "description": "Checkbox label for generating hitbox code"
+    },
+    "close": "Chiudi",
+    "@close": {
+        "description": "Button text for closing panels or dialogs"
     }
 }

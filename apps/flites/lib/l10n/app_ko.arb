@@ -286,5 +286,13 @@
     "generatingSpriteSheet": "스프라이트 시트 생성 중...",
     "@generatingSpriteSheet": {
         "description": "Message shown while generating a sprite sheet"
+    },
+    "generateHitboxCode": "히트박스 코드 생성",
+    "@generateHitboxCode": {
+        "description": "Checkbox label for generating hitbox code"
+    },
+    "close": "닫기",
+    "@close": {
+        "description": "Button text for closing panels or dialogs"
     }
 }

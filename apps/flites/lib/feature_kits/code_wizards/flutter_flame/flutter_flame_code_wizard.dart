@@ -1,5 +1,6 @@
 import 'package:flites/config/tools.dart';
 import 'package:flites/feature_kits/tools/export_tool/export_tool_panel.dart';
+import 'package:flites/main.dart';
 import 'package:flites/states/tool_controller.dart';
 import 'package:flites/types/exported_sprite_image.dart';
 import 'package:flites/ui/panel/controls/panel_button.dart';
@@ -46,26 +47,28 @@ class FlutterFlameCodeWizard
       onChanged: (values) {
         onChanged(values);
       },
-      child: Panel(
-        isScrollable: false,
-        children: [
-          const PanelSection(
-            label: 'Code Generation',
-            children: [
-              PanelCheckboxInput(
-                formKey: 'hitboxes',
-                checkboxLabel: 'Generate hitbox code',
-              ),
-            ],
-          ),
-          const Spacer(),
-          PanelButton(
-            label: 'Close',
-            onPressed: () {
-              toolController.selectTool(Tool.canvas);
-            },
-          ),
-        ],
+      child: Builder(
+        builder: (context) => Panel(
+          isScrollable: false,
+          children: [
+            PanelSection(
+              label: context.l10n.codeGeneration,
+              children: [
+                PanelCheckboxInput(
+                  formKey: 'hitboxes',
+                  checkboxLabel: context.l10n.generateHitboxCode,
+                ),
+              ],
+            ),
+            const Spacer(),
+            PanelButton(
+              label: context.l10n.close,
+              onPressed: () {
+                toolController.selectTool(Tool.canvas);
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -290,5 +290,13 @@
     "generatingSpriteSheet": "正在生成精灵表...",
     "@generatingSpriteSheet": {
         "description": "Message shown while generating a sprite sheet"
+    },
+    "generateHitboxCode": "生成碰撞箱代码",
+    "@generateHitboxCode": {
+        "description": "Checkbox label for generating hitbox code"
+    },
+    "close": "关闭",
+    "@close": {
+        "description": "Button text for closing panels or dialogs"
     }
 }

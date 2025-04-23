@@ -282,7 +282,7 @@
     },
     "codeGeneration": "Code Generation",
     "@codeGeneration": {
-        "description": "Section header for code generation options"
+        "description": "Section header for code generation settings"
     },
     "targetFramework": "Target Framework",
     "@targetFramework": {
@@ -291,5 +291,13 @@
     "generatingSpriteSheet": "Generating sprite sheet...",
     "@generatingSpriteSheet": {
         "description": "Message shown while generating a sprite sheet"
+    },
+    "generateHitboxCode": "Generate hitbox code",
+    "@generateHitboxCode": {
+        "description": "Checkbox label for generating hitbox code"
+    },
+    "close": "Close",
+    "@close": {
+        "description": "Button text for closing panels or dialogs"
     }
 }
