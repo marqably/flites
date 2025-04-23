@@ -9,6 +9,7 @@ import 'package:flites/widgets/player/player.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_box_transform/flutter_box_transform.dart';
 import 'package:signals/signals_flutter.dart';
+import 'package:flites/states/source_files_state.dart';
 
 /// Displays the current selection in move/resize mode
 class MoveResizeTool extends StatefulWidget {
@@ -56,7 +57,7 @@ class MoveResizeToolState extends State<MoveResizeTool> {
                       canvasPosition.value,
                     );
 
-                    setState(() {});
+                    SourceFilesState.saveImageChanges(currentSelection);
                   },
                   contentBuilder: (context, rect, flip) {
                     return FlitesImageRenderer(flitesImage: currentSelection);
