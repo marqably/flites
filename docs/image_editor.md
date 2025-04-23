@@ -2,38 +2,44 @@
 
 ## Overview
 
-The image editor is a core component of Flites that provides a canvas-based interface for manipulating images. It supports multiple tools and modes for image manipulation, including canvas mode, move/resize mode, and rotation mode.
+The image editor is a core component of Flites that provides a canvas-based interface for manipulating images. It acts as a foundation layer, handling common canvas operations like panning, zooming, background rendering, reference images, and bounding boxes. Specific image manipulation tools (like Move/Resize, Rotate) are built as separate widgets that utilize the `ImageEditor`.
 
 ## Component Structure
 
-### Main Components
+### Core Components
 
-- `ImageEditor`: The main container component
-- `FlitesImageRenderer`: A reusable component for rendering both SVG and bitmap images
-- `CanvasPositioned`: A utility component for positioning elements on the canvas
+- `ImageEditor`: The main container component. Provides the shared canvas features (pan/zoom, background, reference images, bounding box, gesture handling) and renders a tool-specific `child` widget.
+- `FlitesImageRenderer`: A reusable component for rendering both SVG and bitmap images, often used within the tool-specific child widgets.
+- `_CanvasBoundingBox`: (Part of `ImageEditor`) Displays the bounding box for the selected image(s).
+- `_CanvasReferenceImage`: (Part of `ImageEditor`) Renders reference images on the canvas.
+- `_CanvasPositioned`: (Part of `ImageEditor`) A utility component for positioning elements correctly on the scaled and panned canvas.
+- `_CanvasGestureHandler`: (Part of `ImageEditor`) Handles pan and zoom gestures for the canvas itself.
 
-### Tool-specific Components
+### Tool Widgets (Examples)
 
-The editor is organized into tool-specific canvas components:
+Separate widgets implement the logic and UI for specific tools. These widgets typically use `ImageEditor` as a wrapper and provide their interactive elements as the `child`.
 
-- `_CanvasModeToolCanvas`: Handles basic image display
-- `_MoveResizeToolCanvas`: Handles image moving and resizing
-- `_RotateToolCanvas`: Manages image rotation
+- `MoveResizeTool`: Uses `ImageEditor` and provides a `TransformableBox` as the child to handle image moving and resizing via handles.
+- `RotateTool`: Uses `ImageEditor` and provides a `RotationWrapper` as the child to manage image rotation via a visual control.
+- *(Other tools like HitboxTool follow a similar pattern)*
 
 ## Features
 
-### Canvas Control
+### Canvas Control (Provided by `ImageEditor`)
 
-- Pan/zoom functionality with mouse controls
-- Canvas scaling with modifier key + scroll
-- Grabbing mode for canvas navigation
+- Pan/zoom functionality with mouse controls (via `_CanvasGestureHandler`).
+- Canvas scaling with modifier key + scroll.
+- Grabbing mode for canvas navigation.
+- Background rendering.
+- Reference image support with opacity overlay (via `_CanvasReferenceImage`).
+- Bounding box visualization for sprite sheets (via `_CanvasBoundingBox`).
+- Zoom controls UI.
 
-### Image Manipulation
+### Image Manipulation (Provided by Tool Widgets)
 
-- Move and resize with corner handles
-- Rotation with visual rotation control
-- Reference image support with opacity overlay
-- Bounding box visualization for sprite sheets
+- **Move and Resize:** Handled by `MoveResizeTool` using `TransformableBox` (corner handles).
+- **Rotation:** Handled by `RotateTool` using `RotationWrapper` (visual rotation control).
+- *(Other manipulations handled by their respective tool widgets)*
 
 ### Image Support
 
@@ -44,39 +50,38 @@ The editor is organized into tool-specific canvas components:
 
 ## State Management
 
-The editor uses several state controllers:
+The editor and related tools use several state controllers/signals:
 
-- `canvasController`: Manages canvas position, scale, and size
-- `toolController`: Handles active tool selection
-- `selectedImageState`: Tracks currently selected image
-- `selectedReferenceImages`: Manages reference image overlays
+- `canvasController` / signals in `canvas_controller.dart`: Manages canvas position (`canvasPosition`), scale (`canvasScalingFactor`), and size (`canvasSizePixel`). Also includes `showBoundingBorder`.
+- `toolController`: Handles active tool selection (`selectedTool`).
+- `selectedImageState` / `selectedImageId`: Tracks the currently selected image ID.
+- `selectedReferenceImages`: Manages reference image IDs for overlays.
+- `projectSourceFiles`: Holds the main image data for the project, including position, size, rotation etc. Updated by tools via `SourceFilesState`.
 
 ## Usage Example
 
-1. Select an image from the project file list
-2. Choose a tool (Canvas, Move, or Rotate)
-3. Use mouse interactions to manipulate the image:
-   - Click and drag to move the canvas
-   - Use corner handles to resize (in move mode)
-   - Use rotation control to rotate (in rotate mode)
-   - Hold modifier key + scroll to zoom
+1. Select an image from the project file list.
+2. Choose a tool (Move, Rotate, etc.) from the toolbar. This loads the corresponding tool widget which uses `ImageEditor`.
+3. Use mouse interactions specific to the active tool:
+    - Click and drag background to pan the canvas (handled by `ImageEditor`).
+    - Use modifier key + scroll to zoom (handled by `ImageEditor`).
+    - Use corner handles to resize (handled by `MoveResizeTool`'s child).
+    - Use rotation control to rotate (handled by `RotateTool`'s child).
 
 ## Implementation Details
 
 ### Canvas Positioning
 
-Images are positioned using a coordinate system that takes into account:
+Images and UI elements within the canvas are positioned using `_CanvasPositioned` or similar logic, taking into account:
 
-- Canvas scaling factor
-- Canvas position
-- Image position
-- Image dimensions
+- `canvasScalingFactor` signal
+- `canvasPosition` signal
+- Image properties (position, dimensions) from `projectSourceFiles` or temporary state.
 
 ### Image Rendering
 
-The `FlitesImageRenderer` component handles:
+The `FlitesImageRenderer` component, typically used within the tool's child widget, handles:
 
 - Automatic detection of image type (SVG/bitmap)
-- Proper scaling and transformation
-- Rotation and positioning
-- Consistent rendering across different image formats
+- Applying transformations based on `FlitesImage` properties and `canvasScalingFactor`.
+- Consistent rendering across different image formats.
