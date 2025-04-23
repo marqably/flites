@@ -188,6 +188,7 @@ class FlitesImage {
     double? widthOnCanvas,
     Offset? positionOnCanvas,
     double? rotation,
+    double? scalingFactor,
   }) {
     return FlitesImage()
       ..image = image ?? this.image
@@ -196,6 +197,7 @@ class FlitesImage {
       ..originalName = originalName ?? this.originalName
       ..widthOnCanvas = widthOnCanvas ?? this.widthOnCanvas
       ..positionOnCanvas = positionOnCanvas ?? this.positionOnCanvas
-      ..rotation = rotation ?? this.rotation;
+      ..rotation = rotation ?? this.rotation
+      ..scalingFactor = scalingFactor ?? this.scalingFactor;
   }
 }
