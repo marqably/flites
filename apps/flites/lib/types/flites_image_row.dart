@@ -9,15 +9,13 @@ import 'flites_image.dart';
 class FlitesImageRow {
   final String name;
   final List<FlitesImage> images;
-  List<Offset>? hitboxPoints;
-  // final int order;
+  final List<Offset>? hitboxPoints;
   final ExportSettings exportSettings;
 
   FlitesImageRow({
     required this.name,
     required this.images,
     this.hitboxPoints,
-    // required this.order,
     ExportSettings? exportSettings,
   }) : exportSettings = exportSettings ?? ExportSettings();
 
@@ -25,14 +23,12 @@ class FlitesImageRow {
     String? name,
     List<FlitesImage>? images,
     List<Offset>? hitboxPoints,
-    int? order,
     ExportSettings? exportSettings,
   }) {
     return FlitesImageRow(
       hitboxPoints: hitboxPoints ?? this.hitboxPoints,
       name: name ?? this.name,
       images: images ?? this.images,
-      // order: order ?? this.order,
       exportSettings: exportSettings ?? this.exportSettings,
     );
   }

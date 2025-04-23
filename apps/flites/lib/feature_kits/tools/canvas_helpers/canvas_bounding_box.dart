@@ -8,7 +8,7 @@ class _CanvasBoundingBox extends StatelessWidget {
   Widget build(BuildContext context) {
     return Watch(
       (context) {
-        final boundingBox = allImagesBoundingBox;
+        final boundingBox = boundingBoxOfSelectedRow;
 
         if (boundingBox == null || !showBoundingBorder.value) {
           return const SizedBox.shrink();

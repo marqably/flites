@@ -6,11 +6,15 @@ import 'package:flutter/foundation.dart';
 class HitboxEditorOverlay extends StatefulWidget {
   final Widget child;
   final Function(List<Offset>) onHitboxPointsChanged;
+  final List<Offset> initialHitboxPoints;
+  final Rect boundingBox;
 
   const HitboxEditorOverlay({
     super.key,
     required this.child,
     required this.onHitboxPointsChanged,
+    required this.initialHitboxPoints,
+    required this.boundingBox,
   });
 
   @override
@@ -27,12 +31,21 @@ class _HitboxEditorOverlayState extends State<HitboxEditorOverlay> {
   void initState() {
     super.initState();
     _focusNode = FocusNode()..requestFocus();
+
+    hitboxPoints = widget.initialHitboxPoints;
   }
 
   @override
   void dispose() {
     _focusNode.dispose();
     super.dispose();
+  }
+
+  Offset clampToBoundingBox(Offset point) {
+    return Offset(
+      point.dx.clamp(0, 1),
+      point.dy.clamp(0, 1),
+    );
   }
 
   // Add a point when tapping on empty space
@@ -74,6 +87,25 @@ class _HitboxEditorOverlayState extends State<HitboxEditorOverlay> {
     });
   }
 
+  Offset localToRelativePosition(Offset localPosition) {
+    final posWithoutOffset = (localPosition - widget.boundingBox.topLeft);
+
+    final position = Offset(
+      posWithoutOffset.dx / widget.boundingBox.width,
+      posWithoutOffset.dy / widget.boundingBox.height,
+    );
+
+    return clampToBoundingBox(position);
+  }
+
+  Offset relativeToLocalPosition(Offset relativePosition) {
+    return (Offset(
+          relativePosition.dx * widget.boundingBox.width,
+          relativePosition.dy * widget.boundingBox.height,
+        ) +
+        widget.boundingBox.topLeft);
+  }
+
   // Calculate the distance from a point to a line segment
   double _distanceToLineSegment(Offset start, Offset end, Offset point) {
     // Vector from start to end
@@ -103,7 +135,7 @@ class _HitboxEditorOverlayState extends State<HitboxEditorOverlay> {
 
   // Find if a point was tapped (with some tolerance for easier selection)
   int? _findPointAtPosition(Offset position) {
-    const double tapTolerance = 20.0; // Radius around point that can be tapped
+    const double tapTolerance = 0.02; // Radius around point that can be tapped
 
     for (int i = 0; i < hitboxPoints.length; i++) {
       if ((hitboxPoints[i] - position).distance <= tapTolerance) {
@@ -147,6 +179,8 @@ class _HitboxEditorOverlayState extends State<HitboxEditorOverlay> {
 
   @override
   Widget build(BuildContext context) {
+    final points = hitboxPoints.map(relativeToLocalPosition).toList();
+
     return KeyboardListener(
       focusNode: _focusNode,
       onKeyEvent: _handleKeyEvent,
@@ -157,8 +191,10 @@ class _HitboxEditorOverlayState extends State<HitboxEditorOverlay> {
           Positioned.fill(
             child: GestureDetector(
               onTapDown: (TapDownDetails details) {
-                final tappedPointIndex =
-                    _findPointAtPosition(details.localPosition);
+                final relativePosition =
+                    localToRelativePosition(details.localPosition);
+
+                final tappedPointIndex = _findPointAtPosition(relativePosition);
 
                 setState(() {
                   if (tappedPointIndex != null) {
@@ -166,12 +202,15 @@ class _HitboxEditorOverlayState extends State<HitboxEditorOverlay> {
                     selectedPointIndex = tappedPointIndex;
                   } else {
                     // If tapped on empty space, add a new point
-                    _addPoint(details.localPosition);
+                    _addPoint(relativePosition);
                   }
                 });
               },
               onPanStart: (DragStartDetails details) {
-                final pointIndex = _findPointAtPosition(details.localPosition);
+                final relativePosition =
+                    localToRelativePosition(details.localPosition);
+
+                final pointIndex = _findPointAtPosition(relativePosition);
                 if (pointIndex != null) {
                   setState(() {
                     selectedPointIndex = pointIndex;
@@ -180,8 +219,11 @@ class _HitboxEditorOverlayState extends State<HitboxEditorOverlay> {
                 }
               },
               onPanUpdate: (DragUpdateDetails details) {
+                final relativePosition =
+                    localToRelativePosition(details.localPosition);
+
                 if (isDragging && selectedPointIndex != null) {
-                  _moveSelectedPoint(details.localPosition);
+                  _moveSelectedPoint(relativePosition);
                 }
               },
               onPanEnd: (_) {
@@ -191,7 +233,7 @@ class _HitboxEditorOverlayState extends State<HitboxEditorOverlay> {
               },
               child: CustomPaint(
                 painter: HitboxPainter(
-                  points: hitboxPoints,
+                  points: points,
                   selectedPointIndex: selectedPointIndex,
                   primaryColor: context.colors.primary,
                   secondaryColor: context.colors.secondary,

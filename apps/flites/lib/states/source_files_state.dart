@@ -50,6 +50,14 @@ class SourceFilesState {
         _projectSourceFiles.value.copyWith(rows: newRows);
   }
 
+  static void saveHitBoxPoints(List<Offset> hitboxPoints) {
+    final currentRow = _getCurrentRow();
+
+    _changeRow(
+      currentRow.copyWith(hitboxPoints: hitboxPoints),
+    );
+  }
+
   static void deleteImageRow(int index) {
     final currentRows = [..._projectSourceFiles.value.rows];
     final currentSelectedIndex = selectedImageRow.value;
