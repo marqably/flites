@@ -1,6 +1,7 @@
 import 'package:flites/config/code_wizards.dart';
 import 'package:flites/config/tools.dart';
 import 'package:flites/constants/app_sizes.dart';
+import 'package:flites/main.dart';
 import 'package:flites/states/source_files_state.dart';
 import 'package:flites/states/tool_controller.dart';
 import 'package:flites/types/exported_sprite_image.dart';
@@ -94,11 +95,11 @@ class ExportToolPanel extends StatelessWidget {
           return Panel(
             children: [
               PanelSection(
-                label: 'Format Settings',
+                label: context.l10n.formatSettings,
                 children: [
                   // sprite sheet name
                   PanelTextInput(
-                    label: 'Sprite Sheet Name',
+                    label: context.l10n.spriteSheetName,
                     formKey: 'spriteSheetName',
                     onChanged: (newValue) {
                       SourceFilesState.renameProject(newValue);
@@ -107,22 +108,23 @@ class ExportToolPanel extends StatelessWidget {
 
                   // file format
                   PanelSelectInput<String>(
-                    label: 'File Format',
+                    label: context.l10n.fileFormat,
                     formKey: 'format',
                     options: [
-                      const SelectInputOption(label: 'PNG Image', value: 'png'),
+                      SelectInputOption(
+                          label: context.l10n.pngImage, value: 'png'),
 
                       // if we have svg files in the project, show the option
                       if (percentageOfSvgImagesInProject > 0)
                         SelectInputOption(
-                          label: 'SVG Vector',
+                          label: context.l10n.svgVector,
                           value: 'svg',
                           // if have non svg images in the project, disable the option and show error
                           disabled: percentageOfSvgImagesInProject < 100
                               ? true
                               : false,
                           comment: percentageOfSvgImagesInProject < 100
-                              ? 'SVG export is not available in Flites yet.'
+                              ? context.l10n.svgExportNotAvailable
                               : null,
                         ),
                     ],
@@ -132,17 +134,17 @@ class ExportToolPanel extends StatelessWidget {
 
               // Image Settings
               PanelSection(
-                label: 'Image Settings',
+                label: context.l10n.imageSettings,
                 children: [
-                  PanelControlWrapper(label: 'Tile Size', children: const [
+                  PanelControlWrapper(label: context.l10n.tileSize, children: [
                     PanelNumberInput(
-                      label: 'W',
+                      label: context.l10n.widthLabel,
                       formKey: 'tileWidth',
                       min: 8,
                       inline: true,
                     ),
                     PanelNumberInput(
-                      label: 'H',
+                      label: context.l10n.heightLabel,
                       formKey: 'tileHeight',
                       min: 8,
                       inline: true,
@@ -153,12 +155,12 @@ class ExportToolPanel extends StatelessWidget {
 
               // Code generation settings
               PanelSection(
-                label: 'Code Generation',
+                label: context.l10n.codeGeneration,
                 initiallyExpanded: false,
                 children: [
                   // Framework
                   PanelSelectInput<CodeWizards>(
-                    label: 'Target Framework',
+                    label: context.l10n.targetFramework,
                     formKey: 'codeGenFramework',
                     options: CodeWizards.getCodeWizardMap()
                         .keys
@@ -179,7 +181,7 @@ class ExportToolPanel extends StatelessWidget {
                   formState?.submit();
                 },
                 icon: Icons.download,
-                label: 'Export',
+                label: context.l10n.export,
               ),
 
               // Cancel export
@@ -188,7 +190,7 @@ class ExportToolPanel extends StatelessWidget {
                   toolController.selectTool(Tool.canvas);
                 },
                 icon: Icons.cancel,
-                label: 'Cancel',
+                label: context.l10n.cancel,
                 style: PanelButtonStyle.info,
               ),
             ],
@@ -202,10 +204,10 @@ class ExportToolPanel extends StatelessWidget {
   void _export(BuildContext context, ExportToolFormData formData) async {
     showDialog(
       context: context,
-      builder: (context) => const GenericOverlay(
-        title: 'Generating sprite sheet...',
-        body: 'This might take a moment...',
-        child: CircularProgressIndicator(),
+      builder: (context) => GenericOverlay(
+        title: context.l10n.generatingSpriteSheet,
+        body: context.l10n.processingMightTakeAMoment,
+        child: const CircularProgressIndicator(),
       ),
     );
 

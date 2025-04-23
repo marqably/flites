@@ -239,5 +239,52 @@
     "selectOptionsTitle": "Sélectionner les options",
     "cancel": "Annuler",
     "ok": "OK",
-    "selectOptionsPlaceholder": "Sélectionner des options"
+    "selectOptionsPlaceholder": "Sélectionner les options",
+    "@selectOptionsPlaceholder": {
+        "description": "Placeholder text when no options are selected"
+    },
+    "formatSettings": "Paramètres de format",
+    "@formatSettings": {
+        "description": "Section header for export format settings"
+    },
+    "spriteSheetName": "Nom de la feuille de sprites",
+    "@spriteSheetName": {
+        "description": "Label for sprite sheet name input"
+    },
+    "fileFormat": "Format de fichier",
+    "@fileFormat": {
+        "description": "Label for file format selection"
+    },
+    "pngImage": "Image PNG",
+    "@pngImage": {
+        "description": "Option for PNG image format"
+    },
+    "svgVector": "Vecteur SVG",
+    "@svgVector": {
+        "description": "Option for SVG vector format"
+    },
+    "svgExportNotAvailable": "L'exportation SVG n'est pas encore disponible dans Flites.",
+    "@svgExportNotAvailable": {
+        "description": "Error message when SVG export is not available"
+    },
+    "imageSettings": "Paramètres d'image",
+    "@imageSettings": {
+        "description": "Section header for image settings"
+    },
+    "tileSize": "Taille de tuile",
+    "@tileSize": {
+        "description": "Label for tile size input"
+    },
+    "codeGeneration": "Génération de code",
+    "@codeGeneration": {
+        "description": "Section header for code generation options"
+    },
+    "targetFramework": "Framework cible",
+    "@targetFramework": {
+        "description": "Label for target framework selection"
+    },
+    "generatingSpriteSheet": "Génération de la feuille de sprites...",
+    "@generatingSpriteSheet": {
+        "description": "Message shown while generating a sprite sheet"
+    }
 }

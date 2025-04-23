@@ -239,5 +239,52 @@
     "selectOptionsTitle": "オプションを選択",
     "cancel": "キャンセル",
     "ok": "OK",
-    "selectOptionsPlaceholder": "オプションを選択"
+    "selectOptionsPlaceholder": "オプションを選択",
+    "@selectOptionsPlaceholder": {
+        "description": "Placeholder text when no options are selected"
+    },
+    "formatSettings": "フォーマット設定",
+    "@formatSettings": {
+        "description": "Section header for export format settings"
+    },
+    "spriteSheetName": "スプライトシート名",
+    "@spriteSheetName": {
+        "description": "Label for sprite sheet name input"
+    },
+    "fileFormat": "ファイル形式",
+    "@fileFormat": {
+        "description": "Label for file format selection"
+    },
+    "pngImage": "PNG画像",
+    "@pngImage": {
+        "description": "Option for PNG image format"
+    },
+    "svgVector": "SVGベクター",
+    "@svgVector": {
+        "description": "Option for SVG vector format"
+    },
+    "svgExportNotAvailable": "SVGエクスポートはFlitesではまだ利用できません。",
+    "@svgExportNotAvailable": {
+        "description": "Error message when SVG export is not available"
+    },
+    "imageSettings": "画像設定",
+    "@imageSettings": {
+        "description": "Section header for image settings"
+    },
+    "tileSize": "タイルサイズ",
+    "@tileSize": {
+        "description": "Label for tile size input"
+    },
+    "codeGeneration": "コード生成",
+    "@codeGeneration": {
+        "description": "Section header for code generation options"
+    },
+    "targetFramework": "ターゲットフレームワーク",
+    "@targetFramework": {
+        "description": "Label for target framework selection"
+    },
+    "generatingSpriteSheet": "スプライトシートを生成中...",
+    "@generatingSpriteSheet": {
+        "description": "Message shown while generating a sprite sheet"
+    }
 }

@@ -239,5 +239,52 @@
     "selectOptionsTitle": "옵션 선택",
     "cancel": "취소",
     "ok": "확인",
-    "selectOptionsPlaceholder": "옵션 선택"
+    "selectOptionsPlaceholder": "옵션 선택",
+    "@selectOptionsPlaceholder": {
+        "description": "Placeholder text when no options are selected"
+    },
+    "formatSettings": "형식 설정",
+    "@formatSettings": {
+        "description": "Section header for export format settings"
+    },
+    "spriteSheetName": "스프라이트 시트 이름",
+    "@spriteSheetName": {
+        "description": "Label for sprite sheet name input"
+    },
+    "fileFormat": "파일 형식",
+    "@fileFormat": {
+        "description": "Label for file format selection"
+    },
+    "pngImage": "PNG 이미지",
+    "@pngImage": {
+        "description": "Option for PNG image format"
+    },
+    "svgVector": "SVG 벡터",
+    "@svgVector": {
+        "description": "Option for SVG vector format"
+    },
+    "svgExportNotAvailable": "SVG 내보내기는 아직 Flites에서 사용할 수 없습니다.",
+    "@svgExportNotAvailable": {
+        "description": "Error message when SVG export is not available"
+    },
+    "imageSettings": "이미지 설정",
+    "@imageSettings": {
+        "description": "Section header for image settings"
+    },
+    "tileSize": "타일 크기",
+    "@tileSize": {
+        "description": "Label for tile size input"
+    },
+    "codeGeneration": "코드 생성",
+    "@codeGeneration": {
+        "description": "Section header for code generation options"
+    },
+    "targetFramework": "대상 프레임워크",
+    "@targetFramework": {
+        "description": "Label for target framework selection"
+    },
+    "generatingSpriteSheet": "스프라이트 시트 생성 중...",
+    "@generatingSpriteSheet": {
+        "description": "Message shown while generating a sprite sheet"
+    }
 }

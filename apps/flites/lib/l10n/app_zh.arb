@@ -245,6 +245,50 @@
     },
     "selectOptionsPlaceholder": "选择选项",
     "@selectOptionsPlaceholder": {
-        "description": "Placeholder text for select options dialog"
+        "description": "Placeholder text when no options are selected"
+    },
+    "formatSettings": "格式设置",
+    "@formatSettings": {
+        "description": "Section header for export format settings"
+    },
+    "spriteSheetName": "精灵表名称",
+    "@spriteSheetName": {
+        "description": "Label for sprite sheet name input"
+    },
+    "fileFormat": "文件格式",
+    "@fileFormat": {
+        "description": "Label for file format selection"
+    },
+    "pngImage": "PNG图像",
+    "@pngImage": {
+        "description": "Option for PNG image format"
+    },
+    "svgVector": "SVG矢量",
+    "@svgVector": {
+        "description": "Option for SVG vector format"
+    },
+    "svgExportNotAvailable": "Flites尚不支持SVG导出。",
+    "@svgExportNotAvailable": {
+        "description": "Error message when SVG export is not available"
+    },
+    "imageSettings": "图像设置",
+    "@imageSettings": {
+        "description": "Section header for image settings"
+    },
+    "tileSize": "瓦片大小",
+    "@tileSize": {
+        "description": "Label for tile size input"
+    },
+    "codeGeneration": "代码生成",
+    "@codeGeneration": {
+        "description": "Section header for code generation options"
+    },
+    "targetFramework": "目标框架",
+    "@targetFramework": {
+        "description": "Label for target framework selection"
+    },
+    "generatingSpriteSheet": "正在生成精灵表...",
+    "@generatingSpriteSheet": {
+        "description": "Message shown while generating a sprite sheet"
     }
 }

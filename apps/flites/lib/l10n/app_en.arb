@@ -247,5 +247,49 @@
     "selectOptionsPlaceholder": "Select options",
     "@selectOptionsPlaceholder": {
         "description": "Placeholder text when no options are selected"
+    },
+    "formatSettings": "Format Settings",
+    "@formatSettings": {
+        "description": "Section header for export format settings"
+    },
+    "spriteSheetName": "Sprite Sheet Name",
+    "@spriteSheetName": {
+        "description": "Label for sprite sheet name input"
+    },
+    "fileFormat": "File Format",
+    "@fileFormat": {
+        "description": "Label for file format selection"
+    },
+    "pngImage": "PNG Image",
+    "@pngImage": {
+        "description": "Option for PNG image format"
+    },
+    "svgVector": "SVG Vector",
+    "@svgVector": {
+        "description": "Option for SVG vector format"
+    },
+    "svgExportNotAvailable": "SVG export is not available in Flites yet.",
+    "@svgExportNotAvailable": {
+        "description": "Error message when SVG export is not available"
+    },
+    "imageSettings": "Image Settings",
+    "@imageSettings": {
+        "description": "Section header for image settings"
+    },
+    "tileSize": "Tile Size",
+    "@tileSize": {
+        "description": "Label for tile size input"
+    },
+    "codeGeneration": "Code Generation",
+    "@codeGeneration": {
+        "description": "Section header for code generation options"
+    },
+    "targetFramework": "Target Framework",
+    "@targetFramework": {
+        "description": "Label for target framework selection"
+    },
+    "generatingSpriteSheet": "Generating sprite sheet...",
+    "@generatingSpriteSheet": {
+        "description": "Message shown while generating a sprite sheet"
     }
 }
