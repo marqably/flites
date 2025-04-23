@@ -6,6 +6,7 @@ import 'package:flites/types/flites_image.dart';
 import 'package:flites/types/flites_image_map.dart';
 import 'package:flites/types/flites_image_row.dart';
 import 'package:flites/utils/flites_image_factory.dart';
+import 'package:flites/utils/svg_utils.dart';
 import 'package:signals/signals.dart';
 
 import 'selected_image_row_state.dart';
@@ -229,5 +230,32 @@ class SourceFilesState {
 
     _projectSourceFiles.value =
         _projectSourceFiles.value.copyWith(rows: currentRows);
+  }
+
+  /// Renames images in the selected row according to their order
+  /// in the row. The images use the base name of the row, followed by an
+  /// underscore and the index of the image in the row.
+  static void renameImagesAccordingToOrder() {
+    final selectedRowIndex = selectedImageRow.value;
+    final originalRow = _projectSourceFiles.value.rows[selectedRowIndex];
+
+    final baseName =
+        originalRow.name.toLowerCase().replaceAll(RegExp(r'\s+'), '_');
+
+    final newImages = originalRow.images.asMap().entries.map((entry) {
+      final index = entry.key;
+      final originalImage = entry.value;
+
+      final fileExtension =
+          SvgUtils.isSvg(originalImage.image) ? '.svg' : '.png';
+
+      return originalImage.copyWith(
+        displayName: '${baseName}_${index + 1}$fileExtension',
+      );
+    }).toList();
+
+    final newRow = originalRow.copyWith(images: newImages);
+
+    _changeRow(newRow, rowIndex: selectedRowIndex);
   }
 }

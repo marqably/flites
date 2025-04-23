@@ -75,20 +75,8 @@ class CanvasControlsButton extends StatelessWidget {
               ),
               gapH8,
               IconTextButton(
-                onPressed: () {
-                  final selectedRowIndex = selectedImageRow.value;
-                  final images = [
-                    ...projectSourceFiles.value.rows[selectedRowIndex].images
-                  ];
-                  for (int i = 1; i <= images.length; i++) {
-                    final img = images[i - 1];
-                    img.displayName = 'frame_$i.png';
-                  }
-                  projectSourceFiles.value.rows[selectedRowIndex] =
-                      projectSourceFiles.value.rows[selectedRowIndex].copyWith(
-                    images: images,
-                  );
-                },
+                onPressed: () =>
+                    SourceFilesState.renameImagesAccordingToOrder(),
                 text: context.l10n.renameFilesAccordingToOrder,
               ),
               gapH8,
