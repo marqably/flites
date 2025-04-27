@@ -57,7 +57,7 @@ class ImageEditor extends StatelessWidget {
 
                   // Reference Images
                   ...referenceImages.map(
-                    (image) => _CanvasReferenceImage(
+                    (image) => CanvasReferenceImage(
                       image,
                       key: ValueKey(image.id),
                     ),

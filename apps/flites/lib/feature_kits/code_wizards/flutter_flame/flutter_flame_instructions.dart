@@ -16,6 +16,7 @@ This file will used as a [mixin](https://dart.dev/language/mixins) for your own 
 
 ```dart
 // {{sprite_name}}_sprite.g.dart
+import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 import 'package:flame/sprite.dart';
@@ -92,7 +93,29 @@ mixin {{SpriteName}}Sprite on SpriteAnimationGroupComponent<{{SpriteName}}Sprite
   void setState({{SpriteName}}SpriteState state) {
     // set the current animation
     current = state;
+    _updateHitbox(state);
   }
+
+  // Add _currentHitbox field if needed (might be required by PolygonHitbox usage)
+  ShapeHitbox? _currentHitbox;
+
+  void _updateHitbox({{SpriteName}}SpriteState state) {
+    // Remove the old hitbox if it exists
+    _currentHitbox?.removeFromParent();
+
+    // Get vertices for the new state, default to standing if not found
+    final vertices = _hitboxVertices[state];
+
+    // Create and add the new hitbox
+    _currentHitbox =
+        vertices != null
+            ? PolygonHitbox.relative(vertices, parentSize: size)
+            : RectangleHitbox();
+
+    add(_currentHitbox!);
+  }
+
+  final Map<{{SpriteName}}SpriteState, List<Vector2>> _hitboxVertices = {{hitbox_code}};
 
   SpriteAnimation getAnimation(
     {{SpriteName}}SpriteState row, {

@@ -1,6 +1,7 @@
 import 'package:flites/feature_kits/tools/export_tool/export_tool_panel.dart';
 import 'package:flites/types/exported_sprite_image.dart';
 import 'package:dart_casing/dart_casing.dart';
+import 'package:flites/utils/image_scaling_utils.dart';
 
 import 'flutter_flame_instructions.dart';
 
@@ -30,6 +31,8 @@ class FlutterFlameCodeGenerator {
     stub = _replaceAnimationRowConfigurations(stub, spriteSheet);
     stub = _replaceFirstState(stub, spriteSheet);
     stub = _replaceAlternativeState(stub, spriteSheet);
+    stub = _replaceHitboxVertices(
+        stub, spriteSheet, exportSettings, codeSettingsMap);
 
     // replace simple string placeholders
     stub = stub.replaceAll('{{spriteName}}', Casing.camelCase(spriteName));
@@ -82,8 +85,8 @@ class FlutterFlameCodeGenerator {
 
     final state = spriteSheet.rowInformations[0];
 
-    return stub.replaceAll(
-        '{{firstAnimationState}}', '{{SpriteName}}SpriteState.${state.name}');
+    return stub.replaceAll('{{firstAnimationState}}',
+        '{{SpriteName}}SpriteState.${Casing.camelCase(state.name)}');
   }
 
   /// This method will replace the '{{firstAnimationState}}' placeholder with the name of the first animation state, we have and use
@@ -102,5 +105,51 @@ class FlutterFlameCodeGenerator {
 
     return stub.replaceAll('{{alternativeAnimationState}}',
         '{{SpriteName}}SpriteState.${state.name}');
+  }
+
+  /// Generates the Dart code string for the _hitboxVertices map.
+  static String _replaceHitboxVertices(
+    String stub,
+    ExportedSpriteSheetTiled spriteSheet,
+    ExportToolFormData exportSettings,
+    Map<String, dynamic> codeSettingsMap,
+  ) {
+    if (codeSettingsMap['hitboxes'] != true) {
+      return stub.replaceAll('{{hitbox_code}}', '');
+    }
+
+    final hitboxEntries = <String>[];
+    final spriteNamePascal = Casing.pascalCase(exportSettings.spriteSheetName);
+
+    for (final rowInfo in spriteSheet.rowInformations) {
+      if (rowInfo.hitboxPoints.length >= 3) {
+        final stateName = Casing.camelCase(rowInfo.name);
+
+        final scalingFactor = ImageScalingUtils.calculateImageFit(
+          imageAspectRatio: rowInfo.originalAspectRatio,
+          tileAspectRatio: exportSettings.tileWidth / exportSettings.tileHeight,
+        );
+
+        final flameOffsets = rowInfo.hitboxPoints
+            .map((p) => ImageScalingUtils.translateOffsetToRelFlameOffset(
+                  p,
+                  scalingFactor,
+                ))
+            .toList();
+
+        final verticesString = flameOffsets
+            .map((p) =>
+                'Vector2(${p.dx.toStringAsFixed(4)}, ${p.dy.toStringAsFixed(4)})')
+            .join(',\n');
+        hitboxEntries.add(
+            '${spriteNamePascal}SpriteState.$stateName: [\n$verticesString,\n],');
+      }
+    }
+
+    final hitboxMapString = hitboxEntries.isNotEmpty
+        ? '{\n    ${hitboxEntries.join(',\n    ')}\n  }'
+        : '{}';
+
+    return stub.replaceAll('{{hitbox_code}}', hitboxMapString);
   }
 }

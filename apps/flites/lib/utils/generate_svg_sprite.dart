@@ -325,6 +325,9 @@ class GenerateSvgSprite {
         totalWidth: frameSize.width.toInt(),
         totalHeight: frameSize.height.toInt(),
         numberOfFrames: images.length,
+        hitboxPoints:
+            projectSourceFiles.value.rows[spriteRowIndex].hitboxPoints ?? [],
+        originalAspectRatio: boundingBox.size.width / boundingBox.size.height,
       ),
     );
   }

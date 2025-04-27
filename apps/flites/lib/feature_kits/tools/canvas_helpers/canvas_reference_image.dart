@@ -1,7 +1,7 @@
 part of 'image_editor.dart';
 
-class _CanvasReferenceImage extends StatelessWidget {
-  const _CanvasReferenceImage(this.image, {super.key});
+class CanvasReferenceImage extends StatelessWidget {
+  const CanvasReferenceImage(this.image, {super.key});
 
   final FlitesImage image;
 

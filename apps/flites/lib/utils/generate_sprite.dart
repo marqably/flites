@@ -91,6 +91,8 @@ class GenerateSprite {
         dstY: offsetY,
       );
 
+      final boundingBox = boundingBoxOfRow(i);
+
       rowInformations.add(
         ExportedSpriteRowInfo.inSpriteSheet(
           name: sourceFiles.rows[i].name,
@@ -98,6 +100,10 @@ class GenerateSprite {
           totalHeight: spriteRowImages[i].height,
           numberOfFrames: sourceFiles.rows[i].images.length,
           offsetFromTop: offsetY,
+          hitboxPoints: sourceFiles.rows[i].hitboxPoints ?? [],
+          originalAspectRatio: boundingBox?.size.width != null
+              ? boundingBox!.size.width / boundingBox.size.height
+              : 1,
         ),
       );
 
@@ -129,6 +135,8 @@ class GenerateSprite {
       return null;
     }
 
+    final boundingBox = boundingBoxOfRow(spriteRowIndex);
+
     // Save the sprite
     await _saveSpriteSheet(
       spriteRowImage,
@@ -143,6 +151,11 @@ class GenerateSprite {
         totalHeight: spriteRowImage.height,
         numberOfFrames:
             projectSourceFiles.value.rows[spriteRowIndex].images.length,
+        hitboxPoints:
+            projectSourceFiles.value.rows[spriteRowIndex].hitboxPoints ?? [],
+        originalAspectRatio: boundingBox?.size.width != null
+            ? boundingBox!.size.width / boundingBox.size.height
+            : 1,
       ),
     );
   }
