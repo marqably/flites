@@ -40,7 +40,7 @@ class _MainBrandState extends State<MainBrand> {
                   // Logo
                   SvgPicture.asset(
                     appSettings.themeMode.value == ThemeMode.light
-                        ? 'assets/images/flites_logo_with_text_schwarz.svg'
+                        ? 'assets/images/flites_logo_with_text_black.svg'
                         : 'assets/images/flites_logo_with_text.svg',
                     height: Sizes.p28,
                   ),
