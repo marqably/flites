@@ -240,6 +240,24 @@ class SourceFilesState {
         _projectSourceFiles.value.copyWith(rows: currentRows);
   }
 
+  static void sortImagesByName() {
+    final selectedRowIndex = selectedImageRow.value;
+    final originalRow = _projectSourceFiles.value.rows[selectedRowIndex];
+
+    final newImages = [...originalRow.images];
+
+    newImages.sort((a, b) {
+      if (a.displayName != null && b.displayName != null) {
+        return a.displayName!.compareTo(b.displayName!);
+      }
+      return 0;
+    });
+
+    final newRow = originalRow.copyWith(images: newImages);
+
+    _changeRow(newRow, rowIndex: selectedRowIndex);
+  }
+
   /// Renames images in the selected row according to their order
   /// in the row. The images use the base name of the row, followed by an
   /// underscore and the index of the image in the row.
@@ -260,6 +278,21 @@ class SourceFilesState {
       return originalImage.copyWith(
         displayName: '${baseName}_${index + 1}$fileExtension',
       );
+    }).toList();
+
+    final newRow = originalRow.copyWith(images: newImages);
+
+    _changeRow(newRow, rowIndex: selectedRowIndex);
+  }
+
+  /// Resets the display names of images in the selected row to their original names
+
+  static void resetImageNamesToOriginal() {
+    final selectedRowIndex = selectedImageRow.value;
+    final originalRow = _projectSourceFiles.value.rows[selectedRowIndex];
+
+    final newImages = originalRow.images.map((image) {
+      return image.copyWith(displayName: image.originalName);
     }).toList();
 
     final newRow = originalRow.copyWith(images: newImages);
