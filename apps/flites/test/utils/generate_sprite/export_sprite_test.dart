@@ -8,6 +8,7 @@ import 'package:flites/types/export_settings.dart';
 import 'package:flites/types/flites_image.dart';
 import 'package:flites/types/flites_image_row.dart';
 import 'package:flites/utils/generate_sprite.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:image/image.dart' as img;
 import 'package:mocktail/mocktail.dart';
@@ -39,7 +40,7 @@ void main() {
       // Setup mock file saver
       registerFallbackValue('');
       registerFallbackValue(Uint8List(0));
-      registerFallbackValue(FileType.image);
+      registerFallbackValue(FileType.custom);
       registerFallbackValue('png');
 
       mockFileService = MockFileService();
@@ -64,6 +65,148 @@ void main() {
       // Clear project source files after each test
 
       SourceFilesState.setStateForTests([]);
+    });
+
+    test(
+        'GenerateSprite.exportSpriteMap handles multiple rows with correct dimensions',
+        () async {
+      // Given
+      final testRow = [
+        FlitesImage.scaled(
+          testImageBytes,
+          scalingFactor: 1.0,
+          originalName: 'test1.png',
+        )
+          ..positionOnCanvas = const Offset(0, 0)
+          ..widthOnCanvas = 100,
+        FlitesImage.scaled(
+          testImageBytes,
+          scalingFactor: 1.0,
+          originalName: 'test2.png',
+        )
+          ..positionOnCanvas = const Offset(100, 0)
+          ..widthOnCanvas = 100,
+      ];
+
+      final settingsOne = ExportSettings(
+        widthPx: 200,
+        heightPx: 100,
+        fileName: 'test_sprite',
+      );
+
+      final settingsTwo = ExportSettings(
+        widthPx: 100,
+        heightPx: 400,
+        fileName: 'test_sprite',
+      );
+
+      SourceFilesState.setStateForTests([
+        FlitesImageRow(
+          images: testRow,
+          name: 'test_row1',
+          exportSettings: settingsOne,
+        ),
+        FlitesImageRow(
+          images: testRow,
+          name: 'test_row2',
+          exportSettings: settingsTwo,
+        ),
+      ]);
+
+      // When
+      await GenerateSprite.exportSpriteMap(
+        fileService: mockFileService,
+      );
+      // Then
+      final savedFile = File('${tempDir.path}/test_sprite.png');
+
+      verify(
+        () => mockFileService.saveFile(
+          bytes: any(named: 'bytes'),
+          fileType: any(named: 'fileType'),
+          fileExtension: any(named: 'fileExtension'),
+        ),
+      ).called(1);
+
+      expect(savedFile.existsSync(), isTrue);
+
+      final savedImage = img.decodePng(savedFile.readAsBytesSync());
+
+      expect(savedImage, isNotNull);
+      expect(savedImage!.width, equals(400)); // 200 + 200
+      expect(savedImage.height, equals(500)); // 100 + 400
+    });
+
+    test(
+        'GenerateSprite.exportTiledSpriteMap handles multiple rows with correct dimensions',
+        () async {
+      // Given
+      final testRow = [
+        FlitesImage.scaled(
+          testImageBytes,
+          scalingFactor: 1.0,
+          originalName: 'test1.png',
+        )
+          ..positionOnCanvas = const Offset(0, 0)
+          ..widthOnCanvas = 100,
+        FlitesImage.scaled(
+          testImageBytes,
+          scalingFactor: 1.0,
+          originalName: 'test2.png',
+        )
+          ..positionOnCanvas = const Offset(100, 0)
+          ..widthOnCanvas = 100,
+      ];
+
+      final settingsOne = ExportSettings(
+        widthPx: 200,
+        heightPx: 100,
+        fileName: 'test_sprite',
+      );
+
+      final settingsTwo = ExportSettings(
+        widthPx: 100,
+        heightPx: 400,
+        fileName: 'test_sprite',
+      );
+
+      SourceFilesState.setStateForTests([
+        FlitesImageRow(
+          images: testRow,
+          name: 'test_row1',
+          exportSettings: settingsOne,
+        ),
+        FlitesImageRow(
+          images: testRow,
+          name: 'test_row2',
+          exportSettings: settingsTwo,
+        ),
+      ]);
+
+      // When
+      await GenerateSprite.exportTiledSpriteMap(
+        tileSize: const Size(50, 100),
+        fileService: mockFileService,
+      );
+
+      // Then
+      final savedFile = File('${tempDir.path}/test_sprite.png');
+
+      verify(
+        () => mockFileService.saveFile(
+          bytes: any(named: 'bytes'),
+          fileType: any(named: 'fileType'),
+          fileExtension: any(named: 'fileExtension'),
+        ),
+      ).called(1);
+
+      expect(savedFile.existsSync(), isTrue);
+
+      final savedImage = img.decodePng(savedFile.readAsBytesSync());
+
+      expect(savedImage, isNotNull);
+      expect(savedImage!.width, equals(100)); // 50 * 2
+      expect(savedImage.height, equals(200)); // 100 * 2
     });
 
     test('handles multiple images with padding', () async {

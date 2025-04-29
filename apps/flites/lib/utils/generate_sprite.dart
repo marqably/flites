@@ -13,8 +13,12 @@ import 'package:image/image.dart' as img;
 class GenerateSprite {
   static Future<ExportedSpriteSheetTiled?> exportTiledSpriteMap({
     required Size tileSize,
+    FileService? fileService,
   }) async {
-    final spriteSheet = await exportSpriteMap(tileSize: tileSize);
+    final spriteSheet = await exportSpriteMap(
+      tileSize: tileSize,
+      fileService: fileService,
+    );
 
     if (spriteSheet == null) {
       return null;
@@ -110,7 +114,7 @@ class GenerateSprite {
       offsetY += spriteRowImages[i].height;
     }
 
-    _saveSpriteSheet(
+    await _saveSpriteSheet(
       spriteSheet,
       fileService ?? const FileService(),
     );
