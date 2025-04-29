@@ -235,5 +235,57 @@
     "selectOptionsTitle": "Optionen auswählen",
     "cancel": "Abbrechen",
     "ok": "OK",
-    "selectOptionsPlaceholder": "Optionen auswählen"
+    "selectOptionsPlaceholder": "Optionen auswählen",
+    "formatSettings": "Formateinstellungen",
+    "@formatSettings": {
+        "description": "Section header for export format settings"
+    },
+    "spriteSheetName": "Sprite-Sheet-Name",
+    "@spriteSheetName": {
+        "description": "Label for sprite sheet name input"
+    },
+    "fileFormat": "Dateiformat",
+    "@fileFormat": {
+        "description": "Label for file format selection"
+    },
+    "pngImage": "PNG-Bild",
+    "@pngImage": {
+        "description": "Option for PNG image format"
+    },
+    "svgVector": "SVG-Vektor",
+    "@svgVector": {
+        "description": "Option for SVG vector format"
+    },
+    "svgExportNotAvailable": "SVG-Export ist in Flites noch nicht verfügbar.",
+    "@svgExportNotAvailable": {
+        "description": "Error message when SVG export is not available"
+    },
+    "imageSettings": "Bildeinstellungen",
+    "@imageSettings": {
+        "description": "Section header for image settings"
+    },
+    "tileSize": "Kachelgröße",
+    "@tileSize": {
+        "description": "Label for tile size input"
+    },
+    "codeGeneration": "Code-Generierung",
+    "@codeGeneration": {
+        "description": "Section header for code generation options"
+    },
+    "targetFramework": "Ziel-Framework",
+    "@targetFramework": {
+        "description": "Label for target framework selection"
+    },
+    "generatingSpriteSheet": "Sprite-Sheet wird generiert...",
+    "@generatingSpriteSheet": {
+        "description": "Message shown while generating a sprite sheet"
+    },
+    "generateHitboxCode": "Hitbox-Code generieren",
+    "@generateHitboxCode": {
+        "description": "Checkbox label for generating hitbox code"
+    },
+    "close": "Schließen",
+    "@close": {
+        "description": "Button text for closing panels or dialogs"
+    }
 }

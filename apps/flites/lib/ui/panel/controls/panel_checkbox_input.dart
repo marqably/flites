@@ -12,7 +12,7 @@ class PanelCheckboxInput extends StatefulWidget {
   final String? checkboxLabel;
 
   /// Label to display for the control
-  final String label;
+  final String? label;
 
   /// Form key to identify this field in a PanelForm
   final String? formKey;
@@ -24,7 +24,7 @@ class PanelCheckboxInput extends StatefulWidget {
     super.key,
     this.onChanged,
     this.checkboxLabel,
-    required this.label,
+    this.label,
     this.formKey,
     this.helpText,
   }) : assert(

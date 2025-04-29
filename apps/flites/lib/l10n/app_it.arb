@@ -239,5 +239,60 @@
     "selectOptionsTitle": "Seleziona opzioni",
     "cancel": "Annulla",
     "ok": "OK",
-    "selectOptionsPlaceholder": "Seleziona opzioni"
+    "selectOptionsPlaceholder": "Seleziona opzioni",
+    "@selectOptionsPlaceholder": {
+        "description": "Placeholder text when no options are selected"
+    },
+    "formatSettings": "Impostazioni formato",
+    "@formatSettings": {
+        "description": "Section header for export format settings"
+    },
+    "spriteSheetName": "Nome del foglio sprite",
+    "@spriteSheetName": {
+        "description": "Label for sprite sheet name input"
+    },
+    "fileFormat": "Formato file",
+    "@fileFormat": {
+        "description": "Label for file format selection"
+    },
+    "pngImage": "Immagine PNG",
+    "@pngImage": {
+        "description": "Option for PNG image format"
+    },
+    "svgVector": "Vettore SVG",
+    "@svgVector": {
+        "description": "Option for SVG vector format"
+    },
+    "svgExportNotAvailable": "L'esportazione SVG non è ancora disponibile in Flites.",
+    "@svgExportNotAvailable": {
+        "description": "Error message when SVG export is not available"
+    },
+    "imageSettings": "Impostazioni immagine",
+    "@imageSettings": {
+        "description": "Section header for image settings"
+    },
+    "tileSize": "Dimensione tile",
+    "@tileSize": {
+        "description": "Label for tile size input"
+    },
+    "codeGeneration": "Generazione codice",
+    "@codeGeneration": {
+        "description": "Section header for code generation options"
+    },
+    "targetFramework": "Framework di destinazione",
+    "@targetFramework": {
+        "description": "Label for target framework selection"
+    },
+    "generatingSpriteSheet": "Generazione del foglio di sprite...",
+    "@generatingSpriteSheet": {
+        "description": "Message shown while generating a sprite sheet"
+    },
+    "generateHitboxCode": "Genera codice hitbox",
+    "@generateHitboxCode": {
+        "description": "Checkbox label for generating hitbox code"
+    },
+    "close": "Chiudi",
+    "@close": {
+        "description": "Button text for closing panels or dialogs"
+    }
 }

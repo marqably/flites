@@ -10,10 +10,18 @@ class RadioInputOption<T> {
   /// The underlying value for the option
   final T value;
 
+  /// Whether the option is disabled
+  final bool disabled;
+
+  /// An optional comment to display below the option
+  final String? comment;
+
   /// Creates a radio input option
   const RadioInputOption({
     required this.label,
     required this.value,
+    this.disabled = false,
+    this.comment,
   });
 }
 
@@ -51,34 +59,51 @@ class RadioInput<T> extends StatelessWidget {
   List<Widget> _buildRadioOptions(BuildContext context) {
     return options.map((option) {
       return GestureDetector(
-        onTap: () => onChanged(option.value),
+        onTap: option.disabled ? null : () => onChanged(option.value),
         child: MouseRegion(
-          cursor: SystemMouseCursors.click,
+          cursor: option.disabled
+              ? SystemMouseCursors.forbidden
+              : SystemMouseCursors.click,
           child: Padding(
             padding: direction == Axis.horizontal
                 ? const EdgeInsets.only(right: Sizes.p16)
                 : const EdgeInsets.only(bottom: Sizes.p8),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // radio
-                Radio<T>(
-                  value: option.value,
-                  groupValue: selectedValue,
-                  onChanged: onChanged,
-                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  visualDensity: VisualDensity.compact,
-                ),
-                gapW8,
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // radio
+                    Radio<T>(
+                      value: option.value,
+                      groupValue: selectedValue,
+                      onChanged: option.disabled ? null : onChanged,
+                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      visualDensity: VisualDensity.compact,
+                    ),
+                    gapW8,
 
-                // label
-                Text(
-                  option.label,
-                  style: TextStyle(
-                    color: context.colors.onSurface,
-                    fontSize: fontSizeBase,
-                  ),
+                    // label
+                    Text(
+                      option.label,
+                      style: TextStyle(
+                        color: option.disabled
+                            ? Colors.grey
+                            : context.colors.onSurface,
+                        fontSize: fontSizeBase,
+                      ),
+                    ),
+                  ],
                 ),
+                if (option.comment != null)
+                  Text(
+                    option.comment!,
+                    style: TextStyle(
+                      color: context.colors.onSurface.withValues(alpha: 0.7),
+                      fontSize: fontSizeSm,
+                    ),
+                  ),
               ],
             ),
           ),

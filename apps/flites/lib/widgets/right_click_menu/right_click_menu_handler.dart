@@ -51,7 +51,7 @@ class RightClickMenuHandlerState extends State<RightClickMenuHandler> {
       isCopyEnabled = false;
     }
 
-    final overlayOffet = PositioningUtils.adjustOverlayOffsetToBeVisible(
+    final overlayOffset = PositioningUtils.adjustOverlayOffsetToBeVisible(
       clickedPosition: details.globalPosition,
       overlaySize: const Size(150, rightClickMenuItemHeight * 3),
       screenSize: MediaQuery.of(context).size,
@@ -74,8 +74,8 @@ class RightClickMenuHandlerState extends State<RightClickMenuHandler> {
           // Positioned at the location of the right-click event
           // with a small offset to avoid being directly under the cursor
           Positioned(
-            left: overlayOffet.dx,
-            top: overlayOffet.dy,
+            left: overlayOffset.dx,
+            top: overlayOffset.dy,
             child: Material(
               color: Colors.transparent,
               child: Container(

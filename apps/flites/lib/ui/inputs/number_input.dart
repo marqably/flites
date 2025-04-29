@@ -160,6 +160,10 @@ class _NumberInputState extends State<NumberInput> {
                 controller: _controller,
                 focusNode: _focusNode,
                 onSubmitted: (_) => _validateAndSubmit(),
+                keyboardType: TextInputType.number,
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                ],
                 postfixWidget: SizedBox(
                   width: 24,
                   child: Column(

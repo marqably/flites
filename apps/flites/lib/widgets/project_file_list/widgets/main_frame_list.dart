@@ -105,7 +105,7 @@ class _MainFrameListState extends State<MainFrameList> {
       return PanelListItem(
         key: Key('file-${frameItem.id}'),
         title: frameItem.displayName ?? frameItem.originalName ?? '',
-        image: frameItem.image,
+        image: frameItem,
         actionButtons: (bool isHovered, bool isSelected) =>
             _getActionButtons(context, frameItem, isHovered, isSelected),
         value: frameItem.id,

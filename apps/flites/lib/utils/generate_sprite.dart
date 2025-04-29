@@ -11,18 +11,23 @@ import 'package:flutter/material.dart';
 import 'package:image/image.dart' as img;
 
 class GenerateSprite {
-  static Future<ExportedSprilteSheetTiled?> exportTiledSpriteMap({
+  static Future<ExportedSpriteSheetTiled?> exportTiledSpriteMap({
     required Size tileSize,
+    FileService? fileService,
   }) async {
-    final spriteSheet = await exportSpriteMap(tileSize: tileSize);
+    final spriteSheet = await exportSpriteMap(
+      tileSize: tileSize,
+      fileService: fileService,
+    );
 
     if (spriteSheet == null) {
       return null;
     }
 
-    return ExportedSprilteSheetTiled(
+    return ExportedSpriteSheetTiled(
       image: spriteSheet.image,
       tileSize: tileSize,
+      rowInformations: spriteSheet.rowInformations,
     );
   }
 
@@ -57,6 +62,11 @@ class GenerateSprite {
       }
     }
 
+    // if no sprite row images, return null
+    if (spriteRowImages.isEmpty) {
+      return null;
+    }
+
     // Find longest width
     final longestWidth = spriteRowImages.map((e) => e.width).reduce(
           (a, b) => a > b ? a : b,
@@ -85,6 +95,8 @@ class GenerateSprite {
         dstY: offsetY,
       );
 
+      final boundingBox = boundingBoxOfRow(i);
+
       rowInformations.add(
         ExportedSpriteRowInfo.inSpriteSheet(
           name: sourceFiles.rows[i].name,
@@ -92,13 +104,17 @@ class GenerateSprite {
           totalHeight: spriteRowImages[i].height,
           numberOfFrames: sourceFiles.rows[i].images.length,
           offsetFromTop: offsetY,
+          hitboxPoints: sourceFiles.rows[i].hitboxPoints ?? [],
+          originalAspectRatio: boundingBox?.size.width != null
+              ? boundingBox!.size.width / boundingBox.size.height
+              : 1,
         ),
       );
 
       offsetY += spriteRowImages[i].height;
     }
 
-    _saveSpriteSheet(
+    await _saveSpriteSheet(
       spriteSheet,
       fileService ?? const FileService(),
     );
@@ -123,6 +139,8 @@ class GenerateSprite {
       return null;
     }
 
+    final boundingBox = boundingBoxOfRow(spriteRowIndex);
+
     // Save the sprite
     await _saveSpriteSheet(
       spriteRowImage,
@@ -137,6 +155,11 @@ class GenerateSprite {
         totalHeight: spriteRowImage.height,
         numberOfFrames:
             projectSourceFiles.value.rows[spriteRowIndex].images.length,
+        hitboxPoints:
+            projectSourceFiles.value.rows[spriteRowIndex].hitboxPoints ?? [],
+        originalAspectRatio: boundingBox?.size.width != null
+            ? boundingBox!.size.width / boundingBox.size.height
+            : 1,
       ),
     );
   }
@@ -362,8 +385,6 @@ class GenerateSprite {
     if (images.isEmpty) {
       throw Exception('Cannot calculate scaling factor for empty image list');
     }
-
-    /// TODO: this gives a negative scaling factor for Axis.vertical
 
     // Check for zero width/height
     final hasZeroDimension = images.any((image) {

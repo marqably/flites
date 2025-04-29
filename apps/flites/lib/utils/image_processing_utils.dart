@@ -68,7 +68,6 @@ class ImageProcessingUtils {
     final originalImage = getImageFromBytes(bytes);
     if (originalImage == null) {
       throw Exception('Unable to decode PNG');
-      // TODO: error handling
     }
 
     final trimmedImage = img.trim(originalImage);

@@ -21,6 +21,15 @@ class ExportedSpriteRowInfo {
   // The number of frames inside this animation
   final int numberOfFrames;
 
+  // The hitbox points of this row
+  final List<Offset> hitboxPoints;
+
+  // The original aspect ratio of the bounding box of the animation at the time
+  // of export. This is different from the aspect ratio of the exported frames,
+  // since they might have been padded with white space or scaled down to fit
+  // a fixed tile size.
+  final double originalAspectRatio;
+
   // The calculated size of each frame in this animation
   Size get frameSize =>
       Size(totalWidth / numberOfFrames, totalHeight.toDouble());
@@ -31,6 +40,8 @@ class ExportedSpriteRowInfo {
     required this.totalHeight,
     required this.offsetFromTop,
     required this.numberOfFrames,
+    required this.hitboxPoints,
+    required this.originalAspectRatio,
   });
 
   ExportedSpriteRowInfo.asSingleRow({
@@ -38,5 +49,7 @@ class ExportedSpriteRowInfo {
     required this.totalWidth,
     required this.totalHeight,
     required this.numberOfFrames,
+    required this.hitboxPoints,
+    required this.originalAspectRatio,
   }) : offsetFromTop = 0;
 }

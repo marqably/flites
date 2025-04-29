@@ -1,6 +1,6 @@
 import 'package:flites/services/update_service.dart';
 import 'package:flites/states/tool_controller.dart';
-import 'package:flites/tools.dart';
+import 'package:flites/config/tools.dart';
 import 'package:flites/types/update_info.dart';
 import 'package:flites/widgets/overlays/update_overlay.dart';
 import 'package:flites/widgets/right_click_menu/right_click_menu_handler.dart';

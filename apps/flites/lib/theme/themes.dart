@@ -10,6 +10,10 @@ final lightTheme = ThemeData(
     primaryFixed: AppColors.accentDimmed,
     primaryFixedDim: AppColors.accentDimmest,
     onPrimary: AppColors.surfaceLight,
+
+    secondary: AppColors.secondary,
+    onSecondary: AppColors.surfaceLight,
+
     // Main surfaces
     surface: AppColors.surfaceLight,
     surfaceContainerLowest: AppColors.secondarySurfaceLight,
@@ -32,6 +36,10 @@ final darkTheme = ThemeData(
     primaryFixed: AppColors.accentDimmed,
     primaryFixedDim: AppColors.accentDimmest,
     onPrimary: AppColors.surfaceLight,
+
+    secondary: AppColors.secondary,
+    onSecondary: AppColors.surfaceLight,
+
     // Main surfaces
     surface: AppColors.surfaceDark,
     surfaceContainerLowest: AppColors.secondarySurfaceDark,

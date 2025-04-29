@@ -239,5 +239,60 @@
     "selectOptionsTitle": "Seleccionar opciones",
     "cancel": "Cancelar",
     "ok": "Aceptar",
-    "selectOptionsPlaceholder": "Seleccionar opciones"
+    "selectOptionsPlaceholder": "Seleccionar opciones",
+    "@selectOptionsPlaceholder": {
+        "description": "Placeholder text when no options are selected"
+    },
+    "formatSettings": "Ajustes de formato",
+    "@formatSettings": {
+        "description": "Section header for export format settings"
+    },
+    "spriteSheetName": "Nombre de la hoja de sprites",
+    "@spriteSheetName": {
+        "description": "Label for sprite sheet name input"
+    },
+    "fileFormat": "Formato de archivo",
+    "@fileFormat": {
+        "description": "Label for file format selection"
+    },
+    "pngImage": "Imagen PNG",
+    "@pngImage": {
+        "description": "Option for PNG image format"
+    },
+    "svgVector": "Vector SVG",
+    "@svgVector": {
+        "description": "Option for SVG vector format"
+    },
+    "svgExportNotAvailable": "La exportación SVG aún no está disponible en Flites.",
+    "@svgExportNotAvailable": {
+        "description": "Error message when SVG export is not available"
+    },
+    "imageSettings": "Ajustes de imagen",
+    "@imageSettings": {
+        "description": "Section header for image settings"
+    },
+    "tileSize": "Tamaño de mosaico",
+    "@tileSize": {
+        "description": "Label for tile size input"
+    },
+    "codeGeneration": "Generación de código",
+    "@codeGeneration": {
+        "description": "Section header for code generation options"
+    },
+    "targetFramework": "Framework objetivo",
+    "@targetFramework": {
+        "description": "Label for target framework selection"
+    },
+    "generatingSpriteSheet": "Generando hoja de sprites...",
+    "@generatingSpriteSheet": {
+        "description": "Message shown while generating a sprite sheet"
+    },
+    "generateHitboxCode": "Generar código de hitbox",
+    "@generateHitboxCode": {
+        "description": "Checkbox label for generating hitbox code"
+    },
+    "close": "Cerrar",
+    "@close": {
+        "description": "Button text for closing panels or dialogs"
+    }
 }

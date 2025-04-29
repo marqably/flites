@@ -13,7 +13,7 @@ class OverlayButton extends StatefulWidget {
   });
 
   final Widget buttonChild;
-  final Widget overlayContent;
+  final Widget Function(VoidCallback close) overlayContent;
   final String? tooltip;
   final Alignment followerAnchor;
   final Alignment targetAnchor;
@@ -55,7 +55,7 @@ class OverlayButtonState extends State<OverlayButton> {
                 elevation: 4.0,
                 color: context.colors.surface,
                 borderRadius: BorderRadius.circular(8.0),
-                child: widget.overlayContent,
+                child: widget.overlayContent(_hideOverlay),
               ),
             ),
           ),

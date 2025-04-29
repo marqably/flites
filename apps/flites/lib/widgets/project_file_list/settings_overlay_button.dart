@@ -2,6 +2,7 @@ import 'package:flites/constants/app_sizes.dart';
 import 'package:flites/main.dart';
 import 'package:flites/services/project_saving_service.dart';
 import 'package:flites/states/app_settings.dart';
+import 'package:flites/states/source_files_state.dart';
 import 'package:flites/utils/generate_sprite.dart';
 import 'package:flites/utils/generate_svg_sprite.dart';
 import 'package:flites/utils/svg_utils.dart';
@@ -24,7 +25,7 @@ class SettingsOverlayButton extends StatelessWidget {
       tooltip: context.l10n.menuPreferences,
       offset: const Offset(0, 12),
       buttonChild: child,
-      overlayContent: SizedBox(
+      overlayContent: (closeLayer) => SizedBox(
         width: 300 - Sizes.p16 * 2,
         child: Watch((context) {
           return Column(
@@ -37,6 +38,8 @@ class SettingsOverlayButton extends StatelessWidget {
                 title: Text(context.l10n.openProject),
                 contentPadding: const EdgeInsets.symmetric(horizontal: 12),
                 onTap: () async {
+                  closeLayer();
+
                   final projectState =
                       await ProjectSavingService().loadProjectFile();
                   if (projectState != null) {
@@ -49,6 +52,7 @@ class SettingsOverlayButton extends StatelessWidget {
                 title: Text(context.l10n.saveProject),
                 contentPadding: const EdgeInsets.symmetric(horizontal: 12),
                 onTap: () {
+                  closeLayer();
                   ProjectSavingService().saveProject();
                 },
               ),
@@ -60,6 +64,19 @@ class SettingsOverlayButton extends StatelessWidget {
                 title: Text(context.l10n.exportSpritemap),
                 contentPadding: const EdgeInsets.symmetric(horizontal: 12),
                 onTap: () {
+                  closeLayer();
+
+                  // check if there are rows with images
+                  final hasRows = projectSourceFiles.value.rows.isNotEmpty;
+                  final hasImages = hasRows &&
+                      projectSourceFiles.value.rows
+                          .any((row) => row.images.isNotEmpty);
+
+                  // if we don't have any rows or images, show a dialog
+                  if (!hasRows || !hasImages) {
+                    return;
+                  }
+
                   if (SvgUtils.allImagesInProjectAreSvg) {
                     GenerateSvgSprite.exportSpriteMap();
                   } else {
@@ -184,6 +201,7 @@ class SettingsOverlayButton extends StatelessWidget {
                 title: Text(context.l10n.menuAboutFlites),
                 contentPadding: const EdgeInsets.symmetric(horizontal: 14),
                 onTap: () async {
+                  closeLayer();
                   launchUrl(Uri.parse('https://flites.app'));
                 },
               ),

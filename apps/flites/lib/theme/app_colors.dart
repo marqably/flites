@@ -6,6 +6,10 @@ class AppColors {
   static const accentDimmed = Color.fromARGB(255, 116, 50, 214);
   static const accentDimmest = Color.fromARGB(255, 87, 31, 172);
 
+  static const secondary = Color.fromRGBO(255, 193, 7, 1);
+  static const secondaryDimmed = Color.fromARGB(255, 214, 158, 31);
+  static const secondaryDimmest = Color.fromARGB(255, 172, 119, 23);
+
   // Light Theme
   static const surfaceLight =
       Color.fromRGBO(245, 248, 249, 1); // Canvas + tool buttons

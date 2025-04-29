@@ -2,7 +2,7 @@ import 'package:flites/states/selected_image_row_state.dart';
 import 'package:flites/states/source_files_state.dart';
 import 'package:flutter/material.dart';
 
-BoundingBox? get allImagesBoundingBox {
+BoundingBox? get boundingBoxOfSelectedRow {
   return boundingBoxOfRow(selectedImageRow.value);
 }
 

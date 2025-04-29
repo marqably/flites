@@ -1,5 +1,6 @@
 import 'package:flites/constants/app_sizes.dart';
 import 'package:flites/main.dart';
+import 'package:flites/states/app_settings.dart';
 import 'package:flites/ui/panel/structure/panel_section.dart';
 import 'package:flites/widgets/project_file_list/settings_overlay_button.dart';
 import 'package:flutter/cupertino.dart';
@@ -38,7 +39,9 @@ class _MainBrandState extends State<MainBrand> {
                 children: [
                   // Logo
                   SvgPicture.asset(
-                    'assets/images/flites_logo_with_text.svg',
+                    appSettings.themeMode.value == ThemeMode.light
+                        ? 'assets/images/flites_logo_with_text_black.svg'
+                        : 'assets/images/flites_logo_with_text.svg',
                     height: Sizes.p28,
                   ),
                   const SizedBox(width: Sizes.p8),

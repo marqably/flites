@@ -178,4 +178,26 @@ class FlitesImage {
 
     return flitesImage;
   }
+
+  /// copy with method
+  FlitesImage copyWith({
+    Uint8List? image,
+    String? id,
+    String? displayName,
+    String? originalName,
+    double? widthOnCanvas,
+    Offset? positionOnCanvas,
+    double? rotation,
+    double? scalingFactor,
+  }) {
+    return FlitesImage()
+      ..image = image ?? this.image
+      ..id = id ?? this.id
+      ..displayName = displayName ?? this.displayName
+      ..originalName = originalName ?? this.originalName
+      ..widthOnCanvas = widthOnCanvas ?? this.widthOnCanvas
+      ..positionOnCanvas = positionOnCanvas ?? this.positionOnCanvas
+      ..rotation = rotation ?? this.rotation
+      ..scalingFactor = scalingFactor ?? this.scalingFactor;
+  }
 }

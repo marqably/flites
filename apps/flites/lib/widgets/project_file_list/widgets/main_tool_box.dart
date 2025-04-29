@@ -1,6 +1,6 @@
 import 'package:flites/main.dart';
 import 'package:flites/states/tool_controller.dart';
-import 'package:flites/tools.dart';
+import 'package:flites/config/tools.dart';
 import 'package:flites/ui/panel/controls/panel_icon_btn_group.dart';
 import 'package:flites/ui/inputs/icon_btn.dart';
 import 'package:flites/ui/panel/structure/panel_section.dart';
@@ -38,6 +38,11 @@ class MainToolBox extends StatelessWidget {
                 value: Tool.rotate.name,
                 icon: CupertinoIcons.rotate_right,
                 tooltip: context.l10n.rotateTool,
+              ),
+              IconBtn(
+                value: Tool.hitbox.name,
+                icon: CupertinoIcons.bus,
+                tooltip: context.l10n.hitboxTool,
               ),
             ],
           ),

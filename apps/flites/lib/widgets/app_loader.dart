@@ -31,8 +31,7 @@ class AppLoader extends StatelessWidget {
         dotenv.load(fileName: ".env"),
 
         // Ensure splash shows for at least 1 second total
-        // TODO: Ben do we really need this?
-        // Future.delayed(const Duration(seconds: 1)),
+        if (!kDebugMode) Future.delayed(const Duration(milliseconds: 500)),
       ]);
 
       if (kDebugMode) {

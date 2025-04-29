@@ -239,5 +239,60 @@
     "selectOptionsTitle": "Selecionar opções",
     "cancel": "Cancelar",
     "ok": "OK",
-    "selectOptionsPlaceholder": "Selecionar opções"
+    "selectOptionsPlaceholder": "Selecionar opções",
+    "@selectOptionsPlaceholder": {
+        "description": "Placeholder text when no options are selected"
+    },
+    "formatSettings": "Configurações de formato",
+    "@formatSettings": {
+        "description": "Section header for export format settings"
+    },
+    "spriteSheetName": "Nome da folha de sprites",
+    "@spriteSheetName": {
+        "description": "Label for sprite sheet name input"
+    },
+    "fileFormat": "Formato do arquivo",
+    "@fileFormat": {
+        "description": "Label for file format selection"
+    },
+    "pngImage": "Imagem PNG",
+    "@pngImage": {
+        "description": "Option for PNG image format"
+    },
+    "svgVector": "Vetor SVG",
+    "@svgVector": {
+        "description": "Option for SVG vector format"
+    },
+    "svgExportNotAvailable": "A exportação SVG ainda não está disponível no Flites.",
+    "@svgExportNotAvailable": {
+        "description": "Error message when SVG export is not available"
+    },
+    "imageSettings": "Configurações de imagem",
+    "@imageSettings": {
+        "description": "Section header for image settings"
+    },
+    "tileSize": "Tamanho do azulejo",
+    "@tileSize": {
+        "description": "Label for tile size input"
+    },
+    "codeGeneration": "Geração de código",
+    "@codeGeneration": {
+        "description": "Section header for code generation options"
+    },
+    "targetFramework": "Framework alvo",
+    "@targetFramework": {
+        "description": "Label for target framework selection"
+    },
+    "generatingSpriteSheet": "Gerando folha de sprites...",
+    "@generatingSpriteSheet": {
+        "description": "Message shown while generating a sprite sheet"
+    },
+    "generateHitboxCode": "Gerar código de hitbox",
+    "@generateHitboxCode": {
+        "description": "Checkbox label for generating hitbox code"
+    },
+    "close": "Fechar",
+    "@close": {
+        "description": "Button text for closing panels or dialogs"
+    }
 }

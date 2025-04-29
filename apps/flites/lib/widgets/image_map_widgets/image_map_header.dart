@@ -1,12 +1,12 @@
+import 'package:flites/config/tools.dart';
 import 'package:flites/constants/app_sizes.dart';
 import 'package:flites/main.dart';
 import 'package:flites/states/selected_image_row_state.dart';
 import 'package:flites/states/source_files_state.dart';
+import 'package:flites/states/tool_controller.dart';
 import 'package:flites/types/secondary_click_context_data.dart';
 import 'package:flites/ui/utils/hover_btn.dart';
-import 'package:flites/utils/generate_sprite.dart';
-import 'package:flites/utils/generate_svg_sprite.dart';
-import 'package:flites/utils/svg_utils.dart';
+import 'package:flites/widgets/overlays/generic_overlay.dart';
 import 'package:flites/widgets/right_click_menu/right_clickable_item_wrapper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
@@ -55,8 +55,6 @@ class ImageMapHeader extends StatelessWidget {
                       final images = projectSourceFiles.value;
                       final selectedAnimation = selectedImageRow.value;
 
-                      /// TODO: check if mouse wheel scrolling is possible without
-                      /// the [Listener]
                       return Listener(
                         onPointerSignal: (pointerSignal) {
                           if (pointerSignal is PointerScrollEvent) {
@@ -135,16 +133,32 @@ class ImageMapHeader extends StatelessWidget {
               ],
             ),
           ),
+          // Export button - only shown when there are rows with images
           AnimationRowTabWrapper(
             isSelected: false,
             color: context.colors.primaryFixed,
             hoverColor: context.colors.primaryFixedDim,
             onPressed: () {
-              if (SvgUtils.allImagesInProjectAreSvg) {
-                GenerateSvgSprite.exportSpriteMap();
-              } else {
-                GenerateSprite.exportSpriteMap();
+              // check if there are rows with images
+              final hasRows = projectSourceFiles.value.rows.isNotEmpty;
+              final hasImages = hasRows &&
+                  projectSourceFiles.value.rows
+                      .any((row) => row.images.isNotEmpty);
+
+              // if we don't have any rows or images, show a dialog
+              if (!hasRows || !hasImages) {
+                showDialog(
+                  context: context,
+                  builder: (context) => const GenericOverlay(
+                    icon: Icons.error_rounded,
+                    title: 'No images to export',
+                    body: 'Please add some images to the sprite sheet first.',
+                  ),
+                );
+                return;
               }
+
+              toolController.selectTool(Tool.export);
             },
             withBackground: true,
             borderRadius: const BorderRadius.only(

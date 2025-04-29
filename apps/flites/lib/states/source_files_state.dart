@@ -1,10 +1,12 @@
 import 'dart:ui';
 
+import 'package:flites/states/selected_image_state.dart';
 import 'package:flites/types/export_settings.dart';
 import 'package:flites/types/flites_image.dart';
 import 'package:flites/types/flites_image_map.dart';
 import 'package:flites/types/flites_image_row.dart';
 import 'package:flites/utils/flites_image_factory.dart';
+import 'package:flites/utils/svg_utils.dart';
 import 'package:signals/signals.dart';
 
 import 'selected_image_row_state.dart';
@@ -27,6 +29,14 @@ final selectedAnimation = computed(
 );
 
 class SourceFilesState {
+  static void renameProject(String name) {
+    final trimmed = name.trim();
+    if (trimmed.isEmpty) return;
+    final newProject = _projectSourceFiles.value.copyWith(projectName: trimmed);
+
+    _projectSourceFiles.value = newProject;
+  }
+
   static void addImageRow(String name) {
     final currentRows = _projectSourceFiles.value.rows;
 
@@ -40,6 +50,14 @@ class SourceFilesState {
 
     _projectSourceFiles.value =
         _projectSourceFiles.value.copyWith(rows: newRows);
+  }
+
+  static void saveHitBoxPoints(List<Offset> hitboxPoints) {
+    final currentRow = _getCurrentRow();
+
+    _changeRow(
+      currentRow.copyWith(hitboxPoints: hitboxPoints),
+    );
   }
 
   static void deleteImageRow(int index) {
@@ -93,8 +111,9 @@ class SourceFilesState {
         _projectSourceFiles.value.copyWith(rows: currentRows);
   }
 
-  static Future<void> addImages() async {
-    final newImages = await flitesImageFactory.pickAndProcessImages();
+  static Future<void> addImages({List<FlitesImage>? droppedImages}) async {
+    final newImages =
+        droppedImages ?? await flitesImageFactory.pickAndProcessImages();
 
     final selectedRowIndex = selectedImageRow.value;
     if (newImages.isNotEmpty) {
@@ -112,6 +131,8 @@ class SourceFilesState {
 
       _projectSourceFiles.value =
           projectSourceFiles.value.copyWith(rows: updatedRows);
+
+      SelectedImageState.setSelectedImage(newImages.first.id);
     }
   }
 
@@ -219,5 +240,68 @@ class SourceFilesState {
 
     _projectSourceFiles.value =
         _projectSourceFiles.value.copyWith(rows: currentRows);
+  }
+
+  static void sortImagesByName() {
+    final selectedRowIndex = selectedImageRow.value;
+    final originalRow = _projectSourceFiles.value.rows[selectedRowIndex];
+
+    final newImages = [...originalRow.images];
+
+    newImages.sort((a, b) {
+      if (a.displayName != null && b.displayName != null) {
+        return a.displayName!.compareTo(b.displayName!);
+      }
+      return 0;
+    });
+
+    final newRow = originalRow.copyWith(images: newImages);
+
+    _changeRow(newRow, rowIndex: selectedRowIndex);
+  }
+
+  /// Renames images in the selected row according to their order
+  /// in the row. The images use the base name of the row, followed by an
+  /// underscore and the index of the image in the row.
+  static void renameImagesAccordingToOrder() {
+    final selectedRowIndex = selectedImageRow.value;
+    final originalRow = _projectSourceFiles.value.rows[selectedRowIndex];
+
+    final baseName =
+        originalRow.name.toLowerCase().replaceAll(RegExp(r'\s+'), '_');
+
+    final newImages = originalRow.images.asMap().entries.map((entry) {
+      final index = entry.key;
+      final originalImage = entry.value;
+
+      final fileExtension =
+          SvgUtils.isSvg(originalImage.image) ? '.svg' : '.png';
+
+      final digits = originalRow.images.length.toString().length;
+
+      return originalImage.copyWith(
+        displayName:
+            '${baseName}_${(index + 1).toString().padLeft(digits, '0')}$fileExtension',
+      );
+    }).toList();
+
+    final newRow = originalRow.copyWith(images: newImages);
+
+    _changeRow(newRow, rowIndex: selectedRowIndex);
+  }
+
+  /// Resets the display names of images in the selected row to their original names
+
+  static void resetImageNamesToOriginal() {
+    final selectedRowIndex = selectedImageRow.value;
+    final originalRow = _projectSourceFiles.value.rows[selectedRowIndex];
+
+    final newImages = originalRow.images.map((image) {
+      return image.copyWith(displayName: image.originalName);
+    }).toList();
+
+    final newRow = originalRow.copyWith(images: newImages);
+
+    _changeRow(newRow, rowIndex: selectedRowIndex);
   }
 }

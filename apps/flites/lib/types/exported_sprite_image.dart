@@ -17,11 +17,16 @@ sealed class ExportedSpriteImage {
 
 /// This class is used when exporting a sprite sheet that is tiled, ie. with a
 /// fixed frame size.
-class ExportedSprilteSheetTiled extends ExportedSpriteImage {
+class ExportedSpriteSheetTiled extends ExportedSpriteImage {
   /// The size of each tile in the sprite sheet.
   final Size tileSize;
+  final List<ExportedSpriteRowInfo> rowInformations;
 
-  ExportedSprilteSheetTiled({required super.image, required this.tileSize});
+  ExportedSpriteSheetTiled({
+    required super.image,
+    required this.tileSize,
+    required this.rowInformations,
+  });
 }
 
 /// This class is used when exporting a sprite sheet that is not tiled, ie. with

@@ -22,7 +22,13 @@ class InputField extends StatefulWidget {
 
   final Function(String)? onSubmitted;
 
+  final Function(String)? onChanged;
+
   final FocusNode? focusNode;
+
+  final TextInputType? keyboardType;
+
+  final List<TextInputFormatter>? inputFormatters;
 
   const InputField({
     super.key,
@@ -32,8 +38,10 @@ class InputField extends StatefulWidget {
     this.suffix,
     this.postfixWidget,
     this.prefixWidget,
-    // this.onFocusChanged,
+    this.onChanged,
     this.focusNode,
+    this.keyboardType,
+    this.inputFormatters,
   });
 
   @override
@@ -92,10 +100,8 @@ class _InputFieldState extends State<InputField> {
                 height: 1.0,
               ),
               textAlign: TextAlign.left,
-              keyboardType: TextInputType.number,
-              inputFormatters: [
-                FilteringTextInputFormatter.digitsOnly,
-              ],
+              keyboardType: widget.keyboardType,
+              inputFormatters: widget.inputFormatters,
               decoration: InputDecoration(
                 isDense: true,
                 contentPadding: const EdgeInsets.symmetric(
@@ -113,6 +119,8 @@ class _InputFieldState extends State<InputField> {
                       )
                     : null,
               ),
+              onChanged: (value) =>
+                  widget.onChanged?.call(widget.controller.text),
               onSubmitted: (_) =>
                   widget.onSubmitted?.call(widget.controller.text),
             ),
