@@ -6,8 +6,7 @@ import 'package:flites/ui/utils/code_block_wrapper.dart';
 import 'package:flites/widgets/layout/app_shell.dart';
 import 'package:flutter/material.dart';
 import 'package:markdown_widget/config/configs.dart';
-import 'package:markdown_widget/widget/blocks/leaf/code_block.dart';
-import 'package:markdown_widget/widget/markdown.dart';
+import 'package:markdown_widget/widget/all.dart';
 
 class CodeWizardResult extends StatefulWidget {
   final ExportToolFormData exportSettings;
@@ -75,6 +74,7 @@ class _CodeWizardResultState extends State<CodeWizardResult> {
           padding: const EdgeInsets.all(Sizes.p32),
           data: markdownInstructions ?? 'Error generating code',
           config: config.copy(configs: [
+            LinkConfig(style: TextStyle(color: context.colors.primary)),
             isDark
                 // TODO: define a custom theme for markdown blocks
                 ? PreConfig.darkConfig.copy(
