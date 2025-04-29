@@ -28,7 +28,8 @@ class FileService {
     required FileType fileType,
     required String fileExtension,
   }) async {
-    final projectName = projectSourceFiles.value.projectName ?? 'sprite';
+    final projectName =
+        (projectSourceFiles.value.projectName ?? 'Character').toLowerCase();
     if (kIsWeb) {
       await FileSaver.instance.saveFile(
         bytes: bytes,
