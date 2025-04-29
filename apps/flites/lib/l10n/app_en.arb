@@ -28,6 +28,10 @@
     "@rotateTool": {
         "description": "Tooltip for rotate tool button"
     },
+    "hitboxTool": "Hitbox Tool",
+    "@hitboxTool": {
+        "description": "Tooltip for rotate Hitbox tool button"
+    },
     "toggleVisibility": "Toggle visibility",
     "@toggleVisibility": {
         "description": "Tooltip for visibility toggle button"
@@ -140,6 +144,10 @@
     "@menuLanguage": {
         "description": "Language menu label"
     },
+    "menuAboutFlites": "About Flites",
+    "@menuAboutFlites": {
+        "description": "About Flites menu label"
+    },
     "padding": "Padding",
     "@padding": {
         "description": "General term for padding"
@@ -212,12 +220,32 @@
     "@showContainingFolder": {
         "description": "Button text to open the folder containing a saved file"
     },
-    "saveFile": "Save File",
-    "@saveFile": {
+    "saveProject": "Save Project",
+    "@saveProject": {
         "description": "Button text for saving the current project/file"
     },
-    "importFile": "Import File",
-    "@importFile": {
-        "description": "Button text for importing a project/file"
+    "openProject": "Open Project",
+    "@openProject": {
+        "description": "Button text for opening a project/file"
+    },
+    "exportSpritemap": "Export Spritemap",
+    "@exportSpritemap": {
+        "description": "Button text for exporting a spritemap"
+    },
+    "selectOptionsTitle": "Select Options",
+    "@selectOptionsTitle": {
+        "description": "Title for the select options dialog"
+    },
+    "cancel": "Cancel",
+    "@cancel": {
+        "description": "Cancel button text"
+    },
+    "ok": "OK",
+    "@ok": {
+        "description": "OK button text"
+    },
+    "selectOptionsPlaceholder": "Select options",
+    "@selectOptionsPlaceholder": {
+        "description": "Placeholder text when no options are selected"
     }
 }

@@ -12,6 +12,7 @@ class Sizes {
   static const p16 = 16.0;
   static const p20 = 20.0;
   static const p24 = 24.0;
+  static const p28 = 28.0;
   static const p32 = 32.0;
   static const p36 = 36.0;
   static const p40 = 40.0;
@@ -43,3 +44,20 @@ const gapH32 = SizedBox(height: Sizes.p32);
 const gapH40 = SizedBox(height: Sizes.p40);
 const gapH48 = SizedBox(height: Sizes.p48);
 const gapH64 = SizedBox(height: Sizes.p64);
+
+/// font sizes
+const fontSize2Xs = 6.0;
+const fontSizeXs = 8.0;
+const fontSizeSm = 10.0;
+const fontSizeBase = 12.0;
+const fontSizeMd = 14.0;
+const fontSizeLg = 16.0;
+const fontSizeXl = 18.0;
+const fontSize2Xl = 20.0;
+
+// Border radius
+const borderRadiusSm = 4.0;
+const borderRadiusMd = 8.0;
+const borderRadiusLg = 16.0;
+const borderRadiusXl = 24.0;
+const borderRadius2Xl = 32.0;
