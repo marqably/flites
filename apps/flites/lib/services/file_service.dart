@@ -28,10 +28,11 @@ class FileService {
     required FileType fileType,
     required String fileExtension,
   }) async {
+    final projectName = projectSourceFiles.value.projectName ?? 'sprite';
     if (kIsWeb) {
       await FileSaver.instance.saveFile(
         bytes: bytes,
-        name: 'sprite-map.$fileExtension',
+        name: '$projectName.$fileExtension',
         ext: fileExtension,
         mimeType: MimeType.other,
       );
@@ -39,7 +40,6 @@ class FileService {
       return true;
     } else {
       final downloadsDir = await getDownloadsDirectory();
-      final projectName = projectSourceFiles.value.projectName ?? 'sprite';
 
       final outputFile = await FilePicker.platform.saveFile(
         dialogTitle: 'Save Sprite Map',
