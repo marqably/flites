@@ -46,6 +46,11 @@ class ImageEditor extends StatelessWidget {
             final referenceImages =
                 getFliteImages(selectedReferenceImages.value);
 
+            // We're subscribing to the canvas scaling factor
+            // to ensure the reference images update correctly
+            // when the canvas is zoomed in or out.
+            canvasScalingFactor.value;
+
             return _CanvasGestureHandler(
               child: Stack(
                 children: [
@@ -57,10 +62,7 @@ class ImageEditor extends StatelessWidget {
 
                   // Reference Images
                   ...referenceImages.map(
-                    (image) => CanvasReferenceImage(
-                      image,
-                      key: ValueKey(image.id),
-                    ),
+                    (image) => CanvasReferenceImage(image),
                   ),
 
                   // Tool-specific canvases
