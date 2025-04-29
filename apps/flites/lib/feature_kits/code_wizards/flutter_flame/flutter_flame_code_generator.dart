@@ -115,7 +115,7 @@ class FlutterFlameCodeGenerator {
     Map<String, dynamic> codeSettingsMap,
   ) {
     if (codeSettingsMap['hitboxes'] != true) {
-      return stub.replaceAll('{{hitbox_code}}', '');
+      return stub.replaceAll('{{hitbox_code}}', '{}');
     }
 
     final hitboxEntries = <String>[];
