@@ -386,8 +386,6 @@ class GenerateSprite {
       throw Exception('Cannot calculate scaling factor for empty image list');
     }
 
-    /// TODO: this gives a negative scaling factor for Axis.vertical
-
     // Check for zero width/height
     final hasZeroDimension = images.any((image) {
       final dimension =

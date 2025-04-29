@@ -37,9 +37,6 @@ class _ExportToolState extends State<ExportTool> {
           ExportedSpriteSheetTiled? spriteSheetInput,
           ExportToolFormData formDataInput,
         ) {
-          // show a success overlay
-          // TODO: show success overlay
-
           // if we want to generate code -> set state to switch to code wizard screen
           if (formDataInput.codeGenFramework != CodeWizards.none) {
             setState(() {

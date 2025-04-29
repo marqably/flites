@@ -76,7 +76,6 @@ class _CodeWizardResultState extends State<CodeWizardResult> {
           config: config.copy(configs: [
             LinkConfig(style: TextStyle(color: context.colors.primary)),
             isDark
-                // TODO: define a custom theme for markdown blocks
                 ? PreConfig.darkConfig.copy(
                     wrapper: codeWrapper,
                     decoration: BoxDecoration(

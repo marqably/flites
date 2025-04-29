@@ -55,8 +55,6 @@ class ImageMapHeader extends StatelessWidget {
                       final images = projectSourceFiles.value;
                       final selectedAnimation = selectedImageRow.value;
 
-                      /// TODO: check if mouse wheel scrolling is possible without
-                      /// the [Listener]
                       return Listener(
                         onPointerSignal: (pointerSignal) {
                           if (pointerSignal is PointerScrollEvent) {

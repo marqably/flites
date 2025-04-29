@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:file_saver/file_saver.dart';
+import 'package:flites/states/source_files_state.dart';
 import 'package:flites/widgets/overlays/file_save_confirm_overlay.dart';
 import 'package:flutter/foundation.dart';
 
@@ -38,10 +39,11 @@ class FileService {
       return true;
     } else {
       final downloadsDir = await getDownloadsDirectory();
+      final projectName = projectSourceFiles.value.projectName ?? 'sprite';
 
       final outputFile = await FilePicker.platform.saveFile(
         dialogTitle: 'Save Sprite Map',
-        fileName: 'sprite-map.$fileExtension',
+        fileName: '$projectName.$fileExtension',
         initialDirectory: downloadsDir?.path,
         type: fileType,
         lockParentWindow: true,
