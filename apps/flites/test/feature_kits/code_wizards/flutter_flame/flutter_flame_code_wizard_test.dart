@@ -1,80 +1,87 @@
+import 'dart:typed_data';
+import 'dart:ui';
+
+import 'package:flites/config/code_wizards.dart';
+import 'package:flites/feature_kits/code_wizards/flutter_flame/flutter_flame_code_wizard.dart';
+import 'package:flites/feature_kits/tools/export_tool/export_tool_panel.dart';
+import 'package:flites/types/exported_sprite_image.dart';
+import 'package:flites/types/exported_sprite_row_info.dart';
+import 'package:flites/feature_kits/code_wizards/flutter_flame/flutter_flame_code_generator.dart';
+import 'package:flutter_test/flutter_test.dart';
+
 void main() {
-  // TODO: create test
-  // group'('FlutterFlameCodeWizard', () {
-  //   late FlutterFlameCodeWizard codeWizard;
-  //   late ExportedSpriteSheetTiled mockSpriteSheet;
-  //   late ExportToolFormData mockSettings;
+  group('FlutterFlameCodeWizard', () {
+    late FlutterFlameCodeWizard codeWizard;
+    late ExportedSpriteSheetTiled testSpriteSheet;
+    late ExportToolFormData testSettings;
+    late Map<String, dynamic> testCodeSettings;
 
-  // setUp(() {
-  //   codeWizard = FlutterFlameCodeWizard();
+    setUp(() {
+      codeWizard = FlutterFlameCodeWizard();
 
-  //   // Create a mock sprite sheet
-  //   mockSpriteSheet = ExportedSpriteSheetTiled(
-  //     image: Uint8List(0), // Empty image data for testing
-  //     tileSize: const Size(100, 100),
-  //     rowInformations: [
-  //       ExportedSpriteRowInfo.inSpriteSheet(
-  //         name: 'run',
-  //         totalWidth: 300,
-  //         totalHeight: 100,
-  //         offsetFromTop: 0,
-  //         numberOfFrames: 3,
-  //         hitboxPoints: [
-  //           const Offset(0, 10),
-  //           const Offset(5, 13),
-  //           const Offset(30, 30),
-  //           const Offset(33, 10),
-  //         ],
-  //       ),
-  //       ExportedSpriteRowInfo.inSpriteSheet(
-  //         name: 'jump',
-  //         totalWidth: 300,
-  //         totalHeight: 100,
-  //         offsetFromTop: 0,
-  //         numberOfFrames: 3,
-  //         hitboxPoints: [
-  //           const Offset(0, 25),
-  //           const Offset(5, 23),
-  //           const Offset(25, 40),
-  //           const Offset(25, 20),
-  //         ],
-  //       ),
-  //       ExportedSpriteRowInfo.inSpriteSheet(
-  //         name: 'slide',
-  //         totalWidth: 300,
-  //         totalHeight: 100,
-  //         offsetFromTop: 0,
-  //         numberOfFrames: 3,
-  //         hitboxPoints: [
-  //           const Offset(0, 0),
-  //           const Offset(5, 10),
-  //           const Offset(25, 10),
-  //           const Offset(25, 0),
-  //         ],
-  //       ),
-  //     ],
-  //   );
+      // Prepare realistic test data that matches what the generator expects
+      testSpriteSheet = ExportedSpriteSheetTiled(
+        image: Uint8List(100), // Dummy data
+        tileSize: const Size(16, 16),
+        rowInformations: [
+          ExportedSpriteRowInfo.inSpriteSheet(
+            name: 'walk',
+            totalWidth: 64, // 4 frames * 16
+            totalHeight: 16,
+            offsetFromTop: 0,
+            numberOfFrames: 4,
+            originalAspectRatio: 1.0,
+            hitboxPoints: [
+              const Offset(4, 4),
+              const Offset(12, 4),
+              const Offset(12, 12),
+              const Offset(4, 12),
+            ],
+          ),
+          ExportedSpriteRowInfo.inSpriteSheet(
+            name: 'jump',
+            totalWidth: 32, // 2 frames * 16
+            totalHeight: 16,
+            offsetFromTop: 16, // Below walk
+            numberOfFrames: 2,
+            originalAspectRatio: 1.0,
+            hitboxPoints: [], // No hitbox for jump
+          ),
+        ],
+      );
 
-  //   // Create mock settings
-  //   mockSettings = ExportToolFormData(
-  //     spriteSheetName: 'Vampire',
-  //     format: 'png',
-  //     tileWidth: 100,
-  //     tileHeight: 100,
-  //     codeGenFramework: CodeWizards.flutterFlame,
-  //   );
-  // });
+      testSettings = ExportToolFormData(
+        spriteSheetName: 'test_sprite_sheet',
+        format: 'png',
+        tileWidth: 16,
+        tileHeight: 16,
+        codeGenFramework: CodeWizards.flutterFlame,
+      );
 
-  // test('flutterFlameCodeWizard generate creates a valid sprite sheet class',
-  //     () {
-  //   // Act
-  //   final result = codeWizard.getInstructionsMarkdown(
-  //     mockSpriteSheet,
-  //     mockSettings,
-  //     {},
-  //   );
-  //   // Assert
-  //   expect(result, 'TEST Flutter Flame');
-  // });'
-  // });
+      testCodeSettings = {'hitboxes': true};
+    });
+
+    test('getInstructionsMarkdown returns expected markdown from generator',
+        () {
+      // 1. Call the wizard method with your test data
+      final result = codeWizard.getInstructionsMarkdown(
+        testSpriteSheet,
+        testSettings,
+        testCodeSettings,
+      );
+
+      // 2. Calculate the EXPECTED output using the REAL generator
+      // This requires you to import and use the actual generator class here.
+      // This approach relies on the generator being deterministic and itself tested.
+      final expectedMarkdown =
+          FlutterFlameCodeGenerator.buildInstructionsMarkdown(
+        testSpriteSheet,
+        testSettings,
+        testCodeSettings,
+      );
+
+      // 3. Assert that the result from the wizard matches the expected result
+      expect(result, equals(expectedMarkdown));
+    });
+  });
 }
