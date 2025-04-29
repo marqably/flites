@@ -30,7 +30,9 @@ final selectedAnimation = computed(
 
 class SourceFilesState {
   static void renameProject(String name) {
-    final newProject = _projectSourceFiles.value.copyWith(projectName: name);
+    final trimmed = name.trim();
+    if (trimmed.isEmpty) return;
+    final newProject = _projectSourceFiles.value.copyWith(projectName: trimmed);
 
     _projectSourceFiles.value = newProject;
   }
@@ -275,8 +277,11 @@ class SourceFilesState {
       final fileExtension =
           SvgUtils.isSvg(originalImage.image) ? '.svg' : '.png';
 
+      final digits = originalRow.images.length.toString().length;
+
       return originalImage.copyWith(
-        displayName: '${baseName}_${index + 1}$fileExtension',
+        displayName:
+            '${baseName}_${(index + 1).toString().padLeft(digits, '0')}$fileExtension',
       );
     }).toList();
 
