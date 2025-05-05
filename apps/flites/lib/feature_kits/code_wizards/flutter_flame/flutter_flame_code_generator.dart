@@ -104,7 +104,7 @@ class FlutterFlameCodeGenerator {
         : spriteSheet.rowInformations[0];
 
     return stub.replaceAll('{{alternativeAnimationState}}',
-        '{{SpriteName}}SpriteState.${state.name}');
+        '{{SpriteName}}SpriteState.${Casing.camelCase(state.name)}');
   }
 
   /// Generates the Dart code string for the _hitboxVertices map.
