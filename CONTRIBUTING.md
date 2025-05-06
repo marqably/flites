@@ -44,6 +44,6 @@ We're here to help! Feel free to:
 - Ask in discussions
 - Comment on existing issues
 
-Check out our [detailed contributing guide](docs/contributing.mdx) for more information.
+Check out our [detailed contributing guide](docs/contributing.md) for more information.
 
 Remember: Every contribution matters, and we're excited to have you here! 💙

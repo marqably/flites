@@ -1,6 +1,6 @@
 # Flites
 
-Flites is a modern sprite animation tool built with Flutter that makes creating and editing sprite animations intuitive and efficient. Whether you're a game developer, animator, or digital artist, Flites provides the tools you need to create, edit, and preview sprite animations with precision.
+Flites is a modern sprite animation tool built with Flutter that makes creating and editing sprite animations intuitive and efficient. You can download the latest version from the [releases page](https://github.com/marqably/flites/releases). Whether you're a game developer, animator, or digital artist, Flites provides the tools you need to create, edit, and preview sprite animations with precision.
 
 ## Features
 
@@ -10,9 +10,13 @@ Flites is a modern sprite animation tool built with Flutter that makes creating 
 - 👁️ Reference frame overlay system
 - 🎯 Precise positioning and scaling
 - 🗂️ Drag-and-drop frame reordering
+- 💥 Custom hitbox editor and export
 - 🎬 Animation preview
+- 📦 Optimized multi-animation sprite sheet export
+- ✨ Code generation wizards for easy integration
+- 💾 Project saving and loading
 - 📱 Cross-platform support
-- 🌍 Multiple language support (English, Spanish, German)
+- 🌍 Multiple language support (English, Spanish, German, French, Italian, Portuguese, Japanese, Korean, Chinese)
 
 ## Development
 
@@ -84,3 +88,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - [UI Layouting](docs/ui-layouting.md) - Documentation for panels, controls, and inputs
 - [Panel Forms](docs/panel-forms.md) - Guide to creating and managing forms within panels
+- [Adding New Tools](docs/adding_new_tools.md) - Guide for extending the editor with new image manipulation tools
+- [Adding New Code Wizards](docs/adding_new_code_wizards.md) - Guide for adding new code generation targets
