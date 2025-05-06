@@ -17,6 +17,7 @@ on:
   pull_request:
     branches:
       - main
+      - feat/beau/ci-macos
 
   # Allows manual triggering
   workflow_dispatch:
@@ -84,20 +85,20 @@ jobs:
       # These steps would typically go AFTER the build and BEFORE zipping.
       # They require secrets configured in your repository (Apple Developer Certs/Keys).
 
-      # - name: 🍎 Install Apple Certificate and Key
-      #   if: steps.vars.outputs.build_type == 'release' # Only sign releases
-      #   uses: apple-actions/import-codesign-certs@v2
-      #   with:
-      #     p12-file-base64: ${{ secrets.MACOS_CERTIFICATE_P12_BASE64 }}
-      #     p12-password: ${{ secrets.MACOS_CERTIFICATE_PASSWORD }}
+      - name: 🍎 Install Apple Certificate and Key
+        # if: steps.vars.outputs.build_type == 'release' # Only sign releases
+        uses: apple-actions/import-codesign-certs@v2
+        with:
+          p12-file-base64: ${{ secrets.MACOS_CERTIFICATE_P12_BASE64 }}
+          p12-password: ${{ secrets.MACOS_CERTIFICATE_PASSWORD }}
 
-      # - name: 🍎 Sign macOS App
-      #   if: steps.vars.outputs.build_type == 'release'
-      #   run: |
-      #     codesign --force --deep --strict --options=runtime \
-      #       --sign "${{ secrets.MACOS_CERTIFICATE_SIGNING_IDENTITY }}" \
-      #       "apps/flites/build/macos/Build/Products/Release/${{ env.APP_NAME }}.app"
-      #   shell: bash
+      - name: 🍎 Sign macOS App
+        # if: steps.vars.outputs.build_type == 'release'
+        run: |
+          codesign --force --deep --strict --options=runtime \
+            --sign "${{ secrets.MACOS_CERTIFICATE_SIGNING_IDENTITY }}" \
+            "apps/flites/build/macos/Build/Products/Release/${{ env.APP_NAME }}.app"
+        shell: bash
 
       # Package .app into Zip using ditto (preserves metadata/permissions better for .app)
       - name: 📦 Package macOS Build into Zip
@@ -128,14 +129,14 @@ jobs:
           echo "Created ${ZIP_FILE_NAME}"
 
       # Notarization step would usually happen AFTER zipping the signed app
-      # - name: 🍎 Notarize macOS App
-      #   if: steps.vars.outputs.build_type == 'release'
-      #   uses: apple-actions/upload-app-notary-submission@v2 # Example action
-      #   with:
-      #      app-path: ${{ steps.vars.outputs.artifact_suffix }} # Path to the SIGNED ZIP file
-      #      api-key-id: ${{ secrets.APPSTORE_API_KEY_ID }}
-      #      api-key-issuer-id: ${{ secrets.APPSTORE_API_KEY_ISSUER_ID }}
-      #      api-key-private-key: ${{ secrets.APPSTORE_API_KEY_PRIVATE_KEY }}
+      - name: 🍎 Notarize macOS App
+        # if: steps.vars.outputs.build_type == 'release'
+        uses: apple-actions/upload-app-notary-submission@v2 # Example action
+        with:
+           app-path: ${{ steps.vars.outputs.artifact_suffix }} # Path to the SIGNED ZIP file
+           api-key-id: ${{ secrets.APPSTORE_API_KEY_ID }}
+           api-key-issuer-id: ${{ secrets.APPSTORE_API_KEY_ISSUER_ID }}
+           api-key-private-key: ${{ secrets.APPSTORE_API_KEY_PRIVATE_KEY }}
 
       # Upload the created zip artifact
       - name: ⬆️ Upload Artifact
