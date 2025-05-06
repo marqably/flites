@@ -132,11 +132,11 @@ jobs:
       - name: 🍎 Notarize macOS App
         # if: steps.vars.outputs.build_type == 'release'
         uses: apple-actions/upload-app-notary-submission@v2 # Example action
-        with:
-           app-path: ${{ steps.vars.outputs.artifact_suffix }} # Path to the SIGNED ZIP file
-           api-key-id: ${{ secrets.APPSTORE_API_KEY_ID }}
-           api-key-issuer-id: ${{ secrets.APPSTORE_API_KEY_ISSUER_ID }}
-           api-key-private-key: ${{ secrets.APPSTORE_API_KEY_PRIVATE_KEY }}
+        # with:
+          #  app-path: ${{ steps.vars.outputs.artifact_suffix }} # Path to the SIGNED ZIP file
+          #  api-key-id: ${{ secrets.APPSTORE_API_KEY_ID }}
+          #  api-key-issuer-id: ${{ secrets.APPSTORE_API_KEY_ISSUER_ID }}
+          #  api-key-private-key: ${{ secrets.APPSTORE_API_KEY_PRIVATE_KEY }}
 
       # Upload the created zip artifact
       - name: ⬆️ Upload Artifact
