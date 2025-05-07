@@ -100,6 +100,19 @@ jobs:
             "apps/flites/build/macos/Build/Products/Release/${{ env.APP_NAME_LOWER }}.app"
         shell: bash
 
+      - name: 🔎 Verify Signatures After Signing
+        shell: bash
+        run: |
+          APP_BUNDLE_PATH="apps/flites/build/macos/Build/Products/Release/${{ env.APP_NAME_LOWER }}.app"
+          echo "Verifying signature for main app: ${APP_BUNDLE_PATH}"
+          codesign --display --verbose=4 "${APP_BUNDLE_PATH}"
+          echo "\nVerifying signature for file_picker framework:"
+          codesign --display --verbose=4 "${APP_BUNDLE_PATH}/Contents/Frameworks/file_picker.framework"
+          echo "\nVerifying signature for url_launcher_macos framework:"
+          codesign --display --verbose=4 "${APP_BUNDLE_PATH}/Contents/Frameworks/url_launcher_macos.framework"
+          echo "\nChecking for hardened runtime and entitlements on main app:"
+          codesign -d --entitlements :- "${APP_BUNDLE_PATH}"
+
       # Package .app into Zip using ditto (preserves metadata/permissions better for .app)
       - name: 📦 Package macOS Build into Zip
         shell: bash
