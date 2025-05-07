@@ -97,14 +97,14 @@ jobs:
         run: |
           codesign --force --deep --strict --options=runtime --timestamp \
             --sign "${{ secrets.MACOS_CERTIFICATE_SIGNING_IDENTITY }}" \
-            "apps/flites/build/macos/Build/Products/Release/${{ env.APP_NAME }}.app"
+            "apps/flites/build/macos/Build/Products/Release/${{ env.APP_NAME_LOWER }}.app"
         shell: bash
 
       # Package .app into Zip using ditto (preserves metadata/permissions better for .app)
       - name: 📦 Package macOS Build into Zip
         shell: bash
         run: |
-          # Adjust source path if needed. Assumes app bundle name matches APP_NAME.
+          # Adjust source path if needed. Assumes app bundle name matches APP_NAME_LOWER.
           SOURCE_APP="apps/flites/build/macos/Build/Products/Release/${{ env.APP_NAME_LOWER }}.app"
           # Get zip filename from composite action output (should end in .zip)
           ZIP_FILE_NAME="${{ steps.vars.outputs.artifact_suffix }}"
@@ -154,7 +154,7 @@ jobs:
         shell: bash
         run: |
           # Check if the .app bundle directory was created by the build step
-          APP_BUNDLE="apps/flites/build/macos/Build/Products/Release/${{ env.APP_NAME_LOWER }}.app" # Use lowercase
+          APP_BUNDLE="apps/flites/build/macos/Build/Products/Release/${{ env.APP_NAME_LOWER }}.app" # Use lowercase to match pubspec
           echo "Checking for ${APP_BUNDLE}"
           if [ -d "${APP_BUNDLE}" ]; then
             echo "macOS build output (.app bundle) found."
