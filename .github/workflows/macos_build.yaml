@@ -131,12 +131,15 @@ jobs:
       # Notarization step would usually happen AFTER zipping the signed app
       - name: 🍎 Notarize macOS App
         # if: steps.vars.outputs.build_type == 'release'
-        uses: apple-actions/upload-app-notary-submission@v2 # Example action
-        # with:
-          #  app-path: ${{ steps.vars.outputs.artifact_suffix }} # Path to the SIGNED ZIP file
-          #  api-key-id: ${{ secrets.APPSTORE_API_KEY_ID }}
-          #  api-key-issuer-id: ${{ secrets.APPSTORE_API_KEY_ISSUER_ID }}
-          #  api-key-private-key: ${{ secrets.APPSTORE_API_KEY_PRIVATE_KEY }}
+        uses: GuillaumeFalourd/notary-tools@v1 # Replaced apple-actions/upload-app-notary-submission@v2
+        with:
+          product_path: ${{ steps.vars.outputs.artifact_suffix }} # Path to the SIGNED ZIP file
+          apple_id: ${{ secrets.APPLE_ID }} # Store your Apple ID email in secrets
+          password: ${{ secrets.APPLE_PASSWORD }} # Store an app-specific password in secrets
+          team_id: ${{ secrets.APPLE_TEAM_ID }} # Store your Apple Developer Team ID in secrets
+          # staple: 'true' # Optional: defaults to true, explicitly set if needed
+          # keychain_profile: 'your-keychain-profile-name' # Optional: if using keychain profile for notarytool
+          # xcode_path: '/Applications/Xcode_14.2.app' # Optional: specify Xcode path if not default
 
       # Upload the created zip artifact
       - name: ⬆️ Upload Artifact
