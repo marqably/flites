@@ -1,4 +1,4 @@
-package com.example.flites
+package app.flites.editor
 
 import io.flutter.embedding.android.FlutterActivity
 
