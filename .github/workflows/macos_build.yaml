@@ -95,7 +95,11 @@ jobs:
       - name: 🍎 Sign macOS App
         # if: steps.vars.outputs.build_type == 'release'
         run: |
+          ENTITLEMENTS_PATH="apps/flites/macos/Runner/Release.entitlements"
+          echo "Using entitlements file: ${ENTITLEMENTS_PATH}"
+          ls -l "${ENTITLEMENTS_PATH}" # Verify file exists
           codesign --force --deep --strict --options=runtime --timestamp \
+            --entitlements "${ENTITLEMENTS_PATH}" \
             --sign "${{ secrets.MACOS_CERTIFICATE_SIGNING_IDENTITY }}" \
             "apps/flites/build/macos/Build/Products/Release/${{ env.APP_NAME_LOWER }}.app"
         shell: bash
