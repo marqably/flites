@@ -95,7 +95,7 @@ jobs:
       - name: 🍎 Sign macOS App
         # if: steps.vars.outputs.build_type == 'release'
         run: |
-          codesign --force --deep --strict --options=runtime \
+          codesign --force --deep --strict --options=runtime --timestamp \
             --sign "${{ secrets.MACOS_CERTIFICATE_SIGNING_IDENTITY }}" \
             "apps/flites/build/macos/Build/Products/Release/${{ env.APP_NAME }}.app"
         shell: bash
@@ -138,8 +138,8 @@ jobs:
           password: ${{ secrets.APPLE_PASSWORD }} # Store an app-specific password in secrets
           team_id: ${{ secrets.APPLE_TEAM_ID }} # Store your Apple Developer Team ID in secrets
           xcode_path: /Applications/Xcode.app # Explicitly set Xcode path
-          # staple: 'true' # Optional: defaults to true, explicitly set if needed
-          # keychain_profile: 'your-keychain-profile-name' # Optional: defaults to 'notarization', explicitly set if needed
+          staple: false # Temporarily disable stapling
+          # keychain_profile: 'your-keychain-profile-name' # Optional: defaults to 'notarization'
 
       # Upload the created zip artifact
       - name: ⬆️ Upload Artifact
