@@ -96,12 +96,38 @@ jobs:
         # if: steps.vars.outputs.build_type == 'release'
         run: |
           ENTITLEMENTS_PATH="apps/flites/macos/Runner/Release.entitlements"
+          APP_BUNDLE_PATH="apps/flites/build/macos/Build/Products/Release/${{ env.APP_NAME_LOWER }}.app"
+          FRAMEWORK_DIR="${APP_BUNDLE_PATH}/Contents/Frameworks"
+          SIGNING_IDENTITY="${{ secrets.MACOS_CERTIFICATE_SIGNING_IDENTITY }}"
+
+          FRAMEWORKS_TO_SIGN=(
+            "file_picker.framework"
+            "file_saver.framework"
+            "url_launcher_macos.framework"
+            # Add any other problematic frameworks here if they appear in future logs
+          )
+
           echo "Using entitlements file: ${ENTITLEMENTS_PATH}"
           ls -l "${ENTITLEMENTS_PATH}" # Verify file exists
+
+          for FRAMEWORK_NAME in "${FRAMEWORKS_TO_SIGN[@]}"; do
+            FRAMEWORK_BINARY_PATH="${FRAMEWORK_DIR}/${FRAMEWORK_NAME}/Versions/A/${FRAMEWORK_NAME%.*}" # Gets "file_picker" from "file_picker.framework"
+            FRAMEWORK_BUNDLE_PATH="${FRAMEWORK_DIR}/${FRAMEWORK_NAME}"
+
+            echo "Attempting to sign framework binary: ${FRAMEWORK_BINARY_PATH}"
+            codesign --remove-signature "${FRAMEWORK_BINARY_PATH}" || echo "No existing signature on binary ${FRAMEWORK_BINARY_PATH}, or removal failed (continuing)."
+            codesign --force --strict --options=runtime --timestamp --entitlements "${ENTITLEMENTS_PATH}" --sign "${SIGNING_IDENTITY}" "${FRAMEWORK_BINARY_PATH}"
+            
+            echo "Attempting to sign framework bundle: ${FRAMEWORK_BUNDLE_PATH}"
+            codesign --remove-signature "${FRAMEWORK_BUNDLE_PATH}" || echo "No existing signature on bundle ${FRAMEWORK_BUNDLE_PATH}, or removal failed (continuing)."
+            codesign --force --strict --options=runtime --timestamp --entitlements "${ENTITLEMENTS_PATH}" --sign "${SIGNING_IDENTITY}" "${FRAMEWORK_BUNDLE_PATH}"
+          done
+
+          echo "Signing main application bundle: ${APP_BUNDLE_PATH}"
           codesign --force --deep --strict --options=runtime --timestamp \
             --entitlements "${ENTITLEMENTS_PATH}" \
-            --sign "${{ secrets.MACOS_CERTIFICATE_SIGNING_IDENTITY }}" \
-            "apps/flites/build/macos/Build/Products/Release/${{ env.APP_NAME_LOWER }}.app"
+            --sign "${SIGNING_IDENTITY}" \
+            "${APP_BUNDLE_PATH}"
         shell: bash
 
       - name: 🔎 Verify Signatures After Signing
