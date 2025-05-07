@@ -28,7 +28,7 @@ jobs:
     runs-on: macos-latest
     env:
       APP_NAME: Flites
-      APP_ID: com.marqably.flites
+      APP_ID: app.flites.editor
       APP_NAME_LOWER: flites
     steps:
       - name: DEBUG Print Workflow Input Tag
@@ -137,9 +137,9 @@ jobs:
           apple_id: ${{ secrets.APPLE_ID }} # Store your Apple ID email in secrets
           password: ${{ secrets.APPLE_PASSWORD }} # Store an app-specific password in secrets
           team_id: ${{ secrets.APPLE_TEAM_ID }} # Store your Apple Developer Team ID in secrets
+          xcode_path: /Applications/Xcode.app # Explicitly set Xcode path
           # staple: 'true' # Optional: defaults to true, explicitly set if needed
-          # keychain_profile: 'your-keychain-profile-name' # Optional: if using keychain profile for notarytool
-          # xcode_path: '/Applications/Xcode_14.2.app' # Optional: specify Xcode path if not default
+          # keychain_profile: 'your-keychain-profile-name' # Optional: defaults to 'notarization', explicitly set if needed
 
       # Upload the created zip artifact
       - name: ⬆️ Upload Artifact
