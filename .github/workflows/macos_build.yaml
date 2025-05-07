@@ -63,6 +63,20 @@ jobs:
       - name: 📦 Setup Melos
         uses: bluefireteam/melos-action@v2
 
+      - name: ✨ Super Clean Build Environment
+        shell: bash
+        run: |
+          echo "🧹 Cleaning Flutter project..."
+          cd apps/flites
+          flutter clean
+          echo "🧹 Cleaning Xcode derived data and Pods..."
+          cd macos
+          xcodebuild clean || echo "Xcode clean failed or no project to clean (continuing)."
+          rm -rf Pods
+          rm -f Podfile.lock
+          cd ../../ # Go back to workspace root if needed for next steps
+          echo "✨ Clean finished."
+
       - name: 🔧 Install Dependencies
         run: |
           flutter config --enable-macos-desktop
@@ -116,11 +130,11 @@ jobs:
 
             echo "Attempting to sign framework binary: ${FRAMEWORK_BINARY_PATH}"
             codesign --remove-signature "${FRAMEWORK_BINARY_PATH}" || echo "No existing signature on binary ${FRAMEWORK_BINARY_PATH}, or removal failed (continuing)."
-            codesign --force --strict --options=runtime --timestamp --entitlements "${ENTITLEMENTS_PATH}" --sign "${SIGNING_IDENTITY}" "${FRAMEWORK_BINARY_PATH}"
+            codesign --force --strict --options=runtime --timestamp --sign "${SIGNING_IDENTITY}" "${FRAMEWORK_BINARY_PATH}"
             
             echo "Attempting to sign framework bundle: ${FRAMEWORK_BUNDLE_PATH}"
             codesign --remove-signature "${FRAMEWORK_BUNDLE_PATH}" || echo "No existing signature on bundle ${FRAMEWORK_BUNDLE_PATH}, or removal failed (continuing)."
-            codesign --force --strict --options=runtime --timestamp --entitlements "${ENTITLEMENTS_PATH}" --sign "${SIGNING_IDENTITY}" "${FRAMEWORK_BUNDLE_PATH}"
+            codesign --force --strict --options=runtime --timestamp --sign "${SIGNING_IDENTITY}" "${FRAMEWORK_BUNDLE_PATH}"
           done
 
           echo "Signing main application bundle: ${APP_BUNDLE_PATH}"
