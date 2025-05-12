@@ -124,8 +124,9 @@ class ImageMapHeader extends StatelessWidget {
                     );
                   },
                   tooltip: 'New Sprite',
-                  child: const Icon(
+                  child: Icon(
                     Icons.add,
+                    color: context.colors.onPrimary,
                     size: Sizes.p16,
                   ),
                 ),
@@ -165,7 +166,12 @@ class ImageMapHeader extends StatelessWidget {
               bottomRight: Radius.circular(Sizes.p8),
             ),
             tooltip: context.l10n.exportSprite,
-            child: Text(context.l10n.exportSprite),
+            child: Text(
+              context.l10n.exportSprite,
+              style: TextStyle(
+                color: context.colors.onPrimary,
+              ),
+            ),
           ),
         ],
       ),
@@ -223,7 +229,7 @@ class _AnimationRowTabNameState extends State<AnimationRowTabName> {
               maxLines: 1,
               style: TextStyle(
                 fontSize: 14,
-                color: context.colors.onSurface,
+                color: context.colors.onPrimary,
               ),
               onSubmitted: (value) {
                 SourceFilesState.renameImageRow(value);
