@@ -111,32 +111,39 @@ jobs:
         run: |
           ENTITLEMENTS_PATH="apps/flites/macos/Runner/Release.entitlements"
           APP_BUNDLE_PATH="apps/flites/build/macos/Build/Products/Release/${{ env.APP_NAME_LOWER }}.app"
-          FRAMEWORK_DIR="${APP_BUNDLE_PATH}/Contents/Frameworks"
           SIGNING_IDENTITY="${{ secrets.MACOS_CERTIFICATE_SIGNING_IDENTITY }}"
-
-          FRAMEWORKS_TO_SIGN=(
-            "file_picker.framework"
-            "file_saver.framework"
-            "url_launcher_macos.framework"
-            # Add any other problematic frameworks here if they appear in future logs
-          )
 
           echo "Using entitlements file: ${ENTITLEMENTS_PATH}"
           ls -l "${ENTITLEMENTS_PATH}" # Verify file exists
 
-          for FRAMEWORK_NAME in "${FRAMEWORKS_TO_SIGN[@]}"; do
-            FRAMEWORK_BINARY_PATH="${FRAMEWORK_DIR}/${FRAMEWORK_NAME}/Versions/A/${FRAMEWORK_NAME%.*}" # Gets "file_picker" from "file_picker.framework"
-            FRAMEWORK_BUNDLE_PATH="${FRAMEWORK_DIR}/${FRAMEWORK_NAME}"
+          # Step 1: First remove any existing signatures from the entire app bundle
+          echo "Removing any existing signatures from the app bundle"
+          codesign --remove-signature "${APP_BUNDLE_PATH}" || echo "No existing signature or removal failed (continuing)."
 
-            echo "Attempting to sign framework binary: ${FRAMEWORK_BINARY_PATH}"
-            codesign --remove-signature "${FRAMEWORK_BINARY_PATH}" || echo "No existing signature on binary ${FRAMEWORK_BINARY_PATH}, or removal failed (continuing)."
-            codesign --force --strict --options=runtime --timestamp --sign "${SIGNING_IDENTITY}" "${FRAMEWORK_BINARY_PATH}"
-            
-            echo "Attempting to sign framework bundle: ${FRAMEWORK_BUNDLE_PATH}"
-            codesign --remove-signature "${FRAMEWORK_BUNDLE_PATH}" || echo "No existing signature on bundle ${FRAMEWORK_BUNDLE_PATH}, or removal failed (continuing)."
-            codesign --force --strict --options=runtime --timestamp --sign "${SIGNING_IDENTITY}" "${FRAMEWORK_BUNDLE_PATH}"
+          # Step 2: Find and sign all executables and libraries within the app bundle, starting with the deepest components
+          echo "Signing all executables and libraries within the app bundle"
+          find "${APP_BUNDLE_PATH}" -type f -name "*.dylib" -o -path "*/Versions/A/*" -not -path "*.bundle*" | while read -r BINARY; do
+            if [[ -f "$BINARY" ]] && file "$BINARY" | grep -q "Mach-O"; then
+              echo "Signing binary: $BINARY"
+              codesign --force --options=runtime --timestamp --sign "${SIGNING_IDENTITY}" "$BINARY"
+            fi
           done
 
+          # Step 3: Sign all framework bundles
+          echo "Signing all framework bundles"
+          find "${APP_BUNDLE_PATH}" -type d -name "*.framework" | while read -r FRAMEWORK; do
+            echo "Signing framework bundle: $FRAMEWORK"
+            codesign --force --options=runtime --timestamp --sign "${SIGNING_IDENTITY}" "$FRAMEWORK"
+          done
+
+          # Step 4: Sign all embedded .app bundles if any
+          echo "Signing any embedded app bundles"
+          find "${APP_BUNDLE_PATH}" -type d -name "*.app" -not -path "${APP_BUNDLE_PATH}" | while read -r EMBEDDED_APP; do
+            echo "Signing embedded app: $EMBEDDED_APP"
+            codesign --force --options=runtime --timestamp --entitlements "${ENTITLEMENTS_PATH}" --sign "${SIGNING_IDENTITY}" "$EMBEDDED_APP"
+          done
+
+          # Step 5: Finally sign the main app bundle with entitlements
           echo "Signing main application bundle: ${APP_BUNDLE_PATH}"
           codesign --force --deep --strict --options=runtime --timestamp \
             --entitlements "${ENTITLEMENTS_PATH}" \
@@ -148,14 +155,23 @@ jobs:
         shell: bash
         run: |
           APP_BUNDLE_PATH="apps/flites/build/macos/Build/Products/Release/${{ env.APP_NAME_LOWER }}.app"
-          echo "Verifying signature for main app: ${APP_BUNDLE_PATH}"
+          
+          echo "Verifying signature for main app bundle:"
+          codesign --verify --deep --strict "${APP_BUNDLE_PATH}" && echo "✅ App bundle passed verification" || echo "❌ App bundle verification failed"
           codesign --display --verbose=4 "${APP_BUNDLE_PATH}"
-          echo "\nVerifying signature for file_picker framework:"
-          codesign --display --verbose=4 "${APP_BUNDLE_PATH}/Contents/Frameworks/file_picker.framework"
-          echo "\nVerifying signature for url_launcher_macos framework:"
-          codesign --display --verbose=4 "${APP_BUNDLE_PATH}/Contents/Frameworks/url_launcher_macos.framework"
-          echo "\nChecking for hardened runtime and entitlements on main app:"
+          
+          echo "\nChecking codesign entitlements on main app:"
           codesign -d --entitlements :- "${APP_BUNDLE_PATH}"
+          
+          echo "\nVerifying all frameworks signed correctly:"
+          find "${APP_BUNDLE_PATH}/Contents/Frameworks" -name "*.framework" -maxdepth 1 | while read -r FRAMEWORK; do
+            echo "\nVerifying $FRAMEWORK:"
+            codesign --verify --strict "${FRAMEWORK}" && echo "✅ Framework passed verification" || echo "❌ Framework verification failed"
+            codesign --display --verbose=2 "${FRAMEWORK}"
+          done
+          
+          echo "\nVerifying with spctl assessment (Gatekeeper):"
+          spctl --assess --type exec --verbose "${APP_BUNDLE_PATH}" || echo "⚠️ App failed spctl assessment (expected before notarization)"
 
       # Package .app into Zip using ditto (preserves metadata/permissions better for .app)
       - name: 📦 Package macOS Build into Zip
@@ -187,6 +203,7 @@ jobs:
 
       # Notarization step would usually happen AFTER zipping the signed app
       - name: 🍎 Notarize macOS App
+        id: notarize
         # if: steps.vars.outputs.build_type == 'release'
         uses: GuillaumeFalourd/notary-tools@v1 # Replaced apple-actions/upload-app-notary-submission@v2
         with:
@@ -197,6 +214,48 @@ jobs:
           xcode_path: /Applications/Xcode.app # Explicitly set Xcode path
           staple: false # Temporarily disable stapling
           # keychain_profile: 'your-keychain-profile-name' # Optional: defaults to 'notarization'
+
+      - name: 📋 Get Notarization Logs If Available
+        if: always() # Run even if notarization fails
+        shell: bash
+        run: |
+          echo "Retrieving detailed notarization logs if available..."
+          
+          # Store Apple credentials in keychain temporarily for using notarytool
+          KEYCHAIN_PATH="${RUNNER_TEMP}/notarization_temp.keychain-db"
+          KEYCHAIN_PASSWORD="$(uuidgen)"
+          
+          # Create temporary keychain
+          security create-keychain -p "${KEYCHAIN_PASSWORD}" "${KEYCHAIN_PATH}"
+          security default-keychain -s "${KEYCHAIN_PATH}"
+          security unlock-keychain -p "${KEYCHAIN_PASSWORD}" "${KEYCHAIN_PATH}"
+          
+          # Store credentials in keychain
+          xcrun notarytool store-credentials "temp-profile" \
+            --apple-id "${{ secrets.APPLE_ID }}" \
+            --team-id "${{ secrets.APPLE_TEAM_ID }}" \
+            --password "${{ secrets.APPLE_PASSWORD }}" \
+            --keychain "${KEYCHAIN_PATH}"
+            
+          # Try to get the submission ID from the previous step's output
+          # If submission ID is available, get detailed log
+          if [[ "${{ steps.notarize.outputs.id }}" != "" ]]; then
+            SUBMISSION_ID="${{ steps.notarize.outputs.id }}"
+            echo "Getting log for submission ID: ${SUBMISSION_ID}"
+            xcrun notarytool log "${SUBMISSION_ID}" \
+              --keychain-profile "temp-profile" \
+              --keychain "${KEYCHAIN_PATH}" \
+              --output notarization-log.json
+              
+            # Display the log in a human-readable format
+            echo "Notarization log content:"
+            cat notarization-log.json | jq '.'
+          else
+            echo "No submission ID found, cannot retrieve log."
+          fi
+          
+          # Clean up
+          security delete-keychain "${KEYCHAIN_PATH}"
 
       # Upload the created zip artifact
       - name: ⬆️ Upload Artifact
