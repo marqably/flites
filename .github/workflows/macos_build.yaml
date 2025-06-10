@@ -113,37 +113,6 @@ jobs:
           APP_BUNDLE_PATH="apps/flites/build/macos/Build/Products/Release/${{ env.APP_NAME_LOWER }}.app"
           SIGNING_IDENTITY="${{ secrets.MACOS_CERTIFICATE_SIGNING_IDENTITY }}"
 
-          echo "Using entitlements file: ${ENTITLEMENTS_PATH}"
-          ls -l "${ENTITLEMENTS_PATH}" # Verify file exists
-
-          # Step 1: First remove any existing signatures from the entire app bundle
-          echo "Removing any existing signatures from the app bundle"
-          codesign --remove-signature "${APP_BUNDLE_PATH}" || echo "No existing signature or removal failed (continuing)."
-
-          # Step 2: Find and sign all executables and libraries within the app bundle, starting with the deepest components
-          echo "Signing all executables and libraries within the app bundle"
-          find "${APP_BUNDLE_PATH}" -type f -name "*.dylib" -o -path "*/Versions/A/*" -not -path "*.bundle*" | while read -r BINARY; do
-            if [[ -f "$BINARY" ]] && file "$BINARY" | grep -q "Mach-O"; then
-              echo "Signing binary: $BINARY"
-              codesign --force --options=runtime --timestamp --sign "${SIGNING_IDENTITY}" "$BINARY"
-            fi
-          done
-
-          # Step 3: Sign all framework bundles
-          echo "Signing all framework bundles"
-          find "${APP_BUNDLE_PATH}" -type d -name "*.framework" | while read -r FRAMEWORK; do
-            echo "Signing framework bundle: $FRAMEWORK"
-            codesign --force --options=runtime --timestamp --sign "${SIGNING_IDENTITY}" "$FRAMEWORK"
-          done
-
-          # Step 4: Sign all embedded .app bundles if any
-          echo "Signing any embedded app bundles"
-          find "${APP_BUNDLE_PATH}" -type d -name "*.app" -not -path "${APP_BUNDLE_PATH}" | while read -r EMBEDDED_APP; do
-            echo "Signing embedded app: $EMBEDDED_APP"
-            codesign --force --options=runtime --timestamp --entitlements "${ENTITLEMENTS_PATH}" --sign "${SIGNING_IDENTITY}" "$EMBEDDED_APP"
-          done
-
-          # Step 5: Finally sign the main app bundle with entitlements
           echo "Signing main application bundle: ${APP_BUNDLE_PATH}"
           codesign --force --deep --strict --options=runtime --timestamp \
             --entitlements "${ENTITLEMENTS_PATH}" \
@@ -216,44 +185,25 @@ jobs:
           # keychain_profile: 'your-keychain-profile-name' # Optional: defaults to 'notarization'
 
       - name: 📋 Get Notarization Logs If Available
-        if: always() # Run even if notarization fails
+        if: failure() && steps.notarize.outputs.submission-id # Only run on failure AND if an ID exists
         shell: bash
         run: |
-          echo "Retrieving detailed notarization logs if available..."
+          echo "Retrieving detailed notarization logs for submission ID: ${{ steps.notarize.outputs.submission-id }}"
           
-          # Store Apple credentials in keychain temporarily for using notarytool
-          KEYCHAIN_PATH="${RUNNER_TEMP}/notarization_temp.keychain-db"
+          # Store credentials in a temporary keychain to use notarytool
+          KEYCHAIN_PATH="${RUNNER_TEMP}/notarization_log.keychain-db"
           KEYCHAIN_PASSWORD="$(uuidgen)"
-          
-          # Create temporary keychain
           security create-keychain -p "${KEYCHAIN_PASSWORD}" "${KEYCHAIN_PATH}"
           security default-keychain -s "${KEYCHAIN_PATH}"
           security unlock-keychain -p "${KEYCHAIN_PASSWORD}" "${KEYCHAIN_PATH}"
-          
-          # Store credentials in keychain
-          xcrun notarytool store-credentials "temp-profile" \
+          xcrun notarytool store-credentials "log-profile" \
             --apple-id "${{ secrets.APPLE_ID }}" \
             --team-id "${{ secrets.APPLE_TEAM_ID }}" \
-            --password "${{ secrets.APPLE_PASSWORD }}" \
-            --keychain "${KEYCHAIN_PATH}"
+            --password "${{ secrets.APPLE_PASSWORD }}"
             
-          # Try to get the submission ID from the previous step's output
-          # If submission ID is available, get detailed log
-          if [[ "${{ steps.notarize.outputs.id }}" != "" ]]; then
-            SUBMISSION_ID="${{ steps.notarize.outputs.id }}"
-            echo "Getting log for submission ID: ${SUBMISSION_ID}"
-            xcrun notarytool log "${SUBMISSION_ID}" \
-              --keychain-profile "temp-profile" \
-              --keychain "${KEYCHAIN_PATH}" \
-              --output notarization-log.json
-              
-            # Display the log in a human-readable format
-            echo "Notarization log content:"
-            cat notarization-log.json | jq '.'
-          else
-            echo "No submission ID found, cannot retrieve log."
-          fi
-          
+          # Get the log
+          xcrun notarytool log "${{ steps.notarize.outputs.submission-id }}" --keychain-profile "log-profile"
+
           # Clean up
           security delete-keychain "${KEYCHAIN_PATH}"
 
