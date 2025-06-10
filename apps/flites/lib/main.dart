@@ -5,7 +5,7 @@ import 'package:flites/widgets/app_loader.dart';
 import 'package:flites/widgets/layout/gradient_border_widget.dart';
 import 'package:flites/widgets/overlays/loading_overlay.dart';
 import 'package:flites/widgets/overlays/overlay_manager.dart';
-// import 'package:flites/widgets/upload_area/file_drop_area.dart';
+import 'package:flites/widgets/upload_area/file_drop_area.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -57,8 +57,10 @@ class FlitesApp extends StatelessWidget {
             darkTheme: darkTheme,
             home: const OverlayManager(
               child: Scaffold(
-                body: GradientBorderWidget(
-                  child: Overview(),
+                body: FileDropArea(
+                  child: GradientBorderWidget(
+                    child: Overview(),
+                  ),
                 ),
               ),
             ),
