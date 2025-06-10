@@ -107,18 +107,27 @@ jobs:
           p12-password: ${{ secrets.MACOS_CERTIFICATE_PASSWORD }}
 
       - name: 🍎 Sign macOS App
-        # if: steps.vars.outputs.build_type == 'release'
+        shell: bash
         run: |
           ENTITLEMENTS_PATH="apps/flites/macos/Runner/Release.entitlements"
-          APP_BUNDLE_PATH="apps/flites/build/macos/Build/Products/Release/${{ env.APP_NAME_LOWER }}.app"
+          APP_BUNDLE_PATH="apps/flites/build/macos/Build/Products/Release/flites.app"
           SIGNING_IDENTITY="${{ secrets.MACOS_CERTIFICATE_SIGNING_IDENTITY }}"
 
-          echo "Signing main application bundle: ${APP_BUNDLE_PATH}"
+          echo "Force-signing all nested binaries..."
+          # Find all binaries, frameworks, and dylibs and sign them individually from the inside out
+          find "${APP_BUNDLE_PATH}" -depth -type f -name "*.dylib" -o -type f -name "*.framework" -o -type f -perm +111 | while read -r BINARY; do
+              if ! codesign -v "$BINARY" &>/dev/null; then
+                  echo "Signing: ${BINARY}"
+                  codesign --force --options=runtime --timestamp --sign "${SIGNING_IDENTITY}" "${BINARY}"
+              fi
+          done
+
+          echo "Signing the main application bundle..."
+          # Finally, sign the main app bundle itself with entitlements
           codesign --force --deep --strict --options=runtime --timestamp \
             --entitlements "${ENTITLEMENTS_PATH}" \
             --sign "${SIGNING_IDENTITY}" \
             "${APP_BUNDLE_PATH}"
-        shell: bash
 
       - name: 🔎 Verify Signatures After Signing
         shell: bash
