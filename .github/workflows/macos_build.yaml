@@ -188,9 +188,17 @@ jobs:
         if: steps.notarize.outputs.status != 'Success' && steps.notarize.outputs.submission-id
         shell: bash
         run: |
-          echo "Retrieving detailed notarization logs for submission ID: ${{ steps.notarize.outputs.submission-id }}"
+          set -x # Enable verbose debugging output
+
+          SUBMISSION_ID="${{ steps.notarize.outputs.submission-id }}"
+          echo "Submission ID is: ${SUBMISSION_ID}"
+
+          echo "Waiting 30 seconds for Apple's log to be ready..."
+          sleep 30
+
+          echo "Attempting to retrieve notarization log..."
           
-          # Store credentials in a temporary keychain to use notarytool
+          # Set up a temporary keychain for credentials
           KEYCHAIN_PATH="${RUNNER_TEMP}/notarization_log.keychain-db"
           KEYCHAIN_PASSWORD="$(uuidgen)"
           security create-keychain -p "${KEYCHAIN_PASSWORD}" "${KEYCHAIN_PATH}"
@@ -200,11 +208,15 @@ jobs:
             --apple-id "${{ secrets.APPLE_ID }}" \
             --team-id "${{ secrets.APPLE_TEAM_ID }}" \
             --password "${{ secrets.APPLE_PASSWORD }}"
-            
-          # Get the log
-          xcrun notarytool log "${{ steps.notarize.outputs.submission-id }}" --keychain-profile "log-profile"
 
-          # Clean up
+          # Retrieve the log and save it to a file
+          xcrun notarytool log "${SUBMISSION_ID}" --keychain-profile "log-profile" > notarization_log.json
+
+          echo "--- Full Notarization Log ---"
+          cat notarization_log.json
+          echo "-----------------------------"
+
+          # Clean up the keychain
           security delete-keychain "${KEYCHAIN_PATH}"
 
       # Upload the created zip artifact
