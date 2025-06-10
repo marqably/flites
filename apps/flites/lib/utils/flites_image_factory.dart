@@ -1,4 +1,4 @@
-import 'package:desktop_drop/desktop_drop.dart';
+// import 'package:desktop_drop/desktop_drop.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flites/constants/image_constants.dart';
 import 'package:flites/services/file_service.dart';
@@ -38,35 +38,35 @@ class FlitesImageFactory {
     return _processAndScaleImages(imagesAndNames);
   }
 
-  Future<List<FlitesImage>> processDroppedFiles(List<DropItem> files) async {
-    List<RawImageAndName> imagesAndNames = [];
+  // Future<List<FlitesImage>> processDroppedFiles(List<DropItem> files) async {
+  //   List<RawImageAndName> imagesAndNames = [];
 
-    for (final file in files) {
-      try {
-        final size = await file.length();
-        final bytes = await file.readAsBytes();
+  //   for (final file in files) {
+  //     try {
+  //       final size = await file.length();
+  //       final bytes = await file.readAsBytes();
 
-        if (bytes.isEmpty) {
-          continue;
-        }
+  //       if (bytes.isEmpty) {
+  //         continue;
+  //       }
 
-        final platformFile = PlatformFile(
-          name: file.name,
-          path: file.path,
-          bytes: bytes,
-          size: size,
-        );
+  //       final platformFile = PlatformFile(
+  //         name: file.name,
+  //         path: file.path,
+  //         bytes: bytes,
+  //         size: size,
+  //       );
 
-        final image = await _processFile(platformFile);
-        imagesAndNames.addAll(image);
-      } catch (e) {
-        // Handle any errors that occur during file processing
-        debugPrint('Error processing dropped file ${file.name}: $e');
-      }
-    }
+  //       final image = await _processFile(platformFile);
+  //       imagesAndNames.addAll(image);
+  //     } catch (e) {
+  //       // Handle any errors that occur during file processing
+  //       debugPrint('Error processing dropped file ${file.name}: $e');
+  //     }
+  //   }
 
-    return _processAndScaleImages(imagesAndNames);
-  }
+  //   return _processAndScaleImages(imagesAndNames);
+  // }
 
   /// Processes a file based on its extension.
   ///

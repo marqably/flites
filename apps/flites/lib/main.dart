@@ -57,10 +57,8 @@ class FlitesApp extends StatelessWidget {
             darkTheme: darkTheme,
             home: const OverlayManager(
               child: Scaffold(
-                body: FileDropArea(
-                  child: GradientBorderWidget(
-                    child: Overview(),
-                  ),
+                body: GradientBorderWidget(
+                  child: Overview(),
                 ),
               ),
             ),
