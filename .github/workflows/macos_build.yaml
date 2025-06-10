@@ -27,7 +27,7 @@ jobs:
     name: 🍎 Build and Deploy macOS
     runs-on: macos-latest
     env:
-      APP_NAME: Flites
+      APP_NAME: flites
       APP_ID: app.flites.editor
       APP_NAME_LOWER: flites
     steps:
@@ -185,7 +185,7 @@ jobs:
           # keychain_profile: 'your-keychain-profile-name' # Optional: defaults to 'notarization'
 
       - name: 📋 Get Notarization Logs If Available
-        if: failure() && steps.notarize.outputs.submission-id # Only run on failure AND if an ID exists
+        if: steps.notarize.outputs.status != 'Success' && steps.notarize.outputs.submission-id
         shell: bash
         run: |
           echo "Retrieving detailed notarization logs for submission ID: ${{ steps.notarize.outputs.submission-id }}"
