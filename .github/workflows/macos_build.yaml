@@ -113,17 +113,15 @@ jobs:
           APP_BUNDLE_PATH="apps/flites/build/macos/Build/Products/Release/flites.app"
           SIGNING_IDENTITY="${{ secrets.MACOS_CERTIFICATE_SIGNING_IDENTITY }}"
 
-          echo "Force-signing all nested binaries..."
-          # Find all binaries, frameworks, and dylibs and sign them individually from the inside out
-          find "${APP_BUNDLE_PATH}" -depth -type f -name "*.dylib" -o -type f -name "*.framework" -o -type f -perm +111 | while read -r BINARY; do
-              if ! codesign -v "$BINARY" &>/dev/null; then
-                  echo "Signing: ${BINARY}"
-                  codesign --force --options=runtime --timestamp --sign "${SIGNING_IDENTITY}" "${BINARY}"
-              fi
+          echo "Force-signing all nested executable files..."
+          # Find all executable files within the bundle and sign them individually.
+          find "${APP_BUNDLE_PATH}/Contents" -type f -perm +111 | while read -r EXEC_FILE; do
+              echo "Signing: ${EXEC_FILE}"
+              codesign --force --options=runtime --timestamp --sign "${SIGNING_IDENTITY}" "${EXEC_FILE}"
           done
 
-          echo "Signing the main application bundle..."
-          # Finally, sign the main app bundle itself with entitlements
+          echo "Signing the main application bundle with deep verification..."
+          # Finally, sign the main app bundle itself, which will verify the signatures of everything inside.
           codesign --force --deep --strict --options=runtime --timestamp \
             --entitlements "${ENTITLEMENTS_PATH}" \
             --sign "${SIGNING_IDENTITY}" \
