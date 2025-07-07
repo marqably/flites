@@ -4,19 +4,42 @@ Flites is a modern sprite animation tool built with Flutter that makes creating 
 
 ## Features
 
-- 🖼️ Multi-frame sprite editing
-- 🎨 Canvas controls with zoom and pan
-- 🔄 Rotation and transformation tools
-- 👁️ Reference frame overlay system
-- 🎯 Precise positioning and scaling
-- 🗂️ Drag-and-drop frame reordering
-- 💥 Custom hitbox editor and export
-- 🎬 Animation preview
-- 📦 Optimized multi-animation sprite sheet export
-- ✨ Code generation wizards for easy integration
-- 💾 Project saving and loading
-- 📱 Cross-platform support
-- 🌍 Multiple language support (English, Spanish, German, French, Italian, Portuguese, Japanese, Korean, Chinese)
+- 🖼️ **Multi-frame sprite editing** with drag-and-drop frame reordering
+- 🎨 **Advanced canvas controls** with zoom, pan, and precise positioning
+- 🔄 **Transformation tools** for move, resize, and rotate operations
+- ��️ **Reference frame overlay system** for comparing animations
+- 🎯 **Precise positioning and scaling** with pixel-perfect control
+- 💥 **Advanced hitbox editor** with custom collision detection shapes
+- 🎬 **Real-time animation preview** with playback controls
+- �� **Optimized sprite sheet export** in PNG and SVG formats
+- ✨ **Code generation wizards** for Flutter Flame integration
+- �� **Automatic hitbox code generation** for game development
+- 💾 **Project saving and loading** with `.flites` project files
+- 📱 **Cross-platform support** (Windows, macOS, Linux, Web)
+- 🌍 **Multi-language support** (English, Spanish, German, French, Italian, Portuguese, Japanese, Korean, Chinese)
+- 🖼️ **SVG vector support** for scalable sprite sheets
+- 📐 **Customizable tile sizes** for sprite sheet generation
+- 🎨 **Visual feedback** for all editing operations
+
+
+### Intuitive Workflow
+![1_intuitive_sprite_creation](https://github.com/user-attachments/assets/bdd1fdd8-4947-4d9c-88a7-371d48b559e0)
+
+### Animation Preview
+https://github.com/user-attachments/assets/a7cf4502-f45c-4221-aeda-f817bb2ea27e
+
+### Hitbox Editor
+https://github.com/user-attachments/assets/cf54542d-8059-4ba5-859a-dd2db3501a70
+
+## Quick Start
+
+1. **Download** Flites from the [releases page](https://github.com/marqably/flites/releases)
+2. **Import** your sprite frames by dragging and dropping PNG, GIF, or SVG files
+3. **Arrange** your frames into animation sequences using the intuitive interface
+4. **Edit** with precision using move, resize, rotate, and hitbox tools
+5. **Preview** your animations with the built-in player
+6. **Export** as optimized PNG or SVG sprite sheets
+7. **Generate code** for your game engine (Flutter Flame supported)
 
 ## Development
 
