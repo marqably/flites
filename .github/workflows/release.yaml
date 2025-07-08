@@ -29,12 +29,12 @@ jobs:
       tag: ${{ github.ref_name }}
     secrets: inherit
 
-  # call_build_macos:
-  #   name: Call macOS Build 🍎
-  #   uses: ./.github/workflows/build_macos.yaml # Assuming this filename
-  #   with:
-  #     tag: ${{ github.ref_name }}
-  #   secrets: inherit
+  call_build_macos:
+    name: Call macOS Build 🍎
+    uses: ./.github/workflows/macos_build.yaml # Assuming this filename
+    with:
+      tag: ${{ github.ref_name }}
+    secrets: inherit
 
   call_build_web:
     name: Call Web Build 🌐
@@ -52,7 +52,7 @@ jobs:
       - call_build_appimage
       - call_build_debian
       - call_build_windows
-      # - call_build_macos
+      - call_build_macos
       - call_build_web
 
     permissions:
@@ -66,7 +66,6 @@ jobs:
       - name: Download all build artifacts
         uses: actions/download-artifact@v4
         with:
-          # No name specified downloads all artifacts from this workflow run
           path: artifacts # Downloads into ./artifacts/<artifact_name>/
 
       # Step 2: List downloaded files (for debugging)
@@ -90,7 +89,7 @@ jobs:
             artifacts/flites-linux-artifact/*.AppImage
             artifacts/flites-linux-deb-artifact/*.deb
             artifacts/flites-windows-artifact/*.zip
-            # artifacts/macos-artifact/*.zip
+            artifacts/flites-macos-artifact/*.zip
             artifacts/flites-web-artifact/*.zip
         env:
           # The GITHUB_TOKEN is automatically available to the workflow

@@ -32,7 +32,7 @@ jobs:
     runs-on: ubuntu-latest 
     env: 
       APP_NAME: Flites
-      APP_ID: com.marqably.flites
+      APP_ID: app.flites.editor
     steps:
       # Optional: Debug step
       - name: DEBUG Print Workflow Input Tag
