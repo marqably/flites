@@ -6,7 +6,7 @@ import 'package:flites/ui/panel/controls/panel_radio_input.dart';
 import 'package:flites/ui/panel/controls/panel_checkbox_input.dart';
 import 'package:flites/ui/inputs/select_input.dart';
 import 'package:flites/ui/inputs/radio_input.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flites/l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 // Helper function to build a testable widget tree
