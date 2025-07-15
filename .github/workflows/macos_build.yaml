@@ -127,27 +127,7 @@ jobs:
             --sign "${SIGNING_IDENTITY}" \
             "${APP_BUNDLE_PATH}"
 
-      - name: 🔎 Verify Signatures After Signing
-        shell: bash
-        run: |
-          APP_BUNDLE_PATH="apps/flites/build/macos/Build/Products/Release/${{ env.APP_NAME_LOWER }}.app"
-          
-          echo "Verifying signature for main app bundle:"
-          codesign --verify --deep --strict "${APP_BUNDLE_PATH}" && echo "✅ App bundle passed verification" || echo "❌ App bundle verification failed"
-          codesign --display --verbose=4 "${APP_BUNDLE_PATH}"
-          
-          echo "\nChecking codesign entitlements on main app:"
-          codesign -d --entitlements :- "${APP_BUNDLE_PATH}"
-          
-          echo "\nVerifying all frameworks signed correctly:"
-          find "${APP_BUNDLE_PATH}/Contents/Frameworks" -name "*.framework" -maxdepth 1 | while read -r FRAMEWORK; do
-            echo "\nVerifying $FRAMEWORK:"
-            codesign --verify --strict "${FRAMEWORK}" && echo "✅ Framework passed verification" || echo "❌ Framework verification failed"
-            codesign --display --verbose=2 "${FRAMEWORK}"
-          done
-          
-          echo "\nVerifying with spctl assessment (Gatekeeper):"
-          spctl --assess --type exec --verbose "${APP_BUNDLE_PATH}" || echo "⚠️ App failed spctl assessment (expected before notarization)"
+
 
       # Package .app into Zip using ditto (preserves metadata/permissions better for .app)
       - name: 📦 Package macOS Build into Zip
@@ -227,6 +207,28 @@ jobs:
 
           # Clean up the keychain
           security delete-keychain "${KEYCHAIN_PATH}"
+
+      - name: 🔎 Verify Signatures and Notarization
+        shell: bash
+        run: |
+          APP_BUNDLE_PATH="apps/flites/build/macos/Build/Products/Release/${{ env.APP_NAME_LOWER }}.app"
+          
+          echo "Verifying signature for main app bundle:"
+          codesign --verify --deep --strict "${APP_BUNDLE_PATH}" && echo "✅ App bundle passed verification" || echo "❌ App bundle verification failed"
+          codesign --display --verbose=4 "${APP_BUNDLE_PATH}"
+          
+          echo "\nChecking codesign entitlements on main app:"
+          codesign -d --entitlements :- "${APP_BUNDLE_PATH}"
+          
+          echo "\nVerifying all frameworks signed correctly:"
+          find "${APP_BUNDLE_PATH}/Contents/Frameworks" -name "*.framework" -maxdepth 1 | while read -r FRAMEWORK; do
+            echo "\nVerifying $FRAMEWORK:"
+            codesign --verify --strict "${FRAMEWORK}" && echo "✅ Framework passed verification" || echo "❌ Framework verification failed"
+            codesign --display --verbose=2 "${FRAMEWORK}"
+          done
+          
+          echo "\nVerifying with spctl assessment (Gatekeeper):"
+          spctl --assess --type exec --verbose "${APP_BUNDLE_PATH}" && echo "✅ App passed Gatekeeper assessment" || echo "❌ App failed Gatekeeper assessment"
 
       # Upload the created zip artifact
       - name: ⬆️ Upload Artifact
