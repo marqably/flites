@@ -191,6 +191,8 @@ jobs:
           staple: false # Temporarily disable stapling
           # keychain_profile: 'your-keychain-profile-name' # Optional: defaults to 'notarization'
 
+      - run: echo "${{ steps.notarize.outputs.notarization_log }}"
+
       - name: 📋 Get Notarization Logs If Available
         if: steps.notarize.outputs.status != 'Success' && steps.notarize.outputs.submission-id
         shell: bash
