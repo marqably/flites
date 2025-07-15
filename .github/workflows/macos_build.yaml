@@ -171,10 +171,17 @@ jobs:
           staple: false # Temporarily disable stapling
           # keychain_profile: 'your-keychain-profile-name' # Optional: defaults to 'notarization'
 
-      - run: echo "${{ steps.notarize.outputs.notarization_log }}"
+      - name: 📋 Fetch notarization log
+        if: always()
+        run: |
+          xcrun notarytool log "${{ steps.notarize.outputs.submission-id }}" \
+            --apple-id "${{ secrets.APPLE_ID }}" \
+            --team-id "${{ secrets.APPLE_TEAM_ID }}" \
+            --password "${{ secrets.APPLE_PASSWORD }}"
 
       - name: 📋 Get Notarization Logs If Available
-        if: steps.notarize.outputs.status != 'Success' && steps.notarize.outputs.submission-id
+        # if: steps.notarize.outputs.status != 'Success' && steps.notarize.outputs.submission-id
+        if: always()
         shell: bash
         run: |
           set -x # Enable verbose debugging output
