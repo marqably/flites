@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-22.04
     env:
       APP_NAME: Flites
-      APP_ID: com.marqably.flites
+      APP_ID: app.flites.editor
       APP_NAME_LOWER: flites
     steps:
       - name: DEBUG Print Workflow Input Tag

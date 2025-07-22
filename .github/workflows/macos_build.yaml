@@ -1,87 +1,260 @@
 name: 🍎 macOS Build
 
-env:
-  PACKAGE_VERSION: '0.0.1'
-
 on:
-  workflow_dispatch:
-  push:
-    branches:
-      - main
+  workflow_call:
+    inputs:
+      tag:
+        description: 'Git tag for release builds.'
+        required: false
+        type: string
+      flutter-version:
+        description: 'Flutter version (optional).'
+        required: false
+        type: string
+        # default: '3.27.2'
+
+  # Triggers on Pull Requests targeting main
   pull_request:
     branches:
       - main
+      - feat/beau/ci-macos
+
+  # Allows manual triggering
+  workflow_dispatch:
 
 jobs:
   build-macos:
     name: 🍎 Build and Deploy macOS
     runs-on: macos-latest
+    env:
+      APP_NAME: flites
+      APP_ID: app.flites.editor
+      APP_NAME_LOWER: flites
     steps:
+      - name: DEBUG Print Workflow Input Tag
+        if: github.event_name == 'workflow_call'
+        run: |
+         echo "Workflow Input (inputs.tag): ${{ inputs.tag }}"
+        shell: bash # Use bash on macOS runner
+
       - name: 📚 Git Checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_call' && inputs.tag || github.ref }}
+
+      - name: Determine Build Context & Variables
+        id: vars
+        uses: ./.github/actions/determine_build_vars
+        with:
+          platform: 'macos' # Specify platform as macos
+          event_name: ${{ github.event_name }}
+          tag_input: ${{ inputs.tag }}
+          pr_number: ${{ github.event.number }}
+          run_id: ${{ github.run_id }}
 
       - name: 📦 Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.27.2'
-          channel: 'stable'
-          architecture: x64
-
-      - name: 🗄️ Cache Flutter
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/Library/Caches/CocoaPods
-            ~/.pub-cache
-            build/
-            .dart_tool/
-          key: macos-flutter-${{ runner.os }}-${{ hashFiles('**/pubspec.lock') }}
-          restore-keys: |
-            macos-flutter-${{ runner.os }}-
-            macos-flutter-
+          flutter-version: ${{ inputs.flutter-version || '3.27.2' }}
+          # Check runner image docs for available architectures on macOS runners if needed
+          architecture: x64 # Or arm64, or build universal if required/supported
+          cache: true
 
       - name: 📦 Setup Melos
         uses: bluefireteam/melos-action@v2
+
+      - name: ✨ Super Clean Build Environment
+        shell: bash
+        run: |
+          echo "🧹 Cleaning Flutter project..."
+          cd apps/flites
+          flutter clean
+          echo "🧹 Cleaning Xcode derived data and Pods..."
+          cd macos
+          xcodebuild clean || echo "Xcode clean failed or no project to clean (continuing)."
+          rm -rf Pods
+          rm -f Podfile.lock
+          cd ../../ # Go back to workspace root if needed for next steps
+          echo "✨ Clean finished."
 
       - name: 🔧 Install Dependencies
         run: |
           flutter config --enable-macos-desktop
           flutter doctor -v
-          
+        shell: bash
+
+      - name: 🔄 Get Dependencies
+        run: melos bootstrap
+        shell: bash
+
+      # Build macOS App
       - name: 🏗️ Build macOS App
         run: |
-          cd apps/flites
+          cd apps/flites # Ensure you are in the right directory
+          echo "Building macOS app version ${{ steps.vars.outputs.package_version }}"
           flutter build macos --release
+        shell: bash
 
-      - name: 📦 Create DMG
+      # --- Code Signing & Notarization (Placeholder - IMPORTANT for distribution) ---
+      # These steps would typically go AFTER the build and BEFORE zipping.
+      # They require secrets configured in your repository (Apple Developer Certs/Keys).
+
+      - name: 🍎 Install Apple Certificate and Key
+        # if: steps.vars.outputs.build_type == 'release' # Only sign releases
+        uses: apple-actions/import-codesign-certs@v2
+        with:
+          p12-file-base64: ${{ secrets.MACOS_CERTIFICATE_P12_BASE64 }}
+          p12-password: ${{ secrets.MACOS_CERTIFICATE_PASSWORD }}
+
+      - name: 🍎 Sign macOS App
+        shell: bash
         run: |
-          cd apps/flites/build/macos/Build/Products/Release
-          # Clean up any existing DMG contents
-          rm -rf dmg_contents
-          # Create a temporary directory for DMG contents
-          mkdir -p dmg_contents
-          # Copy the app bundle
-          cp -r flites.app dmg_contents/
-          # Create a symbolic link to Applications folder
-          ln -s /Applications dmg_contents/Applications
-          # Create the DMG with error checking
-          if ! hdiutil create -volname "Flites" -srcfolder dmg_contents -ov -format UDZO flites-${{ env.PACKAGE_VERSION }}.dmg; then
-            echo "Failed to create DMG"
+          ENTITLEMENTS_PATH="apps/flites/macos/Runner/Release.entitlements"
+          APP_BUNDLE_PATH="apps/flites/build/macos/Build/Products/Release/flites.app"
+          SIGNING_IDENTITY="${{ secrets.MACOS_CERTIFICATE_SIGNING_IDENTITY }}"
+
+          echo "Force-signing all nested executable files..."
+          # Find all executable files within the bundle and sign them individually.
+          find "${APP_BUNDLE_PATH}/Contents" -type f -perm +111 | while read -r EXEC_FILE; do
+              echo "Signing: ${EXEC_FILE}"
+              codesign --force --options=runtime --timestamp --sign "${SIGNING_IDENTITY}" "${EXEC_FILE}"
+          done
+
+          echo "Signing the main application bundle with deep verification..."
+          # Finally, sign the main app bundle itself, which will verify the signatures of everything inside.
+          codesign --force --deep --strict --options=runtime --timestamp \
+            --entitlements "${ENTITLEMENTS_PATH}" \
+            --sign "${SIGNING_IDENTITY}" \
+            "${APP_BUNDLE_PATH}"
+
+
+
+      # Package .app into Zip using ditto (preserves metadata/permissions better for .app)
+      - name: 📦 Package macOS Build into Zip
+        shell: bash
+        run: |
+          # Adjust source path if needed. Assumes app bundle name matches APP_NAME_LOWER.
+          SOURCE_APP="apps/flites/build/macos/Build/Products/Release/${{ env.APP_NAME_LOWER }}.app"
+          # Get zip filename from composite action output (should end in .zip)
+          ZIP_FILE_NAME="${{ steps.vars.outputs.artifact_suffix }}"
+          # Get absolute path to workspace root
+          WORKSPACE_ROOT="${{ github.workspace }}"
+
+          # Check if source app bundle exists
+          if [ ! -d "${SOURCE_APP}" ]; then
+            echo "Build output (.app) not found: ${SOURCE_APP}"
+            ls -lR "apps/flites/build/macos/Build/Products/Release/" # List build output for debugging
             exit 1
           fi
-          # Clean up
-          rm -rf dmg_contents
 
+          echo "Zipping ${SOURCE_APP} into ${WORKSPACE_ROOT}/${ZIP_FILE_NAME}"
+          # Use ditto: -c=create archive, -k=pkzip format, --sequesterRsrc=AppleDouble format, --keepParent=embed in parent folder structure (use .)
+          # The command zips the SOURCE_APP into the ZIP_FILE_NAME at the workspace root
+          ditto -c -k --sequesterRsrc --keepParent "${SOURCE_APP}" "${WORKSPACE_ROOT}/${ZIP_FILE_NAME}"
+
+          # Verify zip file was created
+          echo "Verifying zip file:"
+          ls -l "${WORKSPACE_ROOT}/${ZIP_FILE_NAME}"
+          echo "Created ${ZIP_FILE_NAME}"
+
+      # Notarization step would usually happen AFTER zipping the signed app
+      - name: 🍎 Notarize macOS App
+        id: notarize
+        # if: steps.vars.outputs.build_type == 'release'
+        uses: GuillaumeFalourd/notary-tools@v1 # Replaced apple-actions/upload-app-notary-submission@v2
+        with:
+          product_path: ${{ steps.vars.outputs.artifact_suffix }} # Path to the SIGNED ZIP file
+          apple_id: ${{ secrets.APPLE_ID }} # Store your Apple ID email in secrets
+          password: ${{ secrets.APPLE_PASSWORD }} # Store an app-specific password in secrets
+          team_id: ${{ secrets.APPLE_TEAM_ID }} # Store your Apple Developer Team ID in secrets
+          xcode_path: /Applications/Xcode.app # Explicitly set Xcode path
+          staple: false # Temporarily disable stapling
+          # keychain_profile: 'your-keychain-profile-name' # Optional: defaults to 'notarization'
+
+      - name: 📋 Fetch notarization log
+        if: always()
+        run: |
+          xcrun notarytool log "${{ steps.notarize.outputs.submission-id }}" \
+            --apple-id "${{ secrets.APPLE_ID }}" \
+            --team-id "${{ secrets.APPLE_TEAM_ID }}" \
+            --password "${{ secrets.APPLE_PASSWORD }}"
+
+      - name: 📋 Get Notarization Logs If Available
+        # if: steps.notarize.outputs.status != 'Success' && steps.notarize.outputs.submission-id
+        if: always()
+        shell: bash
+        run: |
+          set -x # Enable verbose debugging output
+
+          SUBMISSION_ID="${{ steps.notarize.outputs.submission-id }}"
+          echo "Submission ID is: ${SUBMISSION_ID}"
+
+          echo "Waiting 30 seconds for Apple's log to be ready..."
+          sleep 30
+
+          echo "Attempting to retrieve notarization log..."
+          
+          # Set up a temporary keychain for credentials
+          KEYCHAIN_PATH="${RUNNER_TEMP}/notarization_log.keychain-db"
+          KEYCHAIN_PASSWORD="$(uuidgen)"
+          security create-keychain -p "${KEYCHAIN_PASSWORD}" "${KEYCHAIN_PATH}"
+          security default-keychain -s "${KEYCHAIN_PATH}"
+          security unlock-keychain -p "${KEYCHAIN_PASSWORD}" "${KEYCHAIN_PATH}"
+          xcrun notarytool store-credentials "log-profile" \
+            --apple-id "${{ secrets.APPLE_ID }}" \
+            --team-id "${{ secrets.APPLE_TEAM_ID }}" \
+            --password "${{ secrets.APPLE_PASSWORD }}"
+
+          # Retrieve the log and save it to a file
+          xcrun notarytool log "${SUBMISSION_ID}" --keychain-profile "log-profile" > notarization_log.json
+
+          echo "--- Full Notarization Log ---"
+          cat notarization_log.json
+          echo "-----------------------------"
+
+          # Clean up the keychain
+          security delete-keychain "${KEYCHAIN_PATH}"
+
+      - name: 🔎 Verify Signatures and Notarization
+        shell: bash
+        run: |
+          APP_BUNDLE_PATH="apps/flites/build/macos/Build/Products/Release/${{ env.APP_NAME_LOWER }}.app"
+          
+          echo "Verifying signature for main app bundle:"
+          codesign --verify --deep --strict "${APP_BUNDLE_PATH}" && echo "✅ App bundle passed verification" || echo "❌ App bundle verification failed"
+          codesign --display --verbose=4 "${APP_BUNDLE_PATH}"
+          
+          echo "\nChecking codesign entitlements on main app:"
+          codesign -d --entitlements :- "${APP_BUNDLE_PATH}"
+          
+          echo "\nVerifying all frameworks signed correctly:"
+          find "${APP_BUNDLE_PATH}/Contents/Frameworks" -name "*.framework" -maxdepth 1 | while read -r FRAMEWORK; do
+            echo "\nVerifying $FRAMEWORK:"
+            codesign --verify --strict "${FRAMEWORK}" && echo "✅ Framework passed verification" || echo "❌ Framework verification failed"
+            codesign --display --verbose=2 "${FRAMEWORK}"
+          done
+          
+          echo "\nVerifying with spctl assessment (Gatekeeper):"
+          spctl --assess --type exec --verbose "${APP_BUNDLE_PATH}" && echo "✅ App passed Gatekeeper assessment" || echo "❌ App failed Gatekeeper assessment"
+
+      # Upload the created zip artifact
       - name: ⬆️ Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: flites-macos-${{ env.PACKAGE_VERSION }}
-          path: apps/flites/build/macos/Build/Products/Release/flites-${{ env.PACKAGE_VERSION }}.dmg
+          name: ${{ steps.vars.outputs.artifact_upload_name }}
+          # Path points to the zip file created by ditto
+          path: ${{ steps.vars.outputs.artifact_suffix }}
 
-      - name: 🧪 Test App Bundle
+      # Minimal test for macOS build - check if .app was created before zipping
+      - name: 🧪 Test macOS Build (Basic Check)
+        shell: bash
         run: |
-          cd apps/flites/build/macos/Build/Products/Release
-          # Verify app bundle exists
-          test -d flites.app || (echo "App bundle not found" && exit 1)
-          # List app bundle contents
-          ls -la flites.app/Contents/MacOS/ 
+          # Check if the .app bundle directory was created by the build step
+          APP_BUNDLE="apps/flites/build/macos/Build/Products/Release/${{ env.APP_NAME_LOWER }}.app" # Use lowercase to match pubspec
+          echo "Checking for ${APP_BUNDLE}"
+          if [ -d "${APP_BUNDLE}" ]; then
+            echo "macOS build output (.app bundle) found."
+          else
+            echo "Error: macOS build output (.app bundle) not found!"
+            exit 1
+          fi
