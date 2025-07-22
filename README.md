@@ -21,15 +21,17 @@ Flites is a modern sprite animation tool built with Flutter that makes creating 
 - 📐 **Customizable tile sizes** for sprite sheet generation
 - 🎨 **Visual feedback** for all editing operations
 
-
 ### Intuitive Workflow
+
 ![1_intuitive_sprite_creation](https://github.com/user-attachments/assets/bdd1fdd8-4947-4d9c-88a7-371d48b559e0)
 
 ### Animation Preview
-https://github.com/user-attachments/assets/a7cf4502-f45c-4221-aeda-f817bb2ea27e
+
+<https://github.com/user-attachments/assets/a7cf4502-f45c-4221-aeda-f817bb2ea27e>
 
 ### Hitbox Editor
-https://github.com/user-attachments/assets/cf54542d-8059-4ba5-859a-dd2db3501a70
+
+<https://github.com/user-attachments/assets/cf54542d-8059-4ba5-859a-dd2db3501a70>
 
 ## Quick Start
 
@@ -65,10 +67,16 @@ This project uses [Melos](https://melos.invertase.dev/) to manage the monorepo a
     melos bootstrap
     ```
 
-3. Run the app
+3. Generate necessary files
 
     ```bash
     cd apps/flites
+    flutter pub get
+    ```
+
+4. Run the app
+
+    ```bash
     flutter run
     ```
 
