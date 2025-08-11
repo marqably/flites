@@ -163,11 +163,19 @@ jobs:
 
       - name: 🧹 Restore default keychain and cleanup
         if: always()
+        shell: bash
         run: |
-          # Attempt to restore default keychain to login and clean up potential temp keychains
+          # Restore keychain search list and default
           security list-keychains -d user -s login.keychain || true
           security default-keychain -s login.keychain || true
-          security delete-keychain dist-signing.keychain || true
-          security delete-keychain installer-signing.keychain || true
+          
+          # Delete any custom signing keychains if present (match both .keychain and .keychain-db)
+          mapfile -t KCS < <(security list-keychains -d user | tr -d '"')
+          for KC in "${KCS[@]}"; do
+            if [[ "$KC" == *dist-signing.keychain* || "$KC" == *dist-signing.keychain-db* || \
+                  "$KC" == *installer-signing.keychain* || "$KC" == *installer-signing.keychain-db* ]]; then
+              security delete-keychain "$KC" || true
+            fi
+          done
 
 
