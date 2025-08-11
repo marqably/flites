@@ -60,6 +60,13 @@ jobs:
           echo "🔄 Bootstrap workspace with melos"
           melos bootstrap
 
+      - name: 📦 Install CocoaPods and dependencies
+        shell: bash
+        working-directory: ${{ env.MACOS_DIR }}
+        run: |
+          brew install cocoapods
+          pod install --repo-update
+
       - name: 🔧 Export FLUTTER_ROOT for Xcode build phases
         run: echo "FLUTTER_ROOT=$(flutter sdk-path)" >> $GITHUB_ENV
 
@@ -101,13 +108,18 @@ jobs:
       - name: 🏗️ Build archive (xcodebuild)
         working-directory: ${{ env.MACOS_DIR }}
         run: |
+          set -euo pipefail
           xcodebuild -workspace Runner.xcworkspace \
             -scheme Runner \
             -configuration Release \
             -archivePath build/Runner.xcarchive \
             DEVELOPMENT_TEAM="$TEAM_ID" \
             CODE_SIGN_STYLE=Manual \
-            clean archive | cat
+            clean archive
+          if [ ! -d build/Runner.xcarchive ]; then
+            echo "❌ Archive not found at $(pwd)/build/Runner.xcarchive"
+            exit 1
+          fi
 
       - name: 🧾 Create ExportOptions.plist
         working-directory: ${{ env.MACOS_DIR }}
@@ -132,12 +144,17 @@ jobs:
       - name: 📦 Export .pkg (xcodebuild -exportArchive)
         working-directory: ${{ env.MACOS_DIR }}
         run: |
-          rm -rf build/export
+          set -euo pipefail
+          rm -rf build/export || true
+          if [ ! -d build/Runner.xcarchive ]; then
+            echo "❌ Missing archive. Previous step may have failed."
+            exit 1
+          fi
           xcodebuild -exportArchive \
             -archivePath build/Runner.xcarchive \
             -exportPath build/export \
-            -exportOptionsPlist ExportOptions.plist | cat
-          echo "Exported files:" && ls -lah build/export
+            -exportOptionsPlist ExportOptions.plist
+          echo "Exported files:" && ls -lah build/export || true
 
       - name: 🔎 Verify pkg signature
         working-directory: ${{ env.MACOS_DIR }}
