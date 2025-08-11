@@ -71,7 +71,9 @@ jobs:
           pod install --repo-update
 
       - name: 🔧 Export FLUTTER_ROOT for Xcode build phases
-        run: echo "FLUTTER_ROOT=$(flutter sdk-path)" >> $GITHUB_ENV
+        shell: bash
+        run: |
+          echo "FLUTTER_ROOT=$(dirname $(dirname $(which flutter)))" >> $GITHUB_ENV
 
       - name: 🔎 Verify Flutter SDK path for Xcode script
         shell: bash
