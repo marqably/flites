@@ -82,7 +82,7 @@ jobs:
         with:
           p12-file-base64: ${{ env.DIST_P12_BASE64 }}
           p12-password: ${{ env.DIST_P12_PASSWORD }}
-          keychain: dist-signing.keychain
+          keychain: dist-signing
           keychain-password: ${{ env.KEYCHAIN_PASSWORD }}
 
       - name: 🔐 Import Mac Installer Distribution certificate (productsign)
@@ -91,7 +91,7 @@ jobs:
         with:
           p12-file-base64: ${{ env.INSTALLER_P12_BASE64 }}
           p12-password: ${{ env.INSTALLER_P12_PASSWORD }}
-          keychain: installer-signing.keychain
+          keychain: installer-signing
           keychain-password: ${{ env.KEYCHAIN_PASSWORD }}
 
       - name: 🔑 Write App Store Connect API key to file
@@ -172,7 +172,7 @@ jobs:
           # Delete any custom signing keychains if present (match both .keychain and .keychain-db)
           security list-keychains -d user | tr -d '"' | while read -r KC; do
             case "$KC" in
-              *dist-signing.keychain*|*dist-signing.keychain-db*|*installer-signing.keychain*|*installer-signing.keychain-db*)
+              *dist-signing*|*installer-signing*)
                 security delete-keychain "$KC" || true
                 ;;
             esac
