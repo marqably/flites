@@ -86,9 +86,12 @@ jobs:
         working-directory: ${{ env.APP_DIR }}
         run: flutter pub get
 
-      - name: 🌐 Generate localization (gen-l10n)
+      - name: 🌐 Generate localization (gen-l10n synthetic package)
         working-directory: ${{ env.APP_DIR }}
-        run: flutter gen-l10n
+        run: |
+          flutter gen-l10n --arb-dir lib/l10n --synthetic-package
+          # Ensure package config includes flutter_gen mapping
+          flutter pub get
 
       - name: 🏗️ Pre-build Flutter macOS to generate ephemeral files
         working-directory: ${{ env.APP_DIR }}
