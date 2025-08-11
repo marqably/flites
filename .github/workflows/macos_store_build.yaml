@@ -74,6 +74,14 @@ jobs:
         working-directory: ${{ env.APP_DIR }}
         run: flutter pub get
 
+      - name: 🏗️ Pre-generate Flutter macOS build files (ephemeral)
+        shell: bash
+        working-directory: ${{ env.APP_DIR }}
+        run: |
+          set -euo pipefail
+          # Generate Flutter macOS ephemeral files so Xcode has FlutterInputs/Outputs.xcfilelist
+          flutter build macos --release --no-codesign
+
       - name: 🐍 Install App Store Connect CLI (pipx)
         shell: bash
         run: |
