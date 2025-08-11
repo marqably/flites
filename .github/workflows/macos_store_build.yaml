@@ -109,25 +109,25 @@ jobs:
           echo "$HOME/.local/bin" >> $GITHUB_PATH
           pipx install codemagic-cli-tools
 
-      - name: 🔐 Import Apple Distribution certificate (codesign)
-        if: env.DIST_P12_BASE64 != ''
-        uses: apple-actions/import-codesign-certs@v2
-        with:
-          p12-file-base64: ${{ env.DIST_P12_BASE64 }}
-          p12-password: ${{ env.DIST_P12_PASSWORD }}
-          keychain: dist-signing
-          keychain-password: ${{ env.KEYCHAIN_PASSWORD }}
-
-      - name: 🔐 Import Mac Installer Distribution certificate (productsign)
-        if: env.INSTALLER_P12_BASE64 != ''
-        uses: apple-actions/import-codesign-certs@v2
-        with:
-          p12-file-base64: ${{ env.INSTALLER_P12_BASE64 }}
-          p12-password: ${{ env.INSTALLER_P12_PASSWORD }}
-          keychain: installer-signing
-          keychain-password: ${{ env.KEYCHAIN_PASSWORD }}
-
-      
+      - name: 🔐 Set up signing keychain
+        shell: bash
+        run: |
+          KEYCHAIN_PATH="$RUNNER_TEMP/build.keychain"
+          security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          security set-keychain-settings -lut 21600 "$KEYCHAIN_PATH"
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          security list-keychains -d user -s "$KEYCHAIN_PATH"
+          security default-keychain -s "$KEYCHAIN_PATH"
+          if [ -n "$DIST_P12_BASE64" ]; then
+            echo "$DIST_P12_BASE64" | base64 --decode > dist.p12
+            security import dist.p12 -k "$KEYCHAIN_PATH" -P "$DIST_P12_PASSWORD" -T /usr/bin/codesign -T /usr/bin/security
+          fi
+          if [ -n "$INSTALLER_P12_BASE64" ]; then
+            echo "$INSTALLER_P12_BASE64" | base64 --decode > installer.p12
+            security import installer.p12 -k "$KEYCHAIN_PATH" -P "$INSTALLER_P12_PASSWORD" -T /usr/bin/productbuild -T /usr/bin/productsign -T /usr/bin/codesign -T /usr/bin/security
+          fi
+          security set-key-partition-list -S apple-tool:,apple: -s -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          security find-identity -v -p codesigning "$KEYCHAIN_PATH" | cat
 
       - name: 🔑 Write App Store Connect API key to file
         run: |
@@ -143,7 +143,12 @@ jobs:
             -archivePath build/Runner.xcarchive \
             -destination 'generic/platform=macOS' \
             DEVELOPMENT_TEAM="$TEAM_ID" \
-            CODE_SIGN_STYLE=Manual \
+            CODE_SIGN_STYLE=Automatic \
+            OTHER_CODE_SIGN_FLAGS="--keychain $RUNNER_TEMP/build.keychain" \
+            -allowProvisioningUpdates \
+            -authenticationKeyPath "$GITHUB_WORKSPACE/AuthKey_${ASC_KEY_ID}.p8" \
+            -authenticationKeyID "$ASC_KEY_ID" \
+            -authenticationKeyIssuerID "$ASC_ISSUER_ID" \
             clean archive
           if [ ! -d build/Runner.xcarchive ]; then
             echo "❌ Archive not found at $(pwd)/build/Runner.xcarchive"
@@ -182,7 +187,12 @@ jobs:
           xcodebuild -exportArchive \
             -archivePath build/Runner.xcarchive \
             -exportPath build/export \
-            -exportOptionsPlist ExportOptions.plist
+            -exportOptionsPlist ExportOptions.plist \
+            OTHER_CODE_SIGN_FLAGS="--keychain $RUNNER_TEMP/build.keychain" \
+            -allowProvisioningUpdates \
+            -authenticationKeyPath "$GITHUB_WORKSPACE/AuthKey_${ASC_KEY_ID}.p8" \
+            -authenticationKeyID "$ASC_KEY_ID" \
+            -authenticationKeyIssuerID "$ASC_ISSUER_ID"
           echo "Exported files:" && ls -lah build/export || true
 
       - name: 🔎 Verify pkg signature
