@@ -82,6 +82,8 @@ jobs:
         with:
           p12-file-base64: ${{ env.DIST_P12_BASE64 }}
           p12-password: ${{ env.DIST_P12_PASSWORD }}
+          keychain: dist-signing.keychain
+          keychain-password: ${{ env.KEYCHAIN_PASSWORD }}
 
       - name: 🔐 Import Mac Installer Distribution certificate (productsign)
         if: env.INSTALLER_P12_BASE64 != ''
@@ -89,6 +91,8 @@ jobs:
         with:
           p12-file-base64: ${{ env.INSTALLER_P12_BASE64 }}
           p12-password: ${{ env.INSTALLER_P12_PASSWORD }}
+          keychain: installer-signing.keychain
+          keychain-password: ${{ env.KEYCHAIN_PASSWORD }}
 
       - name: 🔑 Write App Store Connect API key to file
         run: |
@@ -163,6 +167,7 @@ jobs:
           # Attempt to restore default keychain to login and clean up potential temp keychains
           security list-keychains -d user -s login.keychain || true
           security default-keychain -s login.keychain || true
-          security delete-keychain build.keychain || true
+          security delete-keychain dist-signing.keychain || true
+          security delete-keychain installer-signing.keychain || true
 
 
