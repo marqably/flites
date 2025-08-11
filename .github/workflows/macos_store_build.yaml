@@ -74,13 +74,6 @@ jobs:
         working-directory: ${{ env.APP_DIR }}
         run: flutter pub get
 
-      - name: 🏗️ Pre-generate Flutter macOS build files (ephemeral)
-        shell: bash
-        working-directory: ${{ env.APP_DIR }}
-        run: |
-          set -euo pipefail
-          # Generate Flutter macOS ephemeral files so Xcode has FlutterInputs/Outputs.xcfilelist
-          flutter build macos --release --no-codesign
 
       - name: 🐍 Install App Store Connect CLI (pipx)
         shell: bash
@@ -108,6 +101,14 @@ jobs:
           p12-password: ${{ env.INSTALLER_P12_PASSWORD }}
           keychain: installer-signing
           keychain-password: ${{ env.KEYCHAIN_PASSWORD }}
+
+      - name: 🏗️ Pre-build with Flutter to generate ephemeral files
+        shell: bash
+        working-directory: ${{ env.APP_DIR }}
+        run: |
+          set -euo pipefail
+          # Generate Flutter macOS ephemeral inputs/outputs referenced by Xcode
+          flutter build macos --release
 
       - name: 🔑 Write App Store Connect API key to file
         run: |
