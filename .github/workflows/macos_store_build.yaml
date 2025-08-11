@@ -41,6 +41,9 @@ jobs:
           channel: stable
           cache: true
 
+      - name: 📥 Flutter precache (macOS artifacts)
+        run: flutter precache --macos
+
       - name: 📦 Setup Melos
         uses: bluefireteam/melos-action@v2
 
@@ -70,6 +73,13 @@ jobs:
       - name: 🔧 Export FLUTTER_ROOT for Xcode build phases
         run: echo "FLUTTER_ROOT=$(flutter sdk-path)" >> $GITHUB_ENV
 
+      - name: 🔎 Verify Flutter SDK path for Xcode script
+        shell: bash
+        run: |
+          echo "FLUTTER_ROOT=$FLUTTER_ROOT"
+          test -d "$FLUTTER_ROOT" || { echo "❌ FLUTTER_ROOT not set correctly"; exit 1; }
+          test -f "$FLUTTER_ROOT/packages/flutter_tools/bin/macos_assemble.sh" || { echo "❌ macos_assemble.sh not found"; ls -la "$FLUTTER_ROOT/packages/flutter_tools/bin"; exit 1; }
+
       - name: 🔄 Flutter pub get (app)
         working-directory: ${{ env.APP_DIR }}
         run: flutter pub get
@@ -77,6 +87,11 @@ jobs:
       - name: 🌐 Generate localization (gen-l10n)
         working-directory: ${{ env.APP_DIR }}
         run: flutter gen-l10n
+
+      - name: 🏗️ Pre-build Flutter macOS to generate ephemeral files
+        working-directory: ${{ env.APP_DIR }}
+        run: |
+          flutter build macos --release
 
 
       - name: 🐍 Install App Store Connect CLI (pipx)
@@ -106,14 +121,7 @@ jobs:
           keychain: installer-signing
           keychain-password: ${{ env.KEYCHAIN_PASSWORD }}
 
-      - name: 🧩 Ensure Flutter ephemeral filelists exist
-        shell: bash
-        working-directory: ${{ env.MACOS_DIR }}
-        run: |
-          set -euo pipefail
-          mkdir -p Flutter/ephemeral
-          : > Flutter/ephemeral/FlutterInputs.xcfilelist
-          : > Flutter/ephemeral/FlutterOutputs.xcfilelist
+      
 
       - name: 🔑 Write App Store Connect API key to file
         run: |
@@ -123,10 +131,11 @@ jobs:
         working-directory: ${{ env.MACOS_DIR }}
         run: |
           set -euo pipefail
-          xcodebuild -workspace Runner.xcworkspace \
+          FLUTTER_ROOT="$FLUTTER_ROOT" xcodebuild -workspace Runner.xcworkspace \
             -scheme Runner \
             -configuration Release \
             -archivePath build/Runner.xcarchive \
+            -destination 'generic/platform=macOS' \
             DEVELOPMENT_TEAM="$TEAM_ID" \
             CODE_SIGN_STYLE=Manual \
             clean archive
