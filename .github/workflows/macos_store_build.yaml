@@ -89,7 +89,8 @@ jobs:
       - name: 🌐 Generate localization (gen-l10n synthetic package)
         working-directory: ${{ env.APP_DIR }}
         run: |
-          flutter gen-l10n --arb-dir lib/l10n --synthetic-package
+          # l10n.yaml enforces settings; ensure synthetic-package is enabled in l10n.yaml
+          flutter gen-l10n
           # Ensure package config includes flutter_gen mapping
           flutter pub get
 
