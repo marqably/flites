@@ -170,12 +170,12 @@ jobs:
           security default-keychain -s login.keychain || true
           
           # Delete any custom signing keychains if present (match both .keychain and .keychain-db)
-          mapfile -t KCS < <(security list-keychains -d user | tr -d '"')
-          for KC in "${KCS[@]}"; do
-            if [[ "$KC" == *dist-signing.keychain* || "$KC" == *dist-signing.keychain-db* || \
-                  "$KC" == *installer-signing.keychain* || "$KC" == *installer-signing.keychain-db* ]]; then
-              security delete-keychain "$KC" || true
-            fi
+          security list-keychains -d user | tr -d '"' | while read -r KC; do
+            case "$KC" in
+              *dist-signing.keychain*|*dist-signing.keychain-db*|*installer-signing.keychain*|*installer-signing.keychain-db*)
+                security delete-keychain "$KC" || true
+                ;;
+            esac
           done
 
 
