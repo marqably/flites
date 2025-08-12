@@ -7,9 +7,9 @@ on:
       - synchronize
 
 jobs:
-  semantic_pull_request:
-    name: ✅ Semantic Pull Request
-    uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/semantic_pull_request.yml@v1
+  # semantic_pull_request:
+  #   name: ✅ Semantic Pull Request
+  #   uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/semantic_pull_request.yml@v1
   deploy_macos:
     name: 🍎 Build and Deploy macOS via codemagic.io
     uses: ./.github/workflows/macos_build.yaml

@@ -8,19 +8,13 @@ on:
         required: false
         type: string
 
-  # Triggers on Pull Requests targeting main
-  pull_request:
-    branches:
-      - main
-      - feat/beau/ci-macos
-
   # Allows manual triggering
   workflow_dispatch:
 
 jobs:
   build-macos:
     name: 🍎 Build and Deploy macOS via codemagic
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     env:
       MACOS_CODEMAGIC_HOOK_URL: ${{ secrets.MACOS_CODEMAGIC_HOOK_URL }}
     steps:
