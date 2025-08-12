@@ -28,4 +28,4 @@ jobs:
         run: |
           # Make a post request to the codemagic.io webhook
           curl -X POST -H "Content-Type: application/json" -d '{"tag": "${{ inputs.tag }}"}' ${{ env.MACOS_CODEMAGIC_HOOK_URL }}
-        shell: bash # Use bash on macOS runner
+        shell: bash

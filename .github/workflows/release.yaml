@@ -89,7 +89,7 @@ jobs:
             artifacts/flites-linux-artifact/*.AppImage
             artifacts/flites-linux-deb-artifact/*.deb
             artifacts/flites-windows-artifact/*.zip
-            artifacts/flites-macos-artifact/*.zip
+            # macOS artifact is produced by Codemagic workflow, not GitHub Actions
             artifacts/flites-web-artifact/*.zip
         env:
           # The GITHUB_TOKEN is automatically available to the workflow
