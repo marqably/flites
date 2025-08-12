@@ -8,6 +8,15 @@ on:
         required: false
         type: string
 
+  # Triggers on Pull Requests targeting main
+  pull_request:
+    branches:
+      - main
+      - feat/beau/ci-macos
+
+  # Allows manual triggering
+  workflow_dispatch:
+
 jobs:
   build-macos:
     name: 🍎 Build and Deploy macOS via codemagic
@@ -19,5 +28,4 @@ jobs:
         run: |
           # Make a post request to the codemagic.io webhook
           curl -X POST -H "Content-Type: application/json" -d '{"tag": "${{ inputs.tag }}"}' ${{ env.MACOS_CODEMAGIC_HOOK_URL }}
-          echo "Triggered codemagic.io build"
         shell: bash # Use bash on macOS runner
