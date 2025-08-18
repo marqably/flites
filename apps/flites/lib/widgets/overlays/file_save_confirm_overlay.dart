@@ -5,7 +5,7 @@ import 'package:flites/widgets/overlays/base_dialog_card.dart';
 import 'package:path/path.dart' as path;
 import 'package:signals/signals.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:flites/l10n/gen_l10n/app_localizations.dart';
+import 'package:flites/l10n/app_localizations.dart';
 
 final showFileSaveConfirmDialog = signal<String?>(null);
 
