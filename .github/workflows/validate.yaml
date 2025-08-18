@@ -18,7 +18,7 @@ jobs:
         uses: subosito/flutter-action@v2
         id: flutter-action
         with:
-          flutter-version: '3.29.2-stable'
+          flutter-version: '3.29.2'
           architecture: x64
 
       - name: 📦 Setup Melos
