@@ -27,7 +27,7 @@ jobs:
     runs-on: windows-latest
     env:
       APP_NAME: Flites
-      APP_ID: com.marqably.flites
+      APP_ID: app.flites.editor
       APP_NAME_LOWER: flites
     steps:
       # Optional: Debug step to see input tag when called
