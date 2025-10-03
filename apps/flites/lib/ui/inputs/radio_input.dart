@@ -78,7 +78,9 @@ class RadioInput<T> extends StatelessWidget {
                     Radio<T>(
                       value: option.value,
                       groupValue: selectedValue,
-                      onChanged: option.disabled ? null : onChanged,
+                      onChanged: option.disabled
+                          ? null
+                          : (T? value) => onChanged(value),
                       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       visualDensity: VisualDensity.compact,
                     ),
