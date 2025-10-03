@@ -15,33 +15,45 @@ workflows:
     scripts:
       - name: Set up keychain to be used for codesigning
         script: |
+          set -e
           keychain initialize
       - name: Set up signing certificate
         script: |
-          app-store-connect fetch-signing-files app.flites.editor --type MAC_APP_STORE --create
-      - name: Set up provisioning profile
-        script: |
+          set -e
           app-store-connect fetch-signing-files app.flites.editor --type MAC_APP_STORE --create
       - name: Install Flutter dependencies
         script: |
+          set -e
           flutter packages pub get
       - name: Install CocoaPods dependencies
         script: |
+          set -e
           find . -name "Podfile" -execdir pod install \;
       - name: Flutter analyze
         script: |
+          set -e
           flutter analyze
       - name: Flutter unit tests
         script: |
+          set -e
           flutter test
       - name: Build macOS app for App Store
         script: |
+          set -e
           flutter build macos --release --no-codesign
       - name: Code sign macOS app
         script: |
-          codesign --force --options runtime --sign "$(APP_STORE_CONNECT_API_KEY_ID)" --entitlements apps/flites/macos/Runner/Release.entitlements apps/flites/build/macos/Build/Products/Release/flites.app
+          set -e
+          # Verify entitlements file exists
+          if [ ! -f "apps/flites/macos/Runner/Release.entitlements" ]; then
+            echo "Error: Release.entitlements file not found at apps/flites/macos/Runner/Release.entitlements"
+            exit 1
+          fi
+          # Use the correct variable for signing identity
+          codesign --force --options runtime --sign "$APP_STORE_CONNECT_KEY_IDENTIFIER" --entitlements apps/flites/macos/Runner/Release.entitlements apps/flites/build/macos/Build/Products/Release/flites.app
       - name: Create macOS app archive
         script: |
+          set -e
           cd apps/flites/build/macos/Build/Products/Release
           zip -r flites-macos.zip flites.app
     artifacts:
