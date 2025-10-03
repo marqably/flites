@@ -42,18 +42,6 @@
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
 		<false/>
-		<key>NSExceptionDomains</key>
-		<dict>
-			<key>flites.app</key>
-			<dict>
-				<key>NSExceptionAllowsInsecureHTTPLoads</key>
-				<false/>
-				<key>NSExceptionMinimumTLSVersion</key>
-				<string>TLSv1.2</string>
-				<key>NSIncludesSubdomains</key>
-				<true/>
-			</dict>
-		</dict>
 	</dict>
 	
 	<!-- App Store Required Keys -->
@@ -61,8 +49,6 @@
 	<string>Flites Sprite Generator</string>
 	<key>CFBundleGetInfoString</key>
 	<string>The free &amp; open source sprite generator</string>
-	<key>CFBundleSignature</key>
-	<string>????</string>
 	<key>LSRequiresIPhoneOS</key>
 	<false/>
 	<key>NSHighResolutionCapable</key>

@@ -1,44 +1,16 @@
-import 'dart:io';
-import 'package:flutter/foundation.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 class VersionService {
-  static String? _cachedVersion;
+  static PackageInfo? _cachedPackageInfo;
 
-  /// Gets the version from pubspec.yaml file
+  /// Gets the version from app metadata
   static Future<String> getVersion() async {
-    if (_cachedVersion != null) {
-      return _cachedVersion!;
-    }
-
-    try {
-      final pubspecFile = File('pubspec.yaml');
-
-      if (!await pubspecFile.exists()) {
-        debugPrint('pubspec.yaml file not found');
-        return '0.0.0';
-      }
-
-      final content = await pubspecFile.readAsString();
-      final lines = content.split('\n');
-
-      for (final line in lines) {
-        if (line.trim().startsWith('version:')) {
-          final version = line.split(':')[1].trim();
-          _cachedVersion = version;
-          return version;
-        }
-      }
-
-      debugPrint('Version not found in pubspec.yaml');
-      return '0.0.0';
-    } catch (e) {
-      debugPrint('Error reading version from pubspec.yaml: $e');
-      return '0.0.0';
-    }
+    _cachedPackageInfo ??= await PackageInfo.fromPlatform();
+    return _cachedPackageInfo!.version;
   }
 
   /// Clears the cached version (useful for testing)
   static void clearCache() {
-    _cachedVersion = null;
+    _cachedPackageInfo = null;
   }
 }

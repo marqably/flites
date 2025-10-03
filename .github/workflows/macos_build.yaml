@@ -24,6 +24,8 @@ jobs:
     env:
       MACOS_CODEMAGIC_HOOK_URL: ${{ secrets.MACOS_CODEMAGIC_HOOK_URL }}
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
       - name: DEBUG Print Workflow Input Tag
         run: |
           echo "Workflow Input (inputs.tag): ${{ inputs.tag }}"
