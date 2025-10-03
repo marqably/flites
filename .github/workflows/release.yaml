@@ -8,7 +8,6 @@ on:
 jobs:
   call_build_appimage:
     name: Call Appimage Build 🐧
-    runs-on: ubuntu-latest
     uses: ./.github/workflows/appimage_build.yaml
     with:
       tag: ${{ github.ref_name }} 
@@ -16,7 +15,6 @@ jobs:
 
   call_build_debian:
     name: Call Debian Build 🐧
-    runs-on: ubuntu-latest
     uses: ./.github/workflows/debian_build.yaml
     with:
       tag: ${{ github.ref_name }} 
@@ -24,7 +22,6 @@ jobs:
 
   call_build_windows:
     name: Call Windows Build ⬜
-    runs-on: ubuntu-latest
     uses: ./.github/workflows/windows_build.yaml
     with:
       tag: ${{ github.ref_name }}
@@ -32,7 +29,6 @@ jobs:
 
   call_build_macos:
     name: Call macOS Build 🍎
-    runs-on: ubuntu-latest
     uses: ./.github/workflows/macos_build.yaml
     with:
       tag: ${{ github.ref_name }}
@@ -40,7 +36,6 @@ jobs:
 
   call_build_web:
     name: Call Web Build 🌐
-    runs-on: ubuntu-latest
     uses: ./.github/workflows/web_build.yaml
     with:
       tag: ${{ github.ref_name }}
