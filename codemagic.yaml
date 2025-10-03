@@ -3,14 +3,14 @@ workflows:
     name: macOS Release Build
     max_build_duration: 60
     instance_type: mac_mini_m1
-    integrations:
-      app_store_connect: flites_app_store_connect
     environment:
       vars:
         # Version will be read from pubspec.yaml
         FLUTTER_VERSION: "3.24.0"
         XCODE_VERSION: "15.4"
         COCOAPODS_VERSION: "1.15.2"
+      groups:
+        - production
       flutter: stable
       xcode: latest
       cocoapods: default
@@ -62,6 +62,9 @@ workflows:
       - apps/flites/build/macos/Build/Products/Release/flites-macos.zip
     publishing:
       app_store_connect:
-        auth: integration
+        auth: api_key
+        api_key: $APP_STORE_CONNECT_API_KEY
+        key_id: $APP_STORE_CONNECT_KEY_ID
+        issuer_id: $APP_STORE_CONNECT_ISSUER_ID
         submit_to_testflight: false
         submit_to_app_store: true
