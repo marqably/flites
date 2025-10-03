@@ -6,23 +6,18 @@ inputs:
   platform:
     description: 'Target platform (must match key in build_config.yaml: linux, windows, macos, web)'
     required: true
-    type: string
   event_name:
     description: 'The event that triggered the workflow (e.g., workflow_call, pull_request, workflow_dispatch)'
     required: true
-    type: string
   tag_input:
     description: 'The git tag for release builds (only provided for workflow_call on tag push)'
     required: false
-    type: string
   pr_number:
     description: 'The pull request number (only relevant for pull_request event)'
     required: false
-    type: string
   run_id:
     description: 'The unique ID for the workflow run (mostly relevant for workflow_dispatch)'
     required: false
-    type: string
 
 # Define the outputs the action will provide
 outputs:
