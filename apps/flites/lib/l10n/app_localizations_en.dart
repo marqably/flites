@@ -129,10 +129,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get height => 'Height';
 
   @override
-  String get provideDimensionError => 'Please provide at least one dimension (width or height).';
+  String get provideDimensionError =>
+      'Please provide at least one dimension (width or height).';
 
   @override
-  String get webDownloadLocation => 'File will be saved to your downloads folder.';
+  String get webDownloadLocation =>
+      'File will be saved to your downloads folder.';
 
   @override
   String get addMoreImagesToPlay => 'Add more than one image to play';
@@ -210,7 +212,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get svgVector => 'SVG Vector';
 
   @override
-  String get svgExportNotAvailable => 'SVG export is not available in Flites yet.';
+  String get svgExportNotAvailable =>
+      'SVG export is not available in Flites yet.';
 
   @override
   String get imageSettings => 'Image Settings';

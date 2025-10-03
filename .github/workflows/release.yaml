@@ -78,9 +78,33 @@ jobs:
         with:
           # tag_name: ${{ github.ref_name }} # Defaults to the tag that triggered workflow
           name: Release ${{ github.ref_name }} # Names the release (e.g., "Release v1.0.0")
-          body: | # Optional: Add release notes here
-            Released version ${{ github.ref_name }}
-            *(See CHANGELOG.md for details)*
+          body: |
+            ## Flites ${{ github.ref_name }}
+            
+            A modern sprite animation tool built with Flutter for creating and editing sprite animations.
+            
+            ### Downloads
+            - **Linux**: AppImage and Debian package
+            - **Windows**: Portable ZIP archive
+            - **Web**: Web application package
+            - **macOS**: Coming soon (via Codemagic)
+            
+            ### Installation
+            - **Linux AppImage**: Download, make executable (`chmod +x`), and run
+            - **Linux Debian**: Install with `sudo dpkg -i flites_*.deb`
+            - **Windows**: Extract ZIP and run `flites.exe`
+            - **Web**: Extract ZIP and open `index.html` in your browser
+            
+            ### Features
+            - Multi-frame sprite editing with drag-and-drop frame reordering
+            - Advanced canvas controls with zoom, pan, and precise positioning
+            - Transformation tools for move, resize, and rotate operations
+            - Real-time animation preview with playback controls
+            - Optimized sprite sheet export in PNG and SVG formats
+            - Cross-platform support (Windows, macOS, Linux, Web)
+            - Multi-language support
+            
+            For detailed changes, see [CHANGELOG.md](https://github.com/marqably/flites/blob/main/CHANGELOG.md)
           draft: false # Set to true to create a draft release instead of publishing
           prerelease: ${{ contains(github.ref_name, '-') }} # Mark as pre-release if tag contains '-' (e.g., v1.0.0-beta)
           files: |
@@ -89,8 +113,10 @@ jobs:
             artifacts/flites-linux-artifact/*.AppImage
             artifacts/flites-linux-deb-artifact/*.deb
             artifacts/flites-windows-artifact/*.zip
-            # macOS artifact is produced by Codemagic workflow, not GitHub Actions
             artifacts/flites-web-artifact/*.zip
+            # macOS artifact is produced by Codemagic workflow
+            # Note: Currently using placeholder until Codemagic integration is complete
+            artifacts/flites-macos-artifact/placeholder-macos-build.txt
         env:
           # The GITHUB_TOKEN is automatically available to the workflow
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

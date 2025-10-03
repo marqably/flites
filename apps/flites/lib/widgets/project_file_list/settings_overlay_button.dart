@@ -1,6 +1,7 @@
 import 'package:flites/constants/app_sizes.dart';
 import 'package:flites/main.dart';
 import 'package:flites/services/project_saving_service.dart';
+import 'package:flites/services/version_service.dart';
 import 'package:flites/states/app_settings.dart';
 import 'package:flites/states/source_files_state.dart';
 import 'package:flites/utils/generate_sprite.dart';
@@ -196,13 +197,33 @@ class SettingsOverlayButton extends StatelessWidget {
 
               // About Flites
               divider(context),
-              ListTile(
-                dense: true,
-                title: Text(context.l10n.menuAboutFlites),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 14),
-                onTap: () async {
-                  closeLayer();
-                  launchUrl(Uri.parse('https://flites.app'));
+              FutureBuilder<String>(
+                future: VersionService.getVersion(),
+                builder: (context, snapshot) {
+                  final version = snapshot.data ?? '0.0.0';
+                  return ListTile(
+                    dense: true,
+                    title: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(context.l10n.menuAboutFlites),
+                        Text(
+                          'v$version',
+                          style: TextStyle(
+                            fontSize: Sizes.p12,
+                            color:
+                                context.colors.onSurface.withValues(alpha: 0.5),
+                            fontWeight: FontWeight.normal,
+                          ),
+                        ),
+                      ],
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 14),
+                    onTap: () async {
+                      closeLayer();
+                      launchUrl(Uri.parse('https://flites.app'));
+                    },
+                  );
                 },
               ),
             ],

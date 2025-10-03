@@ -1,10 +1,20 @@
 {
     "cSpell.words": [
+        "appimage",
+        "cocoapods",
+        "Codemagic",
+        "codesign",
+        "codesigning",
+        "execdir",
         "hitbox",
         "Hitboxes",
         "inclusivity",
+        "Podfile",
+        "pubspec",
+        "qualitycheck",
         "scrollability",
         "Spritesheet",
+        "testflight",
         "togglable"
     ]
 }

@@ -24,8 +24,41 @@ jobs:
     env:
       MACOS_CODEMAGIC_HOOK_URL: ${{ secrets.MACOS_CODEMAGIC_HOOK_URL }}
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
       - name: DEBUG Print Workflow Input Tag
+        run: |
+          echo "Workflow Input (inputs.tag): ${{ inputs.tag }}"
+        shell: bash
+
+      - name: Determine Build Context & Variables
+        id: vars
+        uses: ./.github/actions/determine_build_vars
+        with:
+          platform: 'macos'
+          event_name: ${{ github.event_name }}
+          tag_input: ${{ inputs.tag }}
+          pr_number: ${{ github.event.number }}
+          run_id: ${{ github.run_id }}
+
+      - name: Trigger Codemagic Build
         run: |
           # Make a post request to the codemagic.io webhook
           curl -X POST -H "Content-Type: application/json" -d '{"tag": "${{ inputs.tag }}"}' ${{ env.MACOS_CODEMAGIC_HOOK_URL }}
         shell: bash
+
+      # Note: Codemagic will handle the actual build and should upload artifacts
+      # that can be downloaded by the release workflow. This is a placeholder
+      # until Codemagic integration is fully configured.
+      - name: Create Placeholder macOS Artifact
+        run: |
+          echo "macOS build triggered via Codemagic for tag: ${{ inputs.tag }}"
+          echo "This is a placeholder until Codemagic integration is complete"
+          touch placeholder-macos-build.txt
+        shell: bash
+
+      - name: Upload Placeholder Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.vars.outputs.artifact_upload_name }}
+          path: placeholder-macos-build.txt
