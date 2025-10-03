@@ -88,6 +88,7 @@ jobs:
         shell: bash
 
       - name: Upload artifact
+        if: steps.vars.outputs.build_type == 'release'
         uses: actions/upload-pages-artifact@v3
         with:
           path: 'apps/flites/build/web'
