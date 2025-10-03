@@ -100,6 +100,7 @@ jobs:
           echo "Created $zipFileName"
 
       - name: ⬆️ Upload Artifacts
+        if: steps.vars.outputs.build_type == 'release'
         uses: actions/upload-artifact@v4
         with:
           name: ${{ steps.vars.outputs.artifact_upload_name }}
