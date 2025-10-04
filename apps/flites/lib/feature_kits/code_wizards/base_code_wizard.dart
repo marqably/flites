@@ -1,6 +1,7 @@
-import 'package:flites/feature_kits/tools/export_tool/export_tool_panel.dart';
-import 'package:flites/types/exported_sprite_image.dart';
 import 'package:flutter/material.dart';
+
+import '../../types/exported_sprite_image.dart';
+import '../tools/export_tool/export_tool_panel.dart';
 
 /// A base class for code wizards to be generated.
 ///
@@ -11,9 +12,8 @@ abstract class BaseCodeWizard<CodeGenSettingsType> {
     ExportedSpriteSheetTiled spriteSheet,
     ExportToolFormData exportSettings,
     Map<String, dynamic> codeSettingsMap,
-  ) {
-    return null;
-  }
+  ) =>
+      null;
 
   /// Returns the sidebar panel for the code wizard.
   Widget getSidebarPanel(
@@ -21,7 +21,6 @@ abstract class BaseCodeWizard<CodeGenSettingsType> {
     ExportToolFormData exportSettings,
     Map<String, dynamic> codeSettingsMap,
     Function(Map<String, dynamic>) onChanged,
-  ) {
-    return const SizedBox.shrink();
-  }
+  ) =>
+      const SizedBox.shrink();
 }

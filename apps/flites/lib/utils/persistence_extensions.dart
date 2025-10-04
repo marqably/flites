@@ -35,9 +35,7 @@ extension LocalePersistence on Locale {
   String get stringValue => languageCode;
 
   /// Creates Locale from a stored string (language code), defaulting to 'en'.
-  static Locale fromString(String? localeString) {
-    // Default to 'en' if the stored value is null or empty
-    return Locale(
-        localeString == null || localeString.isEmpty ? 'en' : localeString);
-  }
+  static Locale fromString(String? localeString) => Locale(
+        localeString == null || localeString.isEmpty ? 'en' : localeString,
+      );
 }

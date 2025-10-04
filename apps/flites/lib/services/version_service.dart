@@ -1,6 +1,9 @@
 import 'package:package_info_plus/package_info_plus.dart';
 
 class VersionService {
+  // Private constructor to prevent instantiation
+  VersionService._();
+
   static PackageInfo? _cachedPackageInfo;
 
   /// Gets the version from app metadata

@@ -1,6 +1,6 @@
 /// This file contains the instructions for adding your Flites Spritesheet to Flutter Flame.
 /// It is used to generate the code for the sprite file and the sprite state enum.
-const flutterFlameInstructions = '''
+const flutterFlameInstructions = r'''
 # Adding your Flites Spritesheet to Flutter Flame
 
 ## Save the Image
@@ -130,7 +130,7 @@ mixin {{SpriteName}}Sprite on SpriteAnimationGroupComponent<{{SpriteName}}Sprite
     // check if the row is valid
     if (rowIndex == null) {
       throw Exception(
-        'SpriteSheet \$sheetName is missing row \$row in animationRows',
+        'SpriteSheet $sheetName is missing row $row in animationRows',
       );
     }
 
@@ -193,7 +193,7 @@ class {{SpriteName}} extends SpriteAnimationGroupComponent<{{SpriteName}}SpriteS
 The get your currently active animation, you can just use the `current` prop on your `{{sprite_name}}.dart` class.
 
 ```dart
-    print('Active animation: \$current');
+    print('Active animation: $current');
 }
 ```
 

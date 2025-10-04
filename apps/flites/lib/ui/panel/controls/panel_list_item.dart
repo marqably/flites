@@ -1,29 +1,20 @@
-import 'package:flites/constants/app_sizes.dart';
-import 'package:flites/types/flites_image.dart';
-import 'package:flites/types/secondary_click_context_data.dart';
-import 'package:flites/ui/inputs/icon_btn.dart';
-import 'package:flites/ui/utils/hover_btn.dart';
-import 'package:flites/utils/svg_utils.dart';
-import 'package:flites/widgets/right_click_menu/right_clickable_item_wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+
+import '../../../constants/app_sizes.dart';
+import '../../../types/flites_image.dart';
+import '../../../types/secondary_click_context_data.dart';
+import '../../../utils/svg_utils.dart';
+import '../../../widgets/right_click_menu/right_clickable_item_wrapper.dart';
+import '../../inputs/icon_btn.dart';
+import '../../utils/hover_btn.dart';
 
 /// A list item widget for displaying content with thumbnail, title, and action buttons.
 /// Used for showing files, frames, layers, or other elements in a panel list.
 class PanelListItem extends StatefulWidget {
-  final String title;
-  final String? subtitle;
-  final String? value;
-  final FlitesImage? image;
-  final IconData? icon;
-  final List<IconBtn> Function(bool isHovered, bool isActive)? actionButtons;
-  final bool isSelected;
-  final VoidCallback? onTap;
-  final bool hoverSelected;
-
   const PanelListItem({
-    super.key,
     required this.title,
+    super.key,
     this.subtitle,
     this.value,
     this.image,
@@ -33,6 +24,18 @@ class PanelListItem extends StatefulWidget {
     this.onTap,
     this.hoverSelected = false,
   });
+  final String title;
+  final String? subtitle;
+  final String? value;
+  final FlitesImage? image;
+  final IconData? icon;
+  final List<IconBtn> Function({
+    required bool isHovered,
+    required bool isActive,
+  })? actionButtons;
+  final bool isSelected;
+  final VoidCallback? onTap;
+  final bool hoverSelected;
 
   @override
   State<PanelListItem> createState() => _PanelListItemState();
@@ -41,25 +44,25 @@ class PanelListItem extends StatefulWidget {
     bool? hoverSelected,
     bool? isSelected,
     VoidCallback? onTap,
-    List<IconBtn> Function(bool isHovered, bool isActive)? actionButtons,
+    List<IconBtn> Function({required bool isHovered, required bool isActive})?
+        actionButtons,
     String? title,
     String? subtitle,
     FlitesImage? image,
     String? value,
     IconData? icon,
-  }) {
-    return PanelListItem(
-      title: title ?? this.title,
-      subtitle: subtitle ?? this.subtitle,
-      image: image ?? this.image,
-      actionButtons: actionButtons ?? this.actionButtons,
-      isSelected: isSelected ?? this.isSelected,
-      onTap: onTap ?? this.onTap,
-      hoverSelected: hoverSelected ?? this.hoverSelected,
-      value: value ?? this.value,
-      icon: icon ?? this.icon,
-    );
-  }
+  }) =>
+      PanelListItem(
+        title: title ?? this.title,
+        subtitle: subtitle ?? this.subtitle,
+        image: image ?? this.image,
+        actionButtons: actionButtons ?? this.actionButtons,
+        isSelected: isSelected ?? this.isSelected,
+        onTap: onTap ?? this.onTap,
+        hoverSelected: hoverSelected ?? this.hoverSelected,
+        value: value ?? this.value,
+        icon: icon ?? this.icon,
+      );
 }
 
 class _PanelListItemState extends State<PanelListItem> {
@@ -70,7 +73,9 @@ class _PanelListItemState extends State<PanelListItem> {
     final theme = Theme.of(context);
 
     final actionButtonList =
-        widget.actionButtons?.call(isHovered, widget.isSelected) ?? [];
+        widget.actionButtons
+            ?.call(isHovered: isHovered, isActive: widget.isSelected) ??
+        [];
 
     return RightClickableItemWrapper(
       contextData: SecondaryClickContextData(copyableData: [widget.image]),
@@ -86,9 +91,9 @@ class _PanelListItemState extends State<PanelListItem> {
               : Colors.transparent,
           disableHoverEffect: widget.isSelected || widget.hoverSelected,
           onTap: widget.onTap,
-          onHover: (val) {
+          onHover: ({required value}) {
             setState(() {
-              isHovered = val;
+              isHovered = value;
             });
           },
           child: Padding(
@@ -99,7 +104,6 @@ class _PanelListItemState extends State<PanelListItem> {
               bottom: Sizes.p8,
             ),
             child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 // Image/thumbnail
                 if (widget.image != null)
@@ -109,17 +113,14 @@ class _PanelListItemState extends State<PanelListItem> {
                     child: SvgUtils.isSvg(widget.image!.image)
                         ? SvgPicture.memory(
                             widget.image!.image,
-                            fit: BoxFit.contain,
                             width: Sizes.p28,
                             height: Sizes.p28,
-                            alignment: Alignment.center,
                           )
                         : Image.memory(
                             widget.image!.image,
                             fit: BoxFit.contain,
                             width: Sizes.p28,
                             height: Sizes.p28,
-                            alignment: Alignment.center,
                           ),
                   ),
 
@@ -136,7 +137,7 @@ class _PanelListItemState extends State<PanelListItem> {
                     ),
                     alignment: Alignment.center,
                     child: Icon(
-                      widget.icon!,
+                      widget.icon,
                       size: Sizes.p16,
                       color: theme.colorScheme.onSurface,
                     ),
@@ -175,12 +176,14 @@ class _PanelListItemState extends State<PanelListItem> {
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   spacing: Sizes.p4,
-                  children: actionButtonList.map((btn) {
-                    return btn.copyWith(
-                      color: Colors.transparent,
-                      size: IconBtnSize.xs,
-                    );
-                  }).toList(),
+                  children: actionButtonList
+                      .map(
+                        (btn) => btn.copyWith(
+                          color: Colors.transparent,
+                          size: IconBtnSize.xs,
+                        ),
+                      )
+                      .toList(),
                 ),
               ],
             ),

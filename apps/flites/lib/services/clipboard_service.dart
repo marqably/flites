@@ -1,7 +1,8 @@
-import 'package:flites/states/source_files_state.dart';
-import 'package:flites/types/flites_image.dart';
-import 'package:flites/utils/flites_image_factory.dart';
 import 'package:signals/signals_flutter.dart';
+
+import '../states/source_files_state.dart';
+import '../types/flites_image.dart';
+import '../utils/flites_image_factory.dart';
 
 /// A service that handles copying and pasting images
 /// to and from the clipboard.
@@ -12,15 +13,15 @@ class ClipboardService {
 
   bool get hasData => _clipboardData.value.isNotEmpty;
 
-  void copyImage(List<FlitesImage> images) async {
+  Future<void> copyImage(List<FlitesImage> images) async {
     _clipboardData.value = images;
   }
 
-  void pasteImage() async {
+  Future<void> pasteImage() async {
     final images = _clipboardData.value;
 
     if (images.isNotEmpty) {
-      SourceFilesState.pasteExistingImages(
+      await SourceFilesState.pasteExistingImages(
         flitesImageFactory.duplicateFlitesImages(List.from(images)),
       );
     }

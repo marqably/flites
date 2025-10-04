@@ -1,10 +1,11 @@
-import 'package:flites/main.dart';
-import 'package:flites/services/clipboard_service.dart';
-import 'package:flites/types/flites_image.dart';
-import 'package:flites/types/secondary_click_context_data.dart';
-import 'package:flites/utils/positioning_utils.dart';
-import 'package:flites/widgets/right_click_menu/right_click_menu_item.dart';
 import 'package:flutter/material.dart';
+
+import '../../main.dart';
+import '../../services/clipboard_service.dart';
+import '../../types/flites_image.dart';
+import '../../types/secondary_click_context_data.dart';
+import '../../utils/positioning_utils.dart';
+import 'right_click_menu_item.dart';
 
 /// A widget that wraps around the whole application to handle
 /// right-click context menus.
@@ -15,8 +16,8 @@ import 'package:flutter/material.dart';
 /// The context menu is removed when the user clicks outside of it.
 class RightClickMenuHandler extends StatefulWidget {
   const RightClickMenuHandler({
-    super.key,
     required this.child,
+    super.key,
   });
 
   final Widget child;
@@ -25,8 +26,8 @@ class RightClickMenuHandler extends StatefulWidget {
   RightClickMenuHandlerState createState() => RightClickMenuHandlerState();
 }
 
-/// The state of the [RightClickMenuHandler] widget.
-/// We access the state via the [context] in [CopyableItemWrapper] to
+/// The state of the RightClickMenuHandler widget.
+/// We access the state via the context in CopyableItemWrapper to
 /// show the context menu and pass the item data to it.
 class RightClickMenuHandlerState extends State<RightClickMenuHandler> {
   OverlayEntry? _overlayEntry;
@@ -66,7 +67,7 @@ class RightClickMenuHandlerState extends State<RightClickMenuHandler> {
           Positioned.fill(
             child: GestureDetector(
               onTap: _removeOverlay,
-              onSecondaryTapDown: (details) => showContextMenu(details),
+              onSecondaryTapDown: showContextMenu,
               behavior: HitTestBehavior.opaque,
             ),
           ),
@@ -82,11 +83,11 @@ class RightClickMenuHandlerState extends State<RightClickMenuHandler> {
                 width: 150,
                 decoration: BoxDecoration(
                   color: context.colors.surface,
-                  borderRadius: BorderRadius.circular(8.0),
+                  borderRadius: BorderRadius.circular(8),
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withValues(alpha: 0.2),
-                      blurRadius: 4.0,
+                      blurRadius: 4,
                       offset: const Offset(0, 2),
                     ),
                   ],
@@ -145,12 +146,8 @@ class RightClickMenuHandlerState extends State<RightClickMenuHandler> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onSecondaryTapDown: (details) => showContextMenu(
-        details,
-      ),
-      child: widget.child,
-    );
-  }
+  Widget build(BuildContext context) => GestureDetector(
+        onSecondaryTapDown: showContextMenu,
+        child: widget.child,
+      );
 }

@@ -1,12 +1,25 @@
-import 'package:flites/ui/inputs/checkbox_input.dart';
-import 'package:flites/ui/panel/structure/panel_control_wrapper.dart';
-import 'package:flites/ui/panel/structure/panel_form.dart';
 import 'package:flutter/material.dart';
+
+import '../../inputs/checkbox_input.dart';
+import '../structure/panel_control_wrapper.dart';
+import '../structure/panel_form.dart';
 
 /// A checkbox input control for use within panels
 class PanelCheckboxInput extends StatefulWidget {
+  const PanelCheckboxInput({
+    super.key,
+    this.onChanged,
+    this.checkboxLabel,
+    this.label,
+    this.formKey,
+    this.helpText,
+  }) : assert(
+          formKey != null || onChanged != null,
+          'Either formKey must be provided for form integration, or onChanged callback',
+        );
+
   /// Callback when the checkbox value changes
-  final Function(bool)? onChanged;
+  final Function({required bool value})? onChanged;
 
   /// Text to display next to the checkbox
   final String? checkboxLabel;
@@ -19,18 +32,6 @@ class PanelCheckboxInput extends StatefulWidget {
 
   /// Help text to display below the control
   final String? helpText;
-
-  const PanelCheckboxInput({
-    super.key,
-    this.onChanged,
-    this.checkboxLabel,
-    this.label,
-    this.formKey,
-    this.helpText,
-  }) : assert(
-          formKey != null || onChanged != null,
-          'Either formKey must be provided for form integration, or onChanged callback',
-        );
 
   @override
   State<PanelCheckboxInput> createState() => _PanelCheckboxInputState();
@@ -55,14 +56,17 @@ class _PanelCheckboxInputState extends State<PanelCheckboxInput> {
     }
 
     // Call direct callback if provided
-    widget.onChanged?.call(value);
+    widget.onChanged?.call(value: value);
   }
 
   @override
   Widget build(BuildContext context) {
-    bool value = (widget.formKey != null && _formState != null)
-        ? _formState!.getValue<bool>(widget.formKey!) ?? false
-        : false;
+    final bool value;
+    if (widget.formKey != null && _formState != null) {
+      value = _formState!.getValue<bool>(widget.formKey!) ?? false;
+    } else {
+      value = false;
+    }
 
     return PanelControlWrapper(
       label: widget.label,
@@ -70,7 +74,7 @@ class _PanelCheckboxInputState extends State<PanelCheckboxInput> {
       children: [
         CheckboxInput(
           isChecked: value,
-          onChanged: _handleValueChanged,
+          onChanged: ({required value}) => _handleValueChanged(value),
           label: widget.checkboxLabel,
         ),
       ],

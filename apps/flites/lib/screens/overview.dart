@@ -1,14 +1,14 @@
-import 'package:flites/services/update_service.dart';
-import 'package:flites/states/tool_controller.dart';
-import 'package:flites/config/tools.dart';
-import 'package:flites/types/update_info.dart';
-import 'package:flites/widgets/overlays/update_overlay.dart';
-import 'package:flites/widgets/right_click_menu/right_click_menu_handler.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:signals/signals_flutter.dart';
 
+import '../config/tools.dart';
+import '../services/update_service.dart';
 import '../states/key_events.dart';
+import '../states/tool_controller.dart';
+import '../types/update_info.dart';
+import '../widgets/overlays/update_overlay.dart';
+import '../widgets/right_click_menu/right_click_menu_handler.dart';
 
 class Overview extends StatefulWidget {
   const Overview({super.key});
@@ -39,13 +39,11 @@ class _OverviewState extends State<Overview> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Watch((context) {
-      final selectedTool = toolController.selectedTool;
+  Widget build(BuildContext context) => Watch((context) {
+        final selectedTool = toolController.selectedTool;
 
-      return RightClickMenuHandler(
-        child: Tools.getToolWidget(selectedTool),
-      );
-    });
-  }
+        return RightClickMenuHandler(
+          child: getToolWidget(selectedTool),
+        );
+      });
 }

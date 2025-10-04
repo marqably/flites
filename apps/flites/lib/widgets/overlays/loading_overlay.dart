@@ -1,9 +1,10 @@
-import 'package:flites/constants/app_sizes.dart';
-import 'package:flites/main.dart';
-import 'package:flites/widgets/overlays/base_dialog_card.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:signals/signals_flutter.dart';
+
+import '../../constants/app_sizes.dart';
+import '../../main.dart';
+import 'base_dialog_card.dart';
 
 final showLoadingOverlay = signal(false);
 
@@ -23,38 +24,36 @@ class LoadingOverlay extends StatelessWidget {
   const LoadingOverlay({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.black54,
-      child: Center(
-        child: BaseDialogCard(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              gapH8,
-              if (kIsWeb)
-                const Icon(
-                  Icons.hourglass_empty,
-                  size: Sizes.p32,
-                )
-              else
-                const CircularProgressIndicator(),
-              gapH24,
-              Text(
-                context.l10n.processingImage,
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              gapH8,
-              Text(
-                context.l10n.processingMightTakeAMoment,
-                style: TextStyle(
-                  color: context.colors.onSurface,
+  Widget build(BuildContext context) => Material(
+        color: Colors.black54,
+        child: Center(
+          child: BaseDialogCard(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                gapH8,
+                if (kIsWeb)
+                  const Icon(
+                    Icons.hourglass_empty,
+                    size: Sizes.p32,
+                  )
+                else
+                  const CircularProgressIndicator(),
+                gapH24,
+                Text(
+                  context.l10n.processingImage,
+                  style: Theme.of(context).textTheme.titleMedium,
                 ),
-              ),
-            ],
+                gapH8,
+                Text(
+                  context.l10n.processingMightTakeAMoment,
+                  style: TextStyle(
+                    color: context.colors.onSurface,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
-      ),
-    );
-  }
+      );
 }

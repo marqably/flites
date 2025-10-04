@@ -1,21 +1,21 @@
-import 'package:flites/main.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/foundation.dart';
+
+import '../../../main.dart';
 
 class HitboxEditorOverlay extends StatefulWidget {
-  final Widget child;
-  final Function(List<Offset>) onHitboxPointsChanged;
-  final List<Offset> initialHitboxPoints;
-  final Rect boundingBox;
-
   const HitboxEditorOverlay({
-    super.key,
     required this.child,
     required this.onHitboxPointsChanged,
     required this.initialHitboxPoints,
     required this.boundingBox,
+    super.key,
   });
+  final Widget child;
+  final Function(List<Offset>) onHitboxPointsChanged;
+  final List<Offset> initialHitboxPoints;
+  final Rect boundingBox;
 
   @override
   State<HitboxEditorOverlay> createState() => _HitboxEditorOverlayState();
@@ -41,12 +41,10 @@ class _HitboxEditorOverlayState extends State<HitboxEditorOverlay> {
     super.dispose();
   }
 
-  Offset clampToBoundingBox(Offset point) {
-    return Offset(
-      point.dx.clamp(0, 1),
-      point.dy.clamp(0, 1),
-    );
-  }
+  Offset clampToBoundingBox(Offset point) => Offset(
+        point.dx.clamp(0, 1),
+        point.dy.clamp(0, 1),
+      );
 
   // Add a point when tapping on empty space
   void _addPoint(Offset position) {
@@ -66,11 +64,14 @@ class _HitboxEditorOverlayState extends State<HitboxEditorOverlay> {
 
         // Check distance to each edge (including the edge from last to first point)
         for (int i = 0; i < hitboxPoints.length; i++) {
-          int nextIdx = (i + 1) % hitboxPoints.length;
+          final int nextIdx = (i + 1) % hitboxPoints.length;
 
           // Calculate distance from point to line segment
-          double distance = _distanceToLineSegment(
-              hitboxPoints[i], hitboxPoints[nextIdx], position);
+          final double distance = _distanceToLineSegment(
+            hitboxPoints[i],
+            hitboxPoints[nextIdx],
+            position,
+          );
 
           if (distance < minDistance) {
             minDistance = distance;
@@ -88,7 +89,7 @@ class _HitboxEditorOverlayState extends State<HitboxEditorOverlay> {
   }
 
   Offset localToRelativePosition(Offset localPosition) {
-    final posWithoutOffset = (localPosition - widget.boundingBox.topLeft);
+    final posWithoutOffset = localPosition - widget.boundingBox.topLeft;
 
     final position = Offset(
       posWithoutOffset.dx / widget.boundingBox.width,
@@ -98,13 +99,12 @@ class _HitboxEditorOverlayState extends State<HitboxEditorOverlay> {
     return clampToBoundingBox(position);
   }
 
-  Offset relativeToLocalPosition(Offset relativePosition) {
-    return (Offset(
-          relativePosition.dx * widget.boundingBox.width,
-          relativePosition.dy * widget.boundingBox.height,
-        ) +
-        widget.boundingBox.topLeft);
-  }
+  Offset relativeToLocalPosition(Offset relativePosition) =>
+      Offset(
+        relativePosition.dx * widget.boundingBox.width,
+        relativePosition.dy * widget.boundingBox.height,
+      ) +
+      widget.boundingBox.topLeft;
 
   // Calculate the distance from a point to a line segment
   double _distanceToLineSegment(Offset start, Offset end, Offset point) {
@@ -126,8 +126,10 @@ class _HitboxEditorOverlayState extends State<HitboxEditorOverlay> {
     final double clampedT = t.clamp(0.0, 1.0);
 
     // Find the closest point on the segment
-    final Offset closestPoint = Offset(start.dx + clampedT * segmentLengthX,
-        start.dy + clampedT * segmentLengthY);
+    final Offset closestPoint = Offset(
+      start.dx + clampedT * segmentLengthX,
+      start.dy + clampedT * segmentLengthY,
+    );
 
     // Return the distance to the closest point
     return (point - closestPoint).distance;
@@ -190,7 +192,7 @@ class _HitboxEditorOverlayState extends State<HitboxEditorOverlay> {
           widget.child,
           Positioned.fill(
             child: GestureDetector(
-              onTapDown: (TapDownDetails details) {
+              onTapDown: (details) {
                 final relativePosition =
                     localToRelativePosition(details.localPosition);
 
@@ -206,7 +208,7 @@ class _HitboxEditorOverlayState extends State<HitboxEditorOverlay> {
                   }
                 });
               },
-              onPanStart: (DragStartDetails details) {
+              onPanStart: (details) {
                 final relativePosition =
                     localToRelativePosition(details.localPosition);
 
@@ -218,7 +220,7 @@ class _HitboxEditorOverlayState extends State<HitboxEditorOverlay> {
                   });
                 }
               },
-              onPanUpdate: (DragUpdateDetails details) {
+              onPanUpdate: (details) {
                 final relativePosition =
                     localToRelativePosition(details.localPosition);
 
@@ -263,21 +265,22 @@ class _HitboxEditorOverlayState extends State<HitboxEditorOverlay> {
 }
 
 class HitboxPainter extends CustomPainter {
+  HitboxPainter({
+    required this.points,
+    required this.primaryColor,
+    required this.secondaryColor,
+    this.selectedPointIndex,
+  });
   final List<Offset> points;
   final int? selectedPointIndex;
   final Color primaryColor;
   final Color secondaryColor;
 
-  HitboxPainter({
-    required this.points,
-    this.selectedPointIndex,
-    required this.primaryColor,
-    required this.secondaryColor,
-  });
-
   @override
   void paint(Canvas canvas, Size size) {
-    if (points.isEmpty) return;
+    if (points.isEmpty) {
+      return;
+    }
 
     // Draw the filled area with 10% opacity
     if (points.length >= 3) {
@@ -295,8 +298,7 @@ class HitboxPainter extends CustomPainter {
         ..strokeWidth = 2.0
         ..style = PaintingStyle.stroke;
 
-      final Path path = Path();
-      path.moveTo(points.first.dx, points.first.dy);
+      final Path path = Path()..moveTo(points.first.dx, points.first.dy);
       for (int i = 1; i < points.length; i++) {
         path.lineTo(points[i].dx, points[i].dy);
       }
@@ -315,17 +317,17 @@ class HitboxPainter extends CustomPainter {
     for (int i = 0; i < points.length; i++) {
       // Draw selected point larger and with a different color
       if (i == selectedPointIndex) {
-        canvas.drawCircle(points[i], 8.0, Paint()..color = secondaryColor);
-        canvas.drawCircle(points[i], 6.0, pointPaint);
+        canvas
+          ..drawCircle(points[i], 8, Paint()..color = secondaryColor)
+          ..drawCircle(points[i], 6, pointPaint);
       } else {
-        canvas.drawCircle(points[i], 5.0, pointPaint);
+        canvas.drawCircle(points[i], 5, pointPaint);
       }
     }
   }
 
   @override
-  bool shouldRepaint(covariant HitboxPainter oldDelegate) {
-    return !listEquals(oldDelegate.points, points) ||
-        oldDelegate.selectedPointIndex != selectedPointIndex;
-  }
+  bool shouldRepaint(covariant HitboxPainter oldDelegate) =>
+      !listEquals(oldDelegate.points, points) ||
+      oldDelegate.selectedPointIndex != selectedPointIndex;
 }

@@ -1,7 +1,8 @@
-import 'package:flites/constants/app_sizes.dart';
-import 'package:flites/ui/inputs/icon_btn.dart';
-import 'package:flites/ui/panel/structure/panel_control_wrapper.dart';
 import 'package:flutter/material.dart';
+
+import '../../../constants/app_sizes.dart';
+import '../../inputs/icon_btn.dart';
+import '../structure/panel_control_wrapper.dart';
 
 enum PanelIconBtnSpacing {
   none,
@@ -11,7 +12,7 @@ enum PanelIconBtnSpacing {
   xl,
   evenly;
 
-  convertToSize() {
+  double convertToSize() {
     switch (this) {
       case PanelIconBtnSpacing.none:
         return 0;
@@ -31,6 +32,16 @@ enum PanelIconBtnSpacing {
 
 /// A group of control buttons displayed in a row
 class PanelIconBtnGroup extends StatelessWidget {
+  const PanelIconBtnGroup({
+    required this.label,
+    required this.controls,
+    super.key,
+    this.additionalControls = const [],
+    this.onControlSelected,
+    this.selectedValues,
+    this.spacing = PanelIconBtnSpacing.normal,
+    this.helpText,
+  });
   final String label;
   final List<IconBtn> controls;
   final List<IconBtn> additionalControls;
@@ -38,57 +49,45 @@ class PanelIconBtnGroup extends StatelessWidget {
   final List<String>? selectedValues;
   final PanelIconBtnSpacing spacing;
   final String? helpText;
-  const PanelIconBtnGroup({
-    super.key,
-    required this.label,
-    required this.controls,
-    this.additionalControls = const [],
-    this.onControlSelected,
-    this.selectedValues,
-    this.spacing = PanelIconBtnSpacing.normal,
-    this.helpText,
-  });
 
   @override
-  Widget build(BuildContext context) {
-    return PanelControlWrapper(
-      label: label,
-      helpText: helpText,
-      alignment: MainAxisAlignment.spaceBetween,
-      children: [
-        // main controls
-        _buildControls(context, controls),
+  Widget build(BuildContext context) => PanelControlWrapper(
+        label: label,
+        helpText: helpText,
+        alignment: MainAxisAlignment.spaceBetween,
+        children: [
+          // main controls
+          _buildControls(context, controls),
 
-        // additional controls
-        if (additionalControls.isNotEmpty)
-          _buildControls(context, additionalControls),
-      ],
-    );
-  }
+          // additional controls
+          if (additionalControls.isNotEmpty)
+            _buildControls(context, additionalControls),
+        ],
+      );
 
-  Widget _buildControls(BuildContext context, List<IconBtn> controlList) {
-    return Wrap(
-      spacing:
-          spacing == PanelIconBtnSpacing.evenly ? 0 : spacing.convertToSize(),
-      runSpacing: spacing == PanelIconBtnSpacing.evenly
-          ? Sizes.p8
-          : spacing.convertToSize(),
-      alignment: spacing == PanelIconBtnSpacing.evenly
-          ? WrapAlignment.spaceBetween
-          : WrapAlignment.start,
-      children: [
-        ...controlList.map(
-          (control) => _buildControlButton(
-            context: context,
-            icon: control.icon,
-            tooltip: control.tooltip,
-            value: control.value ?? '',
-            isSelected: selectedValues?.contains(control.value ?? '') ?? false,
+  Widget _buildControls(BuildContext context, List<IconBtn> controlList) =>
+      Wrap(
+        spacing:
+            spacing == PanelIconBtnSpacing.evenly ? 0 : spacing.convertToSize(),
+        runSpacing: spacing == PanelIconBtnSpacing.evenly
+            ? Sizes.p8
+            : spacing.convertToSize(),
+        alignment: spacing == PanelIconBtnSpacing.evenly
+            ? WrapAlignment.spaceBetween
+            : WrapAlignment.start,
+        children: [
+          ...controlList.map(
+            (control) => _buildControlButton(
+              context: context,
+              icon: control.icon,
+              tooltip: control.tooltip,
+              value: control.value ?? '',
+              isSelected:
+                  selectedValues?.contains(control.value ?? '') ?? false,
+            ),
           ),
-        ),
-      ],
-    );
-  }
+        ],
+      );
 
   Widget _buildControlButton({
     required BuildContext context,
@@ -96,16 +95,15 @@ class PanelIconBtnGroup extends StatelessWidget {
     required String? tooltip,
     required String value,
     bool isSelected = false,
-  }) {
-    return IconBtn(
-      icon: icon,
-      tooltip: tooltip ?? '',
-      isSelected: isSelected,
-      onPressed: () {
-        if (onControlSelected != null) {
-          onControlSelected!(value);
-        }
-      },
-    );
-  }
+  }) =>
+      IconBtn(
+        icon: icon,
+        tooltip: tooltip ?? '',
+        isSelected: isSelected,
+        onPressed: () {
+          if (onControlSelected != null) {
+            onControlSelected!(value);
+          }
+        },
+      );
 }

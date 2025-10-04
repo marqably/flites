@@ -1,7 +1,10 @@
-import 'package:flites/types/scaling_info.dart';
 import 'package:flutter/material.dart';
 
+import '../types/scaling_info.dart';
+
 class ImageScalingUtils {
+  // Private constructor to prevent instantiation
+  ImageScalingUtils._();
   static ScalingInfo calculateImageFit({
     required double imageAspectRatio,
     required double tileAspectRatio,

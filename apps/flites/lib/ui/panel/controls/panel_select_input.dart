@@ -1,11 +1,34 @@
-import 'package:flites/ui/inputs/select_input.dart';
-import 'package:flites/ui/inputs/select_input_multi.dart';
-import 'package:flites/ui/panel/structure/panel_control_wrapper.dart';
-import 'package:flites/ui/panel/structure/panel_form.dart';
 import 'package:flutter/material.dart';
+
+import '../../inputs/select_input.dart';
+import '../../inputs/select_input_multi.dart';
+import '../structure/panel_control_wrapper.dart';
+import '../structure/panel_form.dart';
 
 /// A select input control for use within panels
 class PanelSelectInput<T> extends StatefulWidget {
+  const PanelSelectInput({
+    required this.options,
+    required this.label,
+    super.key,
+    this.value,
+    this.selectedValues,
+    this.onChanged,
+    this.onMultiChanged,
+    this.prefix,
+    this.suffix,
+    this.postfixWidget,
+    this.prefixWidget,
+    this.multiple = false,
+    this.helpText,
+    this.formKey,
+  }) : assert(
+          formKey != null ||
+              ((multiple && onMultiChanged != null) ||
+                  (!multiple && onChanged != null)),
+          'Either formKey must be provided for form integration, or appropriate onChange callback',
+        );
+
   /// The currently selected value (for single selection mode)
   final T? value;
 
@@ -44,28 +67,6 @@ class PanelSelectInput<T> extends StatefulWidget {
 
   /// Form key to identify this field in a PanelForm
   final String? formKey;
-
-  const PanelSelectInput({
-    super.key,
-    this.value,
-    this.selectedValues,
-    required this.options,
-    this.onChanged,
-    this.onMultiChanged,
-    this.prefix,
-    this.suffix,
-    this.postfixWidget,
-    this.prefixWidget,
-    required this.label,
-    this.multiple = false,
-    this.helpText,
-    this.formKey,
-  }) : assert(
-          formKey != null ||
-              ((multiple && onMultiChanged != null) ||
-                  (!multiple && onChanged != null)),
-          'Either formKey must be provided for form integration, or appropriate onChange callback',
-        );
 
   @override
   State<PanelSelectInput<T>> createState() => _PanelSelectInputState<T>();
@@ -122,34 +123,31 @@ class _PanelSelectInputState<T> extends State<PanelSelectInput<T>> {
       label: widget.label,
       helpText: widget.helpText,
       children: [
-        widget.multiple
-            ? _buildMultiSelect(multiValues)
-            : _buildSingleSelect(singleValue),
+        if (widget.multiple)
+          _buildMultiSelect(multiValues)
+        else
+          _buildSingleSelect(singleValue),
       ],
     );
   }
 
-  Widget _buildSingleSelect(T? value) {
-    return SelectInput<T>(
-      value: value,
-      options: widget.options,
-      onChanged: _handleSingleValueChanged,
-      prefix: widget.prefix,
-      suffix: widget.suffix,
-      postfixWidget: widget.postfixWidget,
-      prefixWidget: widget.prefixWidget,
-    );
-  }
+  Widget _buildSingleSelect(T? value) => SelectInput<T>(
+        value: value,
+        options: widget.options,
+        onChanged: _handleSingleValueChanged,
+        prefix: widget.prefix,
+        suffix: widget.suffix,
+        postfixWidget: widget.postfixWidget,
+        prefixWidget: widget.prefixWidget,
+      );
 
-  Widget _buildMultiSelect(List<T>? selectedValues) {
-    return SelectInputMulti<T>(
-      selectedValues: selectedValues,
-      options: widget.options,
-      onChanged: _handleMultiValueChanged,
-      prefix: widget.prefix,
-      suffix: widget.suffix,
-      postfixWidget: widget.postfixWidget,
-      prefixWidget: widget.prefixWidget,
-    );
-  }
+  Widget _buildMultiSelect(List<T>? selectedValues) => SelectInputMulti<T>(
+        selectedValues: selectedValues,
+        options: widget.options,
+        onChanged: _handleMultiValueChanged,
+        prefix: widget.prefix,
+        suffix: widget.suffix,
+        postfixWidget: widget.postfixWidget,
+        prefixWidget: widget.prefixWidget,
+      );
 }

@@ -1,5 +1,6 @@
-import 'package:flites/config/tools.dart';
 import 'package:signals/signals_flutter.dart';
+
+import '../config/tools.dart';
 
 /// A controller for managing tool selection and hover states
 class ToolController {
@@ -10,7 +11,7 @@ class ToolController {
   Tool get selectedTool => _selectedToolSignal.value;
 
   /// Updates the selected tool
-  void selectTool(Tool tool) {
+  set selectedTool(Tool tool) {
     _selectedToolSignal.value = tool;
   }
 }

@@ -6,14 +6,12 @@ class CanvasReferenceImage extends StatelessWidget {
   final FlitesImage image;
 
   @override
-  Widget build(BuildContext context) {
-    return _CanvasPositioned(
-      left: image.positionOnCanvas.dx,
-      top: image.positionOnCanvas.dy,
-      child: Opacity(
-        opacity: 0.5,
-        child: FlitesImageRenderer(flitesImage: image),
-      ),
-    );
-  }
+  Widget build(BuildContext context) => _CanvasPositioned(
+        left: image.positionOnCanvas.dx,
+        top: image.positionOnCanvas.dy,
+        child: Opacity(
+          opacity: 0.5,
+          child: FlitesImageRenderer(flitesImage: image),
+        ),
+      );
 }

@@ -19,7 +19,6 @@ void main() {
         width: 100,
         height: 100,
         numChannels: 4,
-        format: img.Format.uint8,
       );
       // Fill with white to ensure it's not empty
       img.fill(image, color: img.ColorRgba8(255, 255, 255, 255));
@@ -32,14 +31,12 @@ void main() {
         testImages = [
           FlitesImage.scaled(
             imageBytes,
-            scalingFactor: 1.0,
             originalName: 'test1.png',
           )
-            ..positionOnCanvas = const Offset(0, 0)
+            ..positionOnCanvas = Offset.zero
             ..widthOnCanvas = 100,
           FlitesImage.scaled(
             imageBytes,
-            scalingFactor: 1.0,
             originalName: 'test2.png',
           )
             ..positionOnCanvas = const Offset(100, 0)
@@ -63,14 +60,12 @@ void main() {
         testImages = [
           FlitesImage.scaled(
             imageBytes,
-            scalingFactor: 1.0,
             originalName: 'test1.png',
           )
-            ..positionOnCanvas = const Offset(0, 0)
+            ..positionOnCanvas = Offset.zero
             ..widthOnCanvas = 150,
           FlitesImage.scaled(
             imageBytes,
-            scalingFactor: 1.0,
             originalName: 'test2.png',
           )
             ..positionOnCanvas = const Offset(100, 0)
@@ -94,14 +89,12 @@ void main() {
         testImages = [
           FlitesImage.scaled(
             imageBytes,
-            scalingFactor: 1.0,
             originalName: 'test1.png',
           )
-            ..positionOnCanvas = const Offset(0, 0)
+            ..positionOnCanvas = Offset.zero
             ..widthOnCanvas = 100,
           FlitesImage.scaled(
             imageBytes,
-            scalingFactor: 1.0,
             originalName: 'test2.png',
           )
             ..positionOnCanvas = const Offset(0, 100)
@@ -128,21 +121,18 @@ void main() {
         testImages = [
           FlitesImage.scaled(
             imageBytes,
-            scalingFactor: 1.0,
             originalName: 'test1.png',
           )
-            ..positionOnCanvas = const Offset(0, 0)
+            ..positionOnCanvas = Offset.zero
             ..widthOnCanvas = 100,
           FlitesImage.scaled(
             imageBytes,
-            scalingFactor: 1.0,
             originalName: 'test2.png',
           )
             ..positionOnCanvas = const Offset(100, 0)
             ..widthOnCanvas = 100,
           FlitesImage.scaled(
             imageBytes,
-            scalingFactor: 1.0,
             originalName: 'test3.png',
           )
             ..positionOnCanvas = const Offset(0, 100)
@@ -167,21 +157,18 @@ void main() {
         testImages = [
           FlitesImage.scaled(
             imageBytes,
-            scalingFactor: 1.0,
             originalName: 'test1.png',
           )
-            ..positionOnCanvas = const Offset(0, 0)
+            ..positionOnCanvas = Offset.zero
             ..widthOnCanvas = 100,
           FlitesImage.scaled(
             imageBytes,
-            scalingFactor: 1.0,
             originalName: 'test2.png',
           )
             ..positionOnCanvas = const Offset(100, 25)
             ..widthOnCanvas = 100,
           FlitesImage.scaled(
             imageBytes,
-            scalingFactor: 1.0,
             originalName: 'test3.png',
           )
             ..positionOnCanvas = const Offset(50, 100)
@@ -189,7 +176,7 @@ void main() {
         ];
 
         final boundingBox = BoundingBox(
-          position: const Offset(0, 0),
+          position: Offset.zero,
           size: const Size(200, 150),
         );
         final constraints = SpriteSizeConstrained(400, 300);
@@ -212,10 +199,9 @@ void main() {
         testImages = [
           FlitesImage.scaled(
             imageBytes,
-            scalingFactor: 1.0,
             originalName: 'test1.png',
           )
-            ..positionOnCanvas = const Offset(0, 0)
+            ..positionOnCanvas = Offset.zero
             ..widthOnCanvas = 100,
         ];
 
@@ -235,10 +221,9 @@ void main() {
         testImages = [
           FlitesImage.scaled(
             imageBytes,
-            scalingFactor: 1.0,
             originalName: 'test1.png',
           )
-            ..positionOnCanvas = const Offset(0, 0)
+            ..positionOnCanvas = Offset.zero
             ..widthOnCanvas = 0,
         ];
 

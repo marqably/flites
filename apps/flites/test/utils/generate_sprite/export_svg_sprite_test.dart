@@ -1,6 +1,6 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
-import 'dart:convert';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flites/states/source_files_state.dart';
@@ -27,11 +27,13 @@ void main() {
 
       mockFileService = MockFileService();
       // Mock the saveFile method to write to the temp directory
-      when(() => mockFileService.saveFile(
-            bytes: any(named: 'bytes'),
-            fileType: any(named: 'fileType'),
-            fileExtension: any(named: 'fileExtension'),
-          )).thenAnswer((invocation) async {
+      when(
+        () => mockFileService.saveFile(
+          bytes: any(named: 'bytes'),
+          fileType: any(named: 'fileType'),
+          fileExtension: any(named: 'fileExtension'),
+        ),
+      ).thenAnswer((invocation) async {
         final bytes = invocation.namedArguments[#bytes] as Uint8List;
         final filePath =
             '${tempDir.path}/test_svg_sprite.svg'; // Use correct file name
@@ -66,14 +68,12 @@ void main() {
       final testImages = [
         FlitesImage.scaled(
           svgBytes1,
-          scalingFactor: 1.0,
           originalName: 'large.svg',
         )
-          ..positionOnCanvas = const Offset(0, 0)
+          ..positionOnCanvas = Offset.zero
           ..widthOnCanvas = 200,
         FlitesImage.scaled(
           svgBytes2,
-          scalingFactor: 0.5, // Small scale to simulate smaller image
           originalName: 'small.svg',
         )
           ..positionOnCanvas =
@@ -104,33 +104,50 @@ void main() {
 
       // Then
       final savedFile = File('${tempDir.path}/test_svg_sprite.svg');
-      expect(savedFile.existsSync(), isTrue,
-          reason: 'SVG sprite file should be created');
+      expect(
+        savedFile.existsSync(),
+        isTrue,
+        reason: 'SVG sprite file should be created',
+      );
 
       final svgContent = await savedFile.readAsString();
 
       // Verify SVG structure
-      expect(svgContent.contains('<svg xmlns="http://www.w3.org/2000/svg"'),
-          isTrue);
-      expect(svgContent.contains('viewBox="0 0 600 200"'),
-          isTrue); // Each frame is 300px wide
+      expect(
+        svgContent.contains('<svg xmlns="http://www.w3.org/2000/svg"'),
+        isTrue,
+      );
+      expect(
+        svgContent.contains('viewBox="0 0 600 200"'),
+        isTrue,
+      ); // Each frame is 300px wide
 
       // Verify the larger SVG element is properly positioned in the first frame
       expect(
-          svgContent.contains('<g transform="translate(0.00, 0.00)">'), isTrue);
+        svgContent.contains('<g transform="translate(0.00, 0.00)">'),
+        isTrue,
+      );
       expect(
-          svgContent.contains(
-              '<rect x="10" y="10" width="180" height="180" fill="blue"'),
-          isTrue);
+        svgContent.contains(
+          '<rect x="10" y="10" width="180" height="180" fill="blue"',
+        ),
+        isTrue,
+      );
 
       // Verify the smaller SVG element is properly positioned in the second frame
       // It should maintain its relative position
-      expect(svgContent.contains('<g transform="translate(300.00, 0.00)">'),
-          isTrue); // Start of second frame
-      expect(svgContent.contains('<circle cx="50" cy="50" r="40" fill="red"'),
-          isTrue);
-      expect(svgContent.contains('scale('),
-          isTrue); // Should have scale transformation
+      expect(
+        svgContent.contains('<g transform="translate(300.00, 0.00)">'),
+        isTrue,
+      ); // Start of second frame
+      expect(
+        svgContent.contains('<circle cx="50" cy="50" r="40" fill="red"'),
+        isTrue,
+      );
+      expect(
+        svgContent.contains('scale('),
+        isTrue,
+      ); // Should have scale transformation
 
       // The smaller SVG should be positioned with an appropriate offset within its frame
       expect(svgContent.contains('translate(250.00'), isTrue);
@@ -148,7 +165,6 @@ void main() {
       final testImages = [
         FlitesImage.scaled(
           svgBytes,
-          scalingFactor: 1.0,
           originalName: 'viewbox.svg',
         )
           ..positionOnCanvas = const Offset(50, 50)
@@ -182,9 +198,11 @@ void main() {
 
       final svgContent = await savedFile.readAsString();
       expect(
-          svgContent.contains(
-              '<rect x="50" y="50" width="100" height="100" fill="green"'),
-          isTrue);
+        svgContent.contains(
+          '<rect x="50" y="50" width="100" height="100" fill="green"',
+        ),
+        isTrue,
+      );
 
       // The scaling should account for the viewBox vs width/height difference
       expect(svgContent.contains('scale('), isTrue);
@@ -216,21 +234,18 @@ void main() {
       final testImages = [
         FlitesImage.scaled(
           svgBytes1,
-          scalingFactor: 2.0,
           originalName: 'small.svg',
         )
           ..positionOnCanvas = const Offset(-25, 25) // Partially off-canvas
           ..widthOnCanvas = 100, // Double its normal size
         FlitesImage.scaled(
           svgBytes2,
-          scalingFactor: 1.0,
           originalName: 'normal.svg',
         )
           ..positionOnCanvas = const Offset(120, 70) // Middle
           ..widthOnCanvas = 100,
         FlitesImage.scaled(
           svgBytes3,
-          scalingFactor: 0.25,
           originalName: 'large.svg',
         )
           ..positionOnCanvas = const Offset(280, 10) // Top right
@@ -267,24 +282,35 @@ void main() {
       final svgContent = await savedFile.readAsString();
 
       // Verify SVG structure and dimensions
-      expect(svgContent.contains('<svg xmlns="http://www.w3.org/2000/svg"'),
-          isTrue);
+      expect(
+        svgContent.contains('<svg xmlns="http://www.w3.org/2000/svg"'),
+        isTrue,
+      );
 
       // All original SVG elements should exist
-      expect(svgContent.contains('<circle cx="25" cy="25" r="20" fill="red"'),
-          isTrue);
       expect(
-          svgContent.contains(
-              '<rect x="10" y="10" width="80" height="80" fill="blue"'),
-          isTrue);
+        svgContent.contains('<circle cx="25" cy="25" r="20" fill="red"'),
+        isTrue,
+      );
       expect(
-          svgContent.contains(
-              '<path d="M50,50 L150,50 L150,150 L50,150 Z" fill="green"'),
-          isTrue);
+        svgContent.contains(
+          '<rect x="10" y="10" width="80" height="80" fill="blue"',
+        ),
+        isTrue,
+      );
+      expect(
+        svgContent.contains(
+          '<path d="M50,50 L150,50 L150,150 L50,150 Z" fill="green"',
+        ),
+        isTrue,
+      );
 
       // Verify padding is correctly applied
-      expect(svgContent.contains('translate(20.00, 10.00)'), isTrue,
-          reason: 'First frame should have left and top padding applied');
+      expect(
+        svgContent.contains('translate(20.00, 10.00)'),
+        isTrue,
+        reason: 'First frame should have left and top padding applied',
+      );
 
       // Verify second frame positioning based on the implementation
       // Second frame position = 1 * (frameWidth + (leftPadding + rightPadding)) + leftPadding
@@ -295,26 +321,36 @@ void main() {
       // We can't check the exact position string since the frame size calculation is complex,
       // but we can check if the content for the second frame (the blue rect) exists
       expect(
-          svgContent.contains(
-              '<rect x="10" y="10" width="80" height="80" fill="blue"'),
-          isTrue,
-          reason: 'Second frame content should exist in the output SVG');
+        svgContent.contains(
+          '<rect x="10" y="10" width="80" height="80" fill="blue"',
+        ),
+        isTrue,
+        reason: 'Second frame content should exist in the output SVG',
+      );
 
       // Check for scaling factors - we don't know the exact factor, so just check for the pattern
       final scaleFactorRegex = RegExp(r'scale\(\d+\.\d+\)');
-      expect(scaleFactorRegex.hasMatch(svgContent), isTrue,
-          reason: 'Scale factor should be applied to SVG elements');
+      expect(
+        scaleFactorRegex.hasMatch(svgContent),
+        isTrue,
+        reason: 'Scale factor should be applied to SVG elements',
+      );
 
       // The third SVG content is a path with green fill
       expect(
-          svgContent.contains(
-              '<path d="M50,50 L150,50 L150,150 L50,150 Z" fill="green"'),
-          isTrue,
-          reason: 'Third SVG content (green path) should exist in the output');
+        svgContent.contains(
+          '<path d="M50,50 L150,50 L150,150 L50,150 Z" fill="green"',
+        ),
+        isTrue,
+        reason: 'Third SVG content (green path) should exist in the output',
+      );
 
       // Verify that original viewBox values are preserved
-      expect(svgContent.contains('viewBox="0 0 '), isTrue,
-          reason: 'The SVG should have a viewBox starting from 0 0');
+      expect(
+        svgContent.contains('viewBox="0 0 '),
+        isTrue,
+        reason: 'The SVG should have a viewBox starting from 0 0',
+      );
     });
 
     test('handles height-constrained export settings', () async {
@@ -336,14 +372,12 @@ void main() {
       final testImages = [
         FlitesImage.scaled(
           svgBytes1,
-          scalingFactor: 1.0,
           originalName: 'wide.svg',
         )
-          ..positionOnCanvas = const Offset(0, 0)
+          ..positionOnCanvas = Offset.zero
           ..widthOnCanvas = 300,
         FlitesImage.scaled(
           svgBytes2,
-          scalingFactor: 1.0,
           originalName: 'tall.svg',
         )
           ..positionOnCanvas = const Offset(320, 0)
@@ -377,13 +411,17 @@ void main() {
 
       // Should preserve the SVG elements
       expect(
-          svgContent.contains(
-              '<rect x="10" y="10" width="280" height="80" fill="purple"'),
-          isTrue);
+        svgContent.contains(
+          '<rect x="10" y="10" width="280" height="80" fill="purple"',
+        ),
+        isTrue,
+      );
       expect(
-          svgContent.contains(
-              '<rect x="10" y="10" width="80" height="280" fill="orange"'),
-          isTrue);
+        svgContent.contains(
+          '<rect x="10" y="10" width="80" height="280" fill="orange"',
+        ),
+        isTrue,
+      );
 
       // Both frames should be within the height constraint (plus small rounding differences)
       final viewBoxRegExp = RegExp(r'viewBox="0 0 (\d+) (\d+)"');
@@ -392,8 +430,11 @@ void main() {
 
       if (viewBoxMatch != null) {
         final height = int.parse(viewBoxMatch.group(2)!);
-        expect(height, lessThanOrEqualTo(255),
-            reason: 'Output height should respect the height constraint');
+        expect(
+          height,
+          lessThanOrEqualTo(255),
+          reason: 'Output height should respect the height constraint',
+        );
       }
     });
 
@@ -414,12 +455,16 @@ void main() {
 
       // Position them with exact coordinates
       final testImages = [
-        FlitesImage.scaled(svgBytes1,
-            scalingFactor: 1.0, originalName: 'rect.svg')
-          ..positionOnCanvas = const Offset(0, 0)
+        FlitesImage.scaled(
+          svgBytes1,
+          originalName: 'rect.svg',
+        )
+          ..positionOnCanvas = Offset.zero
           ..widthOnCanvas = 100,
-        FlitesImage.scaled(svgBytes2,
-            scalingFactor: 1.0, originalName: 'circle.svg')
+        FlitesImage.scaled(
+          svgBytes2,
+          originalName: 'circle.svg',
+        )
           ..positionOnCanvas = const Offset(150, 0)
           ..widthOnCanvas = 100,
       ];
@@ -456,14 +501,20 @@ void main() {
       final firstFrameRegExp =
           RegExp(r'<g transform="translate\((\d+\.\d+), (\d+\.\d+)\)">');
       final firstFrameMatch = firstFrameRegExp.firstMatch(svgContent);
-      expect(firstFrameMatch, isNotNull,
-          reason: 'Should find first frame translation');
+      expect(
+        firstFrameMatch,
+        isNotNull,
+        reason: 'Should find first frame translation',
+      );
 
       if (firstFrameMatch != null) {
         final x = double.parse(firstFrameMatch.group(1)!);
         final y = double.parse(firstFrameMatch.group(2)!);
-        expect(x, equals(10.0),
-            reason: 'First frame should have left padding applied');
+        expect(
+          x,
+          equals(10.0),
+          reason: 'First frame should have left padding applied',
+        );
         expect(y, equals(0.0), reason: 'First frame should start at top');
       }
 
@@ -472,8 +523,11 @@ void main() {
           RegExp(r'<g transform="translate\((\d+\.\d+), (\d+\.\d+)\)">');
       final allFrameMatches = allFrameRegExp.allMatches(svgContent).toList();
 
-      expect(allFrameMatches.length, equals(2),
-          reason: 'Should find exactly two frame translations');
+      expect(
+        allFrameMatches.length,
+        equals(2),
+        reason: 'Should find exactly two frame translations',
+      );
 
       if (allFrameMatches.length >= 2) {
         final secondFrameX = double.parse(allFrameMatches[1].group(1)!);
@@ -485,15 +539,21 @@ void main() {
         const expectedX = 1 * (100 + 20) +
             10; // i * (frameWidth + horizontalMargin) + leftPadding
 
-        expect(secondFrameX, equals(expectedX),
-            reason:
-                'Second frame should be positioned at i * (frameWidth + horizontalMargin) + leftPadding');
+        expect(
+          secondFrameX,
+          equals(expectedX),
+          reason:
+              'Second frame should be positioned at i * (frameWidth + horizontalMargin) + leftPadding',
+        );
       }
 
       // Verify scaling and content without explicitly printing the SVG
       final scaleRegex = RegExp(r'scale\(0\.400000\)');
-      expect(scaleRegex.hasMatch(svgContent), isTrue,
-          reason: 'Frame content should be scaled appropriately');
+      expect(
+        scaleRegex.hasMatch(svgContent),
+        isTrue,
+        reason: 'Frame content should be scaled appropriately',
+      );
     });
   });
 }

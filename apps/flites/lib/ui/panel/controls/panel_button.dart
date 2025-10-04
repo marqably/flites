@@ -1,6 +1,7 @@
-import 'package:flites/constants/app_sizes.dart';
-import 'package:flites/main.dart';
 import 'package:flutter/material.dart';
+
+import '../../../constants/app_sizes.dart';
+import '../../../main.dart';
 
 /// Button styles
 enum PanelButtonStyle {
@@ -13,22 +14,21 @@ enum PanelButtonStyle {
 
 /// A customizable button for panel actions
 class PanelButton extends StatelessWidget {
+  const PanelButton({
+    required this.label,
+    required this.onPressed,
+    super.key,
+    this.icon,
+    this.style = PanelButtonStyle.primary,
+    this.fullWidth = true,
+    this.disabled = false,
+  });
   final String label;
   final IconData? icon;
   final PanelButtonStyle style;
   final VoidCallback onPressed;
   final bool fullWidth;
   final bool disabled;
-
-  const PanelButton({
-    super.key,
-    required this.label,
-    this.icon,
-    this.style = PanelButtonStyle.primary,
-    required this.onPressed,
-    this.fullWidth = true,
-    this.disabled = false,
-  });
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +79,7 @@ class PanelButton extends StatelessWidget {
       ),
       child: SizedBox(
         width: fullWidth ? double.infinity : null,
-        height: 36.0,
+        height: 36,
         child: ElevatedButton(
           onPressed: disabled ? null : onPressed,
           style: ElevatedButton.styleFrom(

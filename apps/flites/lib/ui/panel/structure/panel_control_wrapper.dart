@@ -1,7 +1,8 @@
-import 'package:flites/constants/app_sizes.dart';
-import 'package:flites/main.dart';
-import 'package:flites/ui/inputs/icon_btn.dart';
 import 'package:flutter/material.dart';
+
+import '../../../constants/app_sizes.dart';
+import '../../../main.dart';
+import '../../inputs/icon_btn.dart';
 
 /// The layout configuration for the control wrapper
 /// Defines how the children are laid out
@@ -18,6 +19,19 @@ enum PanelControlWrapperLayout {
 
 /// A subsection within a panel section (like "ALIGNMENT")
 class PanelControlWrapper extends StatelessWidget {
+  const PanelControlWrapper({
+    required this.children,
+    super.key,
+    this.label,
+    this.alignment = MainAxisAlignment.start,
+    this.layout = PanelControlWrapperLayout.equal,
+    this.controls,
+    this.helpText,
+  }) : assert(
+          children.length > 0,
+          'You need to pass at least one item to children!',
+        );
+
   /// The label of the control wrapper
   final String? label;
 
@@ -36,91 +50,78 @@ class PanelControlWrapper extends StatelessWidget {
   /// The help text to display as a tooltip
   final String? helpText;
 
-  const PanelControlWrapper({
-    super.key,
-    required this.children,
-    this.label,
-    this.alignment = MainAxisAlignment.start,
-    this.layout = PanelControlWrapperLayout.equal,
-    this.controls,
-    this.helpText,
-  }) : assert(children.length > 0,
-            'You need to pass at least one item to children!');
-
   @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      mainAxisAlignment: alignment,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        gapH16,
+  Widget build(BuildContext context) => Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisAlignment: alignment,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          gapH16,
 
-        // Label and controls
-        if (label != null || controls != null)
-          Flexible(
-            flex: 0,
-            child: Row(
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                // label
-                if (label != null)
-                  Text(
-                    label!.toUpperCase(),
-                    style: TextStyle(
-                      fontSize: fontSizeBase,
-                      fontWeight: FontWeight.w500,
-                      color: context.colors.onSurface,
-                      letterSpacing: 1.0,
-                    ),
-                  ),
-
-                // help text icon
-                if (helpText != null)
-                  Padding(
-                    padding: const EdgeInsets.only(left: Sizes.p8),
-                    child: Tooltip(
-                      message: helpText!,
-                      child: Icon(
-                        Icons.help_outline,
-                        size: fontSizeMd,
-                        color: context.colors.onSurface.withValues(alpha: 0.5),
+          // Label and controls
+          if (label != null || controls != null)
+            Flexible(
+              flex: 0,
+              child: Row(
+                children: [
+                  // label
+                  if (label != null)
+                    Text(
+                      label!.toUpperCase(),
+                      style: TextStyle(
+                        fontSize: fontSizeBase,
+                        fontWeight: FontWeight.w500,
+                        color: context.colors.onSurface,
+                        letterSpacing: 1,
                       ),
                     ),
-                  ),
 
-                // spacer
-                const Spacer(),
+                  // help text icon
+                  if (helpText != null)
+                    Padding(
+                      padding: const EdgeInsets.only(left: Sizes.p8),
+                      child: Tooltip(
+                        message: helpText,
+                        child: Icon(
+                          Icons.help_outline,
+                          size: fontSizeMd,
+                          color:
+                              context.colors.onSurface.withValues(alpha: 0.5),
+                        ),
+                      ),
+                    ),
 
-                // Controls
-                if (controls != null)
-                  Row(
-                    spacing: Sizes.p8,
-                    children: _getControls(),
-                  ),
-              ],
+                  // spacer
+                  const Spacer(),
+
+                  // Controls
+                  if (controls != null)
+                    Row(
+                      spacing: Sizes.p8,
+                      children: _getControls(),
+                    ),
+                ],
+              ),
             ),
-          ),
 
-        // Label and controls
-        if (label != null || controls != null) gapH24,
+          // Label and controls
+          if (label != null || controls != null) gapH24,
 
-        // Use a Container with constraints
-        (children.length > 1)
-            ? SizedBox(
-                width: double.infinity,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  mainAxisSize: MainAxisSize.max,
-                  spacing: Sizes.p16,
-                  children: _getChildrenInLayout(),
-                ),
-              )
-            : Flexible(flex: 1, child: children.first),
-        gapH16,
-      ],
-    );
-  }
+          // Use a Container with constraints
+          if (children.length > 1)
+            SizedBox(
+              width: double.infinity,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                spacing: Sizes.p16,
+                children: _getChildrenInLayout(),
+              ),
+            )
+          else
+            Flexible(child: children.first),
+          gapH16,
+        ],
+      );
 
   List<Widget> _getChildrenInLayout() {
     final isBigSmallLayout = layout == PanelControlWrapperLayout.bigSmall;
@@ -147,16 +148,16 @@ class PanelControlWrapper extends StatelessWidget {
       }
 
       // For all the other items or layouts use flex 1 to distribute the space evenly
-      return Flexible(flex: 1, child: child);
+      return Flexible(child: child);
     }).toList();
   }
 
-  List<Widget> _getControls() {
-    return controls!
-        .map((control) => control.copyWith(
-              color: Colors.transparent,
-              size: IconBtnSize.xs,
-            ))
-        .toList();
-  }
+  List<Widget> _getControls() => controls!
+      .map(
+        (control) => control.copyWith(
+          color: Colors.transparent,
+          size: IconBtnSize.xs,
+        ),
+      )
+      .toList();
 }

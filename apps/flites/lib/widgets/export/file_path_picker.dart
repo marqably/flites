@@ -1,13 +1,14 @@
-import 'package:flites/constants/app_sizes.dart';
-import 'package:flites/main.dart';
-import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
+
+import '../../constants/app_sizes.dart';
+import '../../main.dart';
 
 class FilePathPicker extends StatefulWidget {
   const FilePathPicker({
-    super.key,
     required this.onPathSelected,
+    super.key,
     this.initialPath,
   });
 
@@ -66,37 +67,35 @@ class _FilePathPickerState extends State<FilePathPicker> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: _pickDirectory,
-      child: Container(
-        height: 30,
-        decoration: BoxDecoration(
-          color: context.colors.surface,
-          borderRadius: BorderRadius.circular(Sizes.p4),
-        ),
-        child: Row(
-          children: [
-            gapW8,
-            Expanded(
-              child: Text(
-                selectedPath,
-                style: Theme.of(context).textTheme.bodySmall,
+  Widget build(BuildContext context) => InkWell(
+        onTap: _pickDirectory,
+        child: Container(
+          height: 30,
+          decoration: BoxDecoration(
+            color: context.colors.surface,
+            borderRadius: BorderRadius.circular(Sizes.p4),
+          ),
+          child: Row(
+            children: [
+              gapW8,
+              Expanded(
+                child: Text(
+                  selectedPath,
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
               ),
-            ),
-            gapW8,
-            Container(
-              width: 30,
-              height: 30,
-              decoration: BoxDecoration(
-                color: context.colors.surfaceContainer,
-                borderRadius: BorderRadius.circular(Sizes.p4),
+              gapW8,
+              Container(
+                width: 30,
+                height: 30,
+                decoration: BoxDecoration(
+                  color: context.colors.surfaceContainer,
+                  borderRadius: BorderRadius.circular(Sizes.p4),
+                ),
+                child: const Icon(Icons.folder_open_outlined, size: 16),
               ),
-              child: const Icon(Icons.folder_open_outlined, size: 16),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
-    );
-  }
+      );
 }

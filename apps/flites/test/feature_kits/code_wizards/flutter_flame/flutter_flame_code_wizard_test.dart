@@ -2,11 +2,11 @@ import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:flites/config/code_wizards.dart';
+import 'package:flites/feature_kits/code_wizards/flutter_flame/flutter_flame_code_generator.dart';
 import 'package:flites/feature_kits/code_wizards/flutter_flame/flutter_flame_code_wizard.dart';
 import 'package:flites/feature_kits/tools/export_tool/export_tool_panel.dart';
 import 'package:flites/types/exported_sprite_image.dart';
 import 'package:flites/types/exported_sprite_row_info.dart';
-import 'package:flites/feature_kits/code_wizards/flutter_flame/flutter_flame_code_generator.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -30,7 +30,7 @@ void main() {
             totalHeight: 16,
             offsetFromTop: 0,
             numberOfFrames: 4,
-            originalAspectRatio: 1.0,
+            originalAspectRatio: 1,
             hitboxPoints: [
               const Offset(4, 4),
               const Offset(12, 4),
@@ -44,7 +44,7 @@ void main() {
             totalHeight: 16,
             offsetFromTop: 16, // Below walk
             numberOfFrames: 2,
-            originalAspectRatio: 1.0,
+            originalAspectRatio: 1,
             hitboxPoints: [], // No hitbox for jump
           ),
         ],

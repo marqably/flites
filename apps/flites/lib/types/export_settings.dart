@@ -71,44 +71,39 @@ class ExportSettings {
     int? paddingLeftPx,
     String? fileName,
     String? path,
-  }) {
-    return ExportSettings(
-      widthPx: widthPx ?? this.widthPx,
-      heightPx: heightPx ?? this.heightPx,
-      paddingTopPx: paddingTopPx ?? this.paddingTopPx,
-      paddingRightPx: paddingRightPx ?? this.paddingRightPx,
-      paddingBottomPx: paddingBottomPx ?? this.paddingBottomPx,
-      paddingLeftPx: paddingLeftPx ?? this.paddingLeftPx,
-      fileName: fileName ?? this.fileName,
-      path: path ?? this.path,
-    );
-  }
+  }) =>
+      ExportSettings(
+        widthPx: widthPx ?? this.widthPx,
+        heightPx: heightPx ?? this.heightPx,
+        paddingTopPx: paddingTopPx ?? this.paddingTopPx,
+        paddingRightPx: paddingRightPx ?? this.paddingRightPx,
+        paddingBottomPx: paddingBottomPx ?? this.paddingBottomPx,
+        paddingLeftPx: paddingLeftPx ?? this.paddingLeftPx,
+        fileName: fileName ?? this.fileName,
+        path: path ?? this.path,
+      );
 
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'widthPx': widthPx,
-      'heightPx': heightPx,
-      'paddingTopPx': paddingTopPx,
-      'paddingRightPx': paddingRightPx,
-      'paddingBottomPx': paddingBottomPx,
-      'paddingLeftPx': paddingLeftPx,
-      'fileName': fileName,
-      'path': path,
-    };
-  }
+  Map<String, dynamic> toMap() => <String, dynamic>{
+        'widthPx': widthPx,
+        'heightPx': heightPx,
+        'paddingTopPx': paddingTopPx,
+        'paddingRightPx': paddingRightPx,
+        'paddingBottomPx': paddingBottomPx,
+        'paddingLeftPx': paddingLeftPx,
+        'fileName': fileName,
+        'path': path,
+      };
 
-  factory ExportSettings.fromMap(Map<String, dynamic> map) {
-    return ExportSettings(
-      widthPx: map['widthPx'] != null ? map['widthPx'] as int : null,
-      heightPx: map['heightPx'] != null ? map['heightPx'] as int : null,
-      paddingTopPx: map['paddingTopPx'] as int,
-      paddingRightPx: map['paddingRightPx'] as int,
-      paddingBottomPx: map['paddingBottomPx'] as int,
-      paddingLeftPx: map['paddingLeftPx'] as int,
-      fileName: map['fileName'] != null ? map['fileName'] as String : null,
-      path: map['path'] != null ? map['path'] as String : null,
-    );
-  }
+  factory ExportSettings.fromMap(Map<String, dynamic> map) => ExportSettings(
+        widthPx: map['widthPx'] != null ? map['widthPx'] as int : null,
+        heightPx: map['heightPx'] != null ? map['heightPx'] as int : null,
+        paddingTopPx: map['paddingTopPx'] as int,
+        paddingRightPx: map['paddingRightPx'] as int,
+        paddingBottomPx: map['paddingBottomPx'] as int,
+        paddingLeftPx: map['paddingLeftPx'] as int,
+        fileName: map['fileName'] != null ? map['fileName'] as String : null,
+        path: map['path'] != null ? map['path'] as String : null,
+      );
 
   String toJson() => json.encode(toMap());
 

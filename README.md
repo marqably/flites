@@ -57,7 +57,7 @@ This project uses [Melos](https://melos.invertase.dev/) to manage the monorepo a
 
 ### Prerequisites
 
-- Flutter 3.27.2 or higher
+- Flutter 3.35.5 or higher
 - Melos (`dart pub global activate melos`)
 - Your favorite IDE
 

@@ -2,21 +2,24 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 class ObfuscationService {
+  // Private constructor to prevent instantiation
+  ObfuscationService._();
+
   static
 
       /// Obfuscates a string using a simple XOR cipher with the provided key.
       /// Returns the result as a Base64 encoded string.
       String obfuscateJsonString(String jsonString, String key) {
     // Convert strings to bytes (UTF-8)
-    Uint8List dataBytes = utf8.encode(jsonString);
-    Uint8List keyBytes = utf8.encode(key);
+    final Uint8List dataBytes = utf8.encode(jsonString);
+    final Uint8List keyBytes = utf8.encode(key);
 
     if (keyBytes.isEmpty) {
       throw ArgumentError('Key cannot be empty.');
     }
 
     // Perform XOR operation
-    Uint8List obfuscatedBytes = Uint8List(dataBytes.length);
+    final Uint8List obfuscatedBytes = Uint8List(dataBytes.length);
     for (int i = 0; i < dataBytes.length; i++) {
       obfuscatedBytes[i] = dataBytes[i] ^ keyBytes[i % keyBytes.length];
     }
@@ -32,19 +35,19 @@ class ObfuscationService {
     Uint8List obfuscatedBytes;
     try {
       obfuscatedBytes = base64Decode(obfuscatedBase64);
-    } catch (e) {
+    } on Exception catch (e) {
       throw FormatException('Invalid Base64 input string.', e);
     }
 
     // Convert key to bytes (UTF-8)
-    Uint8List keyBytes = utf8.encode(key);
+    final Uint8List keyBytes = utf8.encode(key);
 
     if (keyBytes.isEmpty) {
       throw ArgumentError('Key cannot be empty.');
     }
 
     // Perform XOR operation (again) to get original bytes
-    Uint8List originalBytes = Uint8List(obfuscatedBytes.length);
+    final Uint8List originalBytes = Uint8List(obfuscatedBytes.length);
     for (int i = 0; i < obfuscatedBytes.length; i++) {
       originalBytes[i] = obfuscatedBytes[i] ^ keyBytes[i % keyBytes.length];
     }
@@ -52,10 +55,11 @@ class ObfuscationService {
     // Convert original bytes back to string (UTF-8)
     try {
       return utf8.decode(originalBytes);
-    } catch (e) {
+    } on Exception catch (e) {
       throw FormatException(
-          'Failed to decode bytes to UTF-8. The key might be incorrect or the data corrupted.',
-          e);
+        'Failed to decode bytes to UTF-8. The key might be incorrect or the data corrupted.',
+        e,
+      );
     }
   }
 }

@@ -6,6 +6,24 @@ import 'dart:ui';
 /// This class is used by itself when exporting a single animation, or as a
 /// [List<ExportedSpriteRowInfo] for sprite sheets.
 class ExportedSpriteRowInfo {
+  ExportedSpriteRowInfo.inSpriteSheet({
+    required this.name,
+    required this.totalWidth,
+    required this.totalHeight,
+    required this.offsetFromTop,
+    required this.numberOfFrames,
+    required this.hitboxPoints,
+    required this.originalAspectRatio,
+  });
+
+  ExportedSpriteRowInfo.asSingleRow({
+    required this.name,
+    required this.totalWidth,
+    required this.totalHeight,
+    required this.numberOfFrames,
+    required this.hitboxPoints,
+    required this.originalAspectRatio,
+  }) : offsetFromTop = 0;
   // The name of the row or animation
   final String name;
 
@@ -33,23 +51,4 @@ class ExportedSpriteRowInfo {
   // The calculated size of each frame in this animation
   Size get frameSize =>
       Size(totalWidth / numberOfFrames, totalHeight.toDouble());
-
-  ExportedSpriteRowInfo.inSpriteSheet({
-    required this.name,
-    required this.totalWidth,
-    required this.totalHeight,
-    required this.offsetFromTop,
-    required this.numberOfFrames,
-    required this.hitboxPoints,
-    required this.originalAspectRatio,
-  });
-
-  ExportedSpriteRowInfo.asSingleRow({
-    required this.name,
-    required this.totalWidth,
-    required this.totalHeight,
-    required this.numberOfFrames,
-    required this.hitboxPoints,
-    required this.originalAspectRatio,
-  }) : offsetFromTop = 0;
 }

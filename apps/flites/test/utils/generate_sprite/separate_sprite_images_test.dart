@@ -27,7 +27,6 @@ void main() {
         testImages = [
           FlitesImage.scaled(
             imageBytes,
-            scalingFactor: 1.0,
             originalName: 'test1.png',
           )
             ..positionOnCanvas = const Offset(10, 20)
@@ -57,7 +56,9 @@ void main() {
         expect(result, isNotEmpty);
         expect(result.length, equals(1));
         expect(
-            result.first.height, equals(100)); // Full height including padding
+          result.first.height,
+          equals(100),
+        ); // Full height including padding
       });
 
       test('handles multiple images with correct positioning', () {
@@ -65,14 +66,12 @@ void main() {
         testImages = [
           FlitesImage.scaled(
             imageBytes,
-            scalingFactor: 1.0,
             originalName: 'test1.png',
           )
-            ..positionOnCanvas = const Offset(0, 0)
+            ..positionOnCanvas = Offset.zero
             ..widthOnCanvas = 50,
           FlitesImage.scaled(
             imageBytes,
-            scalingFactor: 1.0,
             originalName: 'test2.png',
           )
             ..positionOnCanvas = const Offset(50, 10)
@@ -80,7 +79,7 @@ void main() {
         ];
 
         testBoundingBox = BoundingBox(
-          position: const Offset(0, 0),
+          position: Offset.zero,
           size: const Size(100, 60),
         );
 
@@ -111,7 +110,6 @@ void main() {
         testImages = [
           FlitesImage.scaled(
             imageBytes,
-            scalingFactor: 1.0,
             originalName: 'test1.png',
           )
             ..positionOnCanvas = const Offset(10, 20)
@@ -150,7 +148,6 @@ void main() {
         testImages = [
           FlitesImage.scaled(
             imageBytes,
-            scalingFactor: 1.0,
             originalName: 'test1.png',
           )
             ..positionOnCanvas = const Offset(10, 20)
@@ -184,7 +181,9 @@ void main() {
         expect(result.length, equals(1));
         expect(result.first.width, equals(200)); // Full width including padding
         expect(
-            result.first.height, equals(100)); // Full height including padding
+          result.first.height,
+          equals(100),
+        ); // Full height including padding
       });
     });
 
@@ -193,7 +192,7 @@ void main() {
         // Given
         testImages = [];
         testBoundingBox = BoundingBox(
-          position: const Offset(0, 0),
+          position: Offset.zero,
           size: const Size(100, 50),
         );
 
@@ -229,15 +228,14 @@ void main() {
         testImages = [
           FlitesImage.scaled(
             Uint8List.fromList(corruptedBytes),
-            scalingFactor: 1.0,
             originalName: 'test.png',
           )
-            ..positionOnCanvas = const Offset(0, 0)
+            ..positionOnCanvas = Offset.zero
             ..widthOnCanvas = 100,
         ];
 
         testBoundingBox = BoundingBox(
-          position: const Offset(0, 0),
+          position: Offset.zero,
           size: const Size(100, 50),
         );
 

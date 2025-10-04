@@ -1,31 +1,38 @@
 import 'dart:convert';
 import 'dart:math';
-import 'dart:ui';
 import 'dart:ui' as ui;
-import 'package:flites/states/source_files_state.dart';
-import 'package:flites/types/svg_data.dart';
-import 'package:flites/utils/image_processing_utils.dart';
-import 'package:flites/utils/png_utils.dart';
+import 'dart:ui';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_svg/svg.dart';
+
+import '../states/source_files_state.dart';
+import '../types/svg_data.dart';
+import 'image_processing_utils.dart';
+import 'png_utils.dart';
 
 /// A utility class for working with SVG images.
 /// Provides methods for validating SVG data and extracting dimensions.
 class SvgUtils {
+  // Private constructor to prevent instantiation
+  SvgUtils._();
   /// Loops through all images in the project and returns the percentage of
   /// SVG images in the project. This can then be used to determine if we
   /// should show the SVG export option.
   ///
   /// Returns a double between 0 and 100.
   static double get percentageOfSvgImagesInProject {
-    final totalImages = projectSourceFiles.value.rows
+    final totalImages = SourceFilesState.projectSourceFiles.rows
         .fold(0, (sum, row) => sum + row.images.length);
-    final svgImages = projectSourceFiles.value.rows.fold(
-        0,
-        (sum, row) =>
-            sum + row.images.where((image) => isSvg(image.image)).length);
+    final svgImages = SourceFilesState.projectSourceFiles.rows.fold(
+      0,
+      (sum, row) =>
+          sum + row.images.where((image) => isSvg(image.image)).length,
+    );
 
-    if (totalImages == 0) return 0;
+    if (totalImages == 0) {
+      return 0;
+    }
 
     return (svgImages / totalImages) * 100;
   }
@@ -33,16 +40,17 @@ class SvgUtils {
   /// Checks if all images in the project are SVGs.
   ///
   /// Returns true if all images in the project are SVGs.
-  static bool get allImagesInProjectAreSvg {
-    return percentageOfSvgImagesInProject == 100;
-  }
+  static bool get allImagesInProjectAreSvg =>
+      percentageOfSvgImagesInProject == 100;
 
   /// Checks if the provided data is a valid SVG file
   /// by looking for the SVG XML signature.
   ///
   /// Returns true if the data contains an SVG tag.
   static bool isSvg(Uint8List data) {
-    if (data.length < 5) return false;
+    if (data.length < 5) {
+      return false;
+    }
 
     // Convert the first part of the data to a string to check for SVG signature
     // We only need to check the beginning of the file, not the entire content
@@ -67,10 +75,10 @@ class SvgUtils {
       final svgString = String.fromCharCodes(data);
 
       // Extract width and height using regex
-      final widthMatch = RegExp(r'width="([^"]*)"').firstMatch(svgString) ??
-          RegExp(r"width='([^']*)'").firstMatch(svgString);
-      final heightMatch = RegExp(r'height="([^"]*)"').firstMatch(svgString) ??
-          RegExp(r"height='([^']*)'").firstMatch(svgString);
+      final widthMatch = RegExp('width="([^"]*)"').firstMatch(svgString) ??
+          RegExp("width='([^']*)'").firstMatch(svgString);
+      final heightMatch = RegExp('height="([^"]*)"').firstMatch(svgString) ??
+          RegExp("height='([^']*)'").firstMatch(svgString);
 
       // Parse dimensions, handling units like px, em, etc.
       double width = _parseSvgDimension(widthMatch?.group(1));
@@ -79,12 +87,12 @@ class SvgUtils {
       // If viewBox is present but width/height are not, use viewBox dimensions
       if ((width <= 0 || height <= 0) && svgString.contains('viewBox')) {
         final viewBoxMatch =
-            RegExp(r'viewBox="([^"]*)"').firstMatch(svgString) ??
-                RegExp(r"viewBox='([^']*)'").firstMatch(svgString);
+            RegExp('viewBox="([^"]*)"').firstMatch(svgString) ??
+                RegExp("viewBox='([^']*)'").firstMatch(svgString);
 
         if (viewBoxMatch != null) {
           final viewBoxParts =
-              viewBoxMatch.group(1)?.split(RegExp(r'[ ,]+')) ?? [];
+              viewBoxMatch.group(1)?.split(RegExp('[ ,]+')) ?? [];
 
           if (viewBoxParts.length >= 4) {
             final viewBoxWidth = double.tryParse(viewBoxParts[2]) ?? 0;
@@ -101,7 +109,7 @@ class SvgUtils {
       height = height > 0 ? height : 100;
 
       return Size(width, height);
-    } catch (e) {
+    } on Exception {
       return const Size(100, 100); // Default size
     }
   }
@@ -115,7 +123,9 @@ class SvgUtils {
   ///
   /// Returns the parsed numeric value or 0 if parsing fails.
   static double _parseSvgDimension(String? dimension) {
-    if (dimension == null) return 0;
+    if (dimension == null) {
+      return 0;
+    }
 
     // Handle percentage values
     if (dimension.endsWith('%')) {
@@ -123,7 +133,7 @@ class SvgUtils {
     }
 
     // Remove units like px, em, etc.
-    final numericValue = dimension.replaceAll(RegExp(r'[^0-9.]'), '');
+    final numericValue = dimension.replaceAll(RegExp('[^0-9.]'), '');
     return double.tryParse(numericValue) ?? 0;
   }
 
@@ -138,7 +148,9 @@ class SvgUtils {
     double angleRadians,
   ) async {
     try {
-      if (!_validateMinAngleRadians(angleRadians)) return svgData;
+      if (!_validateMinAngleRadians(angleRadians)) {
+        return svgData;
+      }
 
       final originalSvg = SvgData.fromSvgData(svgData);
 
@@ -197,16 +209,15 @@ class SvgUtils {
 
       // Convert back to Uint8List
       return Uint8List.fromList(utf8.encode(finalSvg));
-    } catch (e) {
+    } on Exception {
       // If anything goes wrong, return the original SVG data
       debugPrint('Error rotating SVG: $e');
       return svgData;
     }
   }
 
-  static bool _validateMinAngleRadians(double angleRadians) {
-    return angleRadians.abs() > 0.001;
-  }
+  static bool _validateMinAngleRadians(double angleRadians) =>
+      angleRadians.abs() > 0.001;
 
   /// Returns a new Rect with new coordinates and a new size from a given center
   /// and target size. Optionally adds a padding to the size.
@@ -215,8 +226,8 @@ class SvgUtils {
     required Size newSize,
     double paddingFactor = 1,
   }) {
-    final newX = (originalCenter.dx - ((newSize.width / 2) * paddingFactor));
-    final newY = (originalCenter.dy - ((newSize.height / 2) * paddingFactor));
+    final newX = originalCenter.dx - ((newSize.width / 2) * paddingFactor);
+    final newY = originalCenter.dy - ((newSize.height / 2) * paddingFactor);
 
     return Rect.fromLTWH(newX, newY, newSize.width, newSize.height);
   }
@@ -244,9 +255,8 @@ class SvgUtils {
     return rotatedSvg;
   }
 
-  static double angleToDegrees(double angleInRadians) {
-    return (angleInRadians * 180 / pi) % 360;
-  }
+  static double angleToDegrees(double angleInRadians) =>
+      (angleInRadians * 180 / pi) % 360;
 
   static Offset getCenterOfRect(Rect? rect) {
     final originalViewboxWidth = rect?.width ?? 100;
@@ -269,8 +279,8 @@ class SvgUtils {
   }) {
     final attributesWithViewbox = updateSvgViewBox(
       svgAttributes,
-      width: (targetSize.width).ceil(),
-      height: (targetSize.height).ceil(),
+      width: targetSize.width.ceil(),
+      height: targetSize.height.ceil(),
       x: (centerX - (targetSize.width / 2)).ceil(),
       y: (centerY - (targetSize.height / 2)).ceil(),
     );
@@ -317,8 +327,10 @@ class SvgUtils {
     String contentWrapperClosingTag = '',
     String content = '',
   }) {
-    assert(contentWrapper.isNotEmpty == contentWrapperClosingTag.isNotEmpty,
-        'If a content wrapper is provided, a matching closing tag must be passed.');
+    assert(
+      contentWrapper.isNotEmpty == contentWrapperClosingTag.isNotEmpty,
+      'If a content wrapper is provided, a matching closing tag must be passed.',
+    );
 
     return '''
 <svg$attributes>
@@ -334,9 +346,9 @@ class SvgUtils {
   /// This method parses the attributes from the SVG and returns them as a String.
   static String getAttributes(String svgString) {
     // Extract all attributes from the original SVG
-    final attributesMatch = RegExp(r'<svg([^>]*)>').firstMatch(svgString);
+    final attributesMatch = RegExp('<svg([^>]*)>').firstMatch(svgString);
 
-    String attributes = attributesMatch?.group(1) ?? '';
+    final String attributes = attributesMatch?.group(1) ?? '';
 
     return attributes;
   }
@@ -360,12 +372,12 @@ class SvgUtils {
       final svgString = String.fromCharCodes(data);
 
       // Extract viewBox using regex
-      final viewBoxMatch = RegExp(r'viewBox="([^"]*)"').firstMatch(svgString) ??
-          RegExp(r"viewBox='([^']*)'").firstMatch(svgString);
+      final viewBoxMatch = RegExp('viewBox="([^"]*)"').firstMatch(svgString) ??
+          RegExp("viewBox='([^']*)'").firstMatch(svgString);
 
       if (viewBoxMatch != null) {
         final viewBoxParts =
-            viewBoxMatch.group(1)?.split(RegExp(r'[ ,]+')) ?? [];
+            viewBoxMatch.group(1)?.split(RegExp('[ ,]+')) ?? [];
 
         if (viewBoxParts.length >= 4) {
           final x = double.tryParse(viewBoxParts[0]) ?? 0;
@@ -382,19 +394,19 @@ class SvgUtils {
       // If no viewBox is found, try to create one from width/height
       final size = getSvgSize(data);
       return Rect.fromLTWH(0, 0, size.width, size.height);
-    } catch (e) {
+    } on Exception {
       return null;
     }
   }
 
-  /// Updates or adds a viewBox attribute to the root <svg> tag of an SVG string.
+  /// Updates or adds a viewBox attribute to the root svg tag of an SVG string.
   ///
-  /// Takes an [svgString], desired integer [width], and [height].
-  /// If a viewBox attribute exists in the root <svg> tag, it's replaced.
+  /// Takes an svgString, desired integer width, and height.
+  /// If a viewBox attribute exists in the root svg tag, it's replaced.
   /// If no viewBox attribute exists, it's added.
   /// The format will be "0 0 width height".
   ///
-  /// Returns the modified SVG string, or the original string if no <svg> tag is found.
+  /// Returns the modified SVG string, or the original string if no svg tag is found.
   static String updateSvgViewBox(
     String svgAttributes, {
     required int width,
@@ -475,13 +487,18 @@ class SvgUtils {
 
     final SvgStringLoader svgStringLoader = SvgStringLoader(svgStringContent);
     final PictureInfo pictureInfo = await vg.loadPicture(svgStringLoader, null);
-    final ui.Picture picture = pictureInfo.picture;
+    // final ui.Picture picture = pictureInfo.picture;
     final ui.PictureRecorder recorder = ui.PictureRecorder();
-    final ui.Canvas canvas = Canvas(recorder,
-        Rect.fromPoints(Offset.zero, Offset(targetWidth, targetHeight)));
-    canvas.scale(targetWidth / pictureInfo.size.width,
-        targetHeight / pictureInfo.size.height);
-    canvas.drawPicture(picture);
+    // final ui.Canvas canvas = Canvas(
+    //   recorder,
+    //   Rect.fromPoints(Offset.zero, Offset(targetWidth, targetHeight)),
+    // );
+    // canvas
+    //   ..scale(
+    //     targetWidth / pictureInfo.size.width,
+    //     targetHeight / pictureInfo.size.height,
+    //   )
+    //   ..drawPicture(picture);
     final ui.Image imgByteData = await recorder
         .endRecording()
         .toImage(targetWidth.ceil(), targetHeight.ceil());

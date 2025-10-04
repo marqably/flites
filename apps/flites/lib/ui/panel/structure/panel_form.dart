@@ -2,6 +2,14 @@ import 'package:flutter/material.dart';
 
 /// A form widget that manages state for panel controls
 class PanelForm extends StatefulWidget {
+  const PanelForm({
+    required this.child,
+    super.key,
+    this.onChanged,
+    this.onSubmit,
+    this.initialValues,
+  });
+
   /// The child widgets inside the form
   final Widget child;
 
@@ -14,23 +22,12 @@ class PanelForm extends StatefulWidget {
   /// Initial values for the form fields
   final Map<String, dynamic>? initialValues;
 
-  const PanelForm({
-    super.key,
-    required this.child,
-    this.onChanged,
-    this.onSubmit,
-    this.initialValues,
-  });
-
   @override
   PanelFormState createState() => PanelFormState();
 
   /// Static method to get the form state from context
-  static PanelFormState? of(BuildContext context) {
-    return context
-        .dependOnInheritedWidgetOfExactType<_PanelFormScope>()
-        ?.formState;
-  }
+  static PanelFormState? of(BuildContext context) =>
+      context.dependOnInheritedWidgetOfExactType<_PanelFormScope>()?.formState;
 }
 
 class PanelFormState extends State<PanelForm> {
@@ -49,7 +46,7 @@ class PanelFormState extends State<PanelForm> {
   }
 
   /// Updates a single field value
-  void setValue(String formKey, dynamic value) {
+  void setValue(String formKey, Object? value) {
     setState(() {
       _formValues[formKey] = value;
       _version++; // Increment version
@@ -69,10 +66,7 @@ class PanelFormState extends State<PanelForm> {
   }
 
   /// Gets all form values
-  Map<String, dynamic> getValues() {
-    // Return an immutable copy
-    return Map.unmodifiable(_formValues);
-  }
+  Map<String, dynamic> getValues() => Map.unmodifiable(_formValues);
 
   /// Submits the form
   void submit() {
@@ -97,25 +91,24 @@ class PanelFormState extends State<PanelForm> {
   int get version => _version;
 
   @override
-  Widget build(BuildContext context) {
-    return _PanelFormScope(
-      formState: this,
-      version: _version, // Pass version to scope
-      child: widget.child,
-    );
-  }
+  Widget build(BuildContext context) => _PanelFormScope(
+        formState: this,
+        version: _version, // Pass version to scope
+        child: widget.child,
+      );
 }
 
 /// InheritedWidget to provide form state to descendants
 class _PanelFormScope extends InheritedWidget {
-  final PanelFormState formState;
-  final int version; // Add version
+  // Add version
 
   const _PanelFormScope({
     required this.formState,
     required this.version, // Require version
     required super.child,
   });
+  final PanelFormState formState;
+  final int version;
 
   @override
   bool updateShouldNotify(_PanelFormScope old) =>

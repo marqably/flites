@@ -1,14 +1,12 @@
-import 'dart:typed_data';
-
 import 'package:flutter/services.dart';
 
 class PngUtils {
-  static Size getSizeOfPng(ByteData bytes) {
-    return Size(
-      bytes.getUint32(16, Endian.big).toDouble(),
-      bytes.getUint32(20, Endian.big).toDouble(),
-    );
-  }
+  // Private constructor to prevent instantiation
+  PngUtils._();
+  static Size getSizeOfPng(ByteData bytes) => Size(
+        bytes.getUint32(16).toDouble(),
+        bytes.getUint32(20).toDouble(),
+      );
 
   static bool isPng(Uint8List data) {
     // PNG signature
@@ -20,7 +18,7 @@ class PngUtils {
       0x0D,
       0x0A,
       0x1A,
-      0x0A
+      0x0A,
     ];
 
     // Check if data has enough length and starts with the PNG signature

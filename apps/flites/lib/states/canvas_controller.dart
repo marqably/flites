@@ -1,69 +1,50 @@
 import 'dart:ui';
 
-import 'package:signals/signals_flutter.dart';
+import '../core/app_state.dart';
 
-/// Signal that controls whether the bounding border is visible.
-final showBoundingBorderSignal = signal(false);
-
-/// Signal that controls the scaling factor of the canvas.
-final _canvasScalingFactorSignal = signal(1.0);
-
-/// Signal that controls the position of the canvas.
-final _canvasPositionSignal = signal(Offset.zero);
-
-/// Signal that controls the size of the canvas in pixels.
-final _canvasSizePixelSignal = signal(const Size(1000, 1000));
-
-ReadonlySignal<bool> get showBoundingBorder =>
-    showBoundingBorderSignal.readonly();
-ReadonlySignal<double> get canvasScalingFactor =>
-    _canvasScalingFactorSignal.readonly();
-ReadonlySignal<Offset> get canvasPosition => _canvasPositionSignal.readonly();
-ReadonlySignal<Size> get canvasSizePixel => _canvasSizePixelSignal.readonly();
-
-/// A controller for managing the canvas state, including the scaling factor,
-/// position, size, and visibility of the bounding border.
+/// Legacy compatibility layer for CanvasController
+/// This class provides backward compatibility while using the new centralized state
 class CanvasController {
-  /// Toggles the visibility of the bounding border.
+  // Private constructor to prevent instantiation
+  CanvasController._();
+
+  /// Get whether bounding border is visible
+  static bool get showBoundingBorder => appState.showBoundingBorder.value;
+
+  /// Get canvas scaling factor
+  static double get canvasScalingFactor => appState.canvasScalingFactor.value;
+
+  /// Get canvas position
+  static Offset get canvasPosition => appState.canvasPosition.value;
+
+  /// Get canvas size in pixels
+  static Size get canvasSizePixel => appState.canvasSizePixel.value;
+
+  /// Toggle bounding border visibility
   static void toggleBoundingBorder() {
-    showBoundingBorderSignal.value = !showBoundingBorderSignal.value;
+    appState.toggleBoundingBorder();
   }
 
-  /// Updates the canvas position by the given offset.
-  ///
-  /// [offset] The offset to add to the current canvas position.
+  /// Update canvas position
   static void updateCanvasPosition(Offset offset) {
-    _canvasPositionSignal.value += offset;
+    appState.updateCanvasPosition(offset);
   }
 
-  /// Updates the canvas size to the given size.
-  ///
-  /// [size] The new size of the canvas.
+  /// Update canvas size
   static void updateCanvasSize(Size size) {
-    if (size == _canvasSizePixelSignal.value) return;
-    _canvasSizePixelSignal.value = size;
+    appState.updateCanvasSize(size);
   }
 
-  /// Updates the canvas scale by adjusting both the position and scaling factor.
-  ///
-  /// [offsetFromCenter] The offset from the center of the canvas that affects the scaling.
-  /// [isIncreasingSize] Whether the canvas size is increasing (true) or decreasing (false).
+  /// Update canvas scale
   static void updateCanvasScale({
-    Offset offsetFromCenter = const Offset(0, 0),
     required bool isIncreasingSize,
+    Offset offsetFromCenter = Offset.zero,
     bool zoomingWithButtons = false,
   }) {
-    final double scaleFactor;
-
-    if (zoomingWithButtons) {
-      scaleFactor = isIncreasingSize ? 1.2 : 0.8;
-    } else {
-      scaleFactor = isIncreasingSize ? 1.05 : 0.95;
-    }
-
-    final positionDelta = offsetFromCenter * (isIncreasingSize ? -0.05 : 0.05);
-
-    _canvasPositionSignal.value -= positionDelta;
-    _canvasScalingFactorSignal.value *= scaleFactor;
+    appState.updateCanvasScale(
+      offsetFromCenter: offsetFromCenter,
+      isIncreasingSize: isIncreasingSize,
+      zoomingWithButtons: zoomingWithButtons,
+    );
   }
 }

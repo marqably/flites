@@ -1,24 +1,27 @@
 import 'dart:math';
-import 'package:flites/widgets/overlays/loading_overlay.dart';
+
 import 'package:flutter/foundation.dart';
 import 'package:image/image.dart' as img;
+
+import '../widgets/overlays/loading_overlay.dart';
 
 /// A utility class for working with images.
 /// Holds methods for rotating images.
 class ImageProcessingUtils {
+  // Private constructor to prevent instantiation
+  ImageProcessingUtils._();
   /// Rotates an image by the given angle in radians.
   /// The computation of each step is done in an isolate.
   static Future<Uint8List> rotateInIsolates(
     Uint8List pngBytes,
     double angleRadians,
-  ) async {
-    return withLoadingOverlay(() async {
-      return compute(_processRotation, {
-        'pngBytes': pngBytes,
-        'angleRadians': angleRadians,
-      });
-    });
-  }
+  ) async =>
+      withLoadingOverlay(
+        () async => compute(_processRotation, {
+          'pngBytes': pngBytes,
+          'angleRadians': angleRadians,
+        }),
+      );
 
   // Handles the actual image rotation processing
   static Uint8List _processRotation(Map<String, dynamic> args) {
@@ -41,7 +44,6 @@ class ImageProcessingUtils {
       width: diagonal,
       height: diagonal,
       numChannels: 4,
-      format: img.Format.uint8,
     );
 
     // 4. Rotate image

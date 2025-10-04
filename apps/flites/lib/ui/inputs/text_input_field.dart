@@ -1,6 +1,7 @@
-import 'package:flites/constants/app_sizes.dart';
-import 'package:flites/main.dart';
 import 'package:flutter/material.dart';
+
+import '../../constants/app_sizes.dart';
+import '../../main.dart';
 import 'input_field.dart';
 
 enum LabelPosition {
@@ -11,6 +12,15 @@ enum LabelPosition {
 
 /// A number input field with increment/decrement buttons
 class TextInputField extends StatefulWidget {
+  const TextInputField({
+    required this.value,
+    required this.onChanged,
+    super.key,
+    this.label,
+    this.prefix,
+    this.suffix,
+    this.labelPosition = LabelPosition.left,
+  });
   final String value;
   final String? label;
   final String? prefix;
@@ -18,16 +28,6 @@ class TextInputField extends StatefulWidget {
   final LabelPosition labelPosition;
 
   final Function(String) onChanged;
-
-  const TextInputField({
-    super.key,
-    required this.value,
-    required this.onChanged,
-    this.label,
-    this.prefix,
-    this.suffix,
-    this.labelPosition = LabelPosition.left,
-  });
 
   @override
   State<TextInputField> createState() => _TextInputFieldState();
@@ -56,40 +56,37 @@ class _TextInputFieldState extends State<TextInputField> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Flex(
-      direction: widget.labelPosition == LabelPosition.top
-          ? Axis.vertical
-          : Axis.horizontal,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      spacing: Sizes.p8,
-      children: [
-        // Label
-        if (widget.label != null && widget.labelPosition != LabelPosition.none)
+  Widget build(BuildContext context) => Flex(
+        direction: widget.labelPosition == LabelPosition.top
+            ? Axis.vertical
+            : Axis.horizontal,
+        spacing: Sizes.p8,
+        children: [
+          // Label
+          if (widget.label != null &&
+              widget.labelPosition != LabelPosition.none)
+            Flexible(
+              flex: 0,
+              child: Text(
+                widget.label!.toUpperCase(),
+                style: TextStyle(
+                  fontSize: fontSizeBase,
+                  color: context.colors.onSurface,
+                ),
+              ),
+            ),
+          // Input container
           Flexible(
-            flex: 0,
-            child: Text(
-              widget.label!.toUpperCase(),
-              style: TextStyle(
-                fontSize: fontSizeBase,
-                color: context.colors.onSurface,
+            child: SizedBox(
+              height: Sizes.p48,
+              child: InputField(
+                controller: _controller,
+                focusNode: _focusNode,
+                onSubmitted: (_) => _validateAndSubmit(_controller.text),
+                onChanged: _validateAndSubmit,
               ),
             ),
           ),
-        // Input container
-        Flexible(
-          flex: 1,
-          child: SizedBox(
-            height: Sizes.p48,
-            child: InputField(
-              controller: _controller,
-              focusNode: _focusNode,
-              onSubmitted: (_) => _validateAndSubmit(_controller.text),
-              onChanged: (value) => _validateAndSubmit(value),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
+        ],
+      );
 }

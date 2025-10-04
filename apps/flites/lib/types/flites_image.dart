@@ -2,13 +2,14 @@
 import 'dart:convert';
 import 'dart:math';
 
-import 'package:flites/states/source_files_state.dart';
-import 'package:flites/utils/image_processing_utils.dart';
-import 'package:flites/utils/image_utils.dart';
-import 'package:flites/utils/svg_utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
+import '../states/source_files_state.dart';
+import '../utils/image_processing_utils.dart';
+import '../utils/image_utils.dart';
+import '../utils/svg_utils.dart';
 
 /// A working file type we use to work with this image
 class FlitesImage {
@@ -28,8 +29,10 @@ class FlitesImage {
 
   double get heightOnCanvas => widthOnCanvas / aspectRatio;
   double get aspectRatio => ImageUtils.aspectRatioOfRawImage(image);
-  Offset get center => Offset(positionOnCanvas.dx + widthOnCanvas / 2,
-      positionOnCanvas.dy + heightOnCanvas / 2);
+  Offset get center => Offset(
+        positionOnCanvas.dx + widthOnCanvas / 2,
+        positionOnCanvas.dy + heightOnCanvas / 2,
+      );
 
   // bool get isAtOriginalSize => originalScalingFactor == null
   //     ? true
@@ -40,6 +43,9 @@ class FlitesImage {
   late Offset positionOnCanvas;
 
   double rotation = 0;
+
+  /// Default constructor for creating from JSON
+  FlitesImage();
 
   /// Creates a scaled FlitesImage from raw image data.
   ///
@@ -52,7 +58,6 @@ class FlitesImage {
   /// Throws an exception if any step fails.
   FlitesImage.scaled(
     Uint8List rawImage, {
-    required double scalingFactor,
     this.originalName,
   }) : displayName = originalName {
     try {
@@ -82,14 +87,11 @@ class FlitesImage {
       // Generate a unique ID for this image
       id =
           '${DateTime.now().millisecondsSinceEpoch}-${Random().nextInt(14000)}-${Random().nextInt(15000)}';
-    } catch (e) {
+    } on Exception {
       // Rethrow with more context
       throw Exception('Failed to create FlitesImage: $e');
     }
   }
-
-  /// Default constructor for creating from JSON
-  FlitesImage();
 
   /// Applies the current rotation to the image.
   ///
@@ -99,7 +101,9 @@ class FlitesImage {
   /// The original size and position on canvas are preserved.
   Future<void> rotateImage(double rotationInRadians) async {
     // If rotation is close to 0, do nothing
-    if (rotationInRadians.abs() < 0.001) return;
+    if (rotationInRadians.abs() < 0.001) {
+      return;
+    }
 
     try {
       rotation = rotationInRadians;
@@ -118,7 +122,7 @@ class FlitesImage {
 
       // Save the changes
       SourceFilesState.saveImageChanges(this);
-    } catch (e) {
+    } on Exception {
       debugPrint('Error applying rotation: $e');
     }
   }
@@ -137,40 +141,37 @@ class FlitesImage {
   /// Converts a FlitesImage to a JSON Map.
   ///
   /// Binary image data is encoded to base64 for JSON compatibility.
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'displayName': displayName,
-      'originalName': originalName,
-      'widthOnCanvas': widthOnCanvas,
-      'positionOnCanvas': {
-        'dx': positionOnCanvas.dx,
-        'dy': positionOnCanvas.dy,
-      },
-      'rotation': rotation,
-      // Convert binary image data to base64 string
-      'image': base64Encode(image),
-    };
-  }
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'displayName': displayName,
+        'originalName': originalName,
+        'widthOnCanvas': widthOnCanvas,
+        'positionOnCanvas': {
+          'dx': positionOnCanvas.dx,
+          'dy': positionOnCanvas.dy,
+        },
+        'rotation': rotation,
+        // Convert binary image data to base64 string
+        'image': base64Encode(image),
+      };
 
   /// Creates a FlitesImage from a JSON map.
   ///
   /// Decodes the base64 encoded image data back to Uint8List.
   factory FlitesImage.fromJson(Map<String, dynamic> json) {
-    final flitesImage = FlitesImage();
-
-    flitesImage.id = json['id'] as String;
-    flitesImage.displayName = json['displayName'] as String?;
-    flitesImage.originalName = json['originalName'] as String?;
-    flitesImage.widthOnCanvas = json['widthOnCanvas'] as double;
+    final flitesImage = FlitesImage()
+      ..id = json['id'] as String
+      ..displayName = json['displayName'] as String?
+      ..originalName = json['originalName'] as String?
+      ..widthOnCanvas = json['widthOnCanvas'] as double;
 
     final positionMap = json['positionOnCanvas'] as Map<String, dynamic>;
-    flitesImage.positionOnCanvas = Offset(
-      positionMap['dx'] as double,
-      positionMap['dy'] as double,
-    );
-
-    flitesImage.rotation = json['rotation'] as double;
+    flitesImage
+      ..positionOnCanvas = Offset(
+        positionMap['dx'] as double,
+        positionMap['dy'] as double,
+      )
+      ..rotation = json['rotation'] as double;
 
     // Decode base64 string back to binary image data
     final imageBase64 = json['image'] as String;
@@ -189,15 +190,14 @@ class FlitesImage {
     Offset? positionOnCanvas,
     double? rotation,
     double? scalingFactor,
-  }) {
-    return FlitesImage()
-      ..image = image ?? this.image
-      ..id = id ?? this.id
-      ..displayName = displayName ?? this.displayName
-      ..originalName = originalName ?? this.originalName
-      ..widthOnCanvas = widthOnCanvas ?? this.widthOnCanvas
-      ..positionOnCanvas = positionOnCanvas ?? this.positionOnCanvas
-      ..rotation = rotation ?? this.rotation
-      ..scalingFactor = scalingFactor ?? this.scalingFactor;
-  }
+  }) =>
+      FlitesImage()
+        ..image = image ?? this.image
+        ..id = id ?? this.id
+        ..displayName = displayName ?? this.displayName
+        ..originalName = originalName ?? this.originalName
+        ..widthOnCanvas = widthOnCanvas ?? this.widthOnCanvas
+        ..positionOnCanvas = positionOnCanvas ?? this.positionOnCanvas
+        ..rotation = rotation ?? this.rotation
+        ..scalingFactor = scalingFactor ?? this.scalingFactor;
 }

@@ -1,11 +1,12 @@
-import 'package:flites/constants/app_sizes.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flites/widgets/overlays/base_dialog_card.dart';
 import 'package:path/path.dart' as path;
 import 'package:signals/signals.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:flites/l10n/app_localizations.dart';
+
+import '../../constants/app_sizes.dart';
+import '../../l10n/app_localizations.dart';
+import 'base_dialog_card.dart';
 
 final showFileSaveConfirmDialog = signal<String?>(null);
 
@@ -13,7 +14,7 @@ class FileSaveConfirmDialog extends StatelessWidget {
   const FileSaveConfirmDialog({super.key});
 
   Future<void> _openContainingFolder(String filePath) async {
-    String directoryPath = path.dirname(filePath);
+    final String directoryPath = path.dirname(filePath);
     Uri uri;
 
     uri = Uri.file(directoryPath);
@@ -54,12 +55,12 @@ class FileSaveConfirmDialog extends StatelessWidget {
               onPressed: () async {
                 final filePath = showFileSaveConfirmDialog.value;
                 if (filePath != null) {
-                  _openContainingFolder(filePath);
+                  await _openContainingFolder(filePath);
                 }
                 showFileSaveConfirmDialog.value = null;
               },
               child: Text(l10n.showContainingFolder),
-            )
+            ),
           ],
         ),
       ),

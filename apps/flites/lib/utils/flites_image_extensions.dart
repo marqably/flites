@@ -1,5 +1,5 @@
 import 'dart:ui';
-import 'package:flites/types/flites_image.dart';
+import '../types/flites_image.dart';
 
 extension FlitesImageRectCalculator on FlitesImage {
   /// Extension method on [FlitesImage] to calculate the rectangle of the image on the canvas
@@ -9,12 +9,11 @@ extension FlitesImageRectCalculator on FlitesImage {
   Rect calculateRectOnCanvas({
     required Offset canvasPosition,
     required double canvasScalingFactor,
-  }) {
-    return Rect.fromLTWH(
-      (positionOnCanvas.dx * canvasScalingFactor) + canvasPosition.dx,
-      (positionOnCanvas.dy * canvasScalingFactor) + canvasPosition.dy,
-      (widthOnCanvas * canvasScalingFactor).abs(),
-      (heightOnCanvas * canvasScalingFactor).abs(),
-    );
-  }
+  }) =>
+      Rect.fromLTWH(
+        (positionOnCanvas.dx * canvasScalingFactor) + canvasPosition.dx,
+        (positionOnCanvas.dy * canvasScalingFactor) + canvasPosition.dy,
+        (widthOnCanvas * canvasScalingFactor).abs(),
+        (heightOnCanvas * canvasScalingFactor).abs(),
+      );
 }
