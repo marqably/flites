@@ -80,6 +80,12 @@ jobs:
         run: melos bootstrap
         shell: pwsh
 
+      - name: 📄 Create .env file
+        run: |
+          cd apps/flites
+          cp .env.example .env
+        shell: pwsh
+
       - name: 🏗️ Build Windows App
         run: |
           cd apps/flites

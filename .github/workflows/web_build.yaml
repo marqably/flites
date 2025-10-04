@@ -75,6 +75,12 @@ jobs:
         run: melos bootstrap
         shell: bash
 
+      - name: 📄 Create .env file
+        run: |
+          cd apps/flites
+          cp .env.example .env
+        shell: bash
+
       # Build Web App
       - name: 🏗️ Build Web App
         run: |

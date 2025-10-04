@@ -77,6 +77,11 @@ jobs:
       - name: 🔄 Get Dependencies
         run: melos bootstrap
 
+      - name: 📄 Create .env file
+        run: |
+          cd apps/flites
+          cp .env.example .env
+
       - name: 🏗️ Build Linux App (for Debian package)
         run: |
           # Setting CXX/CC might still be needed depending on specific toolchain requirements

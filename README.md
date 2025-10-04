@@ -69,20 +69,26 @@ This project uses [Melos](https://melos.invertase.dev/) to manage the monorepo a
     git clone https://github.com/marqably/flites.git
     ```
 
-2. Install dependencies
+2. Copy env file
+
+    ```bash
+    cp .env.example .env
+    ```
+
+3. Install dependencies
 
     ```bash
     melos bootstrap
     ```
 
-3. Generate necessary files
+4. Generate necessary files
 
     ```bash
     cd apps/flites
     flutter pub get
     ```
 
-4. Run the app
+5. Run the app
 
     ```bash
     flutter run
@@ -121,7 +127,7 @@ Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduc
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the AGPL-3.0 License - see the [LICENSE](LICENSE) file for details.
 
 ## Documentation
 

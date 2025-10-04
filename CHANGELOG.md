@@ -5,9 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.0.10] - 2025-10-04
+
+### Bugfixes 0.0.10
+
+- Fix opening projects on web
+
+### Docs 0.0.10
+
+- Fix License in README
+
 ## [0.0.9] - 2025-10-04
 
-### 0.0.9 Docs
+### Docs 0.0.9
 
 - Added License file
 - Renamed doc files to match naming conventions
@@ -16,33 +26,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.0.8] - 2025-10-04
 
-### 0.0.8 Features
+### Features 0.0.8
 
 - Minor deployment improvements
 
 ## [0.0.7] - 2025-10-04
 
-### 0.0.7 Features
+### Features 0.0.7
 
 - Added version to menu "about flites" item
 
 ## [0.0.6] - 2025-09-02
 
-### 0.0.6 Features
+### Features 0.0.6
 
 - Version service for dynamic version detection
 - Basic project structure and core functionality
 
 ## [0.0.5] - 2025-05-08
 
-### 0.0.5 Fixed
+### Fixed 0.0.5
 
 - Fixed smaller issues with rendering
 - Added more project import features
 
 ## [0.0.4] - 2025-04-14
 
-### 0.0.4 Features
+### Features 0.0.4
 
 - Initial release of Flites sprite generator
 - Multi-frame sprite editing with drag-and-drop frame reordering

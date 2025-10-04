@@ -23,19 +23,33 @@ class ProjectSavingService {
     // final file = File(path.join(flitesDir.path, 'project.flites'));
     // final jsonData = await file.readAsString();
 
-    final res = await FilePicker.platform.pickFiles(
-      allowedExtensions: ['flites'],
-      type: FileType.custom,
-    );
+    try {
+      final res = await FilePicker.platform.pickFiles(
+        allowedExtensions: ['flites'],
+        type: FileType.custom,
+      );
 
-    if (res != null) {
-      final file = File(res.files.first.path!);
-      final jsonData = await file.readAsString();
+      if (res != null) {
+        final platformFile = res.files.first;
+        String jsonData;
 
-      final deObfuscatedJsonData =
-          ObfuscationService.deobfuscateJsonString(jsonData, 'flites');
+        if (kIsWeb) {
+          // On web, use the bytes directly
+          jsonData = utf8.decode(platformFile.bytes!);
+        } else {
+          // On desktop/mobile, use the file path
+          final file = File(platformFile.path!);
+          jsonData = await file.readAsString();
+        }
 
-      return ProjectState.fromJsonString(deObfuscatedJsonData);
+        final deObfuscatedJsonData =
+            ObfuscationService.deobfuscateJsonString(jsonData, 'flites');
+
+        return ProjectState.fromJsonString(deObfuscatedJsonData);
+      }
+    } catch (e) {
+      debugPrint('Error loading project file: $e');
+      return null;
     }
 
     return null;
