@@ -69,8 +69,7 @@ The release workflow calls multiple platform-specific build workflows:
 
    ```bash
    # Test locally or via PR to ensure everything works
-   melos run qualitycheck
-   melos run test:all
+   flutter analyze && flutter test
    ```
 
 ### Release Steps
@@ -180,7 +179,6 @@ The build process uses `.github/build_config.yaml` to determine:
 
    ```bash
    # Test individual platform builds locally
-   cd apps/flites
    flutter build linux --release
    flutter build windows --release
    flutter build web --release

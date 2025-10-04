@@ -1,5 +1,3 @@
-pubspec_overrides.yaml
-
 # Miscellaneous
 *.class
 *.log
@@ -7,12 +5,12 @@ pubspec_overrides.yaml
 *.swp
 .DS_Store
 .atom/
+.history
 .buildlog/
+.history
 .svn/
 migrate_working_dir/
-
-# VS Code History plugin
-.history/
+.env
 
 # IntelliJ related
 *.iml
@@ -35,6 +33,7 @@ migrate_working_dir/
 .pub/
 /build/
 /macos/build/
+app_untranslated.arb
 
 # Symbolication related
 app.*.symbols

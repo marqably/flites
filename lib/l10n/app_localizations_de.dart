@@ -45,8 +45,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get imageControls => 'Bildsteuerung';
 
   @override
-  String get usePreviousFrameAsReference =>
-      'Vorheriges Frame als Referenz verwenden';
+  String get usePreviousFrameAsReference => 'Vorheriges Frame als Referenz verwenden';
 
   @override
   String get showBoundingBorder => 'Begrenzungsrahmen anzeigen';
@@ -55,8 +54,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get sortByName => 'Nach Namen sortieren';
 
   @override
-  String get renameFilesAccordingToOrder =>
-      'Dateien nach Reihenfolge umbenennen';
+  String get renameFilesAccordingToOrder => 'Dateien nach Reihenfolge umbenennen';
 
   @override
   String get resetNames => 'Namen zurücksetzen';
@@ -92,8 +90,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get zoomOut => 'Verkleinern';
 
   @override
-  String get processingImage =>
-      'Bitte warten Sie, während Ihr Bild verarbeitet wird';
+  String get processingImage => 'Bitte warten Sie, während Ihr Bild verarbeitet wird';
 
   @override
   String get processingMightTakeAMoment => 'Dies könnte einen Moment dauern...';
@@ -132,16 +129,13 @@ class AppLocalizationsDe extends AppLocalizations {
   String get height => 'Höhe';
 
   @override
-  String get provideDimensionError =>
-      'Bitte geben Sie mindestens eine Dimension (Breite oder Höhe) an.';
+  String get provideDimensionError => 'Bitte geben Sie mindestens eine Dimension (Breite oder Höhe) an.';
 
   @override
-  String get webDownloadLocation =>
-      'Die Datei wird in Ihrem Download-Ordner gespeichert.';
+  String get webDownloadLocation => 'Die Datei wird in Ihrem Download-Ordner gespeichert.';
 
   @override
-  String get addMoreImagesToPlay =>
-      'Fügen Sie mehr als ein Bild hinzu, um abzuspielen';
+  String get addMoreImagesToPlay => 'Fügen Sie mehr als ein Bild hinzu, um abzuspielen';
 
   @override
   String get themeMode => 'Themenmodus';
@@ -162,8 +156,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get updateAvailable => 'Update verfügbar';
 
   @override
-  String get newVersionAvailable =>
-      'Eine neue Version von Flites ist verfügbar.';
+  String get newVersionAvailable => 'Eine neue Version von Flites ist verfügbar.';
 
   @override
   String get updateNow => 'Jetzt aktualisieren';
@@ -172,8 +165,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get later => 'Später';
 
   @override
-  String get failedToOpenUpdateUrl =>
-      'Update-URL konnte nicht geöffnet werden.';
+  String get failedToOpenUpdateUrl => 'Update-URL konnte nicht geöffnet werden.';
 
   @override
   String get imageSaved => 'Bild gespeichert!';
@@ -218,8 +210,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get svgVector => 'SVG-Vektor';
 
   @override
-  String get svgExportNotAvailable =>
-      'SVG-Export ist in Flites noch nicht verfügbar.';
+  String get svgExportNotAvailable => 'SVG-Export ist in Flites noch nicht verfügbar.';
 
   @override
   String get imageSettings => 'Bildeinstellungen';

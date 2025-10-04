@@ -8,7 +8,7 @@
             "name": "Flutter",
             "type": "dart",
             "request": "launch",
-            "program": "apps/flites/lib/main.dart"
+            "program": "lib/main.dart"
         },
     ]
 }

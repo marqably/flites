@@ -42,7 +42,7 @@ Don't feel pressured to write perfect code! We value learning and collaboration 
 1. Fork the repository
 2. Create your branch (`git checkout -b feature/AmazingFeature`)
 3. Make your changes
-4. Run the tests (`melos run test:all`)
+4. Run the tests (`flutter test`)
 5. Submit your Pull Request
 
 Don't worry if:
@@ -76,7 +76,7 @@ Not sure where to start? Here are some ideas:
 We use Flutter's standard code style. Don't worry too much about this - our automated tools will help format your code:
 
 ```bash
-melos run format
+dart format .
 ```
 
 ## How Flites works

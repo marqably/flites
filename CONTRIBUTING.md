@@ -12,10 +12,10 @@ Thank you for your interest in contributing to Flites! 🎉
 ## Getting Started
 
 1. Fork the repository
-2. Run `melos bootstrap` to set up dependencies
+2. Run `flutter pub get` to set up dependencies
 3. Create your feature branch (`git checkout -b feature/amazing-feature`)
 4. Make your changes
-5. Run tests (`melos run test:all`)
+5. Run tests (`flutter test`)
 6. Submit a Pull Request
 
 ## Pre-PR Checklist
@@ -24,16 +24,16 @@ Before submitting your Pull Request, please run these checks locally:
 
 ```bash
 # Run all of these commands from the root directory
-melos run format        # Format your code
-melos run analyze       # Check for analysis issues
-melos run test:all      # Run all tests
-melos run qualitycheck  # Run all quality checks
+dart format .          # Format your code
+flutter analyze        # Check for analysis issues
+flutter test           # Run all tests
+flutter analyze && flutter test  # Run all quality checks
 ```
 
 If any of these checks fail:
 
 1. Read the error messages carefully
-2. Try `melos run fix` to auto-fix common issues
+2. Try `dart fix --apply` to auto-fix common issues
 3. Ask for help if you're stuck!
 
 ## Need Help?

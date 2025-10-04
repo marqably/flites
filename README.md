@@ -53,12 +53,11 @@ To import, just go to [web.flites.app](https://web.flites.app), click the flites
 
 ## Development
 
-This project uses [Melos](https://melos.invertase.dev/) to manage the monorepo and its packages. Here's how to get started:
+Here's how to get started with development:
 
 ### Prerequisites
 
 - Flutter 3.27.2 or higher
-- Melos (`dart pub global activate melos`)
 - Your favorite IDE
 
 ### Setup
@@ -78,17 +77,10 @@ This project uses [Melos](https://melos.invertase.dev/) to manage the monorepo a
 3. Install dependencies
 
     ```bash
-    melos bootstrap
-    ```
-
-4. Generate necessary files
-
-    ```bash
-    cd apps/flites
     flutter pub get
     ```
 
-5. Run the app
+4. Run the app
 
     ```bash
     flutter run
@@ -98,27 +90,27 @@ This project uses [Melos](https://melos.invertase.dev/) to manage the monorepo a
 
 ```text
 flites/
-├── apps/
-│   └── flites/         # Main application
+├── lib/                # Main application source code
 ├── docs/               # Documentation
-└── melos.yaml          # Melos configuration
+├── test/               # Tests
+└── pubspec.yaml        # Flutter project configuration
 ```
 
 ### Common Tasks
 
-- **Quality Check**: `melos run qualitycheck`
-- **Linting**: `melos run lint`
-- **Analyzing Code**: `melos run analyze`
-- **Formatting Code**: `melos run format`
-- **Running Tests**: `melos run test:all`
-- **Fix Common Issues**: `melos run fix`
+- **Quality Check**: `flutter analyze && flutter test`
+- **Linting**: `flutter analyze`
+- **Analyzing Code**: `flutter analyze`
+- **Formatting Code**: `dart format .`
+- **Running Tests**: `flutter test`
+- **Fix Common Issues**: `dart fix --apply`
 
 ### Adding New Features
 
 1. Create a new branch from `main`
 2. Make your changes
 3. Add tests for new functionality
-4. Run `melos run analyze` and `melos run test`
+4. Run `flutter analyze` and `flutter test`
 5. Submit a PR with a clear description of your changes
 
 ## Contributing
