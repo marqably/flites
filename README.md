@@ -2,6 +2,14 @@
 
 Flites is a modern sprite animation tool built with Flutter that makes creating and editing sprite animations intuitive and efficient. You can download the latest version from the [releases page](https://github.com/marqably/flites/releases). Whether you're a game developer, animator, or digital artist, Flites provides the tools you need to create, edit, and preview sprite animations with precision.
 
+## Try it now 🎮
+
+You can quickly try it using our web version without installing anything:
+[web.flites.app](https://web.flites.app)
+
+If you want to play around, you can download and import our [demo flites project](./docs/demo-assets/valkyr.flites).
+To import, just go to [web.flites.app](https://web.flites.app), click the flites logo (top left) and click "Open project".
+
 ## Features
 
 - 🖼️ **Multi-frame sprite editing** with drag-and-drop frame reordering
