@@ -4,7 +4,7 @@ Thank you for your interest in contributing to Flites! 🎉
 
 ## Quick Links
 
-- 📖 [Detailed Contributing Guide](docs/contributing.mdx)
+- 📖 [Detailed Contributing Guide](docs/contributing.md)
 - 🐛 [Report a Bug](https://github.com/marqably/flites/issues/new)
 - 💡 [Request a Feature](https://github.com/marqably/flites/issues/new)
 - 💬 [Join the Discussion](https://github.com/marqably/flites/discussions)
