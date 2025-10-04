@@ -75,6 +75,11 @@ jobs:
           melos bootstrap
           flutter pub get
 
+      - name: 📄 Create .env file
+        run: |
+          cd apps/flites
+          cp .env.example .env
+
       - name: 🏗️ Build Linux App
         run: |
           export CXX=/usr/bin/clang++
