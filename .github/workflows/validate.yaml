@@ -50,7 +50,9 @@ jobs:
         uses: bluefireteam/melos-action@v2
 
       - name: 🔎 Verify formatting
-        run: melos run format
+        run: |
+          melos bootstrap
+          melos exec --concurrency 1 --fail-fast -- dart format --set-exit-if-changed .
 
   test:
     name: ✨ Test
@@ -75,4 +77,4 @@ jobs:
           cp .env.example .env
 
       - name: 🧪 Run Tests
-        run: melos run test --no-select
+        run: melos exec --concurrency 1 --fail-fast -- flutter test
