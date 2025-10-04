@@ -8,18 +8,10 @@ on:
         required: false
         type: string
 
-  # Triggers on Pull Requests targeting main
-  pull_request:
-    branches:
-      - main
-
   # Triggers on tag pushes (for direct releases)
   push:
     tags:
       - 'v*'
-
-  # Allows manual triggering
-  workflow_dispatch:
 
 jobs:
   build-macos:
@@ -33,6 +25,8 @@ jobs:
       - name: DEBUG Print Workflow Input Tag
         run: |
           echo "Workflow Input (inputs.tag): ${{ inputs.tag }}"
+          echo "GitHub ref: ${{ github.ref }}"
+          echo "GitHub ref name: ${{ github.ref_name }}"
         shell: bash
 
       - name: Determine Build Context & Variables
@@ -41,22 +35,24 @@ jobs:
         with:
           platform: 'macos'
           event_name: ${{ github.event_name }}
-          tag_input: ${{ inputs.tag }}
+          tag_input: ${{ inputs.tag || github.ref_name }}
           pr_number: ${{ github.event.number }}
           run_id: ${{ github.run_id }}
 
       - name: Trigger Codemagic Build
+        if: steps.vars.outputs.build_type == 'release'
         run: |
           # Make a post request to the codemagic.io webhook
-          curl -X POST -H "Content-Type: application/json" -d '{"tag": "${{ inputs.tag }}"}' ${{ env.MACOS_CODEMAGIC_HOOK_URL }}
+          curl -X POST -H "Content-Type: application/json" -d '{"tag": "${{ inputs.tag || github.ref_name }}"}' ${{ env.MACOS_CODEMAGIC_HOOK_URL }}
         shell: bash
 
       # Note: Codemagic will handle the actual build and should upload artifacts
       # that can be downloaded by the release workflow. This is a placeholder
       # until Codemagic integration is fully configured.
       - name: Create Placeholder macOS Artifact
+        if: steps.vars.outputs.build_type == 'release'
         run: |
-          echo "macOS build triggered via Codemagic for tag: ${{ inputs.tag }}"
+          echo "macOS build triggered via Codemagic for tag: ${{ inputs.tag || github.ref_name }}"
           echo "This is a placeholder until Codemagic integration is complete"
           touch placeholder-macos-build.txt
         shell: bash
