@@ -81,7 +81,7 @@ class _PlayerControlsState extends State<PlayerControls> {
             color: context.colors.primary,
             borderRadius: BorderRadius.circular(32),
           ),
-          width: 260,
+          width: 280,
           height: Sizes.p64,
           child: Watch(
             (context) {
@@ -96,7 +96,7 @@ class _PlayerControlsState extends State<PlayerControls> {
                   gapW24,
                   const SizedBox(
                     // This has to be 44 to not break during widget tests
-                    width: 44,
+                    width: 60,
                     child: Text(
                       'PLAYER\nSPEED',
                       style: TextStyle(
