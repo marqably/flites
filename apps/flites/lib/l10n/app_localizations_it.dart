@@ -45,8 +45,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get imageControls => 'Controlli immagine';
 
   @override
-  String get usePreviousFrameAsReference =>
-      'Usa fotogramma precedente come riferimento';
+  String get usePreviousFrameAsReference => 'Usa fotogramma precedente come riferimento';
 
   @override
   String get showBoundingBorder => 'Mostra bordo di delimitazione';
@@ -130,16 +129,13 @@ class AppLocalizationsIt extends AppLocalizations {
   String get height => 'Altezza';
 
   @override
-  String get provideDimensionError =>
-      'Fornire almeno una dimensione (larghezza o altezza).';
+  String get provideDimensionError => 'Fornire almeno una dimensione (larghezza o altezza).';
 
   @override
-  String get webDownloadLocation =>
-      'Il file verrà salvato nella cartella download.';
+  String get webDownloadLocation => 'Il file verrà salvato nella cartella download.';
 
   @override
-  String get addMoreImagesToPlay =>
-      'Aggiungi più di un\'immagine per riprodurre';
+  String get addMoreImagesToPlay => 'Aggiungi più di un\'immagine per riprodurre';
 
   @override
   String get themeMode => 'Modalità tema';
@@ -160,8 +156,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get updateAvailable => 'Aggiornamento disponibile';
 
   @override
-  String get newVersionAvailable =>
-      'È disponibile una nuova versione di Flites.';
+  String get newVersionAvailable => 'È disponibile una nuova versione di Flites.';
 
   @override
   String get updateNow => 'Aggiorna ora';
@@ -170,8 +165,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get later => 'Più tardi';
 
   @override
-  String get failedToOpenUpdateUrl =>
-      'Impossibile aprire l\'URL di aggiornamento.';
+  String get failedToOpenUpdateUrl => 'Impossibile aprire l\'URL di aggiornamento.';
 
   @override
   String get imageSaved => 'Immagine salvata!';
@@ -216,8 +210,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get svgVector => 'Vettore SVG';
 
   @override
-  String get svgExportNotAvailable =>
-      'L\'esportazione SVG non è ancora disponibile in Flites.';
+  String get svgExportNotAvailable => 'L\'esportazione SVG non è ancora disponibile in Flites.';
 
   @override
   String get imageSettings => 'Impostazioni immagine';

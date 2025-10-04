@@ -45,8 +45,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get imageControls => 'Controles de imagen';
 
   @override
-  String get usePreviousFrameAsReference =>
-      'Usar marco anterior como referencia';
+  String get usePreviousFrameAsReference => 'Usar marco anterior como referencia';
 
   @override
   String get showBoundingBorder => 'Mostrar borde delimitador';
@@ -91,8 +90,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get zoomOut => 'Alejar';
 
   @override
-  String get processingImage =>
-      'Por favor espere mientras procesamos su imagen';
+  String get processingImage => 'Por favor espere mientras procesamos su imagen';
 
   @override
   String get processingMightTakeAMoment => 'Esto puede tardar un momento...';
@@ -131,12 +129,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get height => 'Height';
 
   @override
-  String get provideDimensionError =>
-      'Por favor, proporcione al menos una dimensión (ancho o alto).';
+  String get provideDimensionError => 'Por favor, proporcione al menos una dimensión (ancho o alto).';
 
   @override
-  String get webDownloadLocation =>
-      'El archivo se guardará en su carpeta de descargas.';
+  String get webDownloadLocation => 'El archivo se guardará en su carpeta de descargas.';
 
   @override
   String get addMoreImagesToPlay => 'Añade más de una imagen para reproducir';
@@ -160,8 +156,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get updateAvailable => 'Actualización disponible';
 
   @override
-  String get newVersionAvailable =>
-      'Una nueva versión de Flites está disponible.';
+  String get newVersionAvailable => 'Una nueva versión de Flites está disponible.';
 
   @override
   String get updateNow => 'Actualizar ahora';
@@ -170,8 +165,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get later => 'Más tarde';
 
   @override
-  String get failedToOpenUpdateUrl =>
-      'No se pudo abrir la URL de actualización.';
+  String get failedToOpenUpdateUrl => 'No se pudo abrir la URL de actualización.';
 
   @override
   String get imageSaved => '¡Imagen guardada!';
@@ -216,8 +210,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get svgVector => 'Vector SVG';
 
   @override
-  String get svgExportNotAvailable =>
-      'La exportación SVG aún no está disponible en Flites.';
+  String get svgExportNotAvailable => 'La exportación SVG aún no está disponible en Flites.';
 
   @override
   String get imageSettings => 'Ajustes de imagen';
