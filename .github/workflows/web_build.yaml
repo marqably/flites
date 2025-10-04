@@ -34,21 +34,6 @@ jobs:
       APP_NAME: Flites
       APP_ID: app.flites.editor
     steps:
-      # Debug step to check event name
-      - name: DEBUG Check Event Name
-        run: |
-          echo "Event name: ${{ github.event_name }}"
-          echo "Event type: ${{ github.event_name }}"
-          echo "Is workflow_call: ${{ github.event_name == 'workflow_call' }}"
-          echo "Inputs available: ${{ inputs != null }}"
-          if [ "${{ github.event_name }}" = "workflow_call" ]; then
-            echo "Input tag: '${{ inputs.tag }}'"
-            echo "Tag is null: ${{ inputs.tag == null }}"
-            echo "Tag is empty: ${{ inputs.tag == '' }}"
-          else
-            echo "Not a workflow_call event, inputs not available"
-          fi
-
       - name: 📚 Git Checkout
         uses: actions/checkout@v4
         with:
@@ -104,7 +89,7 @@ jobs:
           name: ${{ steps.vars.outputs.artifact_upload_name }}
 
       - name: Setup Pages
-        if: github.event_name == 'workflow_call' && inputs.tag
+        if: (github.event_name == 'workflow_call' && inputs.tag) || (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v'))
         uses: actions/configure-pages@v4
 
       - name: 🧪 Test Web Build (Basic Check)
@@ -122,7 +107,7 @@ jobs:
           
       - name: Deploy to GitHub Pages
         id: deployment
-        if: github.event_name == 'workflow_call' && inputs.tag
+        if: (github.event_name == 'workflow_call' && inputs.tag) || (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v'))
         uses: actions/deploy-pages@v4 
         with:
           artifact_name: ${{ steps.vars.outputs.artifact_upload_name }}

@@ -14,6 +14,10 @@ on:
   pull_request:
     branches:
       - main
+  # Triggers on tag pushes (for direct releases)
+  push:
+    tags:
+      - 'v*'
   workflow_dispatch:
 
 jobs:

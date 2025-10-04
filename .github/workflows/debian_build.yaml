@@ -18,6 +18,11 @@ on:
     branches:
       - main
 
+  # Triggers on tag pushes (for direct releases)
+  push:
+    tags:
+      - 'v*'
+
   # Allows manual triggering
   workflow_dispatch:
 
