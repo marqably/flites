@@ -399,14 +399,14 @@ class SvgUtils {
     }
   }
 
-  /// Updates or adds a viewBox attribute to the root <svg> tag of an SVG string.
+  /// Updates or adds a viewBox attribute to the root svg tag of an SVG string.
   ///
   /// Takes an svgString, desired integer width, and height.
-  /// If a viewBox attribute exists in the root <svg> tag, it's replaced.
+  /// If a viewBox attribute exists in the root svg tag, it's replaced.
   /// If no viewBox attribute exists, it's added.
   /// The format will be "0 0 width height".
   ///
-  /// Returns the modified SVG string, or the original string if no <svg> tag is found.
+  /// Returns the modified SVG string, or the original string if no svg tag is found.
   static String updateSvgViewBox(
     String svgAttributes, {
     required int width,

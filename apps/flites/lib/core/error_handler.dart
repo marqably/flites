@@ -109,7 +109,7 @@ class ErrorHandler {
     }
   }
 
-  static void _showUserFriendlyMessage(error) {
+  static void _showUserFriendlyMessage(Object error) {
     String message;
 
     if (error is AppError) {

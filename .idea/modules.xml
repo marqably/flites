@@ -2,8 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/apps/flites/melos_flites.iml" filepath="$PROJECT_DIR$/apps/flites/melos_flites.iml" />
-      <module fileurl="file://$PROJECT_DIR$/melos_flites.iml" filepath="$PROJECT_DIR$/melos_flites.iml" />
+<module fileurl="file://$PROJECT_DIR$/melos_flites.iml" filepath="$PROJECT_DIR$/melos_flites.iml" />
     </modules>
   </component>
 </project>

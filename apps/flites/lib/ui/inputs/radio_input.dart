@@ -49,10 +49,14 @@ class RadioInput<T> extends StatelessWidget {
   final Axis direction;
 
   @override
-  Widget build(BuildContext context) => Flex(
-        direction: direction,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: _buildRadioOptions(context),
+  Widget build(BuildContext context) => RadioGroup<T>(
+        groupValue: selectedValue,
+        onChanged: onChanged,
+        child: Flex(
+          direction: direction,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: _buildRadioOptions(context),
+        ),
       );
 
   List<Widget> _buildRadioOptions(BuildContext context) => options
@@ -76,8 +80,6 @@ class RadioInput<T> extends StatelessWidget {
                       // radio
                       Radio<T>(
                         value: option.value,
-                        groupValue: selectedValue,
-                        onChanged: option.disabled ? null : onChanged,
                         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                         visualDensity: VisualDensity.compact,
                       ),

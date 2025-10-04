@@ -45,7 +45,6 @@ class FileServiceImpl implements FileService {
             await FileSaver.instance.saveFile(
               bytes: bytes,
               name: fileName,
-              ext: fileExtension,
             );
             return true;
           } else {

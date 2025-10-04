@@ -73,7 +73,6 @@ class ProjectSavingService {
       await FileSaver.instance.saveFile(
         name: 'project.flites',
         bytes: Uint8List.fromList(utf8.encode(jsonData)),
-        ext: 'flites',
       );
     } else {
       final result = await FilePicker.platform.saveFile(

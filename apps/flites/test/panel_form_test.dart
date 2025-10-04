@@ -76,20 +76,11 @@ void main() {
       expect(find.text('JPEG'), findsOneWidget);
 
       // Verify RadioInput value
-      final radioWidgets = find.byType(Radio<String>);
-      expect(radioWidgets, findsWidgets);
-
-      // Find the selected radio button (the one with value 'medium')
-      Radio<String>? selectedRadio;
-      for (int i = 0; i < radioWidgets.evaluate().length; i++) {
-        final radio = tester.widget<Radio<String>>(radioWidgets.at(i));
-        if (radio.value == 'medium') {
-          selectedRadio = radio;
-          break;
-        }
-      }
-      expect(selectedRadio, isNotNull);
-      expect(selectedRadio!.groupValue, 'medium');
+      final radioGroup = find.byType(RadioGroup<String>);
+      expect(radioGroup, findsOneWidget);
+      
+      final radioGroupWidget = tester.widget<RadioGroup<String>>(radioGroup);
+      expect(radioGroupWidget.groupValue, 'medium');
 
       // Verify CheckboxInput value
       expect(tester.widget<Checkbox>(find.byType(Checkbox).first).value, false);

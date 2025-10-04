@@ -34,7 +34,6 @@ class FileService {
       await FileSaver.instance.saveFile(
         bytes: bytes,
         name: '$projectName.$fileExtension',
-        ext: fileExtension,
       );
 
       return true;

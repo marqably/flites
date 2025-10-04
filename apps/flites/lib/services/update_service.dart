@@ -84,7 +84,7 @@ class UpdateService {
   }
 
   static UpdateInfo? _parseUpdateResponse(
-    responseData,
+    Object? responseData,
     String currentVersionString,
   ) {
     try {
