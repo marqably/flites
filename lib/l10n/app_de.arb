@@ -1,0 +1,291 @@
+{
+    "@@locale": "de",
+    "title": "Flites",
+    "@title": {
+        "description": "The application title"
+    },
+    "addImage": "Bild hinzufügen",
+    "@addImage": {
+        "description": "Button text for adding a new image"
+    },
+    "tools": "Werkzeuge",
+    "@tools": {
+        "description": "Tools section header"
+    },
+    "frames": "Frames",
+    "@frames": {
+        "description": "Frames section header"
+    },
+    "canvasMode": "Leinwand-Modus",
+    "@canvasMode": {
+        "description": "Tooltip for canvas mode button"
+    },
+    "moveTool": "Bewegungswerkzeug",
+    "@moveTool": {
+        "description": "Tooltip for move tool button"
+    },
+    "rotateTool": "Rotationswerkzeug",
+    "@rotateTool": {
+        "description": "Tooltip for rotate tool button"
+    },
+    "hitboxTool": "Hitbox-Werkzeug",
+    "@hitboxTool": {
+        "description": "Tooltip for rotate Hitbox tool button"
+    },
+    "toggleVisibility": "Sichtbarkeit umschalten",
+    "@toggleVisibility": {
+        "description": "Tooltip for visibility toggle button"
+    },
+    "canvasAndImageControls": "Leinwand- und Bildsteuerung",
+    "@canvasAndImageControls": {
+        "description": "Title for canvas and image controls overlay"
+    },
+    "canvasControls": "Leinwandsteuerung",
+    "@canvasControls": {
+        "description": "Section header for canvas controls"
+    },
+    "imageControls": "Bildsteuerung",
+    "@imageControls": {
+        "description": "Section header for image controls"
+    },
+    "usePreviousFrameAsReference": "Vorheriges Frame als Referenz verwenden",
+    "@usePreviousFrameAsReference": {
+        "description": "Checkbox label for using previous frame as reference"
+    },
+    "showBoundingBorder": "Begrenzungsrahmen anzeigen",
+    "@showBoundingBorder": {
+        "description": "Checkbox label for showing bounding border"
+    },
+    "sortByName": "Nach Namen sortieren",
+    "@sortByName": {
+        "description": "Button text for sorting images by name"
+    },
+    "renameFilesAccordingToOrder": "Dateien nach Reihenfolge umbenennen",
+    "@renameFilesAccordingToOrder": {
+        "description": "Button text for renaming files according to order"
+    },
+    "resetNames": "Namen zurücksetzen",
+    "@resetNames": {
+        "description": "Button text for resetting file names"
+    },
+    "delete": "Löschen",
+    "@delete": {
+        "description": "Delete button tooltip"
+    },
+    "playPause": "Abspielen/Pause",
+    "@playPause": {
+        "description": "Tooltip for play/pause button"
+    },
+    "exportSprite": "Sprite Exportieren",
+    "@exportSprite": {
+        "description": "Button text for exporting sprite"
+    },
+    "fileName": "Dateiname",
+    "@fileName": {
+        "description": "Label for file name input"
+    },
+    "location": "Speicherort",
+    "@location": {
+        "description": "Label for location selection"
+    },
+    "export": "Exportieren",
+    "@export": {
+        "description": "Export button text"
+    },
+    "enterSpriteName": "Sprite-Namen eingeben",
+    "@enterSpriteName": {
+        "description": "Hint text for TextField for sprite name"
+    },
+    "selectLocation": "Download-Speicherort auswählen",
+    "@selectLocation": {
+        "description": "Tooltip for location picker button"
+    },
+    "zoomIn": "Vergrößern",
+    "@zoomIn": {
+        "description": "Tooltip for zoom in button"
+    },
+    "zoomOut": "Verkleinern",
+    "@zoomOut": {
+        "description": "Tooltip for zoom out button"
+    },
+    "processingImage": "Bitte warten Sie, während Ihr Bild verarbeitet wird",
+    "@processingImage": {
+        "description": "Message shown while image is being processed"
+    },
+    "processingMightTakeAMoment": "Dies könnte einen Moment dauern...",
+    "menuFile": "Datei",
+    "@menuFile": {
+        "description": "File menu label"
+    },
+    "menuPreferences": "Einstellungen",
+    "@menuPreferences": {
+        "description": "Preferences menu label"
+    },
+    "menuTheme": "Theme",
+    "@menuTheme": {
+        "description": "Theme menu label"
+    },
+    "menuThemeLight": "Hell",
+    "@menuThemeLight": {
+        "description": "Light theme menu option"
+    },
+    "menuThemeDark": "Dunkel",
+    "@menuThemeDark": {
+        "description": "Dark theme menu option"
+    },
+    "menuThemeSystem": "System",
+    "@menuThemeSystem": {
+        "description": "System theme menu option"
+    },
+    "menuLanguage": "Sprache",
+    "@menuLanguage": {
+        "description": "Language menu label"
+    },
+    "menuAboutFlites": "Über Flites",
+    "@menuAboutFlites": {
+        "description": "About Flites menu label"
+    },
+    "@processingMightTakeAMoment": {
+        "description": "Message shown during processing on web platform"
+    },
+    "padding": "Padding",
+    "@padding": {
+        "description": "General term for padding"
+    },
+    "width": "Breite",
+    "@width": {
+        "description": "Label for width input"
+    },
+    "height": "Höhe",
+    "@height": {
+        "description": "Label for height input"
+    },
+    "provideDimensionError": "Bitte geben Sie mindestens eine Dimension (Breite oder Höhe) an.",
+    "@provideDimensionError": {
+        "description": "Error message shown when no dimensions are provided for export"
+    },
+    "webDownloadLocation": "Die Datei wird in Ihrem Download-Ordner gespeichert.",
+    "@webDownloadLocation": {
+        "description": "Message indicating where files will be saved on web platform"
+    },
+    "addMoreImagesToPlay": "Fügen Sie mehr als ein Bild hinzu, um abzuspielen",
+    "@addMoreImagesToPlay": {
+        "description": "Tooltip shown when trying to play with only one image"
+    },
+    "themeMode": "Themenmodus",
+    "@themeMode": {
+        "description": "Title for theme mode section in settings"
+    },
+    "languageSection": "Sprache",
+    "@languageSection": {
+        "description": "Title for language section in settings"
+    },
+    "sizePx": "GRÖSSE (px)",
+    "@sizePx": {
+        "description": "Label for size in pixels"
+    },
+    "widthLabel": "B",
+    "@widthLabel": {
+        "description": "Label for width input"
+    },
+    "heightLabel": "H",
+    "@heightLabel": {
+        "description": "Label for height input"
+    },
+    "updateAvailable": "Update verfügbar",
+    "@updateAvailable": {
+        "description": "Title shown in update dialog when new version is available"
+    },
+    "newVersionAvailable": "Eine neue Version von Flites ist verfügbar.",
+    "@newVersionAvailable": {
+        "description": "Message shown in update dialog when new version is available"
+    },
+    "updateNow": "Jetzt aktualisieren",
+    "@updateNow": {
+        "description": "Button text for updating the app"
+    },
+    "later": "Später",
+    "@later": {
+        "description": "Button text to postpone the update"
+    },
+    "failedToOpenUpdateUrl": "Update-URL konnte nicht geöffnet werden.",
+    "@failedToOpenUpdateUrl": {
+        "description": "Error message shown when update URL could not be opened"
+    },
+    "imageSaved": "Bild gespeichert!",
+    "@imageSaved": {
+        "description": "Confirmation message shown when an image has been saved"
+    },
+    "showContainingFolder": "Enthaltenden Ordner anzeigen",
+    "@showContainingFolder": {
+        "description": "Button text to open the folder containing a saved file"
+    },
+    "saveProject": "Projekt speichern",
+    "@saveProject": {
+        "description": "Button text for saving the current project/file"
+    },
+    "openProject": "Projekt öffnen",
+    "@openProject": {
+        "description": "Button text for opening a project/file"
+    },
+    "exportSpritemap": "Spritemap exportieren",
+    "@exportSpritemap": {
+        "description": "Button text for exporting a spritemap"
+    },
+    "selectOptionsTitle": "Optionen auswählen",
+    "cancel": "Abbrechen",
+    "ok": "OK",
+    "selectOptionsPlaceholder": "Optionen auswählen",
+    "formatSettings": "Formateinstellungen",
+    "@formatSettings": {
+        "description": "Section header for export format settings"
+    },
+    "spriteSheetName": "Sprite-Sheet-Name",
+    "@spriteSheetName": {
+        "description": "Label for sprite sheet name input"
+    },
+    "fileFormat": "Dateiformat",
+    "@fileFormat": {
+        "description": "Label for file format selection"
+    },
+    "pngImage": "PNG-Bild",
+    "@pngImage": {
+        "description": "Option for PNG image format"
+    },
+    "svgVector": "SVG-Vektor",
+    "@svgVector": {
+        "description": "Option for SVG vector format"
+    },
+    "svgExportNotAvailable": "SVG-Export ist in Flites noch nicht verfügbar.",
+    "@svgExportNotAvailable": {
+        "description": "Error message when SVG export is not available"
+    },
+    "imageSettings": "Bildeinstellungen",
+    "@imageSettings": {
+        "description": "Section header for image settings"
+    },
+    "tileSize": "Kachelgröße",
+    "@tileSize": {
+        "description": "Label for tile size input"
+    },
+    "codeGeneration": "Code-Generierung",
+    "@codeGeneration": {
+        "description": "Section header for code generation options"
+    },
+    "targetFramework": "Ziel-Framework",
+    "@targetFramework": {
+        "description": "Label for target framework selection"
+    },
+    "generatingSpriteSheet": "Sprite-Sheet wird generiert...",
+    "@generatingSpriteSheet": {
+        "description": "Message shown while generating a sprite sheet"
+    },
+    "generateHitboxCode": "Hitbox-Code generieren",
+    "@generateHitboxCode": {
+        "description": "Checkbox label for generating hitbox code"
+    },
+    "close": "Schließen",
+    "@close": {
+        "description": "Button text for closing panels or dialogs"
+    }
+}

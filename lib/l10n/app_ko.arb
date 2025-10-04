@@ -1,0 +1,298 @@
+{
+    "@@locale": "ko",
+    "title": "Flites",
+    "@title": {
+        "description": "The application title"
+    },
+    "addImage": "이미지 추가",
+    "@addImage": {
+        "description": "Button text for adding a new image"
+    },
+    "tools": "도구",
+    "@tools": {
+        "description": "Tools section header"
+    },
+    "frames": "프레임",
+    "@frames": {
+        "description": "Frames section header"
+    },
+    "canvasMode": "캔버스 모드",
+    "@canvasMode": {
+        "description": "Tooltip for canvas mode button"
+    },
+    "moveTool": "이동 도구",
+    "@moveTool": {
+        "description": "Tooltip for move tool button"
+    },
+    "rotateTool": "회전 도구",
+    "@rotateTool": {
+        "description": "Tooltip for rotate tool button"
+    },
+    "toggleVisibility": "표시 전환",
+    "@toggleVisibility": {
+        "description": "Tooltip for visibility toggle button"
+    },
+    "canvasAndImageControls": "캔버스 및 이미지 설정",
+    "@canvasAndImageControls": {
+        "description": "Title for canvas and image controls overlay"
+    },
+    "canvasControls": "캔버스 제어",
+    "@canvasControls": {
+        "description": "Section header for canvas controls"
+    },
+    "imageControls": "이미지 제어",
+    "@imageControls": {
+        "description": "Section header for image controls"
+    },
+    "usePreviousFrameAsReference": "이전 프레임을 기준으로 사용",
+    "@usePreviousFrameAsReference": {
+        "description": "Checkbox label for using previous frame as reference"
+    },
+    "showBoundingBorder": "경계선 표시",
+    "@showBoundingBorder": {
+        "description": "Checkbox label for showing bounding border"
+    },
+    "sortByName": "이름순 정렬",
+    "@sortByName": {
+        "description": "Button text for sorting images by name"
+    },
+    "renameFilesAccordingToOrder": "파일을 순서대로 이름 변경",
+    "@renameFilesAccordingToOrder": {
+        "description": "Button text for renaming files according to order"
+    },
+    "resetNames": "이름 되돌리기",
+    "@resetNames": {
+        "description": "Button text for resetting file names"
+    },
+    "delete": "삭제",
+    "@delete": {
+        "description": "Delete button tooltip"
+    },
+    "playPause": "재생/일시정지",
+    "@playPause": {
+        "description": "Tooltip for play/pause button"
+    },
+    "exportSprite": "스프라이트 내보내기",
+    "@exportSprite": {
+        "description": "Button text for exporting sprite"
+    },
+    "fileName": "파일 이름",
+    "@fileName": {
+        "description": "Label for file name input"
+    },
+    "location": "위치",
+    "@location": {
+        "description": "Label for location selection"
+    },
+    "export": "내보내기",
+    "@export": {
+        "description": "Export button text"
+    },
+    "enterSpriteName": "스프라이트 이름 입력",
+    "@enterSpriteName": {
+        "description": "Hint text for TextField for sprite name"
+    },
+    "selectLocation": "다운로드 위치 선택",
+    "@selectLocation": {
+        "description": "Tooltip for location picker button"
+    },
+    "zoomIn": "확대",
+    "@zoomIn": {
+        "description": "Tooltip for zoom in button"
+    },
+    "zoomOut": "축소",
+    "@zoomOut": {
+        "description": "Tooltip for zoom out button"
+    },
+    "processingImage": "이미지 처리 중입니다",
+    "@processingImage": {
+        "description": "Message shown while image is being processed"
+    },
+    "processingMightTakeAMoment": "잠시만 기다려주세요...",
+    "@processingMightTakeAMoment": {
+        "description": "Message shown during processing on web platform"
+    },
+    "menuFile": "파일",
+    "@menuFile": {
+        "description": "File menu label"
+    },
+    "menuPreferences": "설정",
+    "@menuPreferences": {
+        "description": "Preferences menu label"
+    },
+    "menuTheme": "테마",
+    "@menuTheme": {
+        "description": "Theme menu label"
+    },
+    "menuThemeLight": "밝은 테마",
+    "@menuThemeLight": {
+        "description": "Light theme menu option"
+    },
+    "menuThemeDark": "어두운 테마",
+    "@menuThemeDark": {
+        "description": "Dark theme menu option"
+    },
+    "menuThemeSystem": "시스템 설정과 동일",
+    "@menuThemeSystem": {
+        "description": "System theme menu option"
+    },
+    "menuLanguage": "언어",
+    "@menuLanguage": {
+        "description": "Language menu label"
+    },
+    "padding": "여백",
+    "@padding": {
+        "description": "General term for padding"
+    },
+    "width": "너비",
+    "@width": {
+        "description": "Label for width input"
+    },
+    "height": "높이",
+    "@height": {
+        "description": "Label for height input"
+    },
+    "provideDimensionError": "너비나 높이 중 하나를 입력하세요.",
+    "@provideDimensionError": {
+        "description": "Error message shown when no dimensions are provided for export"
+    },
+    "webDownloadLocation": "파일이 다운로드 폴더에 저장됩니다.",
+    "@webDownloadLocation": {
+        "description": "Message indicating where files will be saved on web platform"
+    },
+    "addMoreImagesToPlay": "재생하려면 이미지를 하나 이상 추가하세요",
+    "@addMoreImagesToPlay": {
+        "description": "Tooltip shown when trying to play with only one image"
+    },
+    "themeMode": "테마 모드",
+    "@themeMode": {
+        "description": "Title for theme mode section in settings"
+    },
+    "languageSection": "언어",
+    "@languageSection": {
+        "description": "Title for language section in settings"
+    },
+    "sizePx": "크기 (px)",
+    "@sizePx": {
+        "description": "Label for size in pixels"
+    },
+    "widthLabel": "너비",
+    "@widthLabel": {
+        "description": "Label for width input"
+    },
+    "heightLabel": "높이",
+    "@heightLabel": {
+        "description": "Label for height input"
+    },
+    "updateAvailable": "업데이트 가능",
+    "@updateAvailable": {
+        "description": "Title shown in update dialog when new version is available"
+    },
+    "newVersionAvailable": "Flites의 새 버전을 사용할 수 있습니다.",
+    "@newVersionAvailable": {
+        "description": "Message shown in update dialog when new version is available"
+    },
+    "updateNow": "지금 업데이트",
+    "@updateNow": {
+        "description": "Button text for updating the app"
+    },
+    "later": "나중에",
+    "@later": {
+        "description": "Button text to postpone the update"
+    },
+    "failedToOpenUpdateUrl": "업데이트 URL을 열지 못했습니다.",
+    "@failedToOpenUpdateUrl": {
+        "description": "Error message shown when update URL could not be opened"
+    },
+    "imageSaved": "이미지가 저장되었습니다!",
+    "@imageSaved": {
+        "description": "Confirmation message shown when an image has been saved"
+    },
+    "showContainingFolder": "저장 폴더 열기",
+    "@showContainingFolder": {
+        "description": "Button text to open the folder containing a saved file"
+    },
+    "saveProject": "프로젝트 저장",
+    "@saveProject": {
+        "description": "Button text for saving the current project/file"
+    },
+    "openProject": "프로젝트 열기",
+    "@openProject": {
+        "description": "Button text for opening a project/file"
+    },
+    "importFile": "파일 가져오기",
+    "@importFile": {
+        "description": "Button text for importing a project/file"
+    },
+    "menuAboutFlites": "Flites 정보",
+    "@menuAboutFlites": {
+        "description": "About Flites menu label"
+    },
+    "hitboxTool": "히트박스 도구",
+    "@hitboxTool": {
+        "description": "Tooltip for rotate Hitbox tool button"
+    },
+    "exportSpritemap": "스프라이트맵 내보내기",
+    "@exportSpritemap": {
+        "description": "Button text for exporting a spritemap"
+    },
+    "selectOptionsTitle": "옵션 선택",
+    "cancel": "취소",
+    "ok": "확인",
+    "selectOptionsPlaceholder": "옵션 선택",
+    "@selectOptionsPlaceholder": {
+        "description": "Placeholder text when no options are selected"
+    },
+    "formatSettings": "형식 설정",
+    "@formatSettings": {
+        "description": "Section header for export format settings"
+    },
+    "spriteSheetName": "스프라이트 시트 이름",
+    "@spriteSheetName": {
+        "description": "Label for sprite sheet name input"
+    },
+    "fileFormat": "파일 형식",
+    "@fileFormat": {
+        "description": "Label for file format selection"
+    },
+    "pngImage": "PNG 이미지",
+    "@pngImage": {
+        "description": "Option for PNG image format"
+    },
+    "svgVector": "SVG 벡터",
+    "@svgVector": {
+        "description": "Option for SVG vector format"
+    },
+    "svgExportNotAvailable": "SVG 내보내기는 아직 Flites에서 사용할 수 없습니다.",
+    "@svgExportNotAvailable": {
+        "description": "Error message when SVG export is not available"
+    },
+    "imageSettings": "이미지 설정",
+    "@imageSettings": {
+        "description": "Section header for image settings"
+    },
+    "tileSize": "타일 크기",
+    "@tileSize": {
+        "description": "Label for tile size input"
+    },
+    "codeGeneration": "코드 생성",
+    "@codeGeneration": {
+        "description": "Section header for code generation options"
+    },
+    "targetFramework": "대상 프레임워크",
+    "@targetFramework": {
+        "description": "Label for target framework selection"
+    },
+    "generatingSpriteSheet": "스프라이트 시트 생성 중...",
+    "@generatingSpriteSheet": {
+        "description": "Message shown while generating a sprite sheet"
+    },
+    "generateHitboxCode": "히트박스 코드 생성",
+    "@generateHitboxCode": {
+        "description": "Checkbox label for generating hitbox code"
+    },
+    "close": "닫기",
+    "@close": {
+        "description": "Button text for closing panels or dialogs"
+    }
+}

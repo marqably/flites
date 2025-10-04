@@ -1,0 +1,298 @@
+{
+    "@@locale": "ja",
+    "title": "Flites",
+    "@title": {
+        "description": "The application title"
+    },
+    "addImage": "画像を追加",
+    "@addImage": {
+        "description": "Button text for adding a new image"
+    },
+    "tools": "ツール",
+    "@tools": {
+        "description": "Tools section header"
+    },
+    "frames": "フレーム",
+    "@frames": {
+        "description": "Frames section header"
+    },
+    "canvasMode": "キャンバスモード",
+    "@canvasMode": {
+        "description": "Tooltip for canvas mode button"
+    },
+    "moveTool": "移動ツール",
+    "@moveTool": {
+        "description": "Tooltip for move tool button"
+    },
+    "rotateTool": "回転ツール",
+    "@rotateTool": {
+        "description": "Tooltip for rotate tool button"
+    },
+    "toggleVisibility": "表示切り替え",
+    "@toggleVisibility": {
+        "description": "Tooltip for visibility toggle button"
+    },
+    "canvasAndImageControls": "キャンバスと画像の制御",
+    "@canvasAndImageControls": {
+        "description": "Title for canvas and image controls overlay"
+    },
+    "canvasControls": "キャンバス制御",
+    "@canvasControls": {
+        "description": "Section header for canvas controls"
+    },
+    "imageControls": "画像制御",
+    "@imageControls": {
+        "description": "Section header for image controls"
+    },
+    "usePreviousFrameAsReference": "前のフレームを参照として利用",
+    "@usePreviousFrameAsReference": {
+        "description": "Checkbox label for using previous frame as reference"
+    },
+    "showBoundingBorder": "境界線を表示",
+    "@showBoundingBorder": {
+        "description": "Checkbox label for showing bounding border"
+    },
+    "sortByName": "名前順に並べ替え",
+    "@sortByName": {
+        "description": "Button text for sorting images by name"
+    },
+    "renameFilesAccordingToOrder": "順番通りにファイル名を変更",
+    "@renameFilesAccordingToOrder": {
+        "description": "Button text for renaming files according to order"
+    },
+    "resetNames": "ファイル名をリセット",
+    "@resetNames": {
+        "description": "Button text for resetting file names"
+    },
+    "delete": "削除",
+    "@delete": {
+        "description": "Delete button tooltip"
+    },
+    "playPause": "再生/一時停止",
+    "@playPause": {
+        "description": "Tooltip for play/pause button"
+    },
+    "exportSprite": "スプライトを出力",
+    "@exportSprite": {
+        "description": "Button text for exporting sprite"
+    },
+    "fileName": "ファイル名",
+    "@fileName": {
+        "description": "Label for file name input"
+    },
+    "location": "場所",
+    "@location": {
+        "description": "Label for location selection"
+    },
+    "export": "エクスポート",
+    "@export": {
+        "description": "Export button text"
+    },
+    "enterSpriteName": "スプライトの名前を入力",
+    "@enterSpriteName": {
+        "description": "Hint text for TextField for sprite name"
+    },
+    "selectLocation": "保存場所を選択",
+    "@selectLocation": {
+        "description": "Tooltip for location picker button"
+    },
+    "zoomIn": "拡大",
+    "@zoomIn": {
+        "description": "Tooltip for zoom in button"
+    },
+    "zoomOut": "縮小",
+    "@zoomOut": {
+        "description": "Tooltip for zoom out button"
+    },
+    "processingImage": "画像を処理中です",
+    "@processingImage": {
+        "description": "Message shown while image is being processed"
+    },
+    "processingMightTakeAMoment": "処理が完了するまでお待ちください...",
+    "@processingMightTakeAMoment": {
+        "description": "Message shown during processing on web platform"
+    },
+    "menuFile": "ファイル",
+    "@menuFile": {
+        "description": "File menu label"
+    },
+    "menuPreferences": "設定",
+    "@menuPreferences": {
+        "description": "Preferences menu label"
+    },
+    "menuTheme": "テーマ",
+    "@menuTheme": {
+        "description": "Theme menu label"
+    },
+    "menuThemeLight": "ライト",
+    "@menuThemeLight": {
+        "description": "Light theme menu option"
+    },
+    "menuThemeDark": "ダーク",
+    "@menuThemeDark": {
+        "description": "Dark theme menu option"
+    },
+    "menuThemeSystem": "システム",
+    "@menuThemeSystem": {
+        "description": "System theme menu option"
+    },
+    "menuLanguage": "言語",
+    "@menuLanguage": {
+        "description": "Language menu label"
+    },
+    "padding": "余白",
+    "@padding": {
+        "description": "General term for padding"
+    },
+    "width": "幅",
+    "@width": {
+        "description": "Label for width input"
+    },
+    "height": "高さ",
+    "@height": {
+        "description": "Label for height input"
+    },
+    "provideDimensionError": "幅または高さのいずれかを指定してください。",
+    "@provideDimensionError": {
+        "description": "Error message shown when no dimensions are provided for export"
+    },
+    "webDownloadLocation": "ファイルはダウンロードフォルダーに自動保存されます。",
+    "@webDownloadLocation": {
+        "description": "Message indicating where files will be saved on web platform"
+    },
+    "addMoreImagesToPlay": "再生するには複数の画像を追加してください",
+    "@addMoreImagesToPlay": {
+        "description": "Tooltip shown when trying to play with only one image"
+    },
+    "themeMode": "テーマモード",
+    "@themeMode": {
+        "description": "Title for theme mode section in settings"
+    },
+    "languageSection": "言語",
+    "@languageSection": {
+        "description": "Title for language section in settings"
+    },
+    "sizePx": "サイズ (px)",
+    "@sizePx": {
+        "description": "Label for size in pixels"
+    },
+    "widthLabel": "幅",
+    "@widthLabel": {
+        "description": "Label for width input"
+    },
+    "heightLabel": "高さ",
+    "@heightLabel": {
+        "description": "Label for height input"
+    },
+    "updateAvailable": "アップデート可能",
+    "@updateAvailable": {
+        "description": "Title shown in update dialog when new version is available"
+    },
+    "newVersionAvailable": "Flitesの新しいバージョンが利用可能です。",
+    "@newVersionAvailable": {
+        "description": "Message shown in update dialog when new version is available"
+    },
+    "updateNow": "今すぐ更新",
+    "@updateNow": {
+        "description": "Button text for updating the app"
+    },
+    "later": "後で",
+    "@later": {
+        "description": "Button text to postpone the update"
+    },
+    "failedToOpenUpdateUrl": "更新URLを開けませんでした。",
+    "@failedToOpenUpdateUrl": {
+        "description": "Error message shown when update URL could not be opened"
+    },
+    "imageSaved": "画像を保存しました！",
+    "@imageSaved": {
+        "description": "Confirmation message shown when an image has been saved"
+    },
+    "showContainingFolder": "保存フォルダを開く",
+    "@showContainingFolder": {
+        "description": "Button text to open the folder containing a saved file"
+    },
+    "saveProject": "プロジェクトを保存",
+    "@saveProject": {
+        "description": "Button text for saving the current project/file"
+    },
+    "openProject": "プロジェクトを開く",
+    "@openProject": {
+        "description": "Button text for opening a project/file"
+    },
+    "importFile": "ファイルをインポート",
+    "@importFile": {
+        "description": "Button text for importing a project/file"
+    },
+    "menuAboutFlites": "Flitesについて",
+    "@menuAboutFlites": {
+        "description": "About Flites menu label"
+    },
+    "hitboxTool": "ヒットボックスツール",
+    "@hitboxTool": {
+        "description": "Tooltip for rotate Hitbox tool button"
+    },
+    "exportSpritemap": "スプライトマップを出力",
+    "@exportSpritemap": {
+        "description": "Button text for exporting a spritemap"
+    },
+    "selectOptionsTitle": "オプションを選択",
+    "cancel": "キャンセル",
+    "ok": "OK",
+    "selectOptionsPlaceholder": "オプションを選択",
+    "@selectOptionsPlaceholder": {
+        "description": "Placeholder text when no options are selected"
+    },
+    "formatSettings": "フォーマット設定",
+    "@formatSettings": {
+        "description": "Section header for export format settings"
+    },
+    "spriteSheetName": "スプライトシート名",
+    "@spriteSheetName": {
+        "description": "Label for sprite sheet name input"
+    },
+    "fileFormat": "ファイル形式",
+    "@fileFormat": {
+        "description": "Label for file format selection"
+    },
+    "pngImage": "PNG画像",
+    "@pngImage": {
+        "description": "Option for PNG image format"
+    },
+    "svgVector": "SVGベクター",
+    "@svgVector": {
+        "description": "Option for SVG vector format"
+    },
+    "svgExportNotAvailable": "SVGエクスポートはFlitesではまだ利用できません。",
+    "@svgExportNotAvailable": {
+        "description": "Error message when SVG export is not available"
+    },
+    "imageSettings": "画像設定",
+    "@imageSettings": {
+        "description": "Section header for image settings"
+    },
+    "tileSize": "タイルサイズ",
+    "@tileSize": {
+        "description": "Label for tile size input"
+    },
+    "codeGeneration": "コード生成",
+    "@codeGeneration": {
+        "description": "Section header for code generation options"
+    },
+    "targetFramework": "ターゲットフレームワーク",
+    "@targetFramework": {
+        "description": "Label for target framework selection"
+    },
+    "generatingSpriteSheet": "スプライトシートを生成中...",
+    "@generatingSpriteSheet": {
+        "description": "Message shown while generating a sprite sheet"
+    },
+    "generateHitboxCode": "ヒットボックスコードを生成",
+    "@generateHitboxCode": {
+        "description": "Checkbox label for generating hitbox code"
+    },
+    "close": "閉じる",
+    "@close": {
+        "description": "Button text for closing panels or dialogs"
+    }
+}
