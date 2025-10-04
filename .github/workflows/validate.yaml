@@ -30,10 +30,9 @@ jobs:
           cp .env.example .env
 
       - name: 🔎 Analyze
-        uses: invertase/github-action-dart-analyzer@v1
-        with:
-          fatal-infos: true
-          fatal-warnings: true
+        run: |
+          melos bootstrap
+          melos exec --concurrency 1 --fail-fast -- dart analyze --fatal-infos --fatal-warnings .
 
   format:
     name: ✨ Format
