@@ -117,6 +117,20 @@ runs:
             SUFFIX_TEMPLATE_KEY="release_suffix_template"
             ARTIFACT_NAME_TEMPLATE_KEY="release_artifact_name"
 
+        elif [ "${EVENT_NAME}" == "push" ] && [[ "${TAG_INPUT}" == "" ]]; then
+            # Handle direct tag push (push event with empty tag_input)
+            # Extract tag from github.ref (e.g., refs/tags/v1.0.0 -> v1.0.0)
+            TAG_FROM_REF="${GITHUB_REF#refs/tags/}"
+            if [[ "${TAG_FROM_REF}" =~ ^v ]]; then
+                BUILD_TYPE="release"
+                PACKAGE_VERSION=${TAG_FROM_REF#v} # Remove 'v' prefix
+                SUFFIX_TEMPLATE_KEY="release_suffix_template"
+                ARTIFACT_NAME_TEMPLATE_KEY="release_artifact_name"
+            else
+                echo "Error: Tag from ref '${TAG_FROM_REF}' missing 'v' prefix."
+                exit 1
+            fi
+
         elif [ "${EVENT_NAME}" == "pull_request" ]; then
             BUILD_TYPE="pr"
             if [ -z "${PR_NUM}" ]; then echo "Error: PR number required for PR build."; exit 1; fi
