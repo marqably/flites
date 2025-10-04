@@ -41,7 +41,6 @@ jobs:
          echo "Workflow Input (inputs.tag): ${{ inputs.tag }}"
          echo "Tag is null: ${{ inputs.tag == null }}"
          echo "Tag is empty: ${{ inputs.tag == '' }}"
-         echo "Tag length: ${{ length(inputs.tag) }}"
 
       - name: 📚 Git Checkout
         uses: actions/checkout@v4
