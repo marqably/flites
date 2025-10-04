@@ -20,8 +20,10 @@ void main() {
 
         // Then
         expect(result.height, equals(100)); // Total height including padding
-        expect(result.width,
-            equals(160)); // Based on available height (80) * aspect ratio (2)
+        expect(
+          result.width,
+          equals(160),
+        ); // Based on available height (80) * aspect ratio (2)
       });
 
       test('includes vertical margins in calculations', () {
@@ -38,8 +40,10 @@ void main() {
 
         // Then
         expect(result.height, equals(100)); // Total height including padding
-        expect(result.width,
-            equals(100)); // Based on available height (50) * aspect ratio (2)
+        expect(
+          result.width,
+          equals(100),
+        ); // Based on available height (50) * aspect ratio (2)
       });
     });
 
@@ -118,7 +122,9 @@ void main() {
         // Then
         expect(result.width, equals(200)); // Width including 50px total padding
         expect(
-            result.height, equals(100)); // Height including 30px total padding
+          result.height,
+          equals(100),
+        ); // Height including 30px total padding
       });
     });
   });

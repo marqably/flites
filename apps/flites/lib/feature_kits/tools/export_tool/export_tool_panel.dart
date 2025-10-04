@@ -1,32 +1,29 @@
-import 'package:flites/config/code_wizards.dart';
-import 'package:flites/config/tools.dart';
-import 'package:flites/constants/app_sizes.dart';
-import 'package:flites/main.dart';
-import 'package:flites/states/source_files_state.dart';
-import 'package:flites/states/tool_controller.dart';
-import 'package:flites/types/exported_sprite_image.dart';
-import 'package:flites/ui/inputs/select_input.dart';
-import 'package:flites/ui/panel/controls/panel_button.dart';
-import 'package:flites/ui/panel/controls/panel_number_input.dart';
-import 'package:flites/ui/panel/controls/panel_select_input.dart';
-import 'package:flites/ui/panel/controls/panel_text_input.dart';
-import 'package:flites/ui/panel/panel.dart';
-import 'package:flites/ui/panel/structure/panel_control_wrapper.dart';
-import 'package:flites/ui/panel/structure/panel_form.dart';
-import 'package:flites/ui/panel/structure/panel_section.dart';
-import 'package:flites/utils/generate_sprite.dart';
-import 'package:flites/utils/generate_svg_sprite.dart';
-import 'package:flites/utils/svg_utils.dart';
-import 'package:flites/widgets/overlays/generic_overlay.dart';
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
-class ExportToolFormData {
-  final String spriteSheetName;
-  final String format;
-  final double tileWidth;
-  final double tileHeight;
-  final CodeWizards codeGenFramework;
+import '../../../config/code_wizards.dart';
+import '../../../config/tools.dart';
+import '../../../constants/app_sizes.dart';
+import '../../../main.dart';
+import '../../../states/source_files_state.dart';
+import '../../../states/tool_controller.dart';
+import '../../../types/exported_sprite_image.dart';
+import '../../../ui/inputs/select_input.dart';
+import '../../../ui/panel/controls/panel_button.dart';
+import '../../../ui/panel/controls/panel_number_input.dart';
+import '../../../ui/panel/controls/panel_select_input.dart';
+import '../../../ui/panel/controls/panel_text_input.dart';
+import '../../../ui/panel/panel.dart';
+import '../../../ui/panel/structure/panel_control_wrapper.dart';
+import '../../../ui/panel/structure/panel_form.dart';
+import '../../../ui/panel/structure/panel_section.dart';
+import '../../../utils/generate_sprite.dart';
+import '../../../utils/generate_svg_sprite.dart';
+import '../../../utils/svg_utils.dart';
+import '../../../widgets/overlays/generic_overlay.dart';
 
+class ExportToolFormData {
   ExportToolFormData({
     required this.spriteSheetName,
     required this.format,
@@ -35,35 +32,36 @@ class ExportToolFormData {
     required this.codeGenFramework,
   });
 
-  Map<String, dynamic> toMap() {
-    return {
-      'spriteSheetName': spriteSheetName,
-      'format': format,
-      'tileWidth': tileWidth,
-      'tileHeight': tileHeight,
-      'codeGenFramework': codeGenFramework,
-    };
-  }
+  ExportToolFormData.fromMap(Map<String, dynamic> map)
+      : spriteSheetName = map['spriteSheetName'],
+        format = map['format'],
+        tileWidth = map['tileWidth'],
+        tileHeight = map['tileHeight'],
+        codeGenFramework = map['codeGenFramework'];
 
-  static ExportToolFormData fromMap(Map<String, dynamic> map) {
-    return ExportToolFormData(
-      spriteSheetName: map['spriteSheetName'],
-      format: map['format'],
-      tileWidth: map['tileWidth'],
-      tileHeight: map['tileHeight'],
-      codeGenFramework: map['codeGenFramework'],
-    );
-  }
+  final String spriteSheetName;
+  final String format;
+  final double tileWidth;
+  final double tileHeight;
+  final CodeWizards codeGenFramework;
+
+  Map<String, dynamic> toMap() => {
+        'spriteSheetName': spriteSheetName,
+        'format': format,
+        'tileWidth': tileWidth,
+        'tileHeight': tileHeight,
+        'codeGenFramework': codeGenFramework,
+      };
 }
 
 class ExportToolPanel extends StatelessWidget {
+  const ExportToolPanel({required this.onExport, super.key});
+
   /// Will be called to pass the sprite sheet after generation and the form data to the parent, for the code generation to happen
   final void Function(
     ExportedSpriteSheetTiled? spriteSheet,
     ExportToolFormData formData,
   ) onExport;
-
-  const ExportToolPanel({super.key, required this.onExport});
 
   @override
   Widget build(BuildContext context) {
@@ -72,9 +70,10 @@ class ExportToolPanel extends StatelessWidget {
 
     // Initial values for the form
     final initialValues = ExportToolFormData(
-      spriteSheetName: projectSourceFiles.value.projectName ?? 'Character',
+      spriteSheetName:
+          SourceFilesState.projectSourceFiles.projectName ?? 'Character',
       format: (percentageOfSvgImagesInProject == 100) ? 'svg' : 'png',
-      // TODO add the current tile size to the initial values
+      // TODO(developer): add the current tile size to the initial values
       tileWidth: 100,
       tileHeight: 100,
 
@@ -112,7 +111,9 @@ class ExportToolPanel extends StatelessWidget {
                     formKey: 'format',
                     options: [
                       SelectInputOption(
-                          label: context.l10n.pngImage, value: 'png'),
+                        label: context.l10n.pngImage,
+                        value: 'png',
+                      ),
 
                       // if we have svg files in the project, show the option
                       if (percentageOfSvgImagesInProject > 0)
@@ -120,9 +121,7 @@ class ExportToolPanel extends StatelessWidget {
                           label: context.l10n.svgVector,
                           value: 'svg',
                           // if have non svg images in the project, disable the option and show error
-                          disabled: percentageOfSvgImagesInProject < 100
-                              ? true
-                              : false,
+                          disabled: percentageOfSvgImagesInProject < 100,
                           comment: percentageOfSvgImagesInProject < 100
                               ? context.l10n.svgExportNotAvailable
                               : null,
@@ -136,20 +135,23 @@ class ExportToolPanel extends StatelessWidget {
               PanelSection(
                 label: context.l10n.imageSettings,
                 children: [
-                  PanelControlWrapper(label: context.l10n.tileSize, children: [
-                    PanelNumberInput(
-                      label: context.l10n.widthLabel,
-                      formKey: 'tileWidth',
-                      min: 8,
-                      inline: true,
-                    ),
-                    PanelNumberInput(
-                      label: context.l10n.heightLabel,
-                      formKey: 'tileHeight',
-                      min: 8,
-                      inline: true,
-                    ),
-                  ]),
+                  PanelControlWrapper(
+                    label: context.l10n.tileSize,
+                    children: [
+                      PanelNumberInput(
+                        label: context.l10n.widthLabel,
+                        formKey: 'tileWidth',
+                        min: 8,
+                        inline: true,
+                      ),
+                      PanelNumberInput(
+                        label: context.l10n.heightLabel,
+                        formKey: 'tileHeight',
+                        min: 8,
+                        inline: true,
+                      ),
+                    ],
+                  ),
                 ],
               ),
 
@@ -164,10 +166,12 @@ class ExportToolPanel extends StatelessWidget {
                     formKey: 'codeGenFramework',
                     options: CodeWizards.getCodeWizardMap()
                         .keys
-                        .map((key) => SelectInputOption(
-                              label: CodeWizards.getCodeWizardMap()[key] ?? '',
-                              value: key,
-                            ))
+                        .map(
+                          (key) => SelectInputOption(
+                            label: CodeWizards.getCodeWizardMap()[key] ?? '',
+                            value: key,
+                          ),
+                        )
                         .toList(),
                   ),
                 ],
@@ -187,7 +191,7 @@ class ExportToolPanel extends StatelessWidget {
               // Cancel export
               PanelButton(
                 onPressed: () {
-                  toolController.selectTool(Tool.canvas);
+                  toolController.selectedTool = Tool.canvas;
                 },
                 icon: Icons.cancel,
                 label: context.l10n.cancel,
@@ -201,13 +205,18 @@ class ExportToolPanel extends StatelessWidget {
   }
 
   /// Exports the sprite map based on the form data
-  void _export(BuildContext context, ExportToolFormData formData) async {
-    showDialog(
-      context: context,
-      builder: (context) => GenericOverlay(
-        title: context.l10n.generatingSpriteSheet,
-        body: context.l10n.processingMightTakeAMoment,
-        child: const CircularProgressIndicator(),
+  Future<void> _export(
+    BuildContext context,
+    ExportToolFormData formData,
+  ) async {
+    unawaited(
+      showDialog(
+        context: context,
+        builder: (context) => GenericOverlay(
+          title: context.l10n.generatingSpriteSheet,
+          body: context.l10n.processingMightTakeAMoment,
+          child: const CircularProgressIndicator(),
+        ),
       ),
     );
 
@@ -215,11 +224,11 @@ class ExportToolPanel extends StatelessWidget {
 
     // perform the export
     try {
-      // TODO: normalize the tiled and untiled sprite export to the same type and pass it to onExport
+      // TODO(developer): normalize the tiled and untiled sprite export to the same type and pass it to onExport
       final tileSize = Size(formData.tileWidth, formData.tileHeight);
       ExportedSpriteSheetTiled? spriteSheet;
 
-      // TODO: use the Casing.snakeCase(formData.spriteSheetName).{EXTENSION} as filename
+      // TODO(developer): use the Casing.snakeCase(formData.spriteSheetName).{EXTENSION} as filename
 
       if (formData.format == 'png') {
         spriteSheet = await GenerateSprite.exportTiledSpriteMap(

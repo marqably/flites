@@ -32,7 +32,6 @@ void main() {
         width: 100,
         height: 100,
         numChannels: 4,
-        format: img.Format.uint8,
       );
       img.fill(image, color: img.ColorRgba8(255, 255, 255, 255));
       testImageBytes = Uint8List.fromList(img.encodePng(image));
@@ -44,11 +43,13 @@ void main() {
       registerFallbackValue('png');
 
       mockFileService = MockFileService();
-      when(() => mockFileService.saveFile(
-            bytes: any(named: 'bytes'),
-            fileType: any(named: 'fileType'),
-            fileExtension: any(named: 'fileExtension'),
-          )).thenAnswer((invocation) async {
+      when(
+        () => mockFileService.saveFile(
+          bytes: any(named: 'bytes'),
+          fileType: any(named: 'fileType'),
+          fileExtension: any(named: 'fileExtension'),
+        ),
+      ).thenAnswer((invocation) async {
         final bytes = invocation.namedArguments[#bytes] as Uint8List;
         final fileExtension =
             invocation.namedArguments[#fileExtension] as String;
@@ -74,14 +75,12 @@ void main() {
       final testRow = [
         FlitesImage.scaled(
           testImageBytes,
-          scalingFactor: 1.0,
           originalName: 'test1.png',
         )
-          ..positionOnCanvas = const Offset(0, 0)
+          ..positionOnCanvas = Offset.zero
           ..widthOnCanvas = 100,
         FlitesImage.scaled(
           testImageBytes,
-          scalingFactor: 1.0,
           originalName: 'test2.png',
         )
           ..positionOnCanvas = const Offset(100, 0)
@@ -144,14 +143,12 @@ void main() {
       final testRow = [
         FlitesImage.scaled(
           testImageBytes,
-          scalingFactor: 1.0,
           originalName: 'test1.png',
         )
-          ..positionOnCanvas = const Offset(0, 0)
+          ..positionOnCanvas = Offset.zero
           ..widthOnCanvas = 100,
         FlitesImage.scaled(
           testImageBytes,
-          scalingFactor: 1.0,
           originalName: 'test2.png',
         )
           ..positionOnCanvas = const Offset(100, 0)
@@ -214,14 +211,12 @@ void main() {
       final testImages = [
         FlitesImage.scaled(
           testImageBytes,
-          scalingFactor: 1.0,
           originalName: 'test1.png',
         )
-          ..positionOnCanvas = const Offset(0, 0)
+          ..positionOnCanvas = Offset.zero
           ..widthOnCanvas = 140,
         FlitesImage.scaled(
           testImageBytes,
-          scalingFactor: 1.0,
           originalName: 'test2.png',
         )
           ..positionOnCanvas = const Offset(140, 0)
@@ -276,21 +271,18 @@ void main() {
       final testImages = [
         FlitesImage.scaled(
           testImageBytes,
-          scalingFactor: 1.0,
           originalName: 'test1.png',
         )
-          ..positionOnCanvas = const Offset(0, 0)
+          ..positionOnCanvas = Offset.zero
           ..widthOnCanvas = 100,
         FlitesImage.scaled(
           testImageBytes,
-          scalingFactor: 1.0,
           originalName: 'test2.png',
         )
           ..positionOnCanvas = const Offset(100, 0)
           ..widthOnCanvas = 100,
         FlitesImage.scaled(
           testImageBytes,
-          scalingFactor: 1.0,
           originalName: 'test3.png',
         )
           ..positionOnCanvas = const Offset(200, 0)
@@ -317,11 +309,13 @@ void main() {
         fileService: mockFileService,
       );
 
-      verify(() => mockFileService.saveFile(
-            bytes: any(named: 'bytes'),
-            fileType: any(named: 'fileType'),
-            fileExtension: any(named: 'fileExtension'),
-          )).called(1);
+      verify(
+        () => mockFileService.saveFile(
+          bytes: any(named: 'bytes'),
+          fileType: any(named: 'fileType'),
+          fileExtension: any(named: 'fileExtension'),
+        ),
+      ).called(1);
 
       // Then
       final savedFile = File('${tempDir.path}/test_sprite.png');
@@ -338,21 +332,18 @@ void main() {
       final testImages = [
         FlitesImage.scaled(
           testImageBytes,
-          scalingFactor: 1.0,
           originalName: 'test1.png',
         )
-          ..positionOnCanvas = const Offset(0, 0)
+          ..positionOnCanvas = Offset.zero
           ..widthOnCanvas = 100,
         FlitesImage.scaled(
           testImageBytes,
-          scalingFactor: 1.0,
           originalName: 'test2.png',
         )
           ..positionOnCanvas = const Offset(100, 0)
           ..widthOnCanvas = 100,
         FlitesImage.scaled(
           testImageBytes,
-          scalingFactor: 1.0,
           originalName: 'test3.png',
         )
           ..positionOnCanvas = const Offset(200, 0)
@@ -405,9 +396,12 @@ void main() {
         for (int y = 0; y < savedImage.height; y++) {
           for (int x = frameStart; x < frameStart + 10; x++) {
             final pixel = savedImage.getPixel(x, y);
-            expect(pixel.a, equals(0),
-                reason:
-                    'Left padding should be transparent at frame $frameIndex, position ($x, $y)');
+            expect(
+              pixel.a,
+              equals(0),
+              reason:
+                  'Left padding should be transparent at frame $frameIndex, position ($x, $y)',
+            );
           }
         }
 
@@ -421,18 +415,26 @@ void main() {
               break;
             }
           }
-          if (hasContent) break;
+          if (hasContent) {
+            break;
+          }
         }
-        expect(hasContent, isTrue,
-            reason: 'Frame $frameIndex should have content');
+        expect(
+          hasContent,
+          isTrue,
+          reason: 'Frame $frameIndex should have content',
+        );
 
         // Check right padding for this frame
         for (int y = 0; y < savedImage.height; y++) {
           for (int x = frameStart + 110; x < frameStart + 130; x++) {
             final pixel = savedImage.getPixel(x, y);
-            expect(pixel.a, equals(0),
-                reason:
-                    'Right padding should be transparent at frame $frameIndex, position ($x, $y)');
+            expect(
+              pixel.a,
+              equals(0),
+              reason:
+                  'Right padding should be transparent at frame $frameIndex, position ($x, $y)',
+            );
           }
         }
       }
@@ -441,8 +443,11 @@ void main() {
       for (int y = 0; y < 15; y++) {
         for (int x = 0; x < savedImage.width; x++) {
           final pixel = savedImage.getPixel(x, y);
-          expect(pixel.a, equals(0),
-              reason: 'Top padding should be transparent at ($x, $y)');
+          expect(
+            pixel.a,
+            equals(0),
+            reason: 'Top padding should be transparent at ($x, $y)',
+          );
         }
       }
 
@@ -450,8 +455,11 @@ void main() {
       for (int y = savedImage.height - 25; y < savedImage.height; y++) {
         for (int x = 0; x < savedImage.width; x++) {
           final pixel = savedImage.getPixel(x, y);
-          expect(pixel.a, equals(0),
-              reason: 'Bottom padding should be transparent at ($x, $y)');
+          expect(
+            pixel.a,
+            equals(0),
+            reason: 'Bottom padding should be transparent at ($x, $y)',
+          );
         }
       }
     });
@@ -461,14 +469,12 @@ void main() {
       final testImages = [
         FlitesImage.scaled(
           testImageBytes,
-          scalingFactor: 1.0,
           originalName: 'test1.png',
         )
-          ..positionOnCanvas = const Offset(0, 0)
+          ..positionOnCanvas = Offset.zero
           ..widthOnCanvas = 100,
         FlitesImage.scaled(
           testImageBytes,
-          scalingFactor: 1.0,
           originalName: 'test2.png',
         )
           ..positionOnCanvas = const Offset(100, 0)
@@ -517,9 +523,12 @@ void main() {
         for (int y = 0; y < savedImage.height; y++) {
           for (int x = frameStart; x < frameStart + 20; x++) {
             final pixel = savedImage.getPixel(x, y);
-            expect(pixel.a, equals(0),
-                reason:
-                    'Left padding should be transparent at frame $frameIndex, position ($x, $y)');
+            expect(
+              pixel.a,
+              equals(0),
+              reason:
+                  'Left padding should be transparent at frame $frameIndex, position ($x, $y)',
+            );
           }
         }
 
@@ -533,10 +542,15 @@ void main() {
               break;
             }
           }
-          if (hasContent) break;
+          if (hasContent) {
+            break;
+          }
         }
-        expect(hasContent, isTrue,
-            reason: 'Frame $frameIndex should have content');
+        expect(
+          hasContent,
+          isTrue,
+          reason: 'Frame $frameIndex should have content',
+        );
       }
     });
 
@@ -545,14 +559,12 @@ void main() {
       final testImages = [
         FlitesImage.scaled(
           testImageBytes,
-          scalingFactor: 1.0,
           originalName: 'test1.png',
         )
-          ..positionOnCanvas = const Offset(0, 0)
+          ..positionOnCanvas = Offset.zero
           ..widthOnCanvas = 100,
         FlitesImage.scaled(
           testImageBytes,
-          scalingFactor: 1.0,
           originalName: 'test2.png',
         )
           ..positionOnCanvas = const Offset(100, 0)
@@ -607,18 +619,26 @@ void main() {
               break;
             }
           }
-          if (hasContent) break;
+          if (hasContent) {
+            break;
+          }
         }
-        expect(hasContent, isTrue,
-            reason: 'Frame $frameIndex should have content');
+        expect(
+          hasContent,
+          isTrue,
+          reason: 'Frame $frameIndex should have content',
+        );
 
         // Check right padding for this frame
         for (int y = 0; y < savedImage.height; y++) {
           for (int x = frameStart + 100; x < frameStart + 120; x++) {
             final pixel = savedImage.getPixel(x, y);
-            expect(pixel.a, equals(0),
-                reason:
-                    'Right padding should be transparent at frame $frameIndex, position ($x, $y)');
+            expect(
+              pixel.a,
+              equals(0),
+              reason:
+                  'Right padding should be transparent at frame $frameIndex, position ($x, $y)',
+            );
           }
         }
       }
@@ -629,17 +649,15 @@ void main() {
       final testImages = [
         FlitesImage.scaled(
           testImageBytes,
-          scalingFactor: 1.0,
           originalName: 'test1.png',
         )
-          ..positionOnCanvas = const Offset(0, 0)
+          ..positionOnCanvas = Offset.zero
           ..widthOnCanvas = 0, // Zero width
         FlitesImage.scaled(
           testImageBytes,
-          scalingFactor: 1.0,
           originalName: 'test2.png',
         )
-          ..positionOnCanvas = const Offset(0, 0)
+          ..positionOnCanvas = Offset.zero
           ..widthOnCanvas = 100,
       ];
 
@@ -673,10 +691,9 @@ void main() {
       final testImages = [
         FlitesImage.scaled(
           testImageBytes,
-          scalingFactor: 1.0,
           originalName: 'test1.png',
         )
-          ..positionOnCanvas = const Offset(0, 0)
+          ..positionOnCanvas = Offset.zero
           ..widthOnCanvas = 100,
       ];
 
@@ -710,10 +727,9 @@ void main() {
       final testImages = [
         FlitesImage.scaled(
           testImageBytes,
-          scalingFactor: 1.0,
           originalName: 'test1.png',
         )
-          ..positionOnCanvas = const Offset(0, 0)
+          ..positionOnCanvas = Offset.zero
           ..widthOnCanvas = 100,
       ];
 
@@ -748,14 +764,12 @@ void main() {
       final testImages = [
         FlitesImage.scaled(
           testImageBytes,
-          scalingFactor: 1.0,
           originalName: 'test1.png',
         )
-          ..positionOnCanvas = const Offset(0, 0)
+          ..positionOnCanvas = Offset.zero
           ..widthOnCanvas = 150,
         FlitesImage.scaled(
           testImageBytes,
-          scalingFactor: 1.0,
           originalName: 'test2.png',
         )
           ..positionOnCanvas = const Offset(100, 0) // Overlaps with first image
@@ -797,14 +811,12 @@ void main() {
       final testImages = [
         FlitesImage.scaled(
           testImageBytes,
-          scalingFactor: 1.0,
           originalName: 'test1.png',
         )
-          ..positionOnCanvas = const Offset(0, 0)
+          ..positionOnCanvas = Offset.zero
           ..widthOnCanvas = 100,
         FlitesImage.scaled(
           testImageBytes,
-          scalingFactor: 1.0,
           originalName: 'test2.png',
         )
           ..positionOnCanvas = const Offset(0, 50) // Stacked vertically
@@ -839,26 +851,27 @@ void main() {
       final savedImage = img.decodePng(savedFile.readAsBytesSync());
       expect(savedImage, isNotNull);
       expect(savedImage!.width, equals(200)); // 100 * 2 frames
-      expect(savedImage.height,
-          equals(150)); // Full height to accommodate stacked images
+      expect(
+        savedImage.height,
+        equals(150),
+      ); // Full height to accommodate stacked images
     });
 
     test('handles corrupted image data gracefully', () async {
       // Given - Create corrupted image data
       final corruptedImageBytes = Uint8List.fromList(
-          [...testImageBytes.take(50), ...List.filled(50, 0)]);
+        [...testImageBytes.take(50), ...List.filled(50, 0)],
+      );
 
       final testImages = [
         FlitesImage.scaled(
           corruptedImageBytes,
-          scalingFactor: 1.0,
           originalName: 'corrupted.png',
         )
-          ..positionOnCanvas = const Offset(0, 0)
+          ..positionOnCanvas = Offset.zero
           ..widthOnCanvas = 100,
         FlitesImage.scaled(
           testImageBytes,
-          scalingFactor: 1.0,
           originalName: 'valid.png',
         )
           ..positionOnCanvas = const Offset(100, 0)
@@ -902,7 +915,6 @@ void main() {
         100,
         (index) => FlitesImage.scaled(
           testImageBytes,
-          scalingFactor: 1.0,
           originalName: 'test$index.png',
         )
           ..positionOnCanvas = Offset(index * 100.0, 0)
@@ -935,8 +947,10 @@ void main() {
       // Then
       final savedFile = File('${tempDir.path}/test_sprite.png');
       expect(savedFile.existsSync(), isTrue);
-      expect(stopwatch.elapsedMilliseconds,
-          lessThan(5000)); // Should complete within 5 seconds
+      expect(
+        stopwatch.elapsedMilliseconds,
+        lessThan(5000),
+      ); // Should complete within 5 seconds
     });
 
     test('handles different image sizes correctly', () async {
@@ -945,7 +959,6 @@ void main() {
         width: 200,
         height: 200,
         numChannels: 4,
-        format: img.Format.uint8,
       );
       img.fill(largeImage, color: img.ColorRgba8(255, 255, 255, 255));
       final largeImageBytes = Uint8List.fromList(img.encodePng(largeImage));
@@ -953,14 +966,12 @@ void main() {
       final testImages = [
         FlitesImage.scaled(
           testImageBytes, // 100x100
-          scalingFactor: 1.0,
           originalName: 'small.png',
         )
-          ..positionOnCanvas = const Offset(0, 0)
+          ..positionOnCanvas = Offset.zero
           ..widthOnCanvas = 100,
         FlitesImage.scaled(
           largeImageBytes, // 200x200
-          scalingFactor: 1.0,
           originalName: 'large.png',
         )
           ..positionOnCanvas = const Offset(100, 0)

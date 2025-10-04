@@ -1,20 +1,11 @@
-import 'package:flites/constants/app_sizes.dart';
-import 'package:flites/main.dart';
 import 'package:flutter/material.dart';
+
+import '../../constants/app_sizes.dart';
+import '../../main.dart';
 import 'numeric_input_with_buttons.dart';
 
 class PaddingInput extends StatefulWidget {
-  final int topPadding;
-  final int bottomPadding;
-  final int leftPadding;
-  final int rightPadding;
-  final ValueChanged<int> onTopChanged;
-  final ValueChanged<int> onBottomChanged;
-  final ValueChanged<int> onLeftChanged;
-  final ValueChanged<int> onRightChanged;
-
   const PaddingInput({
-    super.key,
     required this.topPadding,
     required this.bottomPadding,
     required this.leftPadding,
@@ -23,7 +14,16 @@ class PaddingInput extends StatefulWidget {
     required this.onBottomChanged,
     required this.onLeftChanged,
     required this.onRightChanged,
+    super.key,
   });
+  final int topPadding;
+  final int bottomPadding;
+  final int leftPadding;
+  final int rightPadding;
+  final ValueChanged<int> onTopChanged;
+  final ValueChanged<int> onBottomChanged;
+  final ValueChanged<int> onLeftChanged;
+  final ValueChanged<int> onRightChanged;
 
   @override
   State<PaddingInput> createState() => _PaddingInputState();
@@ -61,65 +61,62 @@ class _PaddingInputState extends State<PaddingInput> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Row(
-          children: [
-            Text(
-              '${context.l10n.padding.toUpperCase()} (px)',
-              style: const TextStyle(fontSize: Sizes.p12),
-            ),
-          ],
-        ),
-        gapH16,
-        SizedBox(
-          width: 100,
-          child: NumericInputWithButtons(
-            currentValue: widget.topPadding,
-            onChanged: _handleTopChange,
+  Widget build(BuildContext context) => Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            children: [
+              Text(
+                '${context.l10n.padding.toUpperCase()} (px)',
+                style: const TextStyle(fontSize: Sizes.p12),
+              ),
+            ],
           ),
-        ),
-        gapH16,
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SizedBox(
-              width: 100,
-              child: NumericInputWithButtons(
-                currentValue: widget.leftPadding,
-                onChanged: _handleLeftChange,
-              ),
+          gapH16,
+          SizedBox(
+            width: 100,
+            child: NumericInputWithButtons(
+              currentValue: widget.topPadding,
+              onChanged: _handleTopChange,
             ),
-            const Spacer(),
-            IconButton(
-              icon: Icon(
-                _isLocked ? Icons.lock_outline : Icons.lock_open_outlined,
-                size: 16,
-              ),
-              onPressed: () => setState(() => _isLocked = !_isLocked),
-            ),
-            const Spacer(),
-            SizedBox(
-              width: 100,
-              child: NumericInputWithButtons(
-                currentValue: widget.rightPadding,
-                onChanged: _handleRightChange,
-              ),
-            ),
-          ],
-        ),
-        gapH16,
-        SizedBox(
-          width: 100,
-          child: NumericInputWithButtons(
-            currentValue: widget.bottomPadding,
-            onChanged: _handleBottomChange,
           ),
-        ),
-      ],
-    );
-  }
+          gapH16,
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(
+                width: 100,
+                child: NumericInputWithButtons(
+                  currentValue: widget.leftPadding,
+                  onChanged: _handleLeftChange,
+                ),
+              ),
+              const Spacer(),
+              IconButton(
+                icon: Icon(
+                  _isLocked ? Icons.lock_outline : Icons.lock_open_outlined,
+                  size: 16,
+                ),
+                onPressed: () => setState(() => _isLocked = !_isLocked),
+              ),
+              const Spacer(),
+              SizedBox(
+                width: 100,
+                child: NumericInputWithButtons(
+                  currentValue: widget.rightPadding,
+                  onChanged: _handleRightChange,
+                ),
+              ),
+            ],
+          ),
+          gapH16,
+          SizedBox(
+            width: 100,
+            child: NumericInputWithButtons(
+              currentValue: widget.bottomPadding,
+              onChanged: _handleBottomChange,
+            ),
+          ),
+        ],
+      );
 }

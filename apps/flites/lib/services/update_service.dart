@@ -2,13 +2,17 @@ import 'dart:convert';
 import 'dart:io' show Platform;
 
 import 'package:dio/dio.dart';
-import 'package:flites/types/update_info.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../types/update_info.dart';
+
 class UpdateService {
+  // Private constructor to prevent instantiation
+  UpdateService._();
+
   static late final Dio _dio;
   static final String? _baseUrl = dotenv.env['UPDATE_SERVICE_BASE_URL'];
 
@@ -18,7 +22,7 @@ class UpdateService {
         // Initialize Dio with default options
         final packageInfo = await PackageInfo.fromPlatform();
         _initializeDio(packageInfo.version);
-      } catch (e) {
+      } on Exception catch (e) {
         debugPrint('Failed to initialize UpdateService: $e');
       }
     }
@@ -37,7 +41,9 @@ class UpdateService {
   }
 
   static Future<UpdateInfo?> checkForUpdates() async {
-    if (kDebugMode || kIsWeb || !_isDioInitialized()) return null;
+    if (kDebugMode || kIsWeb || !_isDioInitialized()) {
+      return null;
+    }
 
     final packageInfo = await PackageInfo.fromPlatform();
     final currentVersionString = packageInfo.version;
@@ -54,14 +60,16 @@ class UpdateService {
     } on DioException catch (e) {
       debugPrint('Error checking for updates (Dio): ${e.message}');
       return null;
-    } catch (e) {
+    } on Exception catch (e) {
       debugPrint('Error during update check: $e');
       return null;
     }
   }
 
   static Future<void> openUpdateLink(String? updateLink) async {
-    if (updateLink == null || updateLink.isEmpty) return;
+    if (updateLink == null || updateLink.isEmpty) {
+      return;
+    }
 
     try {
       final uri = Uri.parse(updateLink);
@@ -70,17 +78,19 @@ class UpdateService {
       } else {
         debugPrint('Could not launch URL: $updateLink');
       }
-    } catch (e) {
+    } on Exception catch (e) {
       debugPrint('Error launching update link: $e');
     }
   }
 
   static UpdateInfo? _parseUpdateResponse(
-    dynamic responseData,
+    responseData,
     String currentVersionString,
   ) {
     try {
-      if (responseData == null) return null;
+      if (responseData == null) {
+        return null;
+      }
 
       final Map<String, dynamic> updateData;
 
@@ -112,10 +122,11 @@ class UpdateService {
         );
       } else {
         debugPrint(
-            'No update available or missing latestVersion in parsed data.');
+          'No update available or missing latestVersion in parsed data.',
+        );
         return null;
       }
-    } catch (e) {
+    } on Exception catch (e) {
       debugPrint('Error processing update check response data: $e');
       return null;
     }
@@ -123,9 +134,10 @@ class UpdateService {
 
   static bool _isDioInitialized() {
     try {
-      _dio;
+      // Try to access _dio, if it hasn't been initialized, it will throw
+      _dio.hashCode;
       return true;
-    } catch (_) {
+    } on Exception catch (_) {
       debugPrint('Dio not initialized, skipping update check.');
       return false;
     }

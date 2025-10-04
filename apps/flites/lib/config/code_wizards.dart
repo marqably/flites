@@ -1,5 +1,5 @@
-import 'package:flites/feature_kits/code_wizards/base_code_wizard.dart';
-import 'package:flites/feature_kits/code_wizards/flutter_flame/flutter_flame_code_wizard.dart';
+import '../feature_kits/code_wizards/base_code_wizard.dart';
+import '../feature_kits/code_wizards/flutter_flame/flutter_flame_code_wizard.dart';
 
 enum CodeWizards {
   none,
@@ -15,10 +15,8 @@ enum CodeWizards {
     }
   }
 
-  static Map<CodeWizards, String> getCodeWizardMap() {
-    return {
-      CodeWizards.none: 'None',
-      CodeWizards.flutterFlame: 'Flutter Flame',
-    };
-  }
+  static Map<CodeWizards, String> getCodeWizardMap() => {
+        CodeWizards.none: 'None',
+        CodeWizards.flutterFlame: 'Flutter Flame',
+      };
 }

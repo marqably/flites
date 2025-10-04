@@ -2,7 +2,7 @@
 import 'dart:convert';
 import 'dart:ui';
 
-import 'package:flites/types/export_settings.dart';
+import 'export_settings.dart';
 
 import 'flites_image.dart';
 
@@ -24,42 +24,39 @@ class FlitesImageRow {
     List<FlitesImage>? images,
     List<Offset>? hitboxPoints,
     ExportSettings? exportSettings,
-  }) {
-    return FlitesImageRow(
-      hitboxPoints: hitboxPoints ?? this.hitboxPoints,
-      name: name ?? this.name,
-      images: images ?? this.images,
-      exportSettings: exportSettings ?? this.exportSettings,
-    );
-  }
+  }) =>
+      FlitesImageRow(
+        hitboxPoints: hitboxPoints ?? this.hitboxPoints,
+        name: name ?? this.name,
+        images: images ?? this.images,
+        exportSettings: exportSettings ?? this.exportSettings,
+      );
 
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'name': name,
-      'images': images.map((x) => x.toJson()).toList(),
-      'exportSettings': exportSettings.toMap(),
-      'hitboxPoints': hitboxPoints
-          ?.map((point) => {'dx': point.dx, 'dy': point.dy})
-          .toList(),
-    };
-  }
+  Map<String, dynamic> toMap() => <String, dynamic>{
+        'name': name,
+        'images': images.map((x) => x.toJson()).toList(),
+        'exportSettings': exportSettings.toMap(),
+        'hitboxPoints': hitboxPoints
+            ?.map((point) => {'dx': point.dx, 'dy': point.dy})
+            .toList(),
+      };
 
-  factory FlitesImageRow.fromMap(Map<String, dynamic> map) {
-    return FlitesImageRow(
-      name: map['name'] as String,
-      images: List<FlitesImage>.from(
-        (map['images'] as List<dynamic>).map<FlitesImage>(
-          (x) => FlitesImage.fromJson(x as Map<String, dynamic>),
+  factory FlitesImageRow.fromMap(Map<String, dynamic> map) => FlitesImageRow(
+        name: map['name'] as String,
+        images: List<FlitesImage>.from(
+          (map['images'] as List<dynamic>).map<FlitesImage>(
+            (x) => FlitesImage.fromJson(x as Map<String, dynamic>),
+          ),
         ),
-      ),
-      hitboxPoints: map['hitboxPoints'] != null
-          ? List<Offset>.from((map['hitboxPoints'] as List<dynamic>)
-              .map((x) => Offset(x['dx'] as double, x['dy'] as double)))
-          : null,
-      exportSettings:
-          ExportSettings.fromMap(map['exportSettings'] as Map<String, dynamic>),
-    );
-  }
+        hitboxPoints: map['hitboxPoints'] != null
+            ? List<Offset>.from(
+                (map['hitboxPoints'] as List<dynamic>)
+                    .map((x) => Offset(x['dx'] as double, x['dy'] as double)),
+              )
+            : null,
+        exportSettings: ExportSettings.fromMap(
+            map['exportSettings'] as Map<String, dynamic>,),
+      );
 
   String toJson() => json.encode(toMap());
 

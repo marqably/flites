@@ -29,10 +29,9 @@ class OutputSettings {
   OutputSettings copyWith({
     double? itemWidth,
     double? itemHeight,
-  }) {
-    return OutputSettings(
-      itemWidth: itemWidth ?? this.itemWidth,
-      itemHeight: itemHeight ?? this.itemHeight,
-    );
-  }
+  }) =>
+      OutputSettings(
+        itemWidth: itemWidth ?? this.itemWidth,
+        itemHeight: itemHeight ?? this.itemHeight,
+      );
 }

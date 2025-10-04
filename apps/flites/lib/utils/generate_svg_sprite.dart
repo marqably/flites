@@ -3,19 +3,22 @@ import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:file_picker/file_picker.dart';
-import 'package:flites/services/file_service.dart';
-import 'package:flites/states/source_files_state.dart';
-import 'package:flites/types/export_settings.dart';
-import 'package:flites/types/exported_sprite_image.dart';
-import 'package:flites/types/exported_sprite_row_info.dart';
-import 'package:flites/types/sprite_constraints.dart';
-import 'package:flites/utils/bounding_box_utils.dart';
-import 'package:flites/utils/generate_sprite.dart';
-import 'package:flites/utils/svg_utils.dart';
 import 'package:flutter/material.dart';
+
+import '../services/file_service.dart';
+import '../states/source_files_state.dart';
+import '../types/export_settings.dart';
+import '../types/exported_sprite_image.dart';
+import '../types/exported_sprite_row_info.dart';
+import '../types/sprite_constraints.dart';
+import 'bounding_box_utils.dart';
+import 'generate_sprite.dart';
+import 'svg_utils.dart';
 
 /// Handles the generation of SVG sprite sheets from multiple SVG images.
 class GenerateSvgSprite {
+  // Private constructor to prevent instantiation
+  GenerateSvgSprite._();
   static Future<ExportedSpriteSheetTiled?> exportTiledSpriteMap({
     required Size tileSize,
   }) async {
@@ -36,7 +39,7 @@ class GenerateSvgSprite {
     FileService? fileService,
     Size? tileSize,
   }) async {
-    final sourceFiles = projectSourceFiles.value;
+    final sourceFiles = SourceFilesState.projectSourceFiles;
 
     final spriteRowImages = <Uint8List>[];
     final spriteRowInfos = <ExportedSpriteRowInfo>[];
@@ -94,16 +97,14 @@ class GenerateSvgSprite {
 
       longestWidth = max(
         longestWidth,
-        (frameSize.width.toInt() * imagesInRow),
+        (frameSize.width * imagesInRow).toInt(),
       );
       totalHeight += frameSize.height.toInt();
     }
 
     // Build the SVG buffer for the whole sprite map
-    final svgBuffer = StringBuffer();
-
     // SVG header with calculated dimensions
-    svgBuffer.write('''
+    final svgBuffer = StringBuffer()..write('''
 <svg xmlns="http://www.w3.org/2000/svg" width="$longestWidth" height="$totalHeight" viewBox="0 0 $longestWidth $totalHeight">
 ''');
 
@@ -115,7 +116,9 @@ class GenerateSvgSprite {
       final rowImage = spriteRowImages[i];
 
       // Skip non-SVG images
-      if (!SvgUtils.isSvg(rowImage)) continue;
+      if (!SvgUtils.isSvg(rowImage)) {
+        continue;
+      }
 
       // Calculate position for this frame's origin
       final frameYPos = offsetY;
@@ -166,7 +169,7 @@ class GenerateSvgSprite {
     // Save the SVG sprite
     final svgData = Uint8List.fromList(utf8.encode(svgBuffer.toString()));
 
-    _saveSpriteSheet(
+    await _saveSpriteSheet(
       svgData,
       fileService ?? const FileService(),
     );
@@ -209,7 +212,8 @@ class GenerateSvgSprite {
     ExportSettings settings, {
     required int spriteRowIndex,
   }) async {
-    final images = projectSourceFiles.value.rows[spriteRowIndex].images;
+    final images =
+        SourceFilesState.projectSourceFiles.rows[spriteRowIndex].images;
     final boundingBox = boundingBoxOfRow(spriteRowIndex);
 
     // Early return if no valid images or bounding box
@@ -218,56 +222,59 @@ class GenerateSvgSprite {
     }
 
     /// Override settings if no height & width provided
+    ExportSettings finalSettings = settings;
     if ((settings.widthPx == null || settings.widthPx == 0) &&
         (settings.heightPx == null || settings.heightPx == 0)) {
-      settings = settings.copyWith(
+      finalSettings = settings.copyWith(
         widthPx: boundingBox.size.width.toInt(),
         heightPx: boundingBox.size.height.toInt(),
       );
     }
 
-    _validateInput(settings);
+    _validateInput(finalSettings);
 
     // Calculate dimensions
-    final frameSize = GenerateSprite.sizeOfFrame(boundingBox.size, settings);
+    final frameSize =
+        GenerateSprite.sizeOfFrame(boundingBox.size, finalSettings);
 
     final spriteSheetWidth = _calculateSpriteSheetWidth(
-      settings,
+      finalSettings,
       images.length,
       frameSize.width,
-      settings.paddingLeftPx.toDouble(),
+      finalSettings.paddingLeftPx.toDouble(),
     );
     final spriteSheetHeight = _calculateSpriteSheetHeight(
-      settings,
+      finalSettings,
       frameSize.height,
-      settings.paddingTopPx.toDouble(),
-      settings.paddingBottomPx.toDouble(),
+      finalSettings.paddingTopPx.toDouble(),
+      finalSettings.paddingBottomPx.toDouble(),
     );
 
     // Calculate scaling factor for images
-    final scalingFactor = switch (settings.constraints) {
+    final scalingFactor = switch (finalSettings.constraints) {
       SpriteSizeConstrained() => GenerateSprite.scalingWithBoundingBox(
-          settings.constraints as SpriteSizeConstrained,
+          finalSettings.constraints as SpriteSizeConstrained,
           boundingBox,
           images: images,
         ),
       SpriteHeightConstrained() => GenerateSprite.scalingFactorForSizeAlongAxis(
-          (settings.constraints as SpriteHeightConstrained).heightPx.toDouble(),
+          (finalSettings.constraints as SpriteHeightConstrained)
+              .heightPx
+              .toDouble(),
           Axis.vertical,
           images: images,
         ),
       SpriteWidthConstrained() => GenerateSprite.scalingFactorForSizeAlongAxis(
-          (settings.constraints as SpriteWidthConstrained).widthPx.toDouble(),
+          (finalSettings.constraints as SpriteWidthConstrained)
+              .widthPx
+              .toDouble(),
           Axis.horizontal,
           images: images,
         ),
     };
 
     // Build the SVG sprite sheet
-    final svgBuffer = StringBuffer();
-
-    // SVG header with calculated dimensions
-    svgBuffer.write('''
+    final svgBuffer = StringBuffer()..write('''
 <svg xmlns="http://www.w3.org/2000/svg" width="${spriteSheetWidth.toInt()}" height="${spriteSheetHeight.toInt()}" viewBox="0 0 ${spriteSheetWidth.toInt()} ${spriteSheetHeight.toInt()}">
 ''');
 
@@ -276,11 +283,13 @@ class GenerateSvgSprite {
       final fliteImage = images[i];
 
       // Skip non-SVG images
-      if (!SvgUtils.isSvg(fliteImage.image)) continue;
+      if (!SvgUtils.isSvg(fliteImage.image)) {
+        continue;
+      }
 
       // Calculate position for this frame's origin
-      final frameXPos = i * (frameSize.width + settings.horizontalMargin);
-      final frameYPos = settings.paddingTopPx;
+      final frameXPos = i * (frameSize.width + finalSettings.horizontalMargin);
+      final frameYPos = finalSettings.paddingTopPx;
 
       // Extract the original SVG content
       final svgString = String.fromCharCodes(fliteImage.image);
@@ -321,12 +330,14 @@ class GenerateSvgSprite {
     return ExportedSpriteRow(
       image: svgData,
       rowInfo: ExportedSpriteRowInfo.asSingleRow(
-        name: projectSourceFiles.value.rows[spriteRowIndex].name,
+        name: SourceFilesState.projectSourceFiles.rows[spriteRowIndex].name,
         totalWidth: frameSize.width.toInt(),
         totalHeight: frameSize.height.toInt(),
         numberOfFrames: images.length,
         hitboxPoints:
-            projectSourceFiles.value.rows[spriteRowIndex].hitboxPoints ?? [],
+            SourceFilesState
+                .projectSourceFiles.rows[spriteRowIndex].hitboxPoints ??
+            [],
         originalAspectRatio: boundingBox.size.width / boundingBox.size.height,
       ),
     );
@@ -342,7 +353,7 @@ class GenerateSvgSprite {
         fileType: FileType.image,
         fileExtension: 'svg',
       );
-    } catch (e) {
+    } on Exception {
       debugPrint('Error saving file: $e');
       rethrow;
     }

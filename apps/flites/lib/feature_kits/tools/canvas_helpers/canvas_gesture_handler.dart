@@ -11,10 +11,8 @@ class _CanvasGestureHandler extends StatelessWidget {
   final Widget child;
 
   @override
-  Widget build(BuildContext context) {
-    return Watch(
-      (context) {
-        return Listener(
+  Widget build(BuildContext context) => Watch(
+        (context) => Listener(
           behavior: HitTestBehavior.opaque,
           onPointerSignal: (pointerSignal) {
             if (pointerSignal is PointerScrollEvent &&
@@ -53,8 +51,6 @@ class _CanvasGestureHandler extends StatelessWidget {
               child: child,
             ),
           ),
-        );
-      },
-    );
-  }
+        ),
+      );
 }

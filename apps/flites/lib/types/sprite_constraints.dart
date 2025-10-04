@@ -1,20 +1,17 @@
 sealed class SpriteConstraints {}
 
 class SpriteHeightConstrained extends SpriteConstraints {
-  final int heightPx;
-
   SpriteHeightConstrained(this.heightPx);
+  final int heightPx;
 }
 
 class SpriteWidthConstrained extends SpriteConstraints {
-  final int widthPx;
-
   SpriteWidthConstrained(this.widthPx);
+  final int widthPx;
 }
 
 class SpriteSizeConstrained extends SpriteConstraints {
+  SpriteSizeConstrained(this.widthPx, this.heightPx);
   final int widthPx;
   final int heightPx;
-
-  SpriteSizeConstrained(this.widthPx, this.heightPx);
 }

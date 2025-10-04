@@ -5,30 +5,30 @@ class _CanvasBoundingBox extends StatelessWidget {
   const _CanvasBoundingBox();
 
   @override
-  Widget build(BuildContext context) {
-    return Watch(
-      (context) {
-        final boundingBox = boundingBoxOfSelectedRow;
+  Widget build(BuildContext context) => Watch(
+        (context) {
+          final boundingBox = boundingBoxOfSelectedRow;
 
-        if (boundingBox == null || !showBoundingBorder.value) {
-          return const SizedBox.shrink();
-        }
+          if (boundingBox == null || !appState.showBoundingBorder.value) {
+            return const SizedBox.shrink();
+          }
 
-        return _CanvasPositioned(
-          left: boundingBox.position.dx,
-          top: boundingBox.position.dy,
-          child: Container(
-            decoration: BoxDecoration(
-              border: Border.all(
-                width: Sizes.p4,
-                color: context.colors.surfaceContainerLowest,
+          return _CanvasPositioned(
+            left: boundingBox.position.dx,
+            top: boundingBox.position.dy,
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border.all(
+                  width: Sizes.p4,
+                  color: context.colors.surfaceContainerLowest,
+                ),
               ),
+              height:
+                  boundingBox.size.height * appState.canvasScalingFactor.value,
+              width:
+                  boundingBox.size.width * appState.canvasScalingFactor.value,
             ),
-            height: boundingBox.size.height * canvasScalingFactor.value,
-            width: boundingBox.size.width * canvasScalingFactor.value,
-          ),
-        );
-      },
-    );
-  }
+          );
+        },
+      );
 }

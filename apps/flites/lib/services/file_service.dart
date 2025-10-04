@@ -2,17 +2,16 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:file_saver/file_saver.dart';
-import 'package:flites/states/source_files_state.dart';
-import 'package:flites/widgets/overlays/file_save_confirm_overlay.dart';
 import 'package:flutter/foundation.dart';
-
 import 'package:path_provider/path_provider.dart';
+
+import '../states/source_files_state.dart';
+import '../widgets/overlays/file_save_confirm_overlay.dart';
 
 class FileService {
   const FileService();
 
-  Future<FilePickerResult?> pickFiles() async =>
-      await FilePicker.platform.pickFiles(
+  Future<FilePickerResult?> pickFiles() async => FilePicker.platform.pickFiles(
         allowMultiple: true,
         withData: true,
         type: FileType.custom,
@@ -29,13 +28,13 @@ class FileService {
     required String fileExtension,
   }) async {
     final projectName =
-        (projectSourceFiles.value.projectName ?? 'Character').toLowerCase();
+        (SourceFilesState.projectSourceFiles.projectName ?? 'Character')
+            .toLowerCase();
     if (kIsWeb) {
       await FileSaver.instance.saveFile(
         bytes: bytes,
         name: '$projectName.$fileExtension',
         ext: fileExtension,
-        mimeType: MimeType.other,
       );
 
       return true;
@@ -55,7 +54,9 @@ class FileService {
         ],
       );
 
-      if (outputFile == null) return false;
+      if (outputFile == null) {
+        return false;
+      }
 
       final savedFile = File(outputFile);
       await savedFile.writeAsBytes(bytes);

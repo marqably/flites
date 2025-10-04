@@ -1,9 +1,12 @@
 import 'dart:math';
 
-import 'package:flites/constants/app_sizes.dart';
 import 'package:flutter/material.dart';
 
+import '../constants/app_sizes.dart';
+
 class PositioningUtils {
+  // Private constructor to prevent instantiation
+  PositioningUtils._();
   /// Returns an offset measured from the top left corner of the screen where the
   /// entire overlay will be visible
   static Offset adjustOverlayOffsetToBeVisible({

@@ -1,17 +1,19 @@
 import 'dart:math';
-import 'package:flites/constants/app_sizes.dart';
-import 'package:flites/main.dart';
-import 'package:flites/states/selected_image_state.dart';
-import 'package:flites/states/tool_controller.dart';
-import 'package:flites/config/tools.dart';
-import 'package:flites/utils/get_flite_image.dart';
+
 import 'package:flutter/material.dart';
+
+import '../../config/tools.dart';
+import '../../constants/app_sizes.dart';
+import '../../main.dart';
+import '../../states/selected_image_state.dart';
+import '../../states/tool_controller.dart';
+import '../../utils/get_flite_image.dart';
 
 class RotationWrapper extends StatefulWidget {
   const RotationWrapper({
-    super.key,
     required this.child,
     required this.rect,
+    super.key,
     this.onRotate,
     this.initialRotation,
   });
@@ -26,7 +28,7 @@ class RotationWrapper extends StatefulWidget {
 }
 
 class _RotationWrapperState extends State<RotationWrapper> {
-  double rotation = 0.0;
+  double rotation = 0;
   Offset dragStartPoint = Offset.zero;
 
   late final double circleRadius;
@@ -46,8 +48,8 @@ class _RotationWrapperState extends State<RotationWrapper> {
 
   double calculateAngle(Offset start, Offset end) {
     // Calculate angles from the origin (0,0)
-    double startAngle = atan2(start.dy, start.dx);
-    double endAngle = atan2(end.dy, end.dx);
+    final double startAngle = atan2(start.dy, start.dx);
+    final double endAngle = atan2(end.dy, end.dx);
 
     // Return the difference between the angles
     return endAngle - startAngle;
@@ -55,8 +57,9 @@ class _RotationWrapperState extends State<RotationWrapper> {
 
   void _updateRotation(Offset currentPosition) {
     final newAngle = calculateAngle(
-        const Offset(0, -1), // Top of circle as reference
-        dragStartPoint + flipY(currentPosition));
+      const Offset(0, -1), // Top of circle as reference
+      dragStartPoint + flipY(currentPosition),
+    );
 
     setState(() {
       rotation = -newAngle;
@@ -73,8 +76,9 @@ class _RotationWrapperState extends State<RotationWrapper> {
     // For a clean UX, keep the handle at the same visual position
     // by calculating the offset based on the current rotation
     final endAngle = calculateAngle(
-        const Offset(0, -1), // Top of circle
-        dragStartPoint + flipY(endPosition));
+      const Offset(0, -1), // Top of circle
+      dragStartPoint + flipY(endPosition),
+    );
 
     setState(() {
       // Update the start point for the next drag
@@ -97,7 +101,7 @@ class _RotationWrapperState extends State<RotationWrapper> {
         Padding(
           padding: const EdgeInsets.only(bottom: Sizes.p48),
           child: Transform.rotate(
-            origin: const Offset(0, 0),
+            origin: Offset.zero,
             angle: rotation,
             child: SizedBox(
               height: circleRadius * 2,
@@ -134,12 +138,18 @@ class _RotationWrapperState extends State<RotationWrapper> {
                           behavior: HitTestBehavior.opaque,
                           onPanStart: (_) {},
                           onPanUpdate: (details) {
-                            _updateRotation(standardizeOffsetToRotation(
-                                details.localPosition));
+                            _updateRotation(
+                              standardizeOffsetToRotation(
+                                details.localPosition,
+                              ),
+                            );
                           },
                           onPanEnd: (details) {
-                            updateStartPoint(standardizeOffsetToRotation(
-                                details.localPosition));
+                            updateStartPoint(
+                              standardizeOffsetToRotation(
+                                details.localPosition,
+                              ),
+                            );
                           },
                           child: Container(
                             decoration: BoxDecoration(
@@ -192,7 +202,8 @@ class _RotationWrapperState extends State<RotationWrapper> {
                       color: context.colors.surfaceContainer,
                     ),
                     onPressed: () async {
-                      final currentImage = getFliteImage(selectedImageId.value);
+                      final currentImage =
+                          getFliteImage(SelectedImageState.selectedImageId);
 
                       if (currentImage != null) {
                         await currentImage.rotateImage(rotation);
@@ -205,7 +216,7 @@ class _RotationWrapperState extends State<RotationWrapper> {
                       });
 
                       // Switch back to canvas mode after rotation is applied
-                      toolController.selectTool(Tool.canvas);
+                      toolController.selectedTool = Tool.canvas;
                     },
                   ),
                 ],
@@ -219,24 +230,19 @@ class _RotationWrapperState extends State<RotationWrapper> {
   Offset standardizeOffsetToRotation(Offset offset) {
     final angle = -(dragStartPoint.direction - pi / 2);
 
-    double x = offset.dx * cos(angle) - offset.dy * sin(angle);
-    double y = offset.dx * sin(angle) + offset.dy * cos(angle);
+    final double x = offset.dx * cos(angle) - offset.dy * sin(angle);
+    final double y = offset.dx * sin(angle) + offset.dy * cos(angle);
     return Offset(x, y);
   }
 }
 
 // Helper functions for offset and size calculations
-double longestSideSize(Size size) {
-  return size.width > size.height ? size.width : size.height;
-}
+double longestSideSize(Size size) =>
+    size.width > size.height ? size.width : size.height;
 
-Offset flipY(Offset offset) {
-  return Offset(offset.dx, -offset.dy);
-}
+Offset flipY(Offset offset) => Offset(offset.dx, -offset.dy);
 
-Offset rotateOffset(Offset offset, double angle) {
-  return Offset(
-    offset.dx * cos(angle) - offset.dy * sin(angle),
-    offset.dx * sin(angle) + offset.dy * cos(angle),
-  );
-}
+Offset rotateOffset(Offset offset, double angle) => Offset(
+      offset.dx * cos(angle) - offset.dy * sin(angle),
+      offset.dx * sin(angle) + offset.dy * cos(angle),
+    );

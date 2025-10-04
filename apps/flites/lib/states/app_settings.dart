@@ -1,7 +1,8 @@
-import 'package:flites/utils/persistence_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:signals/signals_flutter.dart';
+
+import '../utils/persistence_extensions.dart';
 
 // Define keys for storing values in SharedPreferences
 const String _kThemeModeKey = 'app_theme_mode';
@@ -37,7 +38,9 @@ class AppSettings {
   /// Set the theme mode
   /// and save it to SharedPreferences
   Future<void> setThemeMode(ThemeMode mode) async {
-    if (_themeMode.peek() == mode) return;
+    if (_themeMode.peek() == mode) {
+      return;
+    }
 
     _themeMode.value = mode;
     await _saveValue(_kThemeModeKey, mode.stringValue);
@@ -46,7 +49,9 @@ class AppSettings {
   /// Set the locale
   /// and save it to SharedPreferences
   Future<void> setLocale(Locale locale) async {
-    if (_currentLocale.peek() == locale) return;
+    if (_currentLocale.peek() == locale) {
+      return;
+    }
 
     _currentLocale.value = locale;
     await _saveValue(_kLocaleKey, locale.stringValue);
@@ -61,7 +66,7 @@ class AppSettings {
   Future<String?> _tryGetString(String key) async {
     try {
       return _prefs?.getString(key);
-    } catch (e, stackTrace) {
+    } on Exception catch (e, stackTrace) {
       debugPrint(
         'AppSettings: Error reading SharedPreferences key "$key": $e\n$stackTrace',
       );

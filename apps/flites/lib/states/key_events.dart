@@ -25,8 +25,7 @@ class ModifierState {
   }
 
   ModifierState removeModifierCopy(Modifier modifier) {
-    final mods = List<Modifier>.from(modifiers);
-    mods.remove(modifier);
+    final mods = List<Modifier>.from(modifiers)..remove(modifier);
     return ModifierState(modifiers: mods);
   }
 }

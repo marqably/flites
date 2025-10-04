@@ -1,13 +1,13 @@
 import 'package:desktop_drop/desktop_drop.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:flites/constants/image_constants.dart';
-import 'package:flites/services/file_service.dart';
-import 'package:flites/types/flites_image.dart';
-import 'package:flites/utils/image_utils.dart';
-import 'package:flites/utils/png_utils.dart';
-import 'package:flites/utils/svg_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:image/image.dart' as img;
+
+import '../services/file_service.dart';
+import '../types/flites_image.dart';
+import 'image_utils.dart';
+import 'png_utils.dart';
+import 'svg_utils.dart';
 
 /// Service for picking and processing images from the file system.
 /// Supports PNG, GIF, and SVG file formats.
@@ -22,24 +22,28 @@ class FlitesImageFactory {
     final result = await fileService.pickFiles();
 
     // Return empty list if no files were selected
-    if (result == null) return [];
+    if (result == null) {
+      return [];
+    }
 
     // Process each file based on its extension
-    List<RawImageAndName> imagesAndNames = [];
+    final List<RawImageAndName> imagesAndNames = [];
     for (final file in result.files) {
       final images = await _processFile(file);
       imagesAndNames.addAll(images);
     }
 
     // Return empty list if no images were successfully processed
-    if (imagesAndNames.isEmpty) return [];
+    if (imagesAndNames.isEmpty) {
+      return [];
+    }
 
     // Scale and convert raw images to FlitesImage objects
     return _processAndScaleImages(imagesAndNames);
   }
 
   Future<List<FlitesImage>> processDroppedFiles(List<DropItem> files) async {
-    List<RawImageAndName> imagesAndNames = [];
+    final List<RawImageAndName> imagesAndNames = [];
 
     for (final file in files) {
       try {
@@ -59,7 +63,7 @@ class FlitesImageFactory {
 
         final image = await _processFile(platformFile);
         imagesAndNames.addAll(image);
-      } catch (e) {
+      } on Exception catch (e) {
         // Handle any errors that occur during file processing
         debugPrint('Error processing dropped file ${file.name}: $e');
       }
@@ -106,7 +110,9 @@ class FlitesImageFactory {
     final gifDecoder = img.GifDecoder();
 
     // Ensure file has bytes
-    if (file.bytes == null) return [];
+    if (file.bytes == null) {
+      return [];
+    }
 
     final decodedGif = gifDecoder.decode(file.bytes!);
 
@@ -148,23 +154,15 @@ class FlitesImageFactory {
   List<FlitesImage> _processAndScaleImages(List<RawImageAndName> images) {
     try {
       // Extract image data
-      final imagesList = images.map((e) => e.image!).toList();
-
-      // Calculate common scaling factor for all images
-      final scalingFactor = ImageUtils.getScalingFactorForMultipleImages(
-        images: imagesList,
-        sizeLongestSideOnCanvas: defaultSizeOnCanvas,
-      );
-
       // Sort images by frame number (for GIFs)
       images.sort((a, b) {
         final numA = int.tryParse(
-                RegExp(r'frame_(\d+)').firstMatch(a.name ?? '')?.group(1) ??
-                    '0') ??
+              RegExp(r'frame_(\d+)').firstMatch(a.name ?? '')?.group(1) ?? '0',
+            ) ??
             0;
         final numB = int.tryParse(
-                RegExp(r'frame_(\d+)').firstMatch(b.name ?? '')?.group(1) ??
-                    '0') ??
+              RegExp(r'frame_(\d+)').firstMatch(b.name ?? '')?.group(1) ?? '0',
+            ) ??
             0;
         return numA.compareTo(numB);
       });
@@ -175,10 +173,9 @@ class FlitesImageFactory {
             try {
               return FlitesImage.scaled(
                 img.image!,
-                scalingFactor: scalingFactor,
                 originalName: img.name,
               );
-            } catch (e) {
+            } on Exception {
               // Skip images that fail to process
               return null;
             }
@@ -187,7 +184,7 @@ class FlitesImageFactory {
           .toList();
 
       return result;
-    } catch (e) {
+    } on Exception {
       // Return empty list if processing fails
       return [];
     }
@@ -195,13 +192,14 @@ class FlitesImageFactory {
 
   /// Duplicates a list of FlitesImage objects for copy and paste operations.
   List<FlitesImage> duplicateFlitesImages(List<FlitesImage> images) {
-    if (images.isEmpty) return [];
+    if (images.isEmpty) {
+      return [];
+    }
 
     return images
         .map(
-          (FlitesImage image) => FlitesImage.scaled(
+          (image) => FlitesImage.scaled(
             image.image,
-            scalingFactor: image.scalingFactor,
             originalName: 'copy_${image.originalName}',
           ),
         )

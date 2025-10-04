@@ -1,6 +1,7 @@
-import 'package:flites/constants/app_sizes.dart';
-import 'package:flites/main.dart';
 import 'package:flutter/material.dart';
+
+import '../../constants/app_sizes.dart';
+import '../../main.dart';
 
 enum PanelPosition {
   left,
@@ -8,28 +9,25 @@ enum PanelPosition {
 }
 
 class Panel extends StatelessWidget {
-  final List<Widget> children;
-  final PanelPosition position;
-  final bool isScrollable;
-
   const Panel({
-    super.key,
     required this.children,
+    super.key,
     this.position = PanelPosition.right,
     this.isScrollable = true,
   });
+  final List<Widget> children;
+  final PanelPosition position;
+  final bool isScrollable;
 
   @override
   Widget build(BuildContext context) {
     final child = isScrollable
         ? SingleChildScrollView(
             child: Column(
-              mainAxisSize: MainAxisSize.max,
               children: children,
             ),
           )
         : Column(
-            mainAxisSize: MainAxisSize.max,
             children: children,
           );
 

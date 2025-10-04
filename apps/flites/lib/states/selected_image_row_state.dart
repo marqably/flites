@@ -1,25 +1,16 @@
-import 'package:flites/states/open_project.dart';
-import 'package:flites/states/selected_image_state.dart';
-import 'package:flites/states/source_files_state.dart';
-import 'package:signals/signals_flutter.dart';
+import '../core/app_state.dart';
 
-/// Defines what row of images is currently being edited
-final _selectedImageRow = signal<int>(0);
-
-ReadonlySignal<int> get selectedImageRow => _selectedImageRow.readonly();
-
+/// Legacy compatibility layer for SelectedImageRowState
+/// This class provides backward compatibility while using the new centralized state
 class SelectedImageRowState {
+  // Private constructor to prevent instantiation
+  SelectedImageRowState._();
+
+  /// Get the currently selected row index
+  static int get selectedImageRow => appState.selectedRowIndex.value;
+
+  /// Set the selected image row
   static void setSelectedImageRow(int index) {
-    if (projectSourceFiles.value.rows[index].images.isNotEmpty) {
-      SelectedImageState.setSelectedImage(
-        projectSourceFiles.value.rows[index].images.first.id,
-      );
-    } else {
-      SelectedImageState.setSelectedImage(null);
-    }
-
-    selectedReferenceImages.value = [];
-
-    _selectedImageRow.value = index;
+    appState.setSelectedRow(index);
   }
 }

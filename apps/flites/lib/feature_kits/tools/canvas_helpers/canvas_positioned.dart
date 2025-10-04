@@ -13,16 +13,14 @@ class _CanvasPositioned extends StatelessWidget {
   final Widget child;
 
   @override
-  Widget build(BuildContext context) {
-    return Watch((context) {
-      final scalingFactor = canvasScalingFactor.value;
-      final position = canvasPosition.value;
+  Widget build(BuildContext context) => Watch((context) {
+        final scalingFactor = appState.canvasScalingFactor.value;
+        final position = appState.canvasPosition.value;
 
-      return Positioned(
-        left: (left * scalingFactor) + position.dx,
-        top: (top * scalingFactor) + position.dy,
-        child: child,
-      );
-    });
-  }
+        return Positioned(
+          left: (left * scalingFactor) + position.dx,
+          top: (top * scalingFactor) + position.dy,
+          child: child,
+        );
+      });
 }

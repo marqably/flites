@@ -1,16 +1,19 @@
 import 'package:file_picker/file_picker.dart';
-import 'package:flites/services/file_service.dart';
-import 'package:flites/states/source_files_state.dart';
-import 'package:flites/types/export_settings.dart';
-import 'package:flites/types/exported_sprite_image.dart';
-import 'package:flites/types/exported_sprite_row_info.dart';
-import 'package:flites/types/flites_image.dart';
-import 'package:flites/types/sprite_constraints.dart';
-import 'package:flites/utils/bounding_box_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:image/image.dart' as img;
 
+import '../services/file_service.dart';
+import '../states/source_files_state.dart';
+import '../types/export_settings.dart';
+import '../types/exported_sprite_image.dart';
+import '../types/exported_sprite_row_info.dart';
+import '../types/flites_image.dart';
+import '../types/sprite_constraints.dart';
+import 'bounding_box_utils.dart';
+
 class GenerateSprite {
+  // Private constructor to prevent instantiation
+  GenerateSprite._();
   static Future<ExportedSpriteSheetTiled?> exportTiledSpriteMap({
     required Size tileSize,
     FileService? fileService,
@@ -35,7 +38,7 @@ class GenerateSprite {
     FileService? fileService,
     Size? tileSize,
   }) async {
-    final sourceFiles = projectSourceFiles.value;
+    final sourceFiles = SourceFilesState.projectSourceFiles;
 
     final List<ExportedSpriteRowInfo> rowInformations = [];
 
@@ -82,7 +85,6 @@ class GenerateSprite {
       width: longestWidth.toInt(),
       height: totalHeight.toInt(),
       numChannels: 4,
-      format: img.Format.uint8,
     );
 
     int offsetY = 0;
@@ -150,13 +152,16 @@ class GenerateSprite {
     return ExportedSpriteRow(
       image: spriteRowImage.toUint8List(),
       rowInfo: ExportedSpriteRowInfo.asSingleRow(
-        name: projectSourceFiles.value.rows[spriteRowIndex].name,
+        name: SourceFilesState.projectSourceFiles.rows[spriteRowIndex].name,
         totalWidth: spriteRowImage.width,
         totalHeight: spriteRowImage.height,
         numberOfFrames:
-            projectSourceFiles.value.rows[spriteRowIndex].images.length,
+            SourceFilesState
+            .projectSourceFiles.rows[spriteRowIndex].images.length,
         hitboxPoints:
-            projectSourceFiles.value.rows[spriteRowIndex].hitboxPoints ?? [],
+            SourceFilesState
+                .projectSourceFiles.rows[spriteRowIndex].hitboxPoints ??
+            [],
         originalAspectRatio: boundingBox?.size.width != null
             ? boundingBox!.size.width / boundingBox.size.height
             : 1,
@@ -168,7 +173,8 @@ class GenerateSprite {
     ExportSettings settings, {
     required int spriteRowIndex,
   }) async {
-    final images = projectSourceFiles.value.rows[spriteRowIndex].images;
+    final images =
+        SourceFilesState.projectSourceFiles.rows[spriteRowIndex].images;
 
     final boundingBox = boundingBoxOfRow(spriteRowIndex);
 
@@ -178,44 +184,47 @@ class GenerateSprite {
     }
 
     /// Override settings if no height & width provided
+    ExportSettings finalSettings = settings;
     if ((settings.widthPx == null || settings.widthPx == 0) &&
         (settings.heightPx == null || settings.heightPx == 0)) {
-      settings = settings.copyWith(
+      finalSettings = settings.copyWith(
         widthPx: boundingBox.size.width.toInt(),
         heightPx: boundingBox.size.height.toInt(),
       );
     }
 
-    _validateDimensions(settings.constraints);
-    _validatePadding(settings);
+    _validateDimensions(finalSettings.constraints);
+    _validatePadding(finalSettings);
 
     // Process frames
-    final spriteSize = settings.maxDimensionsAfterPadding;
+    final spriteSize = finalSettings.maxDimensionsAfterPadding;
 
     final frames = separateSpriteImages(
       images,
       boundingBox,
       spriteSize,
-      settings,
+      finalSettings,
     );
 
-    if (frames.isEmpty) return null;
+    if (frames.isEmpty) {
+      return null;
+    }
 
     // Calculate dimensions
-    final frameSize = sizeOfFrame(boundingBox.size, settings);
+    final frameSize = sizeOfFrame(boundingBox.size, finalSettings);
 
     final spriteSheetWidth = _calculateSpriteSheetWidth(
-      settings,
+      finalSettings,
       frames.length,
       frameSize.width,
-      settings.paddingLeftPx.toDouble(),
+      finalSettings.paddingLeftPx.toDouble(),
     );
 
     final spriteSheetHeight = _calculateSpriteSheetHeight(
-      settings,
+      finalSettings,
       frameSize.height,
-      settings.paddingTopPx.toDouble(),
-      settings.paddingBottomPx.toDouble(),
+      finalSettings.paddingTopPx.toDouble(),
+      finalSettings.paddingBottomPx.toDouble(),
     );
 
     // Create and compose sprite
@@ -223,14 +232,13 @@ class GenerateSprite {
       width: spriteSheetWidth.toInt(),
       height: spriteSheetHeight.toInt(),
       numChannels: 4,
-      format: img.Format.uint8,
     );
 
     // Position each frame with padding
     for (int i = 0; i < frames.length; i++) {
-      final xPos = i * (frameSize.width + settings.horizontalMargin);
-      final dstX = (xPos + settings.paddingLeftPx).toInt();
-      final dstY = settings.paddingTopPx.toInt();
+      final xPos = i * (frameSize.width + finalSettings.horizontalMargin);
+      final dstX = (xPos + finalSettings.paddingLeftPx).toInt();
+      final dstY = finalSettings.paddingTopPx.toInt();
 
       // Composite the actual frame image
       img.compositeImage(
@@ -276,7 +284,7 @@ class GenerateSprite {
       img.Image? decodedImage;
       try {
         decodedImage = img.decodeImage(fliteImage.image);
-      } catch (e) {
+      } on Exception catch (e) {
         debugPrint('Failed to decode image: $e');
         continue;
       }
@@ -299,7 +307,6 @@ class GenerateSprite {
         width: frameSize.width.toInt(),
         height: frameSize.height.toInt(),
         numChannels: 4,
-        format: img.Format.uint8,
       );
 
       // Calculate position to center the image in the frame
@@ -394,7 +401,8 @@ class GenerateSprite {
     });
     if (hasZeroDimension) {
       throw Exception(
-          'Cannot calculate scaling factor when images have zero or negative dimensions');
+        'Cannot calculate scaling factor when images have zero or negative dimensions',
+      );
     }
 
     // Find the minimum and maximum points along the axis
@@ -427,7 +435,7 @@ class GenerateSprite {
         fileType: FileType.custom,
         fileExtension: 'png',
       );
-    } catch (e) {
+    } on Exception catch (e) {
       debugPrint('Error saving file: $e');
       rethrow;
     }
@@ -459,8 +467,12 @@ class GenerateSprite {
     }
   }
 
-  static double _calculateSpriteSheetWidth(ExportSettings settings,
-      int frameCount, double frameWidth, double leftPadding) {
+  static double _calculateSpriteSheetWidth(
+    ExportSettings settings,
+    int frameCount,
+    double frameWidth,
+    double leftPadding,
+  ) {
     // Each frame gets its own padding
     final paddingPerFrame = settings.horizontalMargin;
 

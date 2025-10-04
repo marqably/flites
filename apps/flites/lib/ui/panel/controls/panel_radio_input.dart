@@ -1,11 +1,25 @@
-import 'package:flites/ui/inputs/radio_input.dart';
-import 'package:flites/ui/panel/structure/panel_form.dart';
 import 'package:flutter/material.dart';
 
+import '../../inputs/radio_input.dart';
 import '../structure/panel_control_wrapper.dart';
+import '../structure/panel_form.dart';
 
 /// A radio input control for use within panels
 class PanelRadioInput<T> extends StatefulWidget {
+  const PanelRadioInput({
+    required this.options,
+    required this.label,
+    super.key,
+    this.selectedValue,
+    this.onChanged,
+    this.direction = Axis.vertical,
+    this.formKey,
+    this.helpText,
+  }) : assert(
+          formKey != null || onChanged != null,
+          'Either formKey must be provided for form integration, or onChanged callback',
+        );
+
   /// The currently selected value
   final T? selectedValue;
 
@@ -26,20 +40,6 @@ class PanelRadioInput<T> extends StatefulWidget {
 
   /// Help text to display below the control
   final String? helpText;
-
-  const PanelRadioInput({
-    super.key,
-    this.selectedValue,
-    required this.options,
-    this.onChanged,
-    required this.label,
-    this.direction = Axis.vertical,
-    this.formKey,
-    this.helpText,
-  }) : assert(
-          formKey != null || onChanged != null,
-          'Either formKey must be provided for form integration, or onChanged callback',
-        );
 
   @override
   State<PanelRadioInput<T>> createState() => _PanelRadioInputState<T>();

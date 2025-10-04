@@ -1,17 +1,16 @@
-import 'package:flites/widgets/image_map_widgets/image_map_header.dart';
 import 'package:flutter/material.dart';
 
+import 'image_map_header.dart';
+
 class SpriteMapHeaderWrapper extends StatelessWidget {
-  const SpriteMapHeaderWrapper({super.key, required this.child});
+  const SpriteMapHeaderWrapper({required this.child, super.key});
   final Widget child;
 
   @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Expanded(child: child),
-        ImageMapHeader(),
-      ],
-    );
-  }
+  Widget build(BuildContext context) => Column(
+        children: [
+          Expanded(child: child),
+          ImageMapHeader(),
+        ],
+      );
 }

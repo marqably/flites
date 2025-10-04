@@ -1,14 +1,16 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:file_picker/file_picker.dart';
 import 'package:file_saver/file_saver.dart';
-import 'package:flites/services/obfuscation_service.dart';
-import 'package:flites/states/project_state.dart';
-import 'package:flites/states/source_files_state.dart';
-import 'package:flites/widgets/overlays/update_overlay.dart';
-import 'package:flites/widgets/player/player.dart';
 import 'package:flutter/foundation.dart';
+
+import '../states/project_state.dart';
+import '../states/source_files_state.dart';
+import '../widgets/overlays/update_overlay.dart';
+import '../widgets/player/player.dart';
+import 'obfuscation_service.dart';
 
 class ProjectSavingService {
   void setProjectState(ProjectState projectState) {
@@ -47,7 +49,7 @@ class ProjectSavingService {
 
         return ProjectState.fromJsonString(deObfuscatedJsonData);
       }
-    } catch (e) {
+    } on Exception catch (e) {
       debugPrint('Error loading project file: $e');
       return null;
     }
@@ -62,7 +64,9 @@ class ProjectSavingService {
   Future<void> saveProject() async {
     final projectState = getProjectState();
     final jsonData = ObfuscationService.obfuscateJsonString(
-        projectState.toJsonString(), 'flites');
+      projectState.toJsonString(),
+      'flites',
+    );
 
     if (kIsWeb) {
       // Web implementation - trigger a download
@@ -70,7 +74,6 @@ class ProjectSavingService {
         name: 'project.flites',
         bytes: Uint8List.fromList(utf8.encode(jsonData)),
         ext: 'flites',
-        mimeType: MimeType.other,
       );
     } else {
       final result = await FilePicker.platform.saveFile(
@@ -89,7 +92,7 @@ class ProjectSavingService {
     final version = updateOverlayInfo.value?.currentVersion;
 
     return ProjectState(
-      imageMap: projectSourceFiles.value,
+      imageMap: SourceFilesState.projectSourceFiles,
       playerSpeed: playbackSpeed.value,
       versionNumber: version,
     );

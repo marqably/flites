@@ -1,16 +1,24 @@
-import 'package:signals/signals_flutter.dart';
+import '../core/app_state.dart';
 
-/// Defines what row of images is currently being edited
-final _selectedImageId = signal<String?>(null);
-
-ReadonlySignal get selectedImageId => _selectedImageId.readonly();
-
+/// Legacy compatibility layer for SelectedImageState
+/// This class provides backward compatibility while using the new centralized state
 class SelectedImageState {
-  static void setSelectedImage(String? image) {
-    _selectedImageId.value = image;
+  // Private constructor to prevent instantiation
+  SelectedImageState._();
+
+  /// Get the currently selected image ID
+  static String? get selectedImageId => appState.selectedImageId;
+
+  /// Set the selected image
+  static set selectedImage(String? imageId) {
+    appState.selectedImageId = imageId;
   }
 
+  /// Get the selected image
+  static String? get selectedImage => appState.selectedImageId;
+
+  /// Clear the current selection
   static void clearSelection() {
-    _selectedImageId.value = null;
+    appState.clearSelections();
   }
 }

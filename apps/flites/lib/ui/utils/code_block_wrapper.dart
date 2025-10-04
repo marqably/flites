@@ -1,18 +1,18 @@
-import 'package:flites/constants/app_sizes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../constants/app_sizes.dart';
+
 class CodeBlockWrapper extends StatelessWidget {
+  const CodeBlockWrapper({
+    required this.child,
+    required this.language,
+    super.key,
+    this.text,
+  });
   final Widget child;
   final String language;
   final String? text;
-
-  const CodeBlockWrapper({
-    super.key,
-    required this.child,
-    required this.language,
-    this.text,
-  });
 
   @override
   Widget build(BuildContext context) {
@@ -75,7 +75,6 @@ class CodeBlockWrapper extends StatelessWidget {
             ),
             border: Border.all(
               color: theme.colorScheme.surfaceContainerLowest,
-              width: 1,
             ),
           ),
           child: child,

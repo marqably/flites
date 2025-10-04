@@ -1,11 +1,11 @@
-import 'package:flites/states/selected_image_row_state.dart';
-import 'package:flites/states/selected_image_state.dart';
-import 'package:flites/states/source_files_state.dart';
-import 'package:flites/types/flites_image.dart';
+import '../states/selected_image_row_state.dart';
+import '../states/selected_image_state.dart';
+import '../states/source_files_state.dart';
+import '../types/flites_image.dart';
 
 /// Returns the raw [FlitesImage] object for the given [id]
 FlitesImage? getFliteImage(String? id) {
-  final images = projectSourceFiles.value;
+  final images = SourceFilesState.projectSourceFiles;
 
   if (id == null) {
     return null;
@@ -23,13 +23,12 @@ FlitesImage? getFliteImage(String? id) {
   return null;
 }
 
-List<FlitesImage> getFliteImages(List<String> ids) {
-  return ids.map(getFliteImage).whereType<FlitesImage>().toList();
-}
+List<FlitesImage> getFliteImages(List<String> ids) =>
+    ids.map(getFliteImage).whereType<FlitesImage>().toList();
 
 String? getPreviousImageId(String imageId) {
-  final rowIndex = selectedImageRow.value;
-  final row = projectSourceFiles.value.rows[rowIndex].images;
+  final rowIndex = SelectedImageRowState.selectedImageRow;
+  final row = SourceFilesState.projectSourceFiles.rows[rowIndex].images;
 
   final index = row.map((e) => e.id).toList().indexOf(imageId);
 
@@ -41,14 +40,14 @@ String? getPreviousImageId(String imageId) {
 }
 
 String? getNextImageId() {
-  final rowIndex = selectedImageRow.value;
-  final row = projectSourceFiles.value.rows[rowIndex].images;
+  final rowIndex = SelectedImageRowState.selectedImageRow;
+  final row = SourceFilesState.projectSourceFiles.rows[rowIndex].images;
 
   if (row.isEmpty) {
     return null;
   }
 
-  final imageId = selectedImageId.value ?? row.first.id;
+  final imageId = SelectedImageState.selectedImageId ?? row.first.id;
 
   final index = row.map((e) => e.id).toList().indexOf(imageId);
 

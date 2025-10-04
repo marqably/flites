@@ -1,11 +1,12 @@
-import 'package:flites/config/code_wizards.dart';
-import 'package:flites/config/tools.dart';
-import 'package:flites/feature_kits/code_wizards/code_wizard_result.dart';
-import 'package:flites/feature_kits/tools/export_tool/export_tool_panel.dart';
-import 'package:flites/states/tool_controller.dart';
-import 'package:flites/types/exported_sprite_image.dart';
-import 'package:flites/widgets/layout/app_shell.dart';
 import 'package:flutter/material.dart';
+
+import '../../../config/code_wizards.dart';
+import '../../../config/tools.dart';
+import '../../../states/tool_controller.dart';
+import '../../../types/exported_sprite_image.dart';
+import '../../../widgets/layout/app_shell.dart';
+import '../../code_wizards/code_wizard_result.dart';
+import 'export_tool_panel.dart';
 
 /// Displays a screen to prepare the export of our sprite map
 class ExportTool extends StatefulWidget {
@@ -34,8 +35,8 @@ class _ExportToolState extends State<ExportTool> {
       spriteMapBar: false,
       panelRight: ExportToolPanel(
         onExport: (
-          ExportedSpriteSheetTiled? spriteSheetInput,
-          ExportToolFormData formDataInput,
+          spriteSheetInput,
+          formDataInput,
         ) {
           // if we want to generate code -> set state to switch to code wizard screen
           if (formDataInput.codeGenFramework != CodeWizards.none) {
@@ -47,7 +48,7 @@ class _ExportToolState extends State<ExportTool> {
           }
 
           // otherwise just go back to the canvas
-          toolController.selectTool(Tool.canvas);
+          toolController.selectedTool = Tool.canvas;
         },
       ),
       child: const Center(

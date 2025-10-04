@@ -1,14 +1,15 @@
-import 'package:flites/main.dart';
-import 'package:flites/states/selected_image_row_state.dart';
-import 'package:flites/states/source_files_state.dart';
-import 'package:flites/widgets/buttons/stadium_button.dart';
-import 'package:flites/widgets/export/file_path_picker.dart';
-import 'package:flites/widgets/export/numeric_input_with_buttons.dart';
-import 'package:flites/widgets/export/padding_input.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flites/constants/app_sizes.dart';
 import 'package:signals/signals_flutter.dart';
+
+import '../../constants/app_sizes.dart';
+import '../../main.dart';
+import '../../states/selected_image_row_state.dart';
+import '../../states/source_files_state.dart';
+import '../buttons/stadium_button.dart';
+import 'file_path_picker.dart';
+import 'numeric_input_with_buttons.dart';
+import 'padding_input.dart';
 
 class ExportDialogContent extends StatefulWidget {
   const ExportDialogContent({super.key});
@@ -37,16 +38,15 @@ class ExportDialogContentState extends State<ExportDialogContent> {
 
   @override
   Widget build(BuildContext context) {
-    Text buildLabelText(String text) {
-      return Text(
-        text,
-        style: const TextStyle(fontSize: Sizes.p12),
-      );
-    }
+    Text buildLabelText(String text) => Text(
+          text,
+          style: const TextStyle(fontSize: Sizes.p12),
+        );
 
     return Watch((context) {
       final selectedExportSettings =
-          projectSourceFiles.value.rows[selectedImageRow.value].exportSettings;
+          SourceFilesState.projectSourceFiles
+          .rows[SelectedImageRowState.selectedImageRow].exportSettings;
 
       return Container(
         padding: const EdgeInsets.symmetric(
@@ -69,7 +69,7 @@ class ExportDialogContentState extends State<ExportDialogContent> {
                     currentValue: selectedExportSettings.widthPx ?? 0,
                     onChanged: (value) {
                       SourceFilesState.changeExportSettings(
-                        selectedImageRow.value,
+                        SelectedImageRowState.selectedImageRow,
                         selectedExportSettings.copyWith(widthPx: value),
                       );
                     },
@@ -83,7 +83,7 @@ class ExportDialogContentState extends State<ExportDialogContent> {
                     currentValue: selectedExportSettings.heightPx ?? 0,
                     onChanged: (value) {
                       SourceFilesState.changeExportSettings(
-                        selectedImageRow.value,
+                        SelectedImageRowState.selectedImageRow,
                         selectedExportSettings.copyWith(heightPx: value),
                       );
                     },
@@ -99,25 +99,25 @@ class ExportDialogContentState extends State<ExportDialogContent> {
               rightPadding: selectedExportSettings.paddingRightPx,
               onTopChanged: (value) {
                 SourceFilesState.changeExportSettings(
-                  selectedImageRow.value,
+                  SelectedImageRowState.selectedImageRow,
                   selectedExportSettings.copyWith(paddingTopPx: value),
                 );
               },
               onBottomChanged: (value) {
                 SourceFilesState.changeExportSettings(
-                  selectedImageRow.value,
+                  SelectedImageRowState.selectedImageRow,
                   selectedExportSettings.copyWith(paddingBottomPx: value),
                 );
               },
               onLeftChanged: (value) {
                 SourceFilesState.changeExportSettings(
-                  selectedImageRow.value,
+                  SelectedImageRowState.selectedImageRow,
                   selectedExportSettings.copyWith(paddingLeftPx: value),
                 );
               },
               onRightChanged: (value) {
                 SourceFilesState.changeExportSettings(
-                  selectedImageRow.value,
+                  SelectedImageRowState.selectedImageRow,
                   selectedExportSettings.copyWith(paddingRightPx: value),
                 );
               },

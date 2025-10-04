@@ -2,17 +2,9 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'dart:ui';
 
-import 'package:flites/utils/svg_utils.dart';
+import '../utils/svg_utils.dart';
 
 class SvgData {
-  final Size sizeFromHeightAndWidth;
-  final Rect viewBox;
-  final Offset center;
-  final String content;
-  final String attributes;
-  final Uint8List svgData;
-  final String svgString;
-
   SvgData({
     required this.sizeFromHeightAndWidth,
     required this.viewBox,
@@ -50,4 +42,11 @@ class SvgData {
       svgString: svgString,
     );
   }
+  final Size sizeFromHeightAndWidth;
+  final Rect viewBox;
+  final Offset center;
+  final String content;
+  final String attributes;
+  final Uint8List svgData;
+  final String svgString;
 }

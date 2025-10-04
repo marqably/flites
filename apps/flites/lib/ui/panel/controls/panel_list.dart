@@ -1,13 +1,29 @@
-import 'package:flites/constants/app_sizes.dart';
-import 'package:flites/ui/panel/controls/panel_list_item.dart';
-import 'package:flites/ui/inputs/icon_btn.dart';
-import 'package:flites/ui/panel/structure/panel_control_wrapper.dart';
-import 'package:flites/ui/panel/structure/panel_section.dart';
 import 'package:flutter/material.dart';
 import 'package:signals/signals_flutter.dart';
 
+import '../../../constants/app_sizes.dart';
+import '../../inputs/icon_btn.dart';
+import '../structure/panel_control_wrapper.dart';
+import '../structure/panel_section.dart';
+import 'panel_list_item.dart';
+
 /// A vertical list of panel items with consistent spacing
 class PanelList extends StatelessWidget {
+  /// A vertical list of panel items with consistent spacing
+  const PanelList({
+    required this.label,
+    required this.items,
+    super.key,
+    this.onItemTap,
+    this.selectedValues,
+    this.multiSelect = false,
+    this.leadingWidget,
+    this.trailingWidget,
+    this.onReorder,
+    this.scrollController,
+    this.sectionLabelControls,
+    this.helpText,
+  });
   final String label;
   final List<PanelListItem> items;
   final Function(String?)? onItemTap;
@@ -20,57 +36,37 @@ class PanelList extends StatelessWidget {
   final List<IconBtn>? sectionLabelControls;
   final String? helpText;
 
-  /// A vertical list of panel items with consistent spacing
-  const PanelList({
-    super.key,
-    required this.label,
-    required this.items,
-    this.onItemTap,
-    this.selectedValues,
-    this.multiSelect = false,
-    this.leadingWidget,
-    this.trailingWidget,
-    this.onReorder,
-    this.scrollController,
-    this.sectionLabelControls,
-    this.helpText,
-  });
-
   @override
-  Widget build(BuildContext context) {
-    return Watch((context) {
-      return PanelSection(
-        children: [
-          // leading
-          if (leadingWidget != null) Flexible(flex: 0, child: leadingWidget!),
+  Widget build(BuildContext context) => Watch(
+        (context) => PanelSection(
+          children: [
+            // leading
+            if (leadingWidget != null) Flexible(flex: 0, child: leadingWidget!),
 
-          // the list
-          Flexible(
-            flex: 1,
-            child: PanelControlWrapper(
-              label: label,
-              helpText: helpText,
-              alignment: MainAxisAlignment.start,
-              controls: sectionLabelControls,
-              children: [
-                _buildList(context),
-              ],
-            ),
-          ),
-
-          // trailing
-          if (trailingWidget != null)
+            // the list
             Flexible(
-              flex: 0,
-              child: Padding(
-                padding: const EdgeInsets.only(top: Sizes.p12),
-                child: trailingWidget!,
+              child: PanelControlWrapper(
+                label: label,
+                helpText: helpText,
+                controls: sectionLabelControls,
+                children: [
+                  _buildList(context),
+                ],
               ),
             ),
-        ],
+
+            // trailing
+            if (trailingWidget != null)
+              Flexible(
+                flex: 0,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: Sizes.p12),
+                  child: trailingWidget,
+                ),
+              ),
+          ],
+        ),
       );
-    });
-  }
 
   Widget _buildList(BuildContext context) {
     // if we have an onReorder callback, we need to build a reorderable list
@@ -88,25 +84,20 @@ class PanelList extends StatelessWidget {
         itemCount: items.length,
         onReorder: onReorder!,
         buildDefaultDragHandles: false,
-        scrollDirection: Axis.vertical,
         shrinkWrap: true,
         scrollController: scrollController,
         physics: const AlwaysScrollableScrollPhysics(),
-        proxyDecorator: (child, index, animation) {
-          return AnimatedBuilder(
-            animation: animation,
-            builder: (context, child) {
-              return Transform.scale(
-                scale: 1.05,
-                child: Material(
-                  color: Colors.transparent,
-                  child: child,
-                ),
-              );
-            },
-            child: child,
-          );
-        },
+        proxyDecorator: (child, index, animation) => AnimatedBuilder(
+          animation: animation,
+          builder: (context, child) => Transform.scale(
+            scale: 1.05,
+            child: Material(
+              color: Colors.transparent,
+              child: child,
+            ),
+          ),
+          child: child,
+        ),
       );
     }
 
@@ -116,9 +107,7 @@ class PanelList extends StatelessWidget {
         controller: scrollController,
         physics: const AlwaysScrollableScrollPhysics(),
         children: [
-          ...items.map((item) {
-            return _getItem(item);
-          }),
+          ...items.map(_getItem),
         ],
       ),
     );

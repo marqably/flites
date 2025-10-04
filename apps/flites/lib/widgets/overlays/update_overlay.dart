@@ -1,10 +1,11 @@
-import 'package:flites/constants/app_sizes.dart';
-import 'package:flites/main.dart';
-import 'package:flites/services/update_service.dart';
-import 'package:flites/types/update_info.dart';
-import 'package:flites/widgets/overlays/base_dialog_card.dart';
 import 'package:flutter/material.dart';
 import 'package:signals/signals_flutter.dart';
+
+import '../../constants/app_sizes.dart';
+import '../../main.dart';
+import '../../services/update_service.dart';
+import '../../types/update_info.dart';
+import 'base_dialog_card.dart';
 
 final showUpdateOverlay = signal(false);
 final updateOverlayInfo = signal<UpdateInfo?>(null);
