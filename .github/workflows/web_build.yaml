@@ -39,6 +39,9 @@ jobs:
         if: github.event_name == 'workflow_call'
         run: |
          echo "Workflow Input (inputs.tag): ${{ inputs.tag }}"
+         echo "Tag is null: ${{ inputs.tag == null }}"
+         echo "Tag is empty: ${{ inputs.tag == '' }}"
+         echo "Tag length: ${{ length(inputs.tag) }}"
 
       - name: 📚 Git Checkout
         uses: actions/checkout@v4
@@ -94,8 +97,17 @@ jobs:
           path: 'apps/flites/build/web'
           name: ${{ steps.vars.outputs.artifact_upload_name }}
 
+      - name: DEBUG Check Pages Deployment Conditions
+        if: github.event_name == 'workflow_call'
+        run: |
+          echo "Event name: ${{ github.event_name }}"
+          echo "Input tag: '${{ inputs.tag }}'"
+          echo "Tag is null: ${{ inputs.tag == null }}"
+          echo "Tag is empty: ${{ inputs.tag == '' }}"
+          echo "Should deploy to Pages: ${{ github.event_name == 'workflow_call' && inputs.tag != null && inputs.tag != '' }}"
+
       - name: Setup Pages
-        if: github.event_name == 'workflow_call' && inputs.tag != ''
+        if: github.event_name == 'workflow_call' && inputs.tag != null && inputs.tag != ''
         uses: actions/configure-pages@v4
 
       - name: 🧪 Test Web Build (Basic Check)
@@ -113,7 +125,7 @@ jobs:
           
       - name: Deploy to GitHub Pages
         id: deployment
-        if: github.event_name == 'workflow_call' && inputs.tag != ''
+        if: github.event_name == 'workflow_call' && inputs.tag != null && inputs.tag != ''
         uses: actions/deploy-pages@v4 
         with:
           artifact_name: ${{ steps.vars.outputs.artifact_upload_name }}
