@@ -11,7 +11,7 @@ on:
         description: 'Flutter version (optional).'
         required: false
         type: string
-        # default: '3.27.2' # Default set in Setup Flutter step
+        # default: '3.35.5' # Default set in Setup Flutter step
 
   # Triggers on Pull Requests targeting main
   pull_request:
@@ -59,7 +59,7 @@ jobs:
       - name: 📦 Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: ${{ inputs.flutter-version || '3.27.2' }}
+          flutter-version: ${{ inputs.flutter-version || '3.35.5' }}
           architecture: x64
           cache: true
 

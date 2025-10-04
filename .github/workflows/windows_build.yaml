@@ -11,7 +11,7 @@ on:
         description: 'Flutter version (optional).'
         required: false
         type: string
-        # default: '3.27.2' 
+        # default: '3.35.5' 
 
   # Triggers on Pull Requests targeting main
   pull_request:
@@ -63,7 +63,7 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           # Use version passed from caller or fallback
-          flutter-version: ${{ inputs.flutter-version || '3.27.2' }}
+          flutter-version: ${{ inputs.flutter-version || '3.35.5' }}
           architecture: x64
           cache: true # Enable integrated caching
 
