@@ -9,7 +9,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Chores 0.0.11
 
-- Added stricter linting and fixed linting errors caused by that
 - Upgrade to flutter 3.35.5
 
 ## [0.0.10] - 2025-10-04
