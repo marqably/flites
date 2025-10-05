@@ -8,7 +8,8 @@ You can quickly try it using our web version without installing anything:
 [web.flites.app](https://web.flites.app)
 
 If you want to play around, you can download and import our [demo flites project](./docs/demo-assets/valkyr.flites).
-To import, just go to [web.flites.app](https://web.flites.app), click the flites logo (top left) and click "Open project".
+
+To import, just go to [web.flites.app](https://web.flites.app), click the flites logo (top left) and click "Open project" and select the demo project file.
 
 ## Features
 
