@@ -34,7 +34,6 @@ class _CanvasGestureHandler extends StatelessWidget {
           },
           child: GestureDetector(
             behavior: HitTestBehavior.opaque,
-            onTap: SelectedImageState.clearSelection,
             onPanStart: (details) {
               _isGrabbing.value = true;
             },
