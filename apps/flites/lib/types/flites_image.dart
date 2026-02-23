@@ -87,7 +87,7 @@ class FlitesImage {
       // Generate a unique ID for this image
       id =
           '${DateTime.now().millisecondsSinceEpoch}-${Random().nextInt(14000)}-${Random().nextInt(15000)}';
-    } on Exception {
+    } on Exception catch (e) {
       // Rethrow with more context
       throw Exception('Failed to create FlitesImage: $e');
     }
@@ -106,23 +106,49 @@ class FlitesImage {
     }
 
     try {
+      // Remember the center and scale so the image stays in place
+      final oldRawSize = ImageUtils.sizeOfRawImage(image);
+      final scaleOnCanvas = widthOnCanvas / oldRawSize.width;
+      final oldCenter = Offset(
+        positionOnCanvas.dx + widthOnCanvas / 2,
+        positionOnCanvas.dy + heightOnCanvas / 2,
+      );
+
       rotation = rotationInRadians;
 
       // Apply rotation to the image data based on type
+      // Track the trim center offset to compensate for asymmetric cropping
+      double trimCenterOffsetX = 0;
+      double trimCenterOffsetY = 0;
+
       if (SvgUtils.isSvg(image)) {
         image = await SvgUtils.rotateAndTrimSvg(image, rotation);
       } else {
-        image = await ImageProcessingUtils.rotateInIsolates(image, rotation);
+        final result =
+            await ImageProcessingUtils.rotateInIsolates(image, rotation);
+        image = result.imageBytes;
+        trimCenterOffsetX = result.trimCenterOffsetX;
+        trimCenterOffsetY = result.trimCenterOffsetY;
       }
 
       // Reset rotation after applying it to the image data
       rotation = 0;
 
-      widthOnCanvas = ImageUtils.sizeOfRawImage(image).width;
+      // Preserve the user's scale factor
+      widthOnCanvas = ImageUtils.sizeOfRawImage(image).width * scaleOnCanvas;
+
+      // Recenter the image at the same point, compensating for the
+      // asymmetric trim offset so the image doesn't jump
+      positionOnCanvas = Offset(
+        oldCenter.dx - widthOnCanvas / 2 +
+            (trimCenterOffsetX * scaleOnCanvas),
+        oldCenter.dy - heightOnCanvas / 2 +
+            (trimCenterOffsetY * scaleOnCanvas),
+      );
 
       // Save the changes
       SourceFilesState.saveImageChanges(this);
-    } on Exception {
+    } on Exception catch (e) {
       debugPrint('Error applying rotation: $e');
     }
   }
