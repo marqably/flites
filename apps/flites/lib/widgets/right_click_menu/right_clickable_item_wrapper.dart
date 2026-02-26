@@ -10,22 +10,24 @@ class RightClickableItemWrapper extends StatelessWidget {
   const RightClickableItemWrapper({
     required this.child,
     required this.contextData,
+    this.isEnabled = true,
     super.key,
   });
+
+  final bool isEnabled;
   final Widget child;
   final SecondaryClickContextData contextData;
 
   @override
   Widget build(BuildContext context) => GestureDetector(
-        onSecondaryTapDown: (details) {
-          final handlerState =
-              context.findAncestorStateOfType<RightClickMenuHandlerState>();
+    onSecondaryTapDown: isEnabled
+        ? (details) {
+            final handlerState = context
+                .findAncestorStateOfType<RightClickMenuHandlerState>();
 
-          handlerState?.showContextMenu(
-            details,
-            contextData: contextData,
-          );
-        },
-        child: child,
-      );
+            handlerState?.showContextMenu(details, contextData: contextData);
+          }
+        : null,
+    child: child,
+  );
 }
