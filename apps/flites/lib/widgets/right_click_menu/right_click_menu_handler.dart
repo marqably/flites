@@ -15,10 +15,7 @@ import 'right_click_menu_item.dart';
 /// The context menu is shown at the position of the right-click event.
 /// The context menu is removed when the user clicks outside of it.
 class RightClickMenuHandler extends StatefulWidget {
-  const RightClickMenuHandler({
-    required this.child,
-    super.key,
-  });
+  const RightClickMenuHandler({required this.child, super.key});
 
   final Widget child;
 
@@ -31,6 +28,12 @@ class RightClickMenuHandler extends StatefulWidget {
 /// show the context menu and pass the item data to it.
 class RightClickMenuHandlerState extends State<RightClickMenuHandler> {
   OverlayEntry? _overlayEntry;
+
+  @override
+  void dispose() {
+    _removeOverlay();
+    super.dispose();
+  }
 
   void showContextMenu(
     TapDownDetails details, {
@@ -146,8 +149,5 @@ class RightClickMenuHandlerState extends State<RightClickMenuHandler> {
   }
 
   @override
-  Widget build(BuildContext context) => GestureDetector(
-        onSecondaryTapDown: showContextMenu,
-        child: widget.child,
-      );
+  Widget build(BuildContext context) => widget.child;
 }
