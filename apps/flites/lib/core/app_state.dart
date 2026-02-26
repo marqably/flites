@@ -21,9 +21,7 @@ class AppState {
   /// The main project data containing all image rows and project metadata
   final _projectData = signal<FlitesImageMap>(
     FlitesImageMap(
-      rows: [
-        FlitesImageRow(images: [], name: 'Animation 1'),
-      ],
+      rows: [FlitesImageRow(images: [], name: 'Animation 1')],
     ),
   );
 
@@ -59,9 +57,8 @@ class AppState {
   String? get selectedImageId => _selectedImageId.value;
 
   /// Currently selected animation (computed from selected row)
-  ReadonlySignal<FlitesImageRow> get selectedAnimation => computed(
-        () => _projectData.value.rows[_selectedRowIndex.value],
-      );
+  ReadonlySignal<FlitesImageRow> get selectedAnimation =>
+      computed(() => _projectData.value.rows[_selectedRowIndex.value]);
 
   /// Sets the selected image row
   void setSelectedRow(int index) {
@@ -108,6 +105,81 @@ class AppState {
     _canvasPosition.value += offset;
   }
 
+  void reAlignAllImages() {
+    final center = _centerOfAllImages();
+
+    if (center == null) {
+      return;
+    }
+
+    for (final image in _getCurrentRow().images) {
+      final offsetFromCenter = image.center - center;
+      final newPosition = image.positionOnCanvas - offsetFromCenter;
+
+      saveImageChanges(image.copyWith(positionOnCanvas: newPosition));
+    }
+
+    centerCanvasOnAllImages();
+  }
+
+  // Centers the canvas around a single image.
+  void centerCanvasOnImage(String imageId) {
+    final currentRow = _getCurrentRow();
+    final index = currentRow.images.indexWhere((image) => image.id == imageId);
+
+    if (index == -1) {
+      return;
+    }
+    final targetImage = currentRow.images[index];
+
+    _recenterCanvas(targetImage.center);
+  }
+
+  // Centers the canvas on the average of the currently selected images.
+  void centerCanvasOnAllImages() {
+    final center = _centerOfAllImages();
+
+    if (center == null) {
+      return;
+    }
+
+    _recenterCanvas(center);
+  }
+
+  // The non-scaled center point of all images
+  Offset? _centerOfAllImages() {
+    // Calculate center of currently selected image row.
+    final centersOfRow = _getCurrentRow().images
+        .map((image) => image.center)
+        .toList();
+    if (centersOfRow.isEmpty) {
+      return null;
+    }
+
+    // The average pixel center of the images in the currently selected row
+    //(in our coordinate system).
+    final averageCenter =
+        centersOfRow.reduce((a, b) => a + b) / centersOfRow.length.toDouble();
+
+    return averageCenter;
+  }
+
+  // Re-centers the canvas around a non-scaled center point.
+  void _recenterCanvas(Offset unscaledTargetCenter) {
+    // Apply scaling factor to the average center (which is absolute).
+    final scaledImageCenter = unscaledTargetCenter * _canvasScalingFactor.value;
+
+    // The center of the canvas from a window size perspective.
+    // This changes with window resizes
+    final canvasPixelCenter = Offset(
+      _canvasSizePixel.value.width / 2,
+      _canvasSizePixel.value.height / 2,
+    );
+
+    // Update the position of the canvas to center the images in the window
+    _canvasPosition.value = canvasPixelCenter - scaledImageCenter;
+  }
+
   /// Updates canvas size
   void updateCanvasSize(Size size) {
     if (size != _canvasSizePixel.value) {
@@ -142,10 +214,7 @@ class AppState {
   /// Adds a new image row
   void addImageRow(String name) {
     final currentRows = _projectData.value.rows;
-    final newRows = [
-      ...currentRows,
-      FlitesImageRow(images: [], name: name),
-    ];
+    final newRows = [...currentRows, FlitesImageRow(images: [], name: name)];
     _projectData.value = _projectData.value.copyWith(rows: newRows);
   }
 
@@ -207,9 +276,7 @@ class AppState {
     final currentRow = _getCurrentRow();
     final newRow = currentRow.copyWith(
       images: currentRow.images
-          .map(
-            (img) => img.id == image.id ? image : img,
-          )
+          .map((img) => img.id == image.id ? image : img)
           .toList(),
     );
     _updateCurrentRow(newRow);
@@ -218,8 +285,9 @@ class AppState {
   /// Deletes an image
   void deleteImage(String imageId) {
     final currentRow = _getCurrentRow();
-    final updatedImages =
-        currentRow.images.where((image) => image.id != imageId).toList();
+    final updatedImages = currentRow.images
+        .where((image) => image.id != imageId)
+        .toList();
 
     final updatedRow = currentRow.copyWith(images: updatedImages);
     _updateCurrentRow(updatedRow);
@@ -303,14 +371,17 @@ class AppState {
   /// Renames images according to their order
   void renameImagesAccordingToOrder() {
     final currentRow = _getCurrentRow();
-    final baseName =
-        currentRow.name.toLowerCase().replaceAll(RegExp(r'\s+'), '_');
+    final baseName = currentRow.name.toLowerCase().replaceAll(
+      RegExp(r'\s+'),
+      '_',
+    );
 
     final newImages = currentRow.images.asMap().entries.map((entry) {
       final index = entry.key;
       final originalImage = entry.value;
 
-      final fileExtension = originalImage.originalName?.endsWith('.svg') ?? false
+      final fileExtension =
+          originalImage.originalName?.endsWith('.svg') ?? false
           ? '.svg'
           : '.png';
 

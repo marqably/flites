@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:signals/signals_flutter.dart';
 
 import '../../../core/app_state.dart';
@@ -13,10 +14,7 @@ import '../../../ui/panel/controls/panel_list.dart';
 import '../../../ui/panel/controls/panel_list_item.dart';
 
 class MainFrameList extends StatefulWidget {
-  const MainFrameList({
-    super.key,
-    this.scrollController,
-  });
+  const MainFrameList({super.key, this.scrollController});
   final ScrollController? scrollController;
 
   @override
@@ -43,78 +41,81 @@ class _MainFrameListState extends State<MainFrameList> {
 
   @override
   Widget build(BuildContext context) => Watch(
-        (context) => PanelList(
-          label: context.l10n.frames,
-          items: _getItems(
-            context,
-            selectedReferenceImages.value,
-            appState.projectData,
-          ),
-          onItemTap: (id) {
-            SelectedImageState.selectedImage = id;
-          },
-          trailingWidget: PanelListItem(
-            title: context.l10n.addImage,
-            icon: CupertinoIcons.add,
-            onTap: () {
-              SourceFilesState.addImages().then((_) {
-                final imagesInRow = appState
-                    .projectData.rows[appState.selectedRowIndex.value].images;
+    (context) => PanelList(
+      label: context.l10n.frames,
+      items: _getItems(
+        context,
+        selectedReferenceImages.value,
+        appState.projectData,
+      ),
+      onItemTap: (id) {
+        SelectedImageState.selectedImage = id;
+      },
+      trailingWidget: PanelListItem(
+        title: context.l10n.addImage,
+        icon: CupertinoIcons.add,
+        onTap: () {
+          SourceFilesState.addImages().then((_) {
+            final imagesInRow = appState
+                .projectData
+                .rows[appState.selectedRowIndex.value]
+                .images;
 
-                if (imagesInRow.isEmpty) {
-                  return;
-                }
+            if (imagesInRow.isEmpty) {
+              return;
+            }
 
-                SelectedImageState.selectedImage = imagesInRow.last.id;
-              });
-            },
-          ),
-          selectedValues: (appState.selectedImageId != null)
-              ? [appState.selectedImageId!]
-              : null,
-          onReorder: SourceFilesState.reorderImages,
-          sectionLabelControls: [
-            IconBtn(
-              icon: CupertinoIcons.eye_solid,
-              tooltip: context.l10n.toggleVisibility,
-              onPressed: () {
-                final selectedRowIndex = appState.selectedRowIndex.value;
-                final currentRow =
-                    appState.projectData.rows[selectedRowIndex];
-                if (currentRow.images.length <=
-                    selectedReferenceImages.value.toSet().length) {
-                  selectedReferenceImages.value = [];
-                } else {
-                  selectedReferenceImages.value =
-                      currentRow.images.map((e) => e.id).toList();
-                }
-              },
-            ),
-          ],
-          scrollController: _scrollController,
+            SelectedImageState.selectedImage = imagesInRow.last.id;
+          });
+        },
+      ),
+      selectedValues: (appState.selectedImageId != null)
+          ? [appState.selectedImageId!]
+          : null,
+      onReorder: SourceFilesState.reorderImages,
+      sectionLabelControls: [
+        IconBtn(
+          icon: Icons.center_focus_strong,
+          tooltip: context.l10n.toggleVisibility,
+          onPressed: appState.reAlignAllImages,
         ),
-      );
+        IconBtn(
+          icon: CupertinoIcons.eye_solid,
+          tooltip: context.l10n.toggleVisibility,
+          onPressed: () {
+            final selectedRowIndex = appState.selectedRowIndex.value;
+            final currentRow = appState.projectData.rows[selectedRowIndex];
+            if (currentRow.images.length <=
+                selectedReferenceImages.value.toSet().length) {
+              selectedReferenceImages.value = [];
+            } else {
+              selectedReferenceImages.value = currentRow.images
+                  .map((e) => e.id)
+                  .toList();
+            }
+          },
+        ),
+      ],
+      scrollController: _scrollController,
+    ),
+  );
 
   List<PanelListItem> _getItems(
     BuildContext context,
     List<String> selectedReferenceImages,
     FlitesImageMap projectSourceFiles,
-  ) =>
-      projectSourceFiles.rows[appState.selectedRowIndex.value].images
-          .map(
-            (frameItem) => PanelListItem(
-              key: Key('file-${frameItem.id}'),
-              title: frameItem.displayName ?? frameItem.originalName ?? '',
-              image: frameItem,
-              actionButtons: ({
-                required isHovered,
-                required isActive,
-              }) =>
-                  _getActionButtons(context, frameItem, isHovered, isActive),
-              value: frameItem.id,
-            ),
-          )
-          .toList();
+  ) => projectSourceFiles.rows[appState.selectedRowIndex.value].images
+      .map(
+        (frameItem) => PanelListItem(
+          key: Key('file-${frameItem.id}'),
+          title: frameItem.displayName ?? frameItem.originalName ?? '',
+          image: frameItem,
+          actionButtons: ({required isHovered, required isActive}) =>
+              _getActionButtons(context, frameItem, isHovered, isActive),
+          value: frameItem.id,
+        ),
+      )
+      .toList();
 
   List<IconBtn> _getActionButtons(
     BuildContext context,
@@ -122,8 +123,9 @@ class _MainFrameListState extends State<MainFrameList> {
     bool isHovered,
     bool isSelected,
   ) {
-    final isCurrentReferenceImage =
-        selectedReferenceImages.value.contains(frameItem.id);
+    final isCurrentReferenceImage = selectedReferenceImages.value.contains(
+      frameItem.id,
+    );
 
     return <IconBtn>[
       // delete

@@ -156,11 +156,13 @@ class FlitesImageFactory {
       // Extract image data
       // Sort images by frame number (for GIFs)
       images.sort((a, b) {
-        final numA = int.tryParse(
+        final numA =
+            int.tryParse(
               RegExp(r'frame_(\d+)').firstMatch(a.name ?? '')?.group(1) ?? '0',
             ) ??
             0;
-        final numB = int.tryParse(
+        final numB =
+            int.tryParse(
               RegExp(r'frame_(\d+)').firstMatch(b.name ?? '')?.group(1) ?? '0',
             ) ??
             0;
@@ -171,10 +173,7 @@ class FlitesImageFactory {
       final result = images
           .map((img) {
             try {
-              return FlitesImage.scaled(
-                img.image!,
-                originalName: img.name,
-              );
+              return FlitesImage.scaled(img.image!, originalName: img.name);
             } on Exception {
               // Skip images that fail to process
               return null;
