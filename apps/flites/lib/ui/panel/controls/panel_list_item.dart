@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 import '../../../constants/app_sizes.dart';
+import '../../../core/app_state.dart';
 import '../../../types/flites_image.dart';
 import '../../../types/secondary_click_context_data.dart';
 import '../../../utils/svg_utils.dart';
@@ -32,7 +33,8 @@ class PanelListItem extends StatefulWidget {
   final List<IconBtn> Function({
     required bool isHovered,
     required bool isActive,
-  })? actionButtons;
+  })?
+  actionButtons;
   final bool isSelected;
   final VoidCallback? onTap;
   final bool hoverSelected;
@@ -45,24 +47,23 @@ class PanelListItem extends StatefulWidget {
     bool? isSelected,
     VoidCallback? onTap,
     List<IconBtn> Function({required bool isHovered, required bool isActive})?
-        actionButtons,
+    actionButtons,
     String? title,
     String? subtitle,
     FlitesImage? image,
     String? value,
     IconData? icon,
-  }) =>
-      PanelListItem(
-        title: title ?? this.title,
-        subtitle: subtitle ?? this.subtitle,
-        image: image ?? this.image,
-        actionButtons: actionButtons ?? this.actionButtons,
-        isSelected: isSelected ?? this.isSelected,
-        onTap: onTap ?? this.onTap,
-        hoverSelected: hoverSelected ?? this.hoverSelected,
-        value: value ?? this.value,
-        icon: icon ?? this.icon,
-      );
+  }) => PanelListItem(
+    title: title ?? this.title,
+    subtitle: subtitle ?? this.subtitle,
+    image: image ?? this.image,
+    actionButtons: actionButtons ?? this.actionButtons,
+    isSelected: isSelected ?? this.isSelected,
+    onTap: onTap ?? this.onTap,
+    hoverSelected: hoverSelected ?? this.hoverSelected,
+    value: value ?? this.value,
+    icon: icon ?? this.icon,
+  );
 }
 
 class _PanelListItemState extends State<PanelListItem> {
@@ -73,8 +74,10 @@ class _PanelListItemState extends State<PanelListItem> {
     final theme = Theme.of(context);
 
     final actionButtonList =
-        widget.actionButtons
-            ?.call(isHovered: isHovered, isActive: widget.isSelected) ??
+        widget.actionButtons?.call(
+          isHovered: isHovered,
+          isActive: widget.isSelected,
+        ) ??
         [];
 
     return RightClickableItemWrapper(
@@ -82,6 +85,15 @@ class _PanelListItemState extends State<PanelListItem> {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(borderRadiusMd),
         child: HoverBtn(
+          onDoubleTap: () {
+            final imageId = widget.image?.id;
+
+            if (imageId == null) {
+              return;
+            }
+
+            appState.centerCanvasOnImage(imageId);
+          },
           hoverColor: theme.colorScheme.surfaceContainerLow,
           customBorder: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
