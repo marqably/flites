@@ -45,8 +45,8 @@ class _RotationWrapperState extends State<RotationWrapper> {
   }
 
   String get _rotationDegrees {
-    final degrees = (rotation * 180 / pi) % 360;
-    final normalized = degrees > 180 ? degrees - 360 : degrees;
+    final degrees = rotation * 180 / pi;
+    final normalized = (((degrees + 180) % 360) + 360) % 360 - 180;
     return '${normalized.toStringAsFixed(1)}°';
   }
 

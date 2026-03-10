@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:flites/utils/image_processing_utils.dart';
+import 'package:flites/widgets/rotation/rotation_wrapper.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:image/image.dart' as img;
 
@@ -144,7 +145,3 @@ void main() {
     });
   });
 }
-
-// Import the helper from rotation_wrapper since it's a top-level function
-double longestSideSize(Size size) =>
-    size.width > size.height ? size.width : size.height;

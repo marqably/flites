@@ -161,14 +161,13 @@ class SvgUtils {
       final storedH = getDataAttribute(svg.attributes, 'data-orig-h');
       final storedCx = getDataAttribute(svg.attributes, 'data-orig-cx');
       final storedCy = getDataAttribute(svg.attributes, 'data-orig-cy');
-      final previouslyRotated = storedW != null && storedH != null;
 
       final Size originalContentSize;
       final Offset rotationCenter;
       final String innerContent;
       final double totalAngleDegrees;
 
-      if (previouslyRotated) {
+      if (storedW != null && storedH != null) {
         // Compose rotations: extract the existing angle, strip the old
         // rotation wrapper, and combine into a single transform.
         originalContentSize = Size(storedW, storedH);
