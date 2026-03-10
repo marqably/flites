@@ -28,18 +28,13 @@ class _RotationWrapperState extends State<RotationWrapper> {
   double _dragStartAngle = 0;
   double _rotationAtDragStart = 0;
 
-  late final double circleRadius;
-
-  @override
-  void initState() {
-    super.initState();
-    circleRadius = (longestSideSize(widget.rect.size) / 2) * 1.5;
-  }
+  double get _circleRadius =>
+      (longestSideSize(widget.rect.size) / 2) * 1.5;
 
   /// Computes the angle from the center of the rotation circle to the given
   /// local position. Returns angle in radians where 0 = top, positive = clockwise.
   double _angleFromCenter(Offset localPosition) {
-    final center = Offset(circleRadius, circleRadius);
+    final center = Offset(_circleRadius, _circleRadius);
     final offset = localPosition - center;
     return atan2(offset.dx, -offset.dy);
   }
@@ -63,8 +58,8 @@ class _RotationWrapperState extends State<RotationWrapper> {
         Padding(
           padding: const EdgeInsets.only(bottom: Sizes.p48),
           child: SizedBox(
-            height: circleRadius * 2,
-            width: circleRadius * 2,
+            height: _circleRadius * 2,
+            width: _circleRadius * 2,
             child: Stack(
               alignment: Alignment.center,
               children: [
@@ -90,7 +85,7 @@ class _RotationWrapperState extends State<RotationWrapper> {
                               width: Sizes.p2,
                             ),
                           ),
-                          width: circleRadius * 2 - (dotSize * 2 / 3),
+                          width: _circleRadius * 2 - (dotSize * 2 / 3),
                         ),
                       if (inRotationMode)
                         Positioned(
@@ -121,14 +116,20 @@ class _RotationWrapperState extends State<RotationWrapper> {
                       onPanUpdate: (details) {
                         final currentAngle =
                             _angleFromCenter(details.localPosition);
+                        double delta = currentAngle - _dragStartAngle;
+                        while (delta > pi) {
+                          delta -= 2 * pi;
+                        }
+                        while (delta <= -pi) {
+                          delta += 2 * pi;
+                        }
                         setState(() {
-                          rotation = _rotationAtDragStart +
-                              (currentAngle - _dragStartAngle);
+                          rotation = _rotationAtDragStart + delta;
                         });
                       },
                       child: SizedBox(
-                        width: circleRadius * 2,
-                        height: circleRadius * 2,
+                        width: _circleRadius * 2,
+                        height: _circleRadius * 2,
                       ),
                     ),
                   ),
