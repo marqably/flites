@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:signals/signals_flutter.dart';
 
 import '../../states/canvas_controller.dart';
 import '../../widgets/flites_image_renderer/flites_image_renderer.dart';
@@ -8,8 +7,6 @@ import '../../widgets/player/player.dart';
 import '../../widgets/rotation/rotation_wrapper.dart';
 import 'canvas_helpers/image_editor.dart';
 import 'canvas_helpers/selected_image_rect_wrapper.dart';
-
-final rotationSignal = signal<double?>(null);
 
 /// Displays the current selection in rotate mode
 class RotateTool extends StatelessWidget {
@@ -45,10 +42,6 @@ class RotateTool extends StatelessWidget {
                         CanvasController.canvasScalingFactor.toString(),
                   ),
                   rect: selectedImageRect,
-                  onRotate: (newAngle) {
-                    currentSelection.rotation = newAngle;
-                  },
-                  initialRotation: currentSelection.rotation,
                   child: SizedBox(
                     width: selectedImageRect.width,
                     height: selectedImageRect.height,

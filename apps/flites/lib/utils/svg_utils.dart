@@ -152,65 +152,73 @@ class SvgUtils {
         return svgData;
       }
 
-      final originalSvg = SvgData.fromSvgData(svgData);
+      final svg = SvgData.fromSvgData(svgData);
 
-      // Calculate the size of the rotated svg
+      // Check if this SVG was previously rotated by us (has stored originals).
+      // This prevents the bounding box from growing with each rotation —
+      // we always compute the box from the original content size.
+      final storedW = getDataAttribute(svg.attributes, 'data-orig-w');
+      final storedH = getDataAttribute(svg.attributes, 'data-orig-h');
+      final storedCx = getDataAttribute(svg.attributes, 'data-orig-cx');
+      final storedCy = getDataAttribute(svg.attributes, 'data-orig-cy');
+
+      final Size originalContentSize;
+      final Offset rotationCenter;
+      final String innerContent;
+      final double totalAngleDegrees;
+
+      if (storedW != null && storedH != null) {
+        // Compose rotations: extract the existing angle, strip the old
+        // rotation wrapper, and combine into a single transform.
+        originalContentSize = Size(storedW, storedH);
+        rotationCenter = Offset(
+          storedCx ?? svg.center.dx,
+          storedCy ?? svg.center.dy,
+        );
+        final existingDegrees =
+            extractExistingRotationDegrees(svg.content);
+        totalAngleDegrees = existingDegrees + angleToDegrees(angleRadians);
+        innerContent = stripRotationWrapper(svg.content);
+      } else {
+        // First rotation — use current dimensions as the baseline.
+        originalContentSize = svg.sizeFromHeightAndWidth;
+        rotationCenter = svg.center;
+        totalAngleDegrees = angleToDegrees(angleRadians);
+        innerContent = svg.content;
+      }
+
+      // Calculate bounding box from the ORIGINAL content size
+      final totalAngleRadians = totalAngleDegrees * pi / 180;
       final rotatedBoxSize =
-          rotateBox(originalSvg.sizeFromHeightAndWidth, angleRadians);
+          rotateBox(originalContentSize, totalAngleRadians);
 
-      // Rotate svg around new center and adjust size & viewBox to fit the
-      // rotated content
-      final rotatedSvgString = _rotateSvg(
-        originalSvg,
-        angleRadians,
+      // Preserve or add data-orig-* attributes
+      var attributes = ensureOriginalSizeAttributes(
+        svg.attributes,
+        originalContentSize,
+        rotationCenter,
       );
 
-      // Get all data of the rotated svg
-      final rotatedSvg = SvgData.fromSvgString(rotatedSvgString);
-
-      // Convert the rotated svg to a png, trim the blank space around the image
-      // and get the size of the trimmed image
-      final targetSize = await sizeFromTrimmedPng(
-        rotatedSvgString,
-        targetSize: Size(
-          rotatedBoxSize.width,
-          rotatedBoxSize.height,
-        ),
+      // Set viewBox and size to the rotated bounding box, centered on
+      // the original rotation center
+      attributes = resizeAndCenterAttributes(
+        attributes,
+        targetSize: rotatedBoxSize,
+        centerX: rotationCenter.dx,
+        centerY: rotationCenter.dy,
       );
 
-      // Get the new rect with the new size and and coordinate origin
-      final newRect = _rectWithNewCoordinatesAndCenter(
-        originalCenter: originalSvg.center,
-        newSize: targetSize,
-        paddingFactor: 1.05,
-      );
-
-      // Update the viewBox with the new size and coordinates
-      final attributesLaterWithViewbox = updateSvgViewBox(
-        rotatedSvg.attributes,
-        width: newRect.width.ceil(),
-        height: newRect.height.ceil(),
-        x: newRect.left.ceil(),
-        y: newRect.top.ceil(),
-      );
-
-      // Update the size with the new size
-      final attributesLaterWithSize = updateSvgSize(
-        attributesLaterWithViewbox,
-        newRect.width.ceil(),
-        newRect.height.ceil(),
-      );
-
-      // Put together a svg string with the trimmed size
+      // Build the final SVG with a single rotation transform
       final finalSvg = svgStringFromParts(
-        attributes: attributesLaterWithSize,
-        content: rotatedSvg.content,
+        attributes: attributes,
+        contentWrapper:
+            '<g transform="rotate(${totalAngleDegrees % 360}, ${rotationCenter.dx}, ${rotationCenter.dy})">',
+        contentWrapperClosingTag: '</g>',
+        content: innerContent,
       );
 
-      // Convert back to Uint8List
       return Uint8List.fromList(utf8.encode(finalSvg));
-    } on Exception {
-      // If anything goes wrong, return the original SVG data
+    } on Exception catch (e) {
       debugPrint('Error rotating SVG: $e');
       return svgData;
     }
@@ -219,40 +227,59 @@ class SvgUtils {
   static bool _validateMinAngleRadians(double angleRadians) =>
       angleRadians.abs() > 0.001;
 
-  /// Returns a new Rect with new coordinates and a new size from a given center
-  /// and target size. Optionally adds a padding to the size.
-  static Rect _rectWithNewCoordinatesAndCenter({
-    required Offset originalCenter,
-    required Size newSize,
-    double paddingFactor = 1,
-  }) {
-    final newX = originalCenter.dx - ((newSize.width / 2) * paddingFactor);
-    final newY = originalCenter.dy - ((newSize.height / 2) * paddingFactor);
-
-    return Rect.fromLTWH(newX, newY, newSize.width, newSize.height);
+  /// Gets a numeric data-* attribute value from an SVG attributes string.
+  static double? getDataAttribute(String attributes, String name) {
+    final match = RegExp('$name="([^"]*)"').firstMatch(attributes);
+    return match != null ? double.tryParse(match.group(1)!) : null;
   }
 
-  static String _rotateSvg(
-    SvgData svg,
-    double angleRadians,
+  /// Adds data-orig-* attributes to preserve the original content
+  /// dimensions through multiple rotations.
+  static String ensureOriginalSizeAttributes(
+    String attributes,
+    Size contentSize,
+    Offset center,
   ) {
-    final attributesWithNewSize = resizeAndCenterAttributes(
-      svg.attributes,
-      targetSize: svg.sizeFromHeightAndWidth,
-      centerX: svg.center.dx,
-      centerY: svg.center.dy,
-    );
+    if (attributes.contains('data-orig-w=')) {
+      return attributes;
+    }
+    return '$attributes'
+        ' data-orig-w="${contentSize.width}"'
+        ' data-orig-h="${contentSize.height}"'
+        ' data-orig-cx="${center.dx}"'
+        ' data-orig-cy="${center.dy}"';
+  }
 
-    // Create a new SVG with the original attributes and a rotation transform
-    final rotatedSvg = svgStringFromParts(
-      attributes: attributesWithNewSize,
-      contentWrapper:
-          '<g transform="rotate(${angleToDegrees(angleRadians)}, ${svg.center.dx}, ${svg.center.dy})">',
-      contentWrapperClosingTag: '</g>',
-      content: svg.content,
-    );
+  /// Extracts the rotation angle in degrees from a `<g transform="rotate(...)"`
+  /// wrapper at the start of the SVG content.
+  static double extractExistingRotationDegrees(String content) {
+    final match = RegExp(
+      r'<g\s+transform="rotate\(\s*([^,\s]+)',
+    ).firstMatch(content.trim());
+    if (match != null) {
+      return double.tryParse(match.group(1)!) ?? 0;
+    }
+    return 0;
+  }
 
-    return rotatedSvg;
+  /// Strips the outermost rotation `<g>` wrapper from SVG content,
+  /// returning the inner content.
+  static String stripRotationWrapper(String content) {
+    final trimmed = content.trim();
+    final openMatch = RegExp(
+      r'^<g\s+transform="rotate\([^)]*\)">\s*',
+    ).firstMatch(trimmed);
+    if (openMatch == null) {
+      return content;
+    }
+
+    var inner = trimmed.substring(openMatch.end);
+    // Remove the last </g> which is the rotation wrapper's closing tag
+    final lastClose = inner.lastIndexOf('</g>');
+    if (lastClose >= 0) {
+      inner = inner.substring(0, lastClose) + inner.substring(lastClose + 4);
+    }
+    return inner.trim();
   }
 
   static double angleToDegrees(double angleInRadians) =>
@@ -487,18 +514,17 @@ class SvgUtils {
 
     final SvgStringLoader svgStringLoader = SvgStringLoader(svgStringContent);
     final PictureInfo pictureInfo = await vg.loadPicture(svgStringLoader, null);
-    // final ui.Picture picture = pictureInfo.picture;
+    final ui.Picture picture = pictureInfo.picture;
     final ui.PictureRecorder recorder = ui.PictureRecorder();
-    // final ui.Canvas canvas = Canvas(
-    //   recorder,
-    //   Rect.fromPoints(Offset.zero, Offset(targetWidth, targetHeight)),
-    // );
-    // canvas
-    //   ..scale(
-    //     targetWidth / pictureInfo.size.width,
-    //     targetHeight / pictureInfo.size.height,
-    //   )
-    //   ..drawPicture(picture);
+    Canvas(
+      recorder,
+      Rect.fromPoints(Offset.zero, Offset(targetWidth, targetHeight)),
+    )
+      ..scale(
+        targetWidth / pictureInfo.size.width,
+        targetHeight / pictureInfo.size.height,
+      )
+      ..drawPicture(picture);
     final ui.Image imgByteData = await recorder
         .endRecording()
         .toImage(targetWidth.ceil(), targetHeight.ceil());

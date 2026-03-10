@@ -14,14 +14,10 @@ class RotationWrapper extends StatefulWidget {
     required this.child,
     required this.rect,
     super.key,
-    this.onRotate,
-    this.initialRotation,
   });
 
   final Widget child;
   final Rect rect;
-  final void Function(double newAngle)? onRotate;
-  final double? initialRotation;
 
   @override
   State<RotationWrapper> createState() => _RotationWrapperState();
@@ -29,69 +25,30 @@ class RotationWrapper extends StatefulWidget {
 
 class _RotationWrapperState extends State<RotationWrapper> {
   double rotation = 0;
-  Offset dragStartPoint = Offset.zero;
+  double _dragStartAngle = 0;
+  double _rotationAtDragStart = 0;
 
-  late final double circleRadius;
+  double get _circleRadius =>
+      (longestSideSize(widget.rect.size) / 2) * 1.5;
 
-  @override
-  void initState() {
-    super.initState();
-    circleRadius = (longestSideSize(widget.rect.size) / 2) * 1.5;
-
-    // Initialize rotation from the widget's initialRotation property
-    rotation = widget.initialRotation ?? 0;
-
-    // Set the initial drag point at the top of the circle
-    // When rotation is 0, the handle should be at the top (0, -circleRadius)
-    dragStartPoint = Offset(0, -circleRadius);
+  /// Computes the angle from the center of the rotation circle to the given
+  /// local position. Returns angle in radians where 0 = top, positive = clockwise.
+  double _angleFromCenter(Offset localPosition) {
+    final center = Offset(_circleRadius, _circleRadius);
+    final offset = localPosition - center;
+    return atan2(offset.dx, -offset.dy);
   }
 
-  double calculateAngle(Offset start, Offset end) {
-    // Calculate angles from the origin (0,0)
-    final double startAngle = atan2(start.dy, start.dx);
-    final double endAngle = atan2(end.dy, end.dx);
-
-    // Return the difference between the angles
-    return endAngle - startAngle;
-  }
-
-  void _updateRotation(Offset currentPosition) {
-    final newAngle = calculateAngle(
-      const Offset(0, -1), // Top of circle as reference
-      dragStartPoint + flipY(currentPosition),
-    );
-
-    setState(() {
-      rotation = -newAngle;
-    });
-
-    // Always call the onRotate callback when rotation changes
-    widget.onRotate?.call(rotation);
-  }
-
-  void updateStartPoint(Offset endPosition) {
-    // When a drag ends, we need to update the dragStartPoint
-    // to match the current rotation angle for the next drag
-
-    // For a clean UX, keep the handle at the same visual position
-    // by calculating the offset based on the current rotation
-    final endAngle = calculateAngle(
-      const Offset(0, -1), // Top of circle
-      dragStartPoint + flipY(endPosition),
-    );
-
-    setState(() {
-      // Update the start point for the next drag
-      // This keeps the handle visually at the position where the user released it
-      dragStartPoint = rotateOffset(Offset(0, -circleRadius), endAngle);
-    });
+  String get _rotationDegrees {
+    final degrees = rotation * 180 / pi;
+    final normalized = (((degrees + 180) % 360) + 360) % 360 - 180;
+    return '${normalized.toStringAsFixed(1)}°';
   }
 
   @override
   Widget build(BuildContext context) {
     final dotSize = widget.rect.height * 0.1;
 
-    // Get the current tool to check if we're in rotation mode
     final currentTool = toolController.selectedTool;
     final inRotationMode = currentTool == Tool.rotate;
 
@@ -100,57 +57,39 @@ class _RotationWrapperState extends State<RotationWrapper> {
       children: [
         Padding(
           padding: const EdgeInsets.only(bottom: Sizes.p48),
-          child: Transform.rotate(
-            origin: Offset.zero,
-            angle: rotation,
-            child: SizedBox(
-              height: circleRadius * 2,
-              width: circleRadius * 2,
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  SizedBox(
-                    width: widget.rect.width,
-                    height: widget.rect.height,
-                    child: Center(
-                      child: widget.child,
-                    ),
-                  ),
-                  // Only show the rotation circle when in rotation mode
-                  if (inRotationMode)
-                    Container(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: context.colors.outline,
-                          width: Sizes.p2,
+          child: SizedBox(
+            height: _circleRadius * 2,
+            width: _circleRadius * 2,
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                // Rotated content (image + circle + handle)
+                Transform.rotate(
+                  angle: rotation,
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      SizedBox(
+                        width: widget.rect.width,
+                        height: widget.rect.height,
+                        child: Center(
+                          child: widget.child,
                         ),
                       ),
-                      width: circleRadius * 2 - (dotSize * 2 / 3),
-                    ),
-                  // Only show the rotation handle when in rotation mode
-                  if (inRotationMode)
-                    Positioned(
-                      top: 0,
-                      child: MouseRegion(
-                        cursor: SystemMouseCursors.precise,
-                        child: GestureDetector(
-                          behavior: HitTestBehavior.opaque,
-                          onPanStart: (_) {},
-                          onPanUpdate: (details) {
-                            _updateRotation(
-                              standardizeOffsetToRotation(
-                                details.localPosition,
-                              ),
-                            );
-                          },
-                          onPanEnd: (details) {
-                            updateStartPoint(
-                              standardizeOffsetToRotation(
-                                details.localPosition,
-                              ),
-                            );
-                          },
+                      if (inRotationMode)
+                        Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: context.colors.outline,
+                              width: Sizes.p2,
+                            ),
+                          ),
+                          width: _circleRadius * 2 - (dotSize * 2 / 3),
+                        ),
+                      if (inRotationMode)
+                        Positioned(
+                          top: 0,
                           child: Container(
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
@@ -160,14 +99,44 @@ class _RotationWrapperState extends State<RotationWrapper> {
                             width: dotSize,
                           ),
                         ),
+                    ],
+                  ),
+                ),
+                // Gesture detector overlay in non-rotated coordinate space
+                if (inRotationMode)
+                  MouseRegion(
+                    cursor: SystemMouseCursors.precise,
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onPanStart: (details) {
+                        _dragStartAngle =
+                            _angleFromCenter(details.localPosition);
+                        _rotationAtDragStart = rotation;
+                      },
+                      onPanUpdate: (details) {
+                        final currentAngle =
+                            _angleFromCenter(details.localPosition);
+                        double delta = currentAngle - _dragStartAngle;
+                        while (delta > pi) {
+                          delta -= 2 * pi;
+                        }
+                        while (delta <= -pi) {
+                          delta += 2 * pi;
+                        }
+                        setState(() {
+                          rotation = _rotationAtDragStart + delta;
+                        });
+                      },
+                      child: SizedBox(
+                        width: _circleRadius * 2,
+                        height: _circleRadius * 2,
                       ),
                     ),
-                ],
-              ),
+                  ),
+              ],
             ),
           ),
         ),
-        // Only show the rotation controls when in rotation mode and rotation is not 0
         if (rotation != 0 && inRotationMode)
           Positioned(
             bottom: 0,
@@ -191,9 +160,16 @@ class _RotationWrapperState extends State<RotationWrapper> {
                       setState(() {
                         rotation = 0;
                       });
-                      widget.onRotate?.call(0);
-                      dragStartPoint = Offset(0, -circleRadius);
                     },
+                  ),
+                  gapW8,
+                  Text(
+                    _rotationDegrees,
+                    style: TextStyle(
+                      color: context.colors.surfaceContainer,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                   gapW8,
                   IconButton(
@@ -209,13 +185,10 @@ class _RotationWrapperState extends State<RotationWrapper> {
                         await currentImage.rotateImage(rotation);
                       }
 
-                      // Reset the rotation in the UI controls
                       setState(() {
                         rotation = 0;
-                        dragStartPoint = Offset(0, -circleRadius);
                       });
 
-                      // Switch back to canvas mode after rotation is applied
                       toolController.selectedTool = Tool.canvas;
                     },
                   ),
@@ -226,23 +199,8 @@ class _RotationWrapperState extends State<RotationWrapper> {
       ],
     );
   }
-
-  Offset standardizeOffsetToRotation(Offset offset) {
-    final angle = -(dragStartPoint.direction - pi / 2);
-
-    final double x = offset.dx * cos(angle) - offset.dy * sin(angle);
-    final double y = offset.dx * sin(angle) + offset.dy * cos(angle);
-    return Offset(x, y);
-  }
 }
 
-// Helper functions for offset and size calculations
+// Helper function used by rotate_tool.dart
 double longestSideSize(Size size) =>
     size.width > size.height ? size.width : size.height;
-
-Offset flipY(Offset offset) => Offset(offset.dx, -offset.dy);
-
-Offset rotateOffset(Offset offset, double angle) => Offset(
-      offset.dx * cos(angle) - offset.dy * sin(angle),
-      offset.dx * sin(angle) + offset.dy * cos(angle),
-    );
